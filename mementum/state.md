@@ -14,15 +14,18 @@ The macro creates JEP 401 value objects
   Approach: expand to `deftype`, catch the bytes with a capture loader
   in the thread-bound `Compiler/LOADER`, change them into a value class
   with `java.lang.classfile`.
-- There is no source code.
+- The design assumptions are verified on Valhalla EA
+  `openjdk-27-jep401ea3+1-1` (JDK at
+  `~/.local/jdks/jdk-27.jdk/Contents/Home`). Results:
+  `ramora/defvaluetype-design/verification.md`. Working spike code:
+  `spike/valhalla/`.
+- There is no library code.
 - There is no `deps.edn`.
 - There are no tasks.
 
 ## Next
 
-- Spike on a Valhalla early-access JDK. Verify the assumptions in
-  `ramora/defvaluetype-design/risks-and-evolution.md`.
-- Then make munera tasks from the design.
+- Make munera tasks from the design. Start from `spike/valhalla/src/spike/vt.clj`.
 
 ## Related
 

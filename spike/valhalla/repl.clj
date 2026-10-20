@@ -1,0 +1,13 @@
+(require '[spike.vt :refer [defvaluetype]])
+(println "-- eval path (REPL), defined twice")
+(eval '(spike.vt/defvaluetype P [^long x]))
+(def p1 (eval '(->P 1)))
+(eval '(spike.vt/defvaluetype P [^long x y]))
+(def p2 (eval '(->P 1 2)))
+(println "p1 class value?" (.isValue (class p1)) "p2 class value?" (.isValue (class p2))
+         "same class?" (= (class p1) (class p2)) "P now" (eval 'P) (.isValue ^Class (eval 'P)))
+(println "-- top-level do")
+(eval '(do (spike.vt/defvaluetype Q [a]) (println "Q value?" (.isValue Q))))
+(println "-- eval of macroexpand result")
+(println (try (eval (macroexpand '(spike.vt/defvaluetype R [a]))) :no-error
+              (catch Throwable t [(class t) (ex-message t) (ex-data t) (some-> (ex-cause t) ex-message)])))

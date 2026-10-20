@@ -50,7 +50,8 @@ So unit tests can call it on bytes from any `deftype`.
 macroexpand defvaluetype
   core: validate fields                 → ex-info on reject
   core: (loader/install! "ns.Name")     → LOADER := capture loader
-  core: return (let [] (deftype ...) (check Name))
+  core: return (let [] (deftype ...) (check ns.Name) ns.Name)
+        ;; fully qualified: the import has not run at analysis time
 analyze (deftype* ...)
   compiler: emit bytes
   compiler: write .class (AOT only)
@@ -93,7 +94,8 @@ runtime
 ## Project artifacts
 
 - `deps.edn`: Clojure 1.12. Alias `:test` with `--enable-preview` in
-  `:jvm-opts`. The JDK is a Valhalla early-access build.
+  `:jvm-opts`. The JDK is a Valhalla early-access build (spike:
+  `~/.local/jdks/jdk-27.jdk/Contents/Home`).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,
   `src/value_type/impl/transform.clj`.
 - `test/value_type/...`: unit, integration and AOT tests (D11).

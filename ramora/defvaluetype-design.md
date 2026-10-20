@@ -44,8 +44,10 @@ defvaluetype form
   assumptions to verify, risks, expected changes.
 - [Assertions](defvaluetype-design/assertions.md): the key claims in
   the metamodel record format, with status and basis.
+- [Verification](defvaluetype-design/verification.md): spike results
+  on the Valhalla early-access JDK.
 
 ## Status
 
-Design. There is no code. Assertions with status `assumed` need a
-spike on a Valhalla early-access JDK before implementation.
+Design, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
+code is in `spike/valhalla/`. There is no library code.

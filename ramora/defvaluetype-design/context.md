@@ -18,12 +18,14 @@ C = ⟨H, S, K⟩: human environment, interacting systems, constraints.
 
 The JVM defines and verifies the class. The rules below come from
 JEP 401 and the companion JEP for strict field initialization. Status:
-assumed. A spike must verify each rule on the target build.
+observed on `openjdk-27-jep401ea3+1-1` (see
+[Verification](verification.md)). Other builds can differ.
 
 - A class file without `ACC_IDENTITY` (0x0020, the old `ACC_SUPER`
   bit) is a value class.
 - The class file must use the preview minor version (0xFFFF). The
-  major version must equal the running JVM feature release.
+  major version must equal the running JVM feature release (71 for
+  JDK 27).
 - A concrete value class is `ACC_FINAL`.
 - The superclass is `Object` or an abstract value class.
 - Each instance field is `ACC_FINAL` and `ACC_STRICT_INIT` (0x0800).
@@ -31,8 +33,10 @@ assumed. A spike must verify each rule on the target build.
   constructor.
 - Instance methods are not `ACC_SYNCHRONIZED`.
 - The JVM must run with `--enable-preview`.
-- The JDK `java.lang.classfile` API knows the new flags and makes the
-  correct stack map frames.
+- The JDK `java.lang.classfile` API knows the new flags
+  (`ClassFile/ACC_IDENTITY`, `ClassFile/ACC_STRICT_INIT`,
+  `ClassFile/PREVIEW_MINOR_VERSION`).
+- `Class::isValue` tells if a class is a value class.
 
 ### The Clojure compiler (1.12)
 

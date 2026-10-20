@@ -1,9 +1,10 @@
 # Risks and evolution
 
-## Assumptions to verify (spike)
+## Assumptions (verified)
 
-Do a spike on a Valhalla early-access JDK before implementation. The
-spike must verify:
+A spike on a Valhalla early-access JDK verified all assumptions below.
+See [Verification](verification.md). Verify them again on each new
+early-access build.
 
 1. The flag values: no `ACC_IDENTITY` (0x0020) for a value class.
    `ACC_STRICT_INIT` (0x0800) for fields.
@@ -18,8 +19,8 @@ spike must verify:
    `LOADER` binding, and `deftype*` uses the same binding.
 7. Inner function classes that use the type link to the value class.
 
-When an assumption is false, change the decision that depends on it
-and update this document.
+When an assumption becomes false, change the decision that depends on
+it and update this document.
 
 ## Risks
 

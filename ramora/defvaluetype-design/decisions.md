@@ -51,10 +51,12 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
   binds it before it macroexpands. The expansion is a `let`, so no new
   loader is pushed between the macro and `deftype*`.
 - Rule: when `Compiler/LOADER` is not thread-bound, do not install.
-  D9 then detects the identity class.
+  D9 then detects the identity class. An install can also have no
+  effect, for example in `(eval (macroexpand form))`. D9 detects this
+  too.
 - Improves: locality, no JVM flags. Degrades: depends on compiler
-  evaluation order (verified by tests).
-- Commitment: provisional.
+  evaluation order (verified by the spike and by tests).
+- Commitment: firm.
 
 ## D4. Capture loader shape (technology)
 
@@ -66,7 +68,7 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
 - Rationale: one delegate defines all classes of the form. So the
   deftype class and its inner function classes have the same defining
   loader. The static class cache lets the compiler find them.
-- Commitment: provisional.
+- Commitment: firm (verified by the spike).
 
 ## D5. Transformation with `java.lang.classfile` (technology)
 
@@ -81,7 +83,7 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
   (old fork, no Valhalla flags).
 - Rationale: the JDK API moves with the JDK. Existing stack map frames
   stay valid at a higher version.
-- Commitment: firm for the tool. Provisional for the flag values.
+- Commitment: firm. Verified on JDK 27 jep401ea3.
 
 ## D6. Make a new constructor from the field list (data model)
 
@@ -102,7 +104,7 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
   the changed bytes with `Compiler/writeClassFile`. This replaces the
   file that the compiler wrote before.
 - Rationale: the compiler writes the file before it defines the class.
-- Commitment: provisional.
+- Commitment: firm (verified by the spike).
 
 ## D8. Validation at macroexpansion (failure handling)
 
@@ -115,10 +117,11 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
 
 ## D9. Runtime check of the result (failure handling)
 
-- Choice: the expansion ends with a check that the class is a value
-  class. If not, it throws `ex-info`. The JVM errors from the define
+- Choice: the expansion ends with a check `(.isValue Class)` on the
+  fully qualified class symbol. If not, it throws `ex-info`. The JVM errors from the define
   (`UnsupportedClassVersionError`, `ClassFormatError`, `VerifyError`)
-  are wrapped with a message about `--enable-preview` and the JDK.
+  are wrapped in `ex-info` with `:value-type/error :jvm-rejected`. The
+  cause stays. The JVM message already names `--enable-preview`.
 - Rationale: some paths skip D3, for example
   `(eval (macroexpand form))`. The priority is: never an identity
   class silently.
