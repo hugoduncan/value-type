@@ -14,7 +14,9 @@ Source: task `002-value-class-transform`
 `round-trip-loader`) and task `003-capture-loader`
 (`test/value_type/impl/loader_test.clj`: compile paths, AOT) and task
 `004-defvaluetype-macro` (`test/value_type/core_test.clj`, errors and
-AOT in a new JVM). Verified on Clojure 1.12.6, JDK 25 and JDK
+AOT in a new JVM) and task `005-deftype-compat-tests`
+(`value-type.test-support/run-in-new-jvm`, the copied Clojure corpus).
+Verified on Clojure 1.12.6, JDK 25 and JDK
 `27-jep401ea3`.
 
 ## Get the class file bytes of a `deftype`
@@ -156,6 +158,26 @@ AOT in a new JVM (the class loads from the `.class` files only):
   prints no extra line. Read the last stdout line with
   `clojure.edn/read-string`. Wait with a timeout; put stderr in the
   failure message. `clojure.main -e` exits 1 on an uncaught exception.
+- Use `value-type.test-support/run-in-new-jvm` (`dir form` →
+  `{:exit :result :err}`). It owns the classpath and the EDN read.
+  Assert `(= 0 exit)` with `err` in the message, then `:result`.
+- Read the result only when the exit is 0. `clojure.main -e` prints
+  each non-nil form result (`#'user/r1` for a `def`). When a form
+  throws, the last line is such an earlier output: `edn/read-string`
+  throws "No dispatch macro", and the real cause in stderr is lost.
+- A timeout exit is a keyword (`::timeout`). Test the exit with
+  `(= 0 exit)`, not `zero?` (`ClassCastException` on a keyword).
+- `prn` a map with one key for each check, and compare with `=` to
+  the expected map. A positional vector hides which check failed.
+- `clojure.main -e` reads and evaluates one top-level form at a time,
+  so separate forms keep their order. When a check must see a state
+  before a load (for example "the namespace is not loaded yet", as
+  for `:load-ns`), put it first, and do not start with `(require …)`.
+- Case-insensitive file systems (macOS default): AOT of `X` and `x`
+  in one package writes both to one file. The class written last owns
+  the file. Detect with `javap -cp <dir> <class>` ("does not contain
+  class"). Keep the order of such forms, or use names that differ by
+  more than case.
 
 ## Where an `ex-info` arrives
 
@@ -170,3 +192,12 @@ AOT in a new JVM (the class loads from the `.class` files only):
 
 Test idiom: find the first `ExceptionInfo` in the cause chain. To see
 the chain: `(map class (take-while some? (iterate ex-cause t)))`.
+
+Trap: `(thrown? Exception (eval '(defvaluetype …)))` under
+`-m scry.cli` (`*ns*` is `user`) passes on "Unable to resolve symbol:
+defvaluetype", and checks nothing. Evaluate in the test namespace
+(`support/eval-in`), and also assert the cause message
+(`thrown-with-cause-msg?`: not in `clojure.test`; copied from Clojure
+`test_helper.clj` into `value-type.deftype-compat-test`). A `deftype` error message that names the
+type uses the dashed `*ns*` name (`a-b.MyType`), not the munged class
+name.
