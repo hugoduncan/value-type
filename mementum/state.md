@@ -10,7 +10,7 @@ The macro creates JEP 401 value objects
 ## Status
 
 - The repository is initialised with ramora, mementum and munera.
-- The design is in `ramora/defvaluetype-design.md` (status: design).
+- The design is in `ramora/defvaluetype-design.md` (status: transform, loader and macro implemented and tested).
   Approach: expand to `deftype`, catch the bytes with a capture loader
   in the thread-bound `Compiler/LOADER`, change them into a value class
   with `java.lang.classfile`.
@@ -20,8 +20,7 @@ The macro creates JEP 401 value objects
   `ramora/defvaluetype-design/verification.md`. Working spike code:
   `spike/valhalla/`.
 - The project scaffold is done (`munera/closed/001-scaffold-project`): `deps.edn`
-  (aliases `:test`, `:nrepl`), `src/value_type/core.clj` (docstring
-  only), environment test `value-type.environment-test`, README
+  (aliases `:test`, `:nrepl`), environment test `value-type.environment-test`, README
   "Development" section. Select the JDK with `JAVA_CMD`.
 - Tests: `clojure -M:test -m scry.cli`. REPL: `clojure -M:test:nrepl`.
 - The transform is done (`munera/closed/002-value-class-transform`):
@@ -30,13 +29,17 @@ The macro creates JEP 401 value objects
 - The loader is done (`munera/closed/003-capture-loader`):
   `value-type.impl.loader/install!` (call at macroexpansion time),
   tests in `value-type.impl.loader-test`.
+- The macro is done (`munera/closed/004-defvaluetype-macro`, JDK 25
+  run done): `value-type.core/defvaluetype` and
+  `check-value-class`, tests in `value-type.core-test`. Shared test
+  helpers and the `vt-type` fixture: `value-type.test-support`. README has
+  "Usage" and "Differences from `deftype`".
 
 ## Next
 
-- Make the macro task (D1, D8, D9 runtime check). Start from
-  `defvaluetype` in `spike/valhalla/src/spike/vt.clj`. Use
-  `loader/install!`; the test macro `vt-type` in
-  `value-type.impl.loader-test` shows the call pattern.
+- Adjacent tasks (not yet created): nested `defvaluetype` in a method
+  body (needs a loader change); run the Clojure `deftype` test forms
+  without mutable fields; a method-call benchmark.
 
 ## Related
 

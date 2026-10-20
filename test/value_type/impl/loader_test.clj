@@ -5,17 +5,17 @@
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
    [value-type.impl.loader :as loader]
-   [value-type.impl.transform :as transform])
+   [value-type.impl.transform :as transform]
+   [value-type.test-support :as support
+    :refer [binary-name compile-cause value? vt-type with-temp-dir]])
   (:import
-   (clojure.lang Compiler Compiler$CompilerException DynamicClassLoader
-                 ExceptionInfo Reflector)
-   (java.io File StringReader)
+   (clojure.lang Compiler DynamicClassLoader ExceptionInfo Reflector)
+   (java.io File)
    (java.lang.classfile AccessFlags ClassBuilder ClassFile ClassFile$Option ClassModel
                         ClassFile$StackMapsOption CodeBuilder)
    (java.lang.constant ClassDesc ConstantDescs MethodTypeDesc)
    (java.net URL URLClassLoader)
    (java.nio.file Files)
-   (java.nio.file.attribute FileAttribute)
    (java.util.function Consumer)))
 
 (set! *warn-on-reflection* true)
@@ -25,22 +25,8 @@
 
 ;;; Test macros
 
-(defn- binary-name
-  "Binary name of the class `name` in the namespace `ns` (a namespace or
-  a symbol), as `deftype` computes it."
-  [ns name]
-  (str (namespace-munge ns) "." name))
-
-(defmacro vt-type
-  "Install the capture loader for `name`, as the macro task will, then
-  expand to the `deftype` form and the class."
-  [name fields & specs]
-  (let [cname (binary-name *ns* name)]
-    (loader/install! cname)
-    `(let [] (deftype ~name ~fields ~@specs) ~(symbol cname))))
-
 (defmacro vt-record
-  "As `vt-type`, but with a `defrecord` form."
+  "As `support/vt-type`, but with a `defrecord` form."
   [name fields]
   (let [cname (binary-name *ns* name)]
     (loader/install! cname)
@@ -55,8 +41,7 @@
   top-level form, so a return value cannot collect them."
   (atom []))
 
-(defn- eval-here [form]
-  (binding [*ns* test-ns] (eval form)))
+(def ^:private eval-here (partial support/eval-in test-ns))
 
 (defn- point-form [name]
   `(vt-type ~name [~(with-meta 'x {:tag 'long}) ~'y]))
@@ -71,9 +56,6 @@
   [form]
   (binding [*print-meta* true] (pr-str form)))
 
-(defn- value? [^Class cls]
-  (boolean (Reflector/invokeInstanceMethod cls "isValue" (object-array 0))))
-
 (defn- point-state
   "Map of the value-class flag of `cls`, the type of its field `x`, and
   the fields of a new instance."
@@ -85,22 +67,6 @@
      :y      (Reflector/getInstanceField o "y")}))
 
 (def ^:private point-expected {:value? true :x-type Long/TYPE :x 3 :y :b})
-
-(defn- temp-dir ^File []
-  (.toFile (Files/createTempDirectory "vt-loader" (make-array FileAttribute 0))))
-
-(defn- delete-tree [^File dir]
-  (run! #(.delete ^File %) (reverse (file-seq dir))))
-
-(defmacro with-temp-dir [[sym] & body]
-  `(let [~sym (temp-dir)]
-     (try ~@body (finally (delete-tree ~sym)))))
-
-(defn- compile-cause
-  "Call `f`. Return the cause of the `CompilerException`, or nil."
-  [f]
-  (try (f) nil
-       (catch Compiler$CompilerException e (ex-cause e))))
 
 (defn- eval-cause
   "Eval `form` in the test namespace. Return the cause of the
@@ -122,26 +88,15 @@
   "AOT compile an `ns` form for `ns-sym` and `form` into `dir`. Return
   the cause of the `CompilerException`, or nil."
   [^File dir ns-sym form]
-  (let [source-path (str (munged-path (namespace-munge ns-sym)) ".clj")]
-    (binding [*compile-files* true
-              *compile-path* (str dir)]
-      (compile-cause
-       #(Compiler/compile (StringReader. (str "(ns " ns-sym ")\n" (form-str form)))
-                          source-path
-                          (.getName (File. source-path)))))))
+  (support/aot-compile dir ns-sym (str "(ns " ns-sym ")\n" (form-str form))))
 
 ;;; Behaviour
 
 (deftest no-binding-test
   (testing "with no LOADER binding, install! changes nothing"
-    (let [result (promise)
-          t (Thread. ^Runnable
-                     (fn [] (deliver result
-                                     (try [(loader/install! "a.B")
-                                           (.isBound Compiler/LOADER)]
-                                          (catch Throwable e e)))))]
-      (.start t)
-      (is (= [false false] (deref result 1000 ::timeout))))))
+    (is (= [false false]
+           (support/on-raw-thread
+            #(vector (loader/install! "a.B") (.isBound Compiler/LOADER)))))))
 
 (deftest install-binding-test
   (testing "with a LOADER binding, install! sets a new child loader"

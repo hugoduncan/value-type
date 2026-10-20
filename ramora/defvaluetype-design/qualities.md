@@ -7,13 +7,13 @@ environment in [Purpose](purpose.md).
 
 | Quality | Target | Realized by | Fitness condition |
 |---|---|---|---|
-| Correctness | Never an identity class silently. | D8 D9 | Each test class is a value class. Each failure path gives `ex-info`. |
+| Correctness | Never an identity class silently. | D8 D9 | Each test class is a value class. Each failure with an error key of `value-type` gives `ex-info` with `:value-type/error`. A `deftype` syntax error gives the `deftype` error. |
 | Compatibility | `deftype` syntax and non-identity semantics. | D1 D2 | The `deftype` test forms without mutable fields pass. |
 | Simplicity | Three small namespaces. One pure transform. | D1 D2 D5 | Each namespace has one responsibility. |
 | Performance | No added runtime cost. | D2 | Method bytecode is the same as `deftype`. |
-| Changeability | A Valhalla format change touches one namespace. | D5, `transform` boundary | Flag values and version rule are only in `transform`. |
+| Changeability | A Valhalla format change touches one namespace. | D5, `transform` boundary | Flag values and version rule are only in `transform`. The value-class predicate is only in `core`. |
 | Testability | The transform is testable without a Valhalla JVM. | D5 | Unit tests run on bytes. |
-| Error clarity | The error names the cause and the fix. | D8 D9 | Each error has `:value-type/error` and a message. |
+| Error clarity | The error names the cause and the fix. | D8 D9 | Each failure with an error key of `value-type` gives `ex-info` with `:value-type/error`, `:class-name` and a message that names the cause and the fix. A `deftype` syntax error gives the `deftype` error. |
 
 ## Trade-offs
 
@@ -33,9 +33,15 @@ environment in [Purpose](purpose.md).
 These come from the JVM. They are not defects. The README must state
 them.
 
-- `identical?` and `==` compare field values.
+- `identical?` (the Java `==` operator, `acmp`) compares field values.
 - The default `equals` and `hashCode` use field values.
-- A `double` field compares by bit pattern in `==`. So `NaN` equals
-  `NaN`, and `0.0` does not equal `-0.0`.
+- A `double` field compares by bit pattern in `identical?`. So `NaN`
+  equals `NaN`, and `0.0` does not equal `-0.0`.
+- A field that holds an identity object compares by reference. Two
+  equal vectors that are not the same object make the value objects
+  not equal.
+- A field that holds a value object (for example a boxed `Long` under
+  `--enable-preview`, or a `defvaluetype` instance) compares by its
+  field values.
 - `locking`, `WeakReference` and other identity operations throw
   `IdentityException`.

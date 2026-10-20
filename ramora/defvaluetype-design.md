@@ -54,4 +54,5 @@ Design, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
 code is in `spike/valhalla/`. The transform (D5 D6,
 `value-type.impl.transform`) is implemented and tested. The loader
 (D3 D4 D7, D9 define errors, `value-type.impl.loader`) is implemented
-and tested. The macro is not implemented.
+and tested. The macro (D1 D8 D9, `value-type.core`) is implemented
+and tested.

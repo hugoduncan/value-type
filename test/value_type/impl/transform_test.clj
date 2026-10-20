@@ -4,7 +4,8 @@
   (:require
    [clojure.java.io :as io]
    [clojure.test :refer [deftest is testing]]
-   [value-type.impl.transform :as transform])
+   [value-type.impl.transform :as transform]
+   [value-type.test-support :refer [value?]])
   (:import
    (clojure.lang DynamicClassLoader ExceptionInfo Reflector)
    (java.io File)
@@ -304,10 +305,6 @@
 (defn- new-instance [^Class c args]
   (Reflector/invokeConstructor c (object-array args)))
 
-(defn- is-value? [^Class c]
-  (boolean (Reflector/invokeInstanceMethod
-            c "isValue" (object-array 0))))
-
 ;;; Class file views
 
 (defn- parse ^ClassModel [^bytes bs] (.parse (ClassFile/of) bs))
@@ -487,7 +484,7 @@
             v1 (new-instance vc args)
             v2 (new-instance vc args)
             d (new-instance dc args)]
-        (is (is-value? vc))
+        (is (value? vc))
         (is (= (vec args) (field-values v1 (field-names (:bytes fx)))))
         (is (identical? v1 v2))
         (when call

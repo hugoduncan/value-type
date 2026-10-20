@@ -8,7 +8,7 @@ one responsibility and a data interface.
 
 | Namespace | Responsibility | Decisions |
 |---|---|---|
-| `value-type.core` | Public macro `defvaluetype`. Validate, install the loader, expand, add the runtime check. | D1 D8 D9 |
+| `value-type.core` | Public macro `defvaluetype` and runtime check `check-value-class`. Validate, install the loader, expand, check the value-class predicate. | D1 D8 D9 |
 | `value-type.impl.loader` | Capture loader. Catch the target bytes, transform, write for AOT, define, link, wrap define errors. | D3 D4 D7, D9 define errors |
 | `value-type.impl.transform` | Pure function: identity-class bytes → value-class bytes. | D5 D6 |
 
@@ -26,9 +26,17 @@ only on JDK classes: `java.lang.classfile`, `java.lang.constant` and
 
 - Syntax and options: the same as `clojure.core/deftype`.
 - Result: the class `Name`, the factory `->Name`.
-- Errors: `ex-info` with `:value-type/error` in
-  `#{:mutable-field :reserved-field :not-installed :not-value-class
-  :jvm-rejected :unexpected-constructor}`.
+- Errors: `ex-info` with `:value-type/error` and `:class-name`;
+  `:value-type/error` in `#{:mutable-field :not-installed
+  :not-value-class :jvm-rejected :unexpected-constructor}`. A
+  `deftype` syntax error (for example a reserved field name) gives the
+  `deftype` error.
+
+```clojure
+(check-value-class cls installed) ;=> nil, or throws
+;; Called by the defvaluetype expansion. :not-installed when
+;; installed is false, else :not-value-class.
+```
 
 ### Internal
 
@@ -54,9 +62,12 @@ So unit tests can call it on bytes from any `deftype`.
 
 ```text
 macroexpand defvaluetype
-  core: validate fields                 → ex-info on reject
-  core: (loader/install! "ns.Name")     → LOADER := capture loader
-  core: return (let [] (deftype ...) (check ns.Name) ns.Name)
+  core: validate fields                 → ex-info :mutable-field
+  core: installed := (loader/install! "ns.Name")
+                                        → LOADER := capture loader
+  core: return (let [] (deftype ...)
+                       (check-value-class ns.Name <installed>)
+                       ns.Name)
         ;; fully qualified: the import has not run at analysis time
 analyze (deftype* ...)
   compiler: emit bytes
@@ -69,7 +80,8 @@ analyze (deftype* ...)
     loader: define or link LinkageError → ex-info :jvm-rejected
             ;; ClassFormatError: define; VerifyError: link
 runtime
-  check Name is a value class           → ex-info when not
+  check-value-class                     → ex-info :not-installed
+                                          or :not-value-class
 ```
 
 ## State
@@ -83,12 +95,15 @@ runtime
 ## Boundaries
 
 - The `transform` boundary hides the class file format. Only this
-  namespace knows the flag values and the version rule. A change in a
-  Valhalla build changes only this namespace.
+  namespace knows the flag values and the version rule. A change of
+  the class file format in a Valhalla build (the flag values or the
+  version rule) changes only `transform`. A change of the value-class
+  predicate changes only `core`.
 - The `loader` boundary hides the compiler coupling. Only this
   namespace knows `Compiler/LOADER`, `DynamicClassLoader` and
   `Compiler/writeClassFile`.
-- `core` knows only the `deftype` syntax.
+- `core` knows the `deftype` syntax and the value-class predicate
+  (`Class::isValue`, see D9). It uses only `loader/install!`.
 
 ## Invariants
 
@@ -98,6 +113,7 @@ runtime
 | Each defined target class is a value class. | `core`: runtime check (D9) |
 | The AOT file equals the defined bytes. | `loader`: write after transform |
 | Instance fields are final. | `core`: validation (D8); JVM verifier |
+| A rejected form does not change `LOADER`. | `core`: validate before install |
 | The transform changes only version, class flags, field flags, constructor. | `transform` unit tests |
 
 ## Project artifacts

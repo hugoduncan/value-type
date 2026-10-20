@@ -76,7 +76,9 @@ Recipe (child-first, one new loader for each round trip):
   returns the receiver, check each result is `identical?` to its own
   receiver.
 - `identical?` (`acmp`) on two value objects compares an `Object`
-  field by reference. Give both objects the same `Object` instance.
+  field that holds an identity object by reference, and one that holds
+  a value object by its field values. Give both objects the same
+  identity `Object` instance.
 - A value object with no `equals` override compares fields, so `=`
   works on two value objects.
 - Do not use `NaN` in values that tests compare with `=` (Clojure `=`

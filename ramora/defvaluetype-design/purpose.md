@@ -66,15 +66,24 @@ with `--enable-preview`, with Clojure 1.12.
 - State: none that persists. A capture loader exists for one top-level
   form only.
 - Rules: the value-class rules in [Context](context.md).
-- Failure: an `ex-info` with a `:value-type/error` key and the cause.
+- Failure: each failure with an error key of `value-type` gives an
+  `ex-info` with `:value-type/error` and the cause. A `deftype` syntax
+  error gives the `deftype` error.
 
 Runtime semantics of a value object follow the JVM. They differ from
 `deftype` objects:
 
-- `==` and `identical?` compare field values (substitutability).
+- `identical?` (the Java `==` operator, `acmp`) compares field values
+  (substitutability). `clojure.core/==` is numeric and does not apply.
 - The default `equals` and `hashCode` use field values.
-- Fields that hold references compare by reference. Two equal vectors
-  that are not the same object make the value objects not equal.
+- A `double` field compares by bit pattern in `identical?`. So `NaN`
+  equals `NaN`, and `0.0` does not equal `-0.0`.
+- A field that holds an identity object compares by reference. Two
+  equal vectors that are not the same object make the value objects
+  not equal.
+- A field that holds a value object (for example a boxed `Long` under
+  `--enable-preview`, or a `defvaluetype` instance) compares by its
+  field values.
 - `locking`, weak references and identity-sensitive operations throw
   `IdentityException`.
 
