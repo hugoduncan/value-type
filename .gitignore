@@ -1,2 +1,7 @@
 /.psi/metrics.edn
 /.psi/project.local.edn
+.cpcache/
+.scry-results/
+.nrepl-port
+/classes/
+/target/

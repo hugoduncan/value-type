@@ -19,13 +19,17 @@ The macro creates JEP 401 value objects
   `~/.local/jdks/jdk-27.jdk/Contents/Home`). Results:
   `ramora/defvaluetype-design/verification.md`. Working spike code:
   `spike/valhalla/`.
+- The project scaffold is done (`munera/closed/001-scaffold-project`): `deps.edn`
+  (aliases `:test`, `:nrepl`), `src/value_type/core.clj` (docstring
+  only), environment test `value-type.environment-test`, README
+  "Development" section. Select the JDK with `JAVA_CMD`.
+- Tests: `clojure -M:test -m scry.cli`. REPL: `clojure -M:test:nrepl`.
 - There is no library code.
-- There is no `deps.edn`.
-- There are no tasks.
 
 ## Next
 
-- Make munera tasks from the design. Start from `spike/valhalla/src/spike/vt.clj`.
+- Make munera tasks for the implementation. Start from
+  `spike/valhalla/src/spike/vt.clj`.
 
 ## Related
 
