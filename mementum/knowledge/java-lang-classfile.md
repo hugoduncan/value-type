@@ -10,7 +10,8 @@ depends-on: []
 # java.lang.classfile traps
 
 Source: task `002-value-class-transform`
-(`src/value_type/impl/transform.clj` and its tests). Verified on
+(`src/value_type/impl/transform.clj` and its tests), and task
+`003-capture-loader` (strict-field verification). Verified on
 JDK 25 and JDK `27-jep401ea3`.
 
 ## Valhalla-only constants stop the namespace from loading
@@ -51,6 +52,27 @@ default shared constant pool, the code bytes (`.codeArray` of the
   super call (the value-class constructor order);
 - dead code is patched: an unreachable `return` becomes `athrow`;
 - built code has no `LineNumber` elements.
+
+## Bytes that fail verification (strict fields)
+
+To test a `VerifyError` path, build a value class whose constructor
+calls `Object.<init>` before the `putfield` of an
+`ACC_FINAL|ACC_STRICT_INIT` field. Use no `ACC_IDENTITY` and the
+preview version (`latestMajorVersion`, `PREVIEW_MINOR_VERSION`).
+
+- `(ClassFile/of)` with default options throws
+  `IllegalArgumentException` ("Unset fields mismatch") at build.
+- With `ClassFile$StackMapsOption/DROP_STACK_MAPS`, the build
+  succeeds. The JVM gives `VerifyError` ("All strict final fields
+  must be initialized before super()") when it verifies the class.
+- `DynamicClassLoader.defineClass` does not verify: the define
+  succeeds. `Class.getDeclaredMethods` links and verifies (HotSpot),
+  and does not initialize the class. `Lookup.defineClass` verifies at
+  define.
+
+Source: task `003-capture-loader` (`super-before-write-class` in
+`test/value_type/impl/loader_test.clj`). Verified on JDK
+`27-jep401ea3`.
 
 ## Clojure 1.12 `deftype` class file
 

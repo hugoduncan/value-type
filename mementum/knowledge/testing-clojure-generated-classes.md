@@ -11,7 +11,8 @@ depends-on: []
 
 Source: task `002-value-class-transform`
 (`test/value_type/impl/transform_test.clj`: `compile-fixture`,
-`round-trip-loader`). Verified on Clojure 1.12.6, JDK 25 and JDK
+`round-trip-loader`) and task `003-capture-loader`
+(`test/value_type/impl/loader_test.clj`: compile paths, AOT). Verified on Clojure 1.12.6, JDK 25 and JDK
 `27-jep401ea3`.
 
 ## Get the class file bytes of a `deftype`
@@ -88,3 +89,40 @@ Recipe (child-first, one new loader for each round trip):
 Use `(Reflector/invokeInstanceMethod c "isValue" (object-array 0))`.
 Then the test namespace loads with no warnings on each JDK, and
 `(set! *warn-on-reflection* true)` stays useful.
+
+## Test each compile path: `eval`, `load-string`, AOT
+
+A macro that acts at macroexpansion time (for example a
+`Compiler/LOADER` install) must work on each path. Each path binds
+`LOADER` differently: a top-level `do` gives each form its own
+binding; a top-level `let` (or vector) gives one binding to all forms.
+
+- `*ns*`: during a CLI test run, `*ns*` is `user`. Bind `*ns*` to the
+  test namespace around `eval` and `load-string`, and compute expected
+  class names inside that binding. `Compiler.load` and
+  `Compiler/compile` push a binding of the current `*ns*`, so a source
+  string needs no `ns` form.
+- Source strings from forms: `pr-str` drops type tags (`^long`
+  becomes an `Object` field). Print with `*print-meta*` true.
+- `eval` forms cannot embed an atom ("Can't embed object in code").
+  Use a var.
+- No `LOADER` binding: use a new `Thread`, not `future`. A `future`
+  conveys the thread bindings, also `LOADER`.
+
+AOT without a new JVM or classpath setup:
+
+- Bind `*compile-files*` true and `*compile-path*` to a temp dir, and
+  call `(Compiler/compile reader source-path source-name)` on a
+  source string with an `ns` form.
+- `source-path` must contain a `.` (for example `"probe/aot.clj"`).
+  The compiler names the `__init` class from the text before the last
+  `.`. With no `.`, it throws `StringIndexOutOfBoundsException` after
+  the forms compile.
+- The new namespace does not refer the test macro. Use the fully
+  qualified macro symbol in the string.
+- Load the result with a `URLClassLoader` on the dir, parent
+  `(.getClassLoader clojure.lang.IType)`, and
+  `(Class/forName name false cl)` (no initialization). That loader
+  cannot see interfaces that only `eval` defined, so the fixture must
+  implement no such protocol.
+- Delete the temp dir in `finally` (or with `.deleteOnExit`).
