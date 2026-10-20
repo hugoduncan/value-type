@@ -4,7 +4,9 @@ Read this file first. Read the other files only when you need them.
 
 ## Documents
 
-None yet.
+- [defvaluetype design](defvaluetype-design.md): architecture of the
+  `defvaluetype` macro. Purpose, context, decisions, embodiment,
+  qualities, risks, assertions.
 
 ## Related
 
