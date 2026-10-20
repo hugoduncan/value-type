@@ -34,12 +34,18 @@ The macro creates JEP 401 value objects
   `check-value-class`, tests in `value-type.core-test`. Shared test
   helpers and the `vt-type` fixture: `value-type.test-support`. README has
   "Usage" and "Differences from `deftype`".
+- The compatibility corpus is done (`munera/closed/005-deftype-compat-tests`,
+  no `src/` change): `value-type.deftype-compat-test` (the `deftype`
+  forms of the Clojure 1.12.6 test suite, with the AOT checks CLJ-979
+  and CLJ-1208). No form is excluded. The new-JVM helper is
+  `value-type.test-support/run-in-new-jvm` (`dir` on the test
+  classpath; returns the EDN of the last `prn`).
 
 ## Next
 
-- Adjacent tasks (not yet created): nested `defvaluetype` in a method
-  body (needs a loader change); run the Clojure `deftype` test forms
-  without mutable fields; a method-call benchmark.
+- No next task is created. Candidates: nested `defvaluetype` in a
+  method body (needs a loader change); a method-call benchmark. The
+  user selects the next task.
 
 ## Related
 

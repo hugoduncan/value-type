@@ -118,7 +118,7 @@ runtime
 
 ## Project artifacts
 
-- `deps.edn`: Clojure 1.12. Alias `:test` with `--enable-preview` in
+- `deps.edn`: Clojure 1.12.6. Alias `:test` with `--enable-preview` in
   `:jvm-opts`. The JDK is a Valhalla early-access build (spike:
   `~/.local/jdks/jdk-27.jdk/Contents/Home`).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,

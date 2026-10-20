@@ -1,15 +1,12 @@
 (ns value-type.core-test
   "Tests for `value-type.core`: `defvaluetype` and `check-value-class`."
   (:require
-   [clojure.edn :as edn]
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
    [value-type.core :as vt :refer [defvaluetype]]
    [value-type.test-support :as support :refer [value? with-temp-dir]])
   (:import
-   (clojure.lang Compiler ExceptionInfo IDeref RT)
-   (java.util List)
-   (java.util.concurrent TimeUnit)))
+   (clojure.lang Compiler ExceptionInfo IDeref RT)))
 
 (set! *warn-on-reflection* true)
 
@@ -245,21 +242,6 @@
 
 ;;; AOT
 
-(defn- run-java
-  "Run `java --enable-preview -cp <cp> clojure.main -e <form>`. Return
-  `{:exit :out :err}`, or `{:exit ::timeout}`."
-  [^String cp ^String form]
-  (let [java (str (System/getProperty "java.home") "/bin/java")
-        pb   (ProcessBuilder.
-              ^List (vector java "--enable-preview" "-cp" cp
-                               "clojure.main" "-e" form))
-        p    (.start pb)
-        out  (future (slurp (.getInputStream p)))
-        err  (future (slurp (.getErrorStream p)))]
-    (if (.waitFor p 120 TimeUnit/SECONDS)
-      {:exit (.exitValue p) :out @out :err @err}
-      (do (.destroyForcibly p) {:exit ::timeout :err (deref err 1000 "")}))))
-
 (deftest aot-new-jvm-test
   (with-temp-dir [dir]
     (let [ns-sym 'value-type.aot-fixture
@@ -268,13 +250,10 @@
                  dir ns-sym
                  (str "(ns " ns-sym " (:require value-type.core))\n"
                       "(value-type.core/defvaluetype " n " [x])\n"))))
-      (let [cp   (str dir (System/getProperty "path.separator")
-                      (System/getProperty "java.class.path"))
-            cls  (support/binary-name ns-sym n)
+      (let [cls  (support/binary-name ns-sym n)
             form (str "(require '" ns-sym ")"
                       "(prn [(.isValue ^Class " cls ")"
                       " (.-x ^" cls " (" ns-sym "/->" n " 42))])")
-            {:keys [exit out err]} (run-java cp form)]
+            {:keys [exit result err]} (support/run-in-new-jvm dir form)]
         (is (= 0 exit) (str "stderr: " err))
-        (is (= [true 42] (edn/read-string (last (str/split-lines (str out)))))
-            (str "stderr: " err))))))
+        (is (= [true 42] result) (str "stderr: " err))))))

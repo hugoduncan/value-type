@@ -1,12 +1,16 @@
 (ns value-type.test-support
   "Helpers and fixtures shared by the test namespaces."
   (:require
+   [clojure.edn :as edn]
+   [clojure.string :as str]
    [value-type.impl.loader :as loader])
   (:import
    (clojure.lang Compiler Compiler$CompilerException Reflector)
    (java.io File StringReader)
    (java.nio.file Files)
-   (java.nio.file.attribute FileAttribute)))
+   (java.nio.file.attribute FileAttribute)
+   (java.util List)
+   (java.util.concurrent TimeUnit)))
 
 (set! *warn-on-reflection* true)
 
@@ -77,3 +81,35 @@
               *compile-path*  (str dir)]
       (compile-cause
        #(Compiler/compile (StringReader. source) path (.getName (File. path)))))))
+
+(defn- run-java
+  "Run `java --enable-preview -cp <cp> clojure.main -e <form>`. Return
+  `{:exit :out :err}`, or `{:exit ::timeout}`."
+  [^String cp ^String form]
+  (let [java (str (System/getProperty "java.home") "/bin/java")
+        pb   (ProcessBuilder.
+              ^List (vector java "--enable-preview" "-cp" cp
+                               "clojure.main" "-e" form))
+        p    (.start pb)
+        out  (future (slurp (.getInputStream p)))
+        err  (future (slurp (.getErrorStream p)))]
+    (if (.waitFor p 120 TimeUnit/SECONDS)
+      {:exit (.exitValue p) :out @out :err @err}
+      (do (.destroyForcibly p) {:exit ::timeout :err (deref err 1000 "")}))))
+
+(defn run-in-new-jvm
+  "Run `form` (a source string) in a new JVM with `dir` on the test
+  classpath. `form` must `prn` the result as its last output. Return
+  `{:exit :result :err}`, with `:result` the EDN of the last line of
+  stdout when `:exit` is 0, else nil. On a non-zero exit the last line
+  can be the output of an earlier form; `:err` holds the cause. When
+  the JVM does not stop in time, `:exit` is
+  `:value-type.test-support/timeout`."
+  [^File dir ^String form]
+  (let [cp (str dir (System/getProperty "path.separator")
+                (System/getProperty "java.class.path"))
+        {:keys [exit out err]} (run-java cp form)]
+    {:exit   exit
+     :result (when (= 0 exit)
+               (some-> out str/split-lines last edn/read-string))
+     :err    err}))

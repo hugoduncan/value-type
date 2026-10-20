@@ -189,4 +189,6 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
     `Object` overrides, type hints, inner functions, redefinition.
   - An AOT test in a subprocess JVM that loads the written class.
   - A test for each rejected form and each error path.
+  - The `deftype` compatibility corpus (`value-type.deftype-compat-test`),
+    copied from the Clojure 1.12.6 test suite.
 - Commitment: firm.

@@ -45,3 +45,4 @@ architecture metamodel.
 | A-24 | observed | `install!` true | doesNotImply | class caught | spike: `(eval (macroexpand form))` | high |
 | A-25 | observed | `DynamicClassLoader.defineClass` | doesNotDo | verification | `verification.md` "Other observations", JDK 27 jep401ea3 | high |
 | A-26 | observed | `Class.getDeclaredMethods` | causes | link and verification (HotSpot) | `verification.md` "Other observations"; `value-type.impl.loader-test/link-test`, JDK 27 jep401ea3 | high |
+| A-27 | observed | the `deftype` test forms of Clojure 1.12.6 without mutable fields, except `Something` (in a disabled test, not copied), the three error forms (they give the `deftype` errors) and `Bar` (adapted, without the `javax.xml.ws` annotation types); no `Excluded:` form | compileAs | value classes that keep the Clojure assertions | `value-type.deftype-compat-test`, JDK 27 jep401ea3 | high |

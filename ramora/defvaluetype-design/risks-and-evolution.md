@@ -27,7 +27,7 @@ it and update this document.
 | Risk | Effect | Mitigation |
 |---|---|---|
 | JEP 401 class file changes in a new build. | The JVM rejects the class. | Changes are local to `transform`. D9 wraps the error. |
-| Clojure changes `deftype` output or the `LOADER` order. | Install or transform fails. | D6 shape check. D9 runtime check. Pin Clojure 1.12 in tests. |
+| Clojure changes `deftype` output or the `LOADER` order. | Install or transform fails. | D6 shape check. D9 runtime check. Pin Clojure 1.12.6 (`deps.edn`). The `deftype` compatibility corpus (`value-type.deftype-compat-test`); when the Clojure version changes, copy the corpus again from the new tag. |
 | `macroexpand` from tooling installs a loader. | A loader stays in the tooling binding frame. | The loader changes only the target name. Harmless. |
 | Users depend on identity. | `IdentityException` or changed equality. | README section on semantic differences. |
 | AOT output is tied to one JDK release. | The class does not load on a different JDK. | Document. Rebuild per JDK release. |
