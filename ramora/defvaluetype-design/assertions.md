@@ -26,12 +26,12 @@ architecture metamodel.
 |---|---|---|---|---|---|---|
 | A-11 | intended | D1 | realizedBy | `value-type.core` | [Decisions](decisions.md) | high |
 | A-12 | intended | D3 D4 D7 | realizedBy | `value-type.impl.loader` | [Decisions](decisions.md) | high |
-| A-13 | intended | D5 D6 | realizedBy | `value-type.impl.transform` | [Decisions](decisions.md) | high |
+| A-13 | observed | D5 D6 | realizedBy | `value-type.impl.transform` | `src/value_type/impl/transform.clj`, `value-type.impl.transform-test` | high |
 | A-14 | observed | D3 | respondsTo | A-03, A-04, A-05 | spike: `require`, `eval`, `do`, redefinition, AOT | high |
 | A-15 | observed | D7 | respondsTo | A-06 | spike: AOT file is a value class in a new JVM | high |
 | A-16 | intended | `value-type.core` | dependsOn | `value-type.impl.loader` | [Embodiment](embodiment.md) | high |
 | A-17 | intended | `value-type.impl.loader` | dependsOn | `value-type.impl.transform` | [Embodiment](embodiment.md) | high |
-| A-18 | intended | dependency rule | forbids | `transform` depends on `clojure.lang.Compiler` | `transform` boundary | high |
+| A-18 | observed | dependency rule | forbids | `transform` depends on `clojure.lang.Compiler` | `src/value_type/impl/transform.clj`, `value-type.impl.transform-test` | high |
 | A-19 | intended | capture loader | owns | the target bytes for one top-level form | D3 | high |
 
 ## Qualities

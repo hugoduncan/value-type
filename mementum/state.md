@@ -24,12 +24,15 @@ The macro creates JEP 401 value objects
   only), environment test `value-type.environment-test`, README
   "Development" section. Select the JDK with `JAVA_CMD`.
 - Tests: `clojure -M:test -m scry.cli`. REPL: `clojure -M:test:nrepl`.
-- There is no library code.
+- The transform is done (`munera/closed/002-value-class-transform`):
+  `value-type.impl.transform/->value-class` (bytes → bytes, with the
+  D6 constructor check), tests in `value-type.impl.transform-test`.
 
 ## Next
 
-- Make munera tasks for the implementation. Start from
-  `spike/valhalla/src/spike/vt.clj`.
+- Make the loader task (D3, D4, D7), then the macro task (D1, D8,
+  D9).
+  Start each from `spike/valhalla/src/spike/vt.clj`.
 
 ## Related
 

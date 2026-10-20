@@ -50,4 +50,6 @@ defvaluetype form
 ## Status
 
 Design, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
-code is in `spike/valhalla/`. There is no library code.
+code is in `spike/valhalla/`. The transform (D5 D6,
+`value-type.impl.transform`) is implemented and tested. The loader and
+the macro are not implemented.

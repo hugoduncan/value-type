@@ -13,8 +13,8 @@ one responsibility and a data interface.
 | `value-type.impl.transform` | Pure function: identity-class bytes → value-class bytes. | D5 D6 |
 
 Dependency direction: `core → loader → transform`. `transform` depends
-only on `java.lang.classfile`. `transform` has no Clojure compiler
-dependency.
+only on JDK classes: `java.lang.classfile`, `java.lang.constant` and
+`java.util.function`. `transform` has no Clojure compiler dependency.
 
 ## Interfaces
 
@@ -35,7 +35,10 @@ dependency.
 ```clojure
 ;; value-type.impl.transform
 (->value-class ^bytes identity-class-bytes) ;=> ^bytes
-;; throws ex-info :unexpected-constructor when D6 does not match
+;; throws ex-info {:value-type/error :unexpected-constructor
+;;                  :class-name "binary.Name"}
+;; when D6 does not match. Check steps, in order: count of
+;; constructors, parameters, code (super call, field writes).
 
 ;; value-type.impl.loader
 (install! class-name) ;=> true when installed, false when LOADER is not thread-bound
