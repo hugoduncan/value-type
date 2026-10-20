@@ -77,7 +77,12 @@ Source: task `003-capture-loader` (`super-before-write-class` in
 ## Clojure 1.12 `deftype` class file
 
 - Class attributes: `SourceFile`, `SourceDebugExtension` only.
-- Instance fields: `public final`, no attributes.
+- Instance fields: `public final`, no attributes. Only a primitive
+  hint (`^long`, `^double`, ...) changes the field type. A class hint
+  (`^String s`) gives an `Object` field. A field is mutable (not
+  final) when its metadata has a truthy `:volatile-mutable` or
+  `:unsynchronized-mutable` value; `{:volatile-mutable false}` gives
+  a final field.
 - Each method has only `Code`. A static `getBasis` method is added.
   A keyword or other constant gives a static `const__N` field and
   `<clinit>`.

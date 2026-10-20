@@ -3,7 +3,7 @@ title: Test classes that Clojure generates, and their value-class form
 status: active
 category: testing
 tags: [testing, deftype, classloader, DynamicClassLoader, valhalla, value-objects, fixtures]
-related: [mementum/memories/clojure-compiler-loader-hook.md, mementum/memories/valhalla-jdk-selection-java-cmd.md, mementum/knowledge/java-lang-classfile.md]
+related: [mementum/memories/clojure-compiler-loader-hook.md, mementum/memories/valhalla-jdk-selection-java-cmd.md, mementum/memories/reflection-warning-check-new-jvm.md, mementum/knowledge/java-lang-classfile.md]
 depends-on: []
 ---
 
@@ -12,7 +12,9 @@ depends-on: []
 Source: task `002-value-class-transform`
 (`test/value_type/impl/transform_test.clj`: `compile-fixture`,
 `round-trip-loader`) and task `003-capture-loader`
-(`test/value_type/impl/loader_test.clj`: compile paths, AOT). Verified on Clojure 1.12.6, JDK 25 and JDK
+(`test/value_type/impl/loader_test.clj`: compile paths, AOT) and task
+`004-defvaluetype-macro` (`test/value_type/core_test.clj`, errors and
+AOT in a new JVM). Verified on Clojure 1.12.6, JDK 25 and JDK
 `27-jep401ea3`.
 
 ## Get the class file bytes of a `deftype`
@@ -108,8 +110,17 @@ binding; a top-level `let` (or vector) gives one binding to all forms.
   becomes an `Object` field). Print with `*print-meta*` true.
 - `eval` forms cannot embed an atom ("Can't embed object in code").
   Use a var.
-- No `LOADER` binding: use a new `Thread`, not `future`. A `future`
-  conveys the thread bindings, also `LOADER`.
+- No `LOADER` binding: use a raw `Thread` (`support/on-raw-thread` in
+  `value-type.test-support`). `future`, `bound-fn` and
+  `binding-conveyor-fn` convey the thread bindings, also `LOADER`.
+  - The raw `Thread` has `*ns*` `clojure.core`. Bind `*ns*` to the
+    test namespace inside the thread, so that the install name and
+    the later `deftype` class name agree.
+  - Build the form with syntax quote (qualified macro symbol), so
+    that `macroexpand` does not depend on the refers of `*ns*`.
+  - `Compiler.eval` always binds `LOADER`. A REPL run thus has a
+    binding on the test thread, and `-m scry.cli` may not. A wrong
+    thread recipe can pass on the CLI and fail at the REPL. Run both.
 
 AOT without a new JVM or classpath setup:
 
@@ -128,3 +139,34 @@ AOT without a new JVM or classpath setup:
   cannot see interfaces that only `eval` defined, so the fixture must
   implement no such protocol.
 - Delete the temp dir in `finally` (or with `.deleteOnExit`).
+
+AOT in a new JVM (the class loads from the `.class` files only):
+
+- Compile in the test JVM as above. The fixture `ns` form must
+  `:require` each namespace that the expansion calls (for example
+  `value-type.core`). Else the `__init` class calls an unbound var.
+- Run `<java.home>/bin/java --enable-preview -cp
+  <temp-dir><path.separator><java.class.path> clojure.main -e <form>`
+  with `ProcessBuilder`. Under `clojure -M:test`, `java.class.path` is
+  the full classpath, but `test` and `src` are relative: keep the
+  working directory of the test JVM (the `ProcessBuilder` default).
+- In `<form>`, use the munged class name (`a_b.C`, not `a-b.C`). The
+  dashed name gives `ClassNotFoundException`.
+- End `<form>` with `prn` (returns nil), so that `clojure.main -e`
+  prints no extra line. Read the last stdout line with
+  `clojure.edn/read-string`. Wait with a timeout; put stderr in the
+  failure message. `clojure.main -e` exits 1 on an uncaught exception.
+
+## Where an `ex-info` arrives
+
+- Thrown by a macro (macroexpansion): the cause of a
+  `CompilerException`, from `eval` and from `macroexpand-1`.
+- Thrown at run time of an `eval` form: the `ex-info` directly, with
+  no wrap. Through `load-string`, `load` or `require`
+  (`Compiler.load`): the cause of a `CompilerException`.
+- `deftype` syntax errors (a reserved field name, a non-symbol field):
+  from `eval`, a `CompilerException` whose `ex-cause` is an
+  `AssertionError`.
+
+Test idiom: find the first `ExceptionInfo` in the cause chain. To see
+the chain: `(map class (take-while some? (iterate ex-cause t)))`.
