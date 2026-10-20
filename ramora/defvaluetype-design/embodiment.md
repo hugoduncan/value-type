@@ -9,7 +9,7 @@ one responsibility and a data interface.
 | Namespace | Responsibility | Decisions |
 |---|---|---|
 | `value-type.core` | Public macro `defvaluetype`. Validate, install the loader, expand, add the runtime check. | D1 D8 D9 |
-| `value-type.impl.loader` | Capture loader. Catch the target bytes, transform, define, write for AOT. | D3 D4 D7 |
+| `value-type.impl.loader` | Capture loader. Catch the target bytes, transform, write for AOT, define, link, wrap define errors. | D3 D4 D7, D9 define errors |
 | `value-type.impl.transform` | Pure function: identity-class bytes → value-class bytes. | D5 D6 |
 
 Dependency direction: `core → loader → transform`. `transform` depends
@@ -42,6 +42,9 @@ only on JDK classes: `java.lang.classfile`, `java.lang.constant` and
 
 ;; value-type.impl.loader
 (install! class-name) ;=> true when installed, false when LOADER is not thread-bound
+;; The capture loader throws ex-info {:value-type/error :jvm-rejected
+;; :class-name} with the LinkageError as cause when the JVM rejects
+;; the define or the link. Errors of ->value-class pass through.
 ```
 
 `->value-class` does not depend on the class name or a class loader.
@@ -62,6 +65,9 @@ analyze (deftype* ...)
     loader: bytes' := transform/->value-class bytes
     loader: write bytes' (AOT only)
     loader: delegate.defineClass("ns.Name", bytes')
+    loader: link (getDeclaredMethods)
+    loader: define or link LinkageError → ex-info :jvm-rejected
+            ;; ClassFormatError: define; VerifyError: link
 runtime
   check Name is a value class           → ex-info when not
 ```

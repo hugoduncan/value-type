@@ -35,6 +35,16 @@ The numbers follow the list in
   top-level form, so `install!` returns true. But `eval` pushes a new
   loader, and the class is an identity class. The D9 check throws. So
   "installed" does not mean "caught". D9 is the only guard.
+- On JDK 25 with `--enable-preview`, the output of `->value-class`
+  defines with no error as an identity class. Only the D9 runtime
+  check finds this case.
+- Define does not verify; link does (HotSpot, JDK `27-jep401ea3`).
+  `DynamicClassLoader.defineClass` defines a value class whose
+  constructor calls `Object.<init>` before the strict final field
+  write, with no error. `Class.getDeclaredMethods` on that class then
+  gives `VerifyError` ("All strict final fields must be initialized
+  before super()"). Fixture: `super-before-write-class` in
+  `value-type.impl.loader-test`.
 - The expansion must use the fully qualified class symbol after
   `deftype`. The `import` has not run when the compiler analyzes the
   `let`. `clojure.core/deftype` does the same.

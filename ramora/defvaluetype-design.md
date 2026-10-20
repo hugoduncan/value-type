@@ -24,7 +24,8 @@ defvaluetype form
   → install capture loader (thread-bound Compiler/LOADER)
   → expand to clojure.core/deftype
   → Clojure compiler emits identity-class bytes
-  → capture loader → transform bytes → define value class (+ write .class when AOT)
+  → capture loader → transform bytes → write .class (AOT only)
+      → define value class → link (LinkageError → ex-info :jvm-rejected)
   → runtime check: class is a value class
 ```
 
@@ -51,5 +52,6 @@ defvaluetype form
 
 Design, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
 code is in `spike/valhalla/`. The transform (D5 D6,
-`value-type.impl.transform`) is implemented and tested. The loader and
-the macro are not implemented.
+`value-type.impl.transform`) is implemented and tested. The loader
+(D3 D4 D7, D9 define errors, `value-type.impl.loader`) is implemented
+and tested. The macro is not implemented.

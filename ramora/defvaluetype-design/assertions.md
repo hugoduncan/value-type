@@ -25,14 +25,14 @@ architecture metamodel.
 | id | status | subject | predicate | object | basis | confidence |
 |---|---|---|---|---|---|---|
 | A-11 | intended | D1 | realizedBy | `value-type.core` | [Decisions](decisions.md) | high |
-| A-12 | intended | D3 D4 D7 | realizedBy | `value-type.impl.loader` | [Decisions](decisions.md) | high |
+| A-12 | observed | D3 D4 D7 | realizedBy | `value-type.impl.loader` | `src/value_type/impl/loader.clj`, `value-type.impl.loader-test` | high |
 | A-13 | observed | D5 D6 | realizedBy | `value-type.impl.transform` | `src/value_type/impl/transform.clj`, `value-type.impl.transform-test` | high |
 | A-14 | observed | D3 | respondsTo | A-03, A-04, A-05 | spike: `require`, `eval`, `do`, redefinition, AOT | high |
 | A-15 | observed | D7 | respondsTo | A-06 | spike: AOT file is a value class in a new JVM | high |
 | A-16 | intended | `value-type.core` | dependsOn | `value-type.impl.loader` | [Embodiment](embodiment.md) | high |
 | A-17 | intended | `value-type.impl.loader` | dependsOn | `value-type.impl.transform` | [Embodiment](embodiment.md) | high |
 | A-18 | observed | dependency rule | forbids | `transform` depends on `clojure.lang.Compiler` | `src/value_type/impl/transform.clj`, `value-type.impl.transform-test` | high |
-| A-19 | intended | capture loader | owns | the target bytes for one top-level form | D3 | high |
+| A-19 | observed | capture loader | owns | the target bytes for one top-level form | `src/value_type/impl/loader.clj`, `value-type.impl.loader-test` | high |
 
 ## Qualities
 
@@ -43,3 +43,5 @@ architecture metamodel.
 | A-22 | inferred | D2 D3 | mayDegrade | changeability against Clojure releases | A-04 to A-07 | high |
 | A-23 | intended | invariant "each target class is a value class" | verifiedBy | runtime check, integration tests | D9, D11 | high |
 | A-24 | observed | `install!` true | doesNotImply | class caught | spike: `(eval (macroexpand form))` | high |
+| A-25 | observed | `DynamicClassLoader.defineClass` | doesNotDo | verification | `verification.md` "Other observations", JDK 27 jep401ea3 | high |
+| A-26 | observed | `Class.getDeclaredMethods` | causes | link and verification (HotSpot) | `verification.md` "Other observations"; `value-type.impl.loader-test/link-test`, JDK 27 jep401ea3 | high |

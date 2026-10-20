@@ -118,10 +118,17 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
 ## D9. Runtime check of the result (failure handling)
 
 - Choice: the expansion ends with a check `(.isValue Class)` on the
-  fully qualified class symbol. If not, it throws `ex-info`. The JVM errors from the define
-  (`UnsupportedClassVersionError`, `ClassFormatError`, `VerifyError`)
-  are wrapped in `ex-info` with `:value-type/error :jvm-rejected`. The
-  cause stays. The JVM message already names `--enable-preview`.
+  fully qualified class symbol. If not, it throws `ex-info`. The
+  runtime check is in `value-type.core`.
+- Define errors: the capture loader (`value-type.impl.loader`) wraps
+  each `LinkageError` of the define (`UnsupportedClassVersionError`,
+  `ClassFormatError`, `VerifyError`) in `ex-info` with
+  `:value-type/error :jvm-rejected` and `:class-name`. The cause
+  stays. The JVM message already names `--enable-preview`. The define
+  is in analysis, so `core` cannot catch these errors. The loader
+  links the class (`getDeclaredMethods`) after the define, because
+  `DynamicClassLoader.defineClass` does not verify. So `VerifyError`
+  comes at define time.
 - Rationale: some paths skip D3, for example
   `(eval (macroexpand form))`. The priority is: never an identity
   class silently.

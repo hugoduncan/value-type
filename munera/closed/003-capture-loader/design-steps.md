@@ -1,0 +1,13 @@
+# Design steps
+
+- [x] Invariants: limit the boundary invariant to `src/`, as acceptance criterion 4 does. Now it says that `value-type.impl.loader` is the only namespace that uses `Compiler/LOADER` and `DynamicClassLoader`. But Verification 1 makes the test namespace read `(.isBound Compiler/LOADER)`, and the `VerifyError` test needs a delegate `DynamicClassLoader`.
+- [x] "Test through `install!` and a test macro", exception paragraph: correct the basis of "The default options do not build a constructor that fails verification". `mementum/knowledge/java-lang-classfile.md` does not state this. It states only that the default options accept a field write before the super call. Give the observed basis: on JDK `27-jep401ea3`, `ClassFile/of` with default options throws `IllegalArgumentException` ("Unset fields mismatch") at build. With `DROP_STACK_MAPS`, the class builds and the JVM gives `VerifyError` ("All strict final fields must be initialized before super()").
+
+## Plan review (ambiguity)
+
+- [x] steps.md, Slice 1, private define-and-link step: state if the step takes and forwards the `src` argument of `defineClass(String, byte[], Object)`. Now the argument list is "the delegate, the binary name and bytes", so the compiler `src` is dropped for the target class only. Recommended: take `src` and forward it to the delegate, as for the other names. The `VerifyError` test gives `nil`. (`DynamicClassLoader` in Clojure 1.12 does not use `src`, so both options work. The step must say which.)
+- [x] steps.md, Slice 2, test macro: state how the macro computes "the fully qualified binary name", and the value of `*ns*` in the tests. Recommended: compute it at expansion time from `*ns*`, as `deftype` does (`(str (namespace-munge *ns*) "." name)`). Bind `*ns*` to the test namespace around `eval` and `load-string` (`mementum/knowledge/testing-clojure-generated-classes.md`). In the AOT test, the `ns` form of the source string sets `*ns*`, so the class name is `<that ns>.<Name>`. A different rule (for example the test namespace name as a constant) gives no install effect when `*ns*` is not the test namespace.
+
+## Plan review (inconsistency)
+
+- [x] steps.md, Slice 3: make the top-level `do`, top-level `let` and redefinition test items agree with design Verification 2. Design: "For each path, the class of the test macro is a value class (`isValue` true), and a new instance has its field values." The `eval` and `load-string` items check the field values. The `do`, `let` and redefinition items check only "value classes". Add the field-value check to these three items: each class of the `do` and the `let`, and both classes of the redefinition.

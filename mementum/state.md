@@ -27,12 +27,16 @@ The macro creates JEP 401 value objects
 - The transform is done (`munera/closed/002-value-class-transform`):
   `value-type.impl.transform/->value-class` (bytes → bytes, with the
   D6 constructor check), tests in `value-type.impl.transform-test`.
+- The loader is done (`munera/closed/003-capture-loader`):
+  `value-type.impl.loader/install!` (call at macroexpansion time),
+  tests in `value-type.impl.loader-test`.
 
 ## Next
 
-- Make the loader task (D3, D4, D7), then the macro task (D1, D8,
-  D9).
-  Start each from `spike/valhalla/src/spike/vt.clj`.
+- Make the macro task (D1, D8, D9 runtime check). Start from
+  `defvaluetype` in `spike/valhalla/src/spike/vt.clj`. Use
+  `loader/install!`; the test macro `vt-type` in
+  `value-type.impl.loader-test` shows the call pattern.
 
 ## Related
 
