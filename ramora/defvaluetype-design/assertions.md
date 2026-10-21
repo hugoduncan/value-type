@@ -39,7 +39,8 @@ architecture metamodel.
 | id | status | subject | predicate | object | basis | confidence |
 |---|---|---|---|---|---|---|
 | A-20 | observed | D9 | intendedToImprove | correctness: no silent identity class | `src/value_type/core.clj`, `value-type.core-test` (`:not-installed`, `:not-value-class` tests) | high |
-| A-21 | intended | D2 | intendedToImprove | compatibility, performance | [Qualities](qualities.md) | high |
+| A-21 | contested | D2 | intendedToImprove | compatibility, performance | [Qualities](qualities.md); A-28, [Benchmark](benchmark.md) | high |
+| A-28 | observed | `defvaluetype` | exhibits | method call time / `deftype` time for each criterion case: `interface` 1.14, `protocol` 1.00 | [Benchmark](benchmark.md), JDK 27 jep401ea3 | medium |
 | A-22 | inferred | D2 D3 | mayDegrade | changeability against Clojure releases | A-04 to A-07 | high |
 | A-23 | observed | invariant "each target class is a value class" | verifiedBy | runtime check, integration tests | `src/value_type/core.clj`, `value-type.core-test` | high |
 | A-24 | observed | `install!` true | doesNotImply | class caught | spike: `(eval (macroexpand form))` | high |

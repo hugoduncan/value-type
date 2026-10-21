@@ -191,4 +191,7 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
   - A test for each rejected form and each error path.
   - The `deftype` compatibility corpus (`value-type.deftype-compat-test`),
     copied from the Clojure 1.12.6 test suite.
+  - The method-call benchmark (`value-type.bench`,
+    `clojure -M:bench -m value-type.bench`). It is manual and not a
+    gate. The results are in [Benchmark](benchmark.md).
 - Commitment: firm.

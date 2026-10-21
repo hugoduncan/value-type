@@ -47,6 +47,8 @@ defvaluetype form
   the metamodel record format, with status and basis.
 - [Verification](defvaluetype-design/verification.md): spike results
   on the Valhalla early-access JDK.
+- [Benchmark](defvaluetype-design/benchmark.md): method call time of
+  `defvaluetype` against `deftype`, with environment and results.
 
 ## Status
 
@@ -55,4 +57,7 @@ code is in `spike/valhalla/`. The transform (D5 D6,
 `value-type.impl.transform`) is implemented and tested. The loader
 (D3 D4 D7, D9 define errors, `value-type.impl.loader`) is implemented
 and tested. The macro (D1 D8 D9, `value-type.core`) is implemented
-and tested.
+and tested. The method-call benchmark (`value-type.bench`) gives an
+interface ratio of 1.14 (slower) and a protocol ratio of 1.00 (equal)
+on `27-jep401ea3+1-1`. A-21 is `contested` (see
+[Benchmark](defvaluetype-design/benchmark.md)).

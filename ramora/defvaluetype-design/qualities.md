@@ -10,7 +10,7 @@ environment in [Purpose](purpose.md).
 | Correctness | Never an identity class silently. | D8 D9 | Each test class is a value class. Each failure with an error key of `value-type` gives `ex-info` with `:value-type/error`. A `deftype` syntax error gives the `deftype` error. |
 | Compatibility | `deftype` syntax and non-identity semantics. | D1 D2 | The `deftype` test forms without mutable fields pass (`value-type.deftype-compat-test`). |
 | Simplicity | Three small namespaces. One pure transform. | D1 D2 D5 | Each namespace has one responsibility. |
-| Performance | No added runtime cost. | D2 | Method bytecode is the same as `deftype`. |
+| Performance | No added runtime cost. | D2 | Method bytecode is the same as `deftype`. Method call time is equal to `deftype` ([Benchmark](benchmark.md)). |
 | Changeability | A Valhalla format change touches one namespace. | D5, `transform` boundary | Flag values and version rule are only in `transform`. The value-class predicate is only in `core`. |
 | Testability | The transform is testable without a Valhalla JVM. | D5 | Unit tests run on bytes. |
 | Error clarity | The error names the cause and the fix. | D8 D9 | Each failure with an error key of `value-type` gives `ex-info` with `:value-type/error`, `:class-name` and a message that names the cause and the fix. A `deftype` syntax error gives the `deftype` error. |

@@ -19,6 +19,9 @@ early-access build.
    `LOADER` binding, and `deftype*` uses the same binding.
 7. Inner function classes that use the type link to the value class.
 
+Also run the method-call benchmark again on each new early-access
+build, and update [Benchmark](benchmark.md).
+
 When an assumption becomes false, change the decision that depends on
 it and update this document.
 

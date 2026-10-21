@@ -40,12 +40,29 @@ The macro creates JEP 401 value objects
   and CLJ-1208). No form is excluded. The new-JVM helper is
   `value-type.test-support/run-in-new-jvm` (`dir` on the test
   classpath; returns the EDN of the last `prn`).
+- The method-call benchmark is done
+  (`munera/closed/006-method-call-benchmark`, no `src/` change):
+  `value-type.bench` in `bench/`, run with
+  `clojure -M:bench -m value-type.bench`. Results in
+  `ramora/defvaluetype-design/benchmark.md`: `interface` and
+  `protocol` ratios 1.14 (slower) and 1.00 (equal), respectively;
+  A-21 is `contested`, A-28 records the ratios.
+  Traps: one captured value object lets the JIT fold the call
+  (measure over many instances); criterium's
+  `:stats :stats :elapsed-time :median` is per batch (divide by
+  `:batch-size`).
 
 ## Next
 
-- No next task is created. Candidates: nested `defvaluetype` in a
-  method body (needs a loader change); a method-call benchmark. The
-  user selects the next task.
+- Task 006 is closed. Implementation review is complete. Benchmark
+  lessons are in `mementum/knowledge/benchmarking-value-types.md`
+  (commit `79a650f`). Recorded verification: 64 tests, 332 assertions;
+  all ten pass-function sum checks passed.
+- No next task is created. The user selects the next task. Candidate:
+  investigate the interface-call slowdown (ratio 1.14) on JDK
+  `27-jep401ea3+1-1`, including measurement stability and generated code.
+- Other adjacent task (not yet created): nested `defvaluetype` in a
+  method body (needs a loader change).
 
 ## Related
 

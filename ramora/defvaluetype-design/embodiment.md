@@ -120,9 +120,14 @@ runtime
 
 - `deps.edn`: Clojure 1.12.6. Alias `:test` with `--enable-preview` in
   `:jvm-opts`. The JDK is a Valhalla early-access build (spike:
-  `~/.local/jdks/jdk-27.jdk/Contents/Home`).
+  `~/.local/jdks/jdk-27.jdk/Contents/Home`). Alias `:bench`: extra
+  path `bench`, criterium `0.5.245-ALPHA`, `--enable-preview` and the
+  criterium blackhole JVM options (`-XX:+UnlockExperimentalVMOptions`,
+  `-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume`).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,
   `src/value_type/impl/transform.clj`.
 - `test/value_type/...`: unit, integration and AOT tests (D11).
+- `bench/value_type/bench.clj`: the method-call benchmark
+  (`value-type.bench`, D11).
 - `README.md`: usage, JDK requirement, semantic differences from
   `deftype`.

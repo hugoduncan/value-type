@@ -4,6 +4,11 @@
  {:test {:extra-paths ["test"]
          :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
          :jvm-opts ["--enable-preview"]}
+  :bench {:extra-paths ["bench"]
+          :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.245-ALPHA"}}
+          :jvm-opts ["--enable-preview"
+                     "-XX:+UnlockExperimentalVMOptions"
+                     "-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume"]}
   :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "1.8.0"}
                        cider/cider-nrepl {:mvn/version "0.63.1"}}
           :main-opts ["-m" "nrepl.cmdline"

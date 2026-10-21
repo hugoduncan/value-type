@@ -130,6 +130,21 @@ clojure -M:test -m scry.cli
 The command exits 0 only when at least one test runs and all tests
 pass. Failure details go to `.scry-results/`.
 
+### Run the benchmark
+
+The method-call benchmark compares `defvaluetype` with `deftype`. Set
+`JAVA_CMD` to the Valhalla `java` (see "Select the JDK"), then:
+
+```sh
+clojure -M:bench -m value-type.bench
+```
+
+An optional argument sets the array length (default 1024). It must be
+an integer from 1 to 2147483647, inclusive (the JVM array-length
+range). Available memory can impose a lower limit. Invalid input is
+rejected before measurement. The results are in
+`ramora/defvaluetype-design/benchmark.md`.
+
 ### Start a REPL
 
 ```sh

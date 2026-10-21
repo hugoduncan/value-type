@@ -1,0 +1,84 @@
+CompileCommand: blackhole criterium/blackhole/Blackhole.consume bool blackhole = true
+n = 1024
+
+| Case | Kind | deftype (ns/call) | defvaluetype (ns/call) | Ratio |
+|---|---|---:|---:|---:|
+| `interface` | criterion | 0.454 | 0.520 | 1.14 |
+| `protocol` | criterion | 0.550 | 0.550 | 1.00 |
+| `field` | information | 0.377 | 0.319 | 0.85 |
+| `identical` | information | 0.519 | 3.927 | 7.57 |
+| `allocate` | information | 0.318 | 0.376 | 1.18 |
+
+{:n 1024,
+ :results
+ [{:case :interface,
+   :criterion? true,
+   :deftype-ns 0.4543863932291667,
+   :defvaluetype-ns 0.5197088068181818,
+   :ratio 1.143759616402224}
+  {:case :protocol,
+   :criterion? true,
+   :deftype-ns 0.5503700657894737,
+   :defvaluetype-ns 0.5504214638157895,
+   :ratio 1.000093388121031}
+  {:case :field,
+   :criterion? false,
+   :deftype-ns 0.37670158617424243,
+   :defvaluetype-ns 0.3194091796875,
+   :ratio 0.8479103656860049}
+  {:case :identical,
+   :criterion? false,
+   :deftype-ns 0.518798828125,
+   :defvaluetype-ns 3.9267578125,
+   :ratio 7.568941176470588}
+  {:case :allocate,
+   :criterion? false,
+   :deftype-ns 0.31812263257575757,
+   :defvaluetype-ns 0.3760653409090909,
+   :ratio 1.182139534883721}]}
+
+real	0m23.673s
+user	0m48.232s
+sys	0m2.777s
+CompileCommand: blackhole criterium/blackhole/Blackhole.consume bool blackhole = true
+n = 2048
+
+| Case | Kind | deftype (ns/call) | defvaluetype (ns/call) | Ratio |
+|---|---|---:|---:|---:|
+| `interface` | criterion | 0.494 | 0.519 | 1.05 |
+| `protocol` | criterion | 0.554 | 0.598 | 1.08 |
+| `field` | information | 0.361 | 0.319 | 0.88 |
+| `identical` | information | 0.543 | 4.272 | 7.87 |
+| `allocate` | information | 0.354 | 0.317 | 0.90 |
+
+{:n 2048,
+ :results
+ [{:case :interface,
+   :criterion? true,
+   :deftype-ns 0.494384765625,
+   :defvaluetype-ns 0.518798828125,
+   :ratio 1.0493827160493827}
+  {:case :protocol,
+   :criterion? true,
+   :deftype-ns 0.5538194444444444,
+   :defvaluetype-ns 0.59765625,
+   :ratio 1.079153605015674}
+  {:case :field,
+   :criterion? false,
+   :deftype-ns 0.361474609375,
+   :defvaluetype-ns 0.31875,
+   :ratio 0.8818046737808997}
+  {:case :identical,
+   :criterion? false,
+   :deftype-ns 0.543212890625,
+   :defvaluetype-ns 4.2724609375,
+   :ratio 7.865168539325842}
+  {:case :allocate,
+   :criterion? false,
+   :deftype-ns 0.35400390625,
+   :defvaluetype-ns 0.3173828125,
+   :ratio 0.896551724137931}]}
+
+real	0m22.488s
+user	0m47.844s
+sys	0m2.795s
