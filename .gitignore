@@ -5,3 +5,5 @@
 .nrepl-port
 /classes/
 /target/
+
+/.clj-kondo/.cache/
