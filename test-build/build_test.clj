@@ -1,0 +1,315 @@
+(ns build-test
+  (:require
+   [build]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [clojure.test :refer [deftest is testing]]
+   [clojure.tools.deps :as deps]
+   [clojure.xml :as xml])
+  (:import
+   [java.nio.file Files]
+   [java.nio.file.attribute FileAttribute]
+   [java.util Arrays Properties]
+   [java.util.jar JarFile]
+   [java.util.concurrent TimeUnit]))
+
+(defn- with-project
+  [f]
+  (let [directory (.toFile (Files/createTempDirectory
+                            "value-type-build-" (make-array FileAttribute 0)))]
+    (try
+      (f directory)
+      (finally
+        (doseq [file (reverse (vec (file-seq directory)))]
+          (io/delete-file file))))))
+
+(defn- run-process
+  [directory command environment]
+  (let [output (io/file directory "process-output.txt")
+        builder (doto (ProcessBuilder. ^java.util.List command)
+                  (.directory directory)
+                  (.redirectErrorStream true)
+                  (.redirectOutput output))]
+    (.putAll (.environment builder) environment)
+    (let [process (.start builder)]
+      (try
+        (when-not (.waitFor process 60 TimeUnit/SECONDS)
+          (throw (ex-info "Child process timed out" {:command command})))
+        {:exit (.exitValue process) :out (slurp output)}
+        (finally
+          (when (.isAlive process)
+            (.destroyForcibly process)
+            (.waitFor process 10 TimeUnit/SECONDS)))))))
+
+(defn- build-process
+  [directory expression environment]
+  ;; Absolute paths keep the child independent of its working directory.
+  (let [classpath (str/join
+                   java.io.File/pathSeparator
+                   (mapv #(.getCanonicalPath (io/file %))
+                         (str/split (System/getProperty "java.class.path")
+                                    (re-pattern java.io.File/pathSeparator))))]
+    (run-process directory
+                 [(str (System/getProperty "java.home") "/bin/java")
+                  "-cp" classpath "clojure.main" "-e"
+                  (str "(require 'build 'clojure.tools.deps) (try " expression
+                       " (catch Exception e (println (ex-message e)) (System/exit 1)))")]
+                 environment)))
+
+(deftest version-result-test
+  ;; Version parsing is pure; result values need no process substitute.
+  (testing "trimmed decimal counts form the version"
+    (is (= "0.1.42" (#'build/version-from-result {:exit 0 :out " 42\n"}))))
+  (testing "Git errors cannot produce a fallback version"
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"git rev-list.*failed"
+                          (#'build/version-from-result
+                           {:exit 128 :out "42" :err "not a repository"}))))
+  (testing "invalid counts are rejected"
+    (doseq [output [nil "" " \n" "-1" "abc" "1.5" "1\n2"]]
+      (is (thrown-with-msg? clojure.lang.ExceptionInfo #"invalid commit count"
+                            (#'build/version-from-result {:exit 0 :out output}))
+          (pr-str output)))))
+
+(deftest git-failure-test
+  ;; Real failed Git invocations must stop before producing an artifact.
+  (with-project
+    (fn [directory]
+      (doseq [[environment diagnostic]
+              [[{} #"git rev-list --count HEAD failed"]
+               [{"PATH" (.getAbsolutePath directory)} #"could not launch Git"]]]
+        (let [result (build-process directory "(build/jar nil)" environment)]
+          (is (not= 0 (:exit result)) result)
+          (is (re-find diagnostic (:out result)) result)
+          (is (not (.exists (io/file directory "target")))))))))
+
+(deftest clean-without-git-test
+  ;; Clean works without Git, removes old output, and is idempotent.
+  (with-project
+    (fn [directory]
+      (let [stale (io/file directory "target/classes/stale.txt")]
+        (io/make-parents stale)
+        (spit stale "stale")
+        (dotimes [_ 2]
+          (let [result (build-process directory "(build/clean nil)"
+                                      {"PATH" (.getAbsolutePath directory)})]
+            (is (= 0 (:exit result)) result)
+            (is (not (.exists (io/file directory "target"))))))))))
+
+(defn- source-files
+  []
+  (into {} (comp (filter #(.isFile %))
+                 (map (fn [file]
+                        [(str (.relativize (.toPath (io/file "src"))
+                                           (.toPath file))) file])))
+        (file-seq (io/file "src"))))
+
+(defn- prepare-project!
+  [directory]
+  (doseq [[path source] (merge (into {} (map (fn [[path file]] [(str "src/" path) file]))
+                                     (source-files))
+                               {"deps.edn" (io/file "deps.edn")
+                                "LICENSE" (io/file "LICENSE")
+                                "build.clj" (io/file "build.clj")})]
+    (let [destination (io/file directory path)]
+      (io/make-parents destination)
+      (io/copy source destination)))
+  (doseq [command [["git" "init" "--quiet"]
+                   ["git" "add" "."]
+                   ["git" "-c" "user.name=Build Test"
+                    "-c" "user.email=build@example.invalid"
+                    "-c" "commit.gpgsign=false" "commit" "--quiet" "-m" "fixture"]]]
+    (let [result (run-process directory command {})]
+      (when-not (zero? (:exit result))
+        (throw (ex-info "Cannot prepare Git fixture" result)))))
+  (doseq [path ["target/stale.txt" "target/classes/stale.class"
+                "test/development.clj" "bench/development.clj"]]
+    (let [file (io/file directory path)]
+      (io/make-parents file)
+      (spit file "must not be packaged"))))
+
+(defn- fixture-inputs
+  [directory]
+  ;; Value vectors compare bytes by content and retain the complete source paths.
+  (into {}
+        (comp (filter #(.isFile %))
+              (map (fn [file]
+                     [(str (.relativize (.toPath directory) (.toPath file)))
+                      (vec (Files/readAllBytes (.toPath file)))])))
+        (into [(io/file directory "deps.edn")]
+              (file-seq (io/file directory "src")))))
+
+(deftest cli-build-commands-test
+  ;; Exercise tool alias resolution without the build-test classpath.
+  (with-project
+    (fn [directory]
+      (prepare-project! directory)
+      (let [config (io/file directory "cli-config")
+            _ (.mkdirs config)
+            _ (spit (io/file config "deps.edn") "{}")
+            environment {"CLJ_CONFIG" (.getAbsolutePath config)
+                         "JAVA_CMD" (str (System/getProperty "java.home") "/bin/java")}
+            before-jar (fixture-inputs directory)
+            result (run-process directory ["clojure" "-T:build" "jar"] environment)
+            artifact (io/file directory "target/value-type-0.1.1.jar")]
+        (testing "the documented jar command builds the expected artifact"
+          (is (= 0 (:exit result)) result)
+          (is (.isFile artifact))
+          (when (.isFile artifact)
+            (with-open [archive (JarFile. artifact)]
+              (is (some? (.getJarEntry archive "value_type/core.clj"))))))
+        (testing "jar preserves source paths, source bytes and deps.edn"
+          (is (= before-jar (fixture-inputs directory))))
+        ;; Clean must also work without repository metadata.
+        (doseq [file (reverse (vec (file-seq (io/file directory ".git"))))]
+          (io/delete-file file))
+        (testing "the documented clean command removes target and is idempotent"
+          (dotimes [_ 2]
+            (let [before-clean (fixture-inputs directory)
+                  cleaned (run-process directory ["clojure" "-T:build" "clean"] environment)]
+              (is (= before-clean (fixture-inputs directory))
+                  "clean preserves source paths, source bytes and deps.edn")
+              (is (= 0 (:exit cleaned)) cleaned)
+              (is (not (.exists (io/file directory "target")))))))))))
+
+(defn- xml-nodes
+  [node tag]
+  (filterv #(and (map? %) (= tag (:tag %))) (:content node)))
+
+(defn- xml-text
+  [node & path]
+  (apply str (:content (reduce #(first (xml-nodes %1 %2)) node path))))
+
+(defn- pom-dependencies
+  [pom]
+  (into {} (map (fn [dependency]
+                  [(symbol (xml-text dependency :groupId)
+                           (xml-text dependency :artifactId))
+                   {:mvn/version (xml-text dependency :version)}]))
+        (xml-nodes (first (xml-nodes pom :dependencies)) :dependency)))
+
+(defn- check-metadata
+  [^JarFile archive]
+  (let [prefix "META-INF/maven/org.hugoduncan/value-type/"
+        pom (with-open [stream (.getInputStream archive (.getJarEntry archive (str prefix "pom.xml")))]
+              (xml/parse stream))
+        properties (with-open [stream (.getInputStream archive (.getJarEntry archive (str prefix "pom.properties")))]
+                     (doto (Properties.) (.load stream)))]
+    (testing "Maven coordinates and version agree with the artifact"
+      (doseq [[tag expected] {:groupId "org.hugoduncan" :artifactId "value-type" :version "0.1.1"}]
+        (is (= expected (xml-text pom tag)))
+        (is (= expected (.getProperty properties (name tag))))))
+    (testing "project, SCM and license metadata are complete"
+      (doseq [[path expected]
+              [[[:description] "A Clojure library for JEP 401 value objects."]
+               [[:url] "https://github.com/hugoduncan/value-type"]
+               [[:scm :url] "https://github.com/hugoduncan/value-type"]
+               [[:scm :connection] "scm:git:https://github.com/hugoduncan/value-type.git"]
+               [[:scm :developerConnection] "scm:git:ssh://git@github.com/hugoduncan/value-type.git"]
+               [[:licenses :license :name] "Eclipse Public License 2.0"]
+               [[:licenses :license :url] "https://www.eclipse.org/legal/epl-2.0/"]
+               [[:licenses :license :distribution] "repo"]]]
+        (is (= expected (apply xml-text pom path)) (pr-str path))))
+    (testing "only project runtime dependencies are declared"
+      (is (= (:deps (edn/read-string (slurp "deps.edn")))
+             (pom-dependencies pom))))))
+
+(deftest source-jar-contract-test
+  ;; Inspect a real artifact from known Git history, not build interactions.
+  (with-project
+    (fn [directory]
+      (prepare-project! directory)
+      (let [user-config (io/file directory "user-config")
+            user-deps (io/file user-config "deps.edn")]
+        (io/make-parents user-deps)
+        (spit user-deps "{:deps {unwanted/user-dependency {:mvn/version \"99.0\"}}}")
+        (let [result (build-process
+                      directory
+                      (str "(require 'clojure.tools.deps) (assert (contains? (:deps (clojure.edn/read-string "
+                           "(slurp (clojure.tools.deps/user-deps-path)))) "
+                           "'unwanted/user-dependency)) (prn (build/jar nil))")
+                      {"CLJ_CONFIG" (.getAbsolutePath user-config)})
+              artifact (io/file directory "target/value-type-0.1.1.jar")]
+          (is (= 0 (:exit result)) result)
+          (when (zero? (:exit result))
+            (is (= {:jar-file "target/value-type-0.1.1.jar" :version "0.1.1"}
+                   (edn/read-string (str/trim (:out result))))))
+          (is (.isFile artifact))
+          (is (not (.exists (io/file directory "target/stale.txt"))))
+          (is (not (.exists (io/file directory "target/classes/stale.class"))))
+          (when (.isFile artifact)
+            (with-open [archive (JarFile. artifact)]
+              (let [payload (assoc (source-files) "LICENSE" (io/file "LICENSE"))
+                    expected (into (set (keys payload))
+                                   ["META-INF/MANIFEST.MF"
+                                    "META-INF/maven/org.hugoduncan/value-type/pom.xml"
+                                    "META-INF/maven/org.hugoduncan/value-type/pom.properties"])
+                    actual (into #{} (comp (remove #(.isDirectory %))
+                                           (map #(.getName %)))
+                                 (enumeration-seq (.entries archive)))]
+                (testing "the archive contains only sources, license and metadata"
+                  (is (= expected actual)))
+                (testing "all source and license bytes are preserved"
+                  (doseq [[path file] payload]
+                    (when-let [entry (.getJarEntry archive path)]
+                      (with-open [stream (.getInputStream archive entry)]
+                        (is (Arrays/equals (Files/readAllBytes (.toPath file))
+                                           (.readAllBytes stream)) path)))))
+                (check-metadata archive)))))))))
+
+(deftest isolated-consumer-test
+  ;; Resolve the packaged contract, never the build-test JVM classpath.
+  (with-project
+    (fn [directory]
+      (prepare-project! directory)
+      (let [built (build-process directory "(prn (build/jar nil))" {})
+            artifact (io/file directory "target/value-type-0.1.1.jar")]
+        (is (= 0 (:exit built)) built)
+        (when (zero? (:exit built))
+          (let [runtime-deps
+                (with-open [archive (JarFile. artifact)
+                            stream (.getInputStream
+                                     archive
+                                     (.getJarEntry archive
+                                                   "META-INF/maven/org.hugoduncan/value-type/pom.xml"))]
+                  (pom-dependencies (xml/parse stream)))
+                consumer-deps (io/file directory "consumer-deps.edn")
+                _ (spit consumer-deps (pr-str {:paths [] :deps runtime-deps}))
+                basis (deps/create-basis {:root nil :user nil
+                                          :project (.getAbsolutePath consumer-deps)
+                                          :aliases []})
+                runtime-paths (:classpath-roots basis)
+                classpath (into [(.getCanonicalPath artifact)] runtime-paths)
+                expression
+                (pr-str
+                  '(do
+                     (require '[clojure.java.io :as io])
+                     (let [resource (io/resource "value_type/core.clj")]
+                       (assert (= "jar" (.getProtocol resource)))
+                       (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
+                                  (.getCanonicalFile
+                                    (io/file (.toURI (.getJarFileURL (.openConnection resource))))))))
+                     (require '[value-type.core :refer [defvaluetype]])
+                     (defvaluetype Point [^long x ^long y])
+                     (let [a (Point. 3 7)
+                           b (Point. 11 13)]
+                       (prn {:value-class? (.isValue (class a))
+                             :fields [(.-x a) (.-y a) (.-x b) (.-y b)]}))))]
+            (testing "the consumer classpath contains only artifact and runtime JARs"
+              (is (seq runtime-paths))
+              (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
+                          classpath)))
+            (testing "the artifact supplies a working value-type macro"
+              (let [result (run-process
+                             directory
+                             [(str (System/getProperty "java.home") "/bin/java")
+                              "--enable-preview"
+                              (str "-Dconsumer.jar=" (.getCanonicalPath artifact))
+                              "-cp" (str/join java.io.File/pathSeparator classpath)
+                              "clojure.main" "-e" expression]
+                             {})]
+                (is (= 0 (:exit result)) result)
+                (when (zero? (:exit result))
+                  (is (= {:value-class? true :fields [3 7 11 13]}
+                         (edn/read-string (last (str/split-lines (:out result)))))
+                      result))))))))))

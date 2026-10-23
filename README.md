@@ -130,6 +130,56 @@ clojure -M:test -m scry.cli
 The command exits 0 only when at least one test runs and all tests
 pass. Failure details go to `.scry-results/`.
 
+### Build a local JAR
+
+Run these commands from the repository root with the Clojure CLI and
+Git installed. Dependency downloads need repository access unless they
+are cached.
+
+```sh
+clojure -T:build jar
+clojure -T:build clean
+```
+
+**Both commands remove all existing `target/` output**, including
+`target/object-size/` benchmark results. Copy any results you need to
+keep outside `target/` first. `jar` cleans before packaging; `clean`
+only removes generated output and also succeeds when `target/` is absent.
+
+The artifact is `target/value-type-0.1.N.jar`, with Maven coordinates
+`org.hugoduncan/value-type`. `N` is `git rev-list --count HEAD`.
+The `build/jar` function returns
+`{:jar-file "target/value-type-0.1.N.jar" :version "0.1.N"}`.
+The JAR command needs Git and usable checkout history; failed Git
+commands or invalid counts cause an error, with no fallback version.
+The clean command does not need Git metadata.
+
+A shallow checkout counts only available history. Different branches
+can have the same count, so this version is not a unique release ID.
+This command creates a local artifact; it does not install or publish
+it. The project has no published release.
+
+The source-only JAR contains the library sources, Maven dependency and
+project metadata, and the full EPL-2.0 license. It contains no compiled
+classes, bundled dependencies, tests, benchmarks or build code. Packaging
+does not load or AOT-compile the library. Consumers still need the declared
+runtime dependencies and a JEP 401 Valhalla JDK with `--enable-preview`;
+a source-only JAR does not remove that requirement.
+
+### Run the build tests
+
+Select the supported Valhalla JDK with `JAVA_CMD` as above. These checks
+also need Git, the Clojure CLI and access to uncached dependencies.
+
+```sh
+clojure -M:build-test -m scry.cli --dir test-build
+```
+
+This separate suite checks the build contract in temporary projects and
+runs an isolated consumer with only the built JAR and runtime dependency
+JARs. It selects `test-build/`; it does not replace the library test
+command above. Exit status and failure files follow the same Scry rules.
+
 ### Run the benchmark
 
 The method-call benchmark compares `defvaluetype` with `deftype`. Set
@@ -179,3 +229,8 @@ the REPL with:
 (do (require 'scry.core)
     (scry.core/run {:namespaces ['value-type.environment-test]}))
 ```
+
+## License
+
+[Eclipse Public License 2.0](LICENSE) (EPL-2.0). The full license text
+is included in the source checkout and the built JAR.

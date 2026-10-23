@@ -64,13 +64,22 @@ The macro creates JEP 401 value objects
   Knowledge extraction updated `mementum/knowledge/benchmarking-value-types.md`
   in commit `faeb15b`.
 
+- The JAR build is done (`munera/closed/008-jar-build`). Use
+  `clojure -T:build jar` for a source-only `org.hugoduncan/value-type`
+  artifact with version `0.1.<git commit count>` and EPL-2.0 metadata.
+  Both `jar` and `clean` delete `target/`, including benchmark output.
+  Consumers still need a supported Valhalla JDK with `--enable-preview`.
+  Installation and publication are out of scope. All reviews and knowledge
+  extraction are complete. Artifact-test lessons are in
+  `mementum/knowledge/testing-library-artifacts.md` (commit `5282c0a`).
+
 ## Next
 
 - Task 006 is closed. Implementation review is complete. Benchmark
   lessons are in `mementum/knowledge/benchmarking-value-types.md`
   (commit `79a650f`). Recorded verification: 64 tests, 332 assertions;
   all ten pass-function sum checks passed.
-- No next task is scheduled. The user selects the next task.
+- No tasks are scheduled. The user selects the next task.
 - Separate candidate: investigate the interface-call slowdown (ratio
   1.14) on JDK `27-jep401ea3+1-1`, including measurement stability
   and generated code.
@@ -84,10 +93,8 @@ The macro creates JEP 401 value objects
 
 ## Latest verification
 
-Task 007 is closed after review and knowledge extraction. Recorded full
-regression: 64 tests, 332 assertions. Final test review: focused and
-metadata checks passed (7 tests, 66 assertions); native lifecycle/evidence
-checks and preserved evidence each passed 125 assertions. Final code-shaper
-review: focused validation and preserved evidence passed (7 tests,
-185 assertions); both shell scripts passed syntax checks. No review steps
-remain open. Closure changed task records only; no tests were rerun.
+Task 008 is closed after review and knowledge extraction. Recorded build
+suite: 6 tests, 59 assertions passed on Valhalla JDK 27. Recorded library
+suite: 64 tests, 332 assertions passed. No Scry failure files remained.
+Final test, documentation and code-shaper reviews found no new actionable
+issues. Closure changed task records only; no tests were rerun.

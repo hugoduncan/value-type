@@ -124,6 +124,15 @@ runtime
   path `bench`, criterium `0.5.245-ALPHA`, `--enable-preview` and the
   criterium blackhole JVM options (`-XX:+UnlockExperimentalVMOptions`,
   `-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume`).
+- `deps.edn` build aliases: `:build` selects `build` with tools.build
+  `0.10.10`; `:build-test` adds the separate build suite and preview
+  support. Build dependencies are not runtime dependencies.
+- `build.clj`: source-only JAR assembly and target cleanup. See
+  [Library packaging](#library-packaging).
+- `LICENSE`: full EPL-2.0 text, also included at the JAR root.
+- `test-build/build_test.clj`: build contract, real CLI, input
+  preservation and isolated JAR consumer checks. See the README
+  [build-test command](../../README.md#run-the-build-tests).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,
   `src/value_type/impl/transform.clj`.
 - `test/value_type/...`: unit, integration and AOT tests (D11).
@@ -131,3 +140,28 @@ runtime
   (`value-type.bench`, D11).
 - `README.md`: usage, JDK requirement, semantic differences from
   `deftype`.
+
+## Library packaging
+
+`build.clj` creates `target/value-type-0.1.N.jar` for
+`org.hugoduncan/value-type`. The JAR contains library sources, Maven
+project and runtime dependency metadata, and the EPL-2.0 license.
+It excludes compiled classes, bundled dependencies and development
+files. Packaging does not load or AOT-compile library namespaces.
+The metadata basis excludes user configuration and development aliases.
+
+See the README [local JAR build guide](../../README.md#build-a-local-jar)
+for build and clean commands, return values, Git requirements, version
+limits and the target-deletion warning. `N` is the Git commit count;
+shallow history gives a partial count, and branches can share a version.
+Both commands remove existing `target/` output, including benchmark
+results. This creates a local artifact, not an installed or published
+release.
+
+Source-only library packaging is distinct from
+[D7 consumer AOT output](decisions.md#d7-aot-output-deployment).
+Consumers can still compile their value types ahead of time; those
+class files require the same JDK feature release used to compile them.
+JAR consumers still need runtime dependencies and a JEP 401 Valhalla
+JDK with `--enable-preview`. See the README
+[consumer JDK requirement](../../README.md#jdk-requirement).
