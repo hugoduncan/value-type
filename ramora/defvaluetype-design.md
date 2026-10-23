@@ -50,6 +50,9 @@ defvaluetype form
 - [Benchmark](defvaluetype-design/benchmark.md): method call time of
   `defvaluetype` against `deftype`, with environment and results.
 
+- [Object size](defvaluetype-design/object-size.md): shallow size of
+  standalone objects with 0–3 primitive `long` fields.
+
 ## Status
 
 Design, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike

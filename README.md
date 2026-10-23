@@ -145,6 +145,27 @@ range). Available memory can impose a lower limit. Invalid input is
 rejected before measurement. The results are in
 `ramora/defvaluetype-design/benchmark.md`.
 
+### Compare standalone object size
+
+Use a Valhalla JDK with JEP 401 support (see "Select the JDK"). Run
+from the repository root:
+
+```sh
+JAVA_CMD=<valhalla-jdk-home>/bin/java bash bench/object-size.sh
+```
+
+This compares shallow size for paired types with 0–3 primitive `long`
+fields. The isolated `:object-size` alias enables preview and uses
+Criterium `0.5.251-ALPHA`. The wrapper extracts its bundled native agent
+and loads it at JVM startup. This route is verified on macOS/aarch64.
+
+Results and raw evidence go to `target/object-size/results.edn` and
+`raw.edn`; setup and measurement logs go to `stdout.log` and `stderr.log`
+in that directory. Each run replaces these four files. On a nonzero
+exit, inspect the logs. See the [size report](ramora/defvaluetype-design/object-size.md)
+for the recorded results, environment and limits. This is a manual
+measurement, not a performance gate.
+
 ### Start a REPL
 
 ```sh

@@ -52,15 +52,28 @@ The macro creates JEP 401 value objects
   `:stats :stats :elapsed-time :median` is per batch (divide by
   `:batch-size`).
 
+- The object-size comparison is done
+  (`munera/closed/007-object-size-comparison`). Criterium
+  `0.5.251-ALPHA` uses the packaged native agent via `extract-agent!`
+  and `-agentpath` on Valhalla/macOS aarch64. For 0–3 primitive `long`
+  fields, shallow sizes are `[16 24 32 40]` bytes for `deftype` and
+  `[16 32 40 48]` for `defvaluetype`. Evidence is preserved in
+  `ramora/defvaluetype-design/object-size/`. These results apply only
+  to the recorded VM setup; the cause of the +8-byte difference is
+  not established. Implementation and all reviews are complete.
+  Knowledge extraction updated `mementum/knowledge/benchmarking-value-types.md`
+  in commit `faeb15b`.
+
 ## Next
 
 - Task 006 is closed. Implementation review is complete. Benchmark
   lessons are in `mementum/knowledge/benchmarking-value-types.md`
   (commit `79a650f`). Recorded verification: 64 tests, 332 assertions;
   all ten pass-function sum checks passed.
-- No next task is created. The user selects the next task. Candidate:
-  investigate the interface-call slowdown (ratio 1.14) on JDK
-  `27-jep401ea3+1-1`, including measurement stability and generated code.
+- No next task is scheduled. The user selects the next task.
+- Separate candidate: investigate the interface-call slowdown (ratio
+  1.14) on JDK `27-jep401ea3+1-1`, including measurement stability
+  and generated code.
 - Other adjacent task (not yet created): nested `defvaluetype` in a
   method body (needs a loader change).
 
@@ -68,3 +81,13 @@ The macro creates JEP 401 value objects
 
 - `ramora/INDEX.md`
 - `munera/plan.md`
+
+## Latest verification
+
+Task 007 is closed after review and knowledge extraction. Recorded full
+regression: 64 tests, 332 assertions. Final test review: focused and
+metadata checks passed (7 tests, 66 assertions); native lifecycle/evidence
+checks and preserved evidence each passed 125 assertions. Final code-shaper
+review: focused validation and preserved evidence passed (7 tests,
+185 assertions); both shell scripts passed syntax checks. No review steps
+remain open. Closure changed task records only; no tests were rerun.
