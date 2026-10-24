@@ -21,7 +21,14 @@ JDK 25 and JDK `27-jep401ea3`.
 namespace and all its tests fail to load on JDK 25. Use private
 literal vars in one namespace. Tests read them with
 `@#'ns/ACC_IDENTITY`. `ClassFile/latestMajorVersion` and
-`ClassFile/PREVIEW_MINOR_VERSION` exist from JDK 24; they are safe.
+`ClassFile/PREVIEW_MINOR_VERSION` exist from JDK 24; they are safe
+within the optional transformer, not in the baseline-loadable path.
+
+Task `009-controlled-deftype-fallback` verified loading on Java 8, which
+lacks ClassFile entirely. Keep all eager ClassFile dependencies behind
+positive capability detection. API presence also does not prove preview
+is enabled. See [controlled fallback boundaries](controlled-fallback-boundaries.md)
+for the known-format probe and narrow absence catches (commit `c7f224f`).
 
 ## Change only the code of a method: `transformMethod`
 
