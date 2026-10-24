@@ -293,23 +293,36 @@
                      (defvaluetype Point [^long x ^long y])
                      (let [a (Point. 3 7)
                            b (Point. 11 13)]
-                       (prn {:value-class? (.isValue (class a))
+                       (prn {:value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
+                                                                            (.getMethods Class)))]
+                                             (.invoke predicate (class a) (object-array 0)))
+                             :equal-copy? (= a (->Point 3 7))
+                             :factory-class? (= Point (class (->Point 3 7)))
                              :fields [(.-x a) (.-y a) (.-x b) (.-y b)]}))))]
             (testing "the consumer classpath contains only artifact and runtime JARs"
               (is (seq runtime-paths))
               (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
                           classpath)))
-            (testing "the artifact supplies a working value-type macro"
-              (let [result (run-process
-                             directory
-                             [(str (System/getProperty "java.home") "/bin/java")
-                              "--enable-preview"
-                              (str "-Dconsumer.jar=" (.getCanonicalPath artifact))
-                              "-cp" (str/join java.io.File/pathSeparator classpath)
-                              "clojure.main" "-e" expression]
-                             {})]
-                (is (= 0 (:exit result)) result)
-                (when (zero? (:exit result))
-                  (is (= {:value-class? true :fields [3 7 11 13]}
-                         (edn/read-string (last (str/split-lines (:out result)))))
-                      result))))))))))
+            (doseq [[java options expected-value?]
+                    [[(str (System/getProperty "java.home") "/bin/java")
+                      ["--enable-preview"] true]
+                     [(or (System/getenv "VALUE_TYPE_BASELINE_JAVA")
+                          "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/bin/java")
+                      [] nil]]]
+              (testing (str "the artifact supplies a working macro on " java)
+                (let [result (run-process
+                               directory
+                               (into [java]
+                                     (concat options
+                                       ["-Dvalue-type.fallback=silent"
+                                (str "-Dconsumer.jar=" (.getCanonicalPath artifact))
+                                "-cp" (str/join java.io.File/pathSeparator classpath)
+                                "clojure.main" "-e" expression]))
+                               {})]
+                  (is (= 0 (:exit result)) result)
+                  (when (zero? (:exit result))
+                    (is (= {:value-class? expected-value?
+                            :equal-copy? (boolean expected-value?)
+                            :factory-class? true :fields [3 7 11 13]}
+                           (edn/read-string (last (str/split-lines (:out result)))))
+                        result)))))))))))

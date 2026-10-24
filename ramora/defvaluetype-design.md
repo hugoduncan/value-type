@@ -12,22 +12,30 @@ Read this index first. Then read only the sections that you need.
 
 ## Summary
 
-`defvaluetype` has the same syntax as `deftype`. It makes a JEP 401
-value class. The macro lets the Clojure compiler make the bytecode for
-a normal `deftype`. A class loader catches the bytecode before the JVM
-defines the class. A pure function changes the bytecode into a value
-class. The JVM then defines the changed class.
+`defvaluetype` has the same syntax as `deftype`. It selects a value class
+when support is available. Otherwise application
+policy selects silent fallback, one warning with fallback, or an `Error`
+on every attempt. Fallback uses ordinary `deftype` semantics.
+
+The value-class path and controlled fallback are implemented and tested.
+The configuration contract is user-approved. Verification is limited to
+the JVM configurations recorded below.
 
 ```text
-defvaluetype form
-  → validate (value-class rules)
-  → install capture loader (thread-bound Compiler/LOADER)
-  → expand to clojure.core/deftype
-  → Clojure compiler emits identity-class bytes
-  → capture loader → transform bytes → write .class (AOT only)
-      → define value class → link (LinkageError → ex-info :jvm-rejected)
-  → runtime check: class is a value class
+defvaluetype → validate fields → capability and application policy
+  supported → install capture loader → deftype → transform bytes
+              → write .class (AOT) → define and link → check value class
+  unavailable → silent: deftype
+                warn: warn once, then deftype
+                error: Error on every attempt; no fallback class
 ```
+
+AOT fixes the representation. The fallback guard enforces application policy
+where the form is evaluated, including on capable JVMs. Top-level forms enforce
+policy during namespace initialization. Forms inside functions allow namespace
+loading and enforce policy on invocation. Direct class access that bypasses
+the guarded form is not protected. Failed initializer retries do not re-enter
+the guard. No instance-use checks are added.
 
 ## Sections
 
@@ -37,6 +45,8 @@ defvaluetype form
   systems (JVM, Clojure compiler), constraints.
 - [Decisions](defvaluetype-design/decisions.md): the architectural
   decisions, with alternatives and rationale.
+- [Controlled fallback](defvaluetype-design/fallback.md): policy authority,
+  capability boundary, state, AOT limits and verification evidence (D10 D12 D13).
 - [Embodiment](defvaluetype-design/embodiment.md): namespaces,
   interfaces, data flow, invariants, tests.
 - [Qualities](defvaluetype-design/qualities.md): target qualities,
@@ -55,7 +65,7 @@ defvaluetype form
 
 ## Status
 
-Design, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
+Value-class path, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
 code is in `spike/valhalla/`. The transform (D5 D6,
 `value-type.impl.transform`) is implemented and tested. The loader
 (D3 D4 D7, D9 define errors, `value-type.impl.loader`) is implemented
@@ -64,3 +74,15 @@ and tested. The method-call benchmark (`value-type.bench`) gives an
 interface ratio of 1.14 (slower) and a protocol ratio of 1.00 (equal)
 on `27-jep401ea3+1-1`. A-21 is `contested` (see
 [Benchmark](defvaluetype-design/benchmark.md)).
+
+Controlled fallback (D10 D12 D13) is implemented and verified by production
+tests with Clojure 1.12.6 on Temurin `1.8.0_492-b09` and Valhalla
+`27-jep401ea3+1-1` with preview disabled and enabled. Tests cover source
+policy, transferred expansions, warning scope and source-free AOT guards,
+including runtime-only calls and strict retries. See
+[fallback verification](defvaluetype-design/fallback.md#verification) and
+[task 009 evidence](../munera/closed/009-controlled-deftype-fallback/implementation.md).
+
+Fallback adds no minimum JDK beyond the supported Clojure runtime. The
+recorded matrix does not establish support for every supported Clojure JVM
+or future EA formats.

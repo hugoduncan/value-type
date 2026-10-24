@@ -8,6 +8,10 @@ Read this file first. Read the other files only when you need them.
   `defvaluetype` macro. Purpose, context, decisions, embodiment,
   qualities, risks, assertions.
 
+- [Controlled fallback](defvaluetype-design/fallback.md): implemented policy,
+  capability boundary, warning and Error behaviour, AOT limits and tests.
+  Verified on Java 8 and Valhalla 27 EA; see the scoped evidence.
+
 - [Library packaging](defvaluetype-design/embodiment.md#library-packaging):
   source-only JAR, build artifacts, consumer requirements and README commands.
 

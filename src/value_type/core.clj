@@ -2,7 +2,7 @@
   "Define JEP 401 value classes with `defvaluetype`, a `deftype`
   compatible macro."
   (:require
-   [value-type.impl.loader :as loader])
+   [value-type.impl.runtime :as runtime])
   (:import
    (java.lang.reflect Method)))
 
@@ -83,15 +83,38 @@
 
 (defmacro defvaluetype
   "As `deftype` (see its docstring for syntax, options, specs, the
-  `->name` factory and the import), but the class is a final JEP 401
-  value class with final fields.
+  `->name` factory and the import). Define a final JEP 401 value class
+  when supported, or an ordinary identity class under fallback policy.
 
-  Requires a JEP 401 JDK started with `--enable-preview`.
+  Uses value classes on a supported JEP 401 JDK with `--enable-preview`.
+  Otherwise uses ordinary identity `deftype`. Set JVM property
+  `value-type.fallback` before loading: silent (default), warn (once per
+  library runtime), or error (reject with Java Error). Compiler operations
+  wrap that Error in CompilerException. Configuration is read and validated
+  once; invalid values fail and later changes are unsupported. Requiring
+  alone does not warn. Concurrent types and namespaces share warning state.
+
+  Selecting fallback during macroexpansion applies policy even if the
+  expansion is discarded. Returned expansions enforce receiving policy at
+  compilation and evaluation. Strict retries reject after a caught failure.
+  Fallback retains ordinary identity, equality and hashing semantics.
+  Invalid forms and implementation defects are not retried as fallback.
+
+  AOT fixes representation. Fallback enforces receiving policy where the
+  form is evaluated, even on a capable JVM. Top-level forms enforce it during
+  namespace initialization. Forms inside functions permit namespace loading
+  and enforce policy on invocation; repeated strict calls throw plain Error.
+  Failed initialization retries can throw NoClassDefFoundError (also an Error).
+  Guards do not cover direct class access that bypasses evaluation of the
+  guarded form, or guarantee that no class was loaded before rejection.
+  Value artifacts do not convert.
+  Fallback adds no minimum JDK beyond the supported Clojure runtime; see
+  README for tested JVM versions and verification commands.
 
   Restriction: no mutable fields (`:volatile-mutable` or
   `:unsynchronized-mutable`).
 
-  Differences from `deftype`: instances have no identity.
+  In value mode, differences from `deftype`: instances have no identity.
   - `identical?` (the Java `==` operator, `acmp`) compares field values.
   - The default `equals` and `hashCode` use field values.
   - A `double` field compares by bit pattern in `identical?` (`NaN`
@@ -116,9 +139,15 @@
   [name fields & opts+specs]
   (let [class-name (str (namespace-munge *ns*) "." name)]
     (check-fields class-name fields)
-    (let [installed (loader/install! class-name)
-          cls       (symbol class-name)]
-      `(let []
-         (deftype ~name ~fields ~@opts+specs)
-         (check-value-class ~cls ~installed)
-         ~cls))))
+    (let [{:keys [available? detail]} (runtime/capability)]
+      (if available?
+        (let [installed ((requiring-resolve 'value-type.impl.loader/install!) class-name)
+              cls (symbol class-name)]
+          `(let []
+             (deftype ~name ~fields ~@opts+specs)
+             (check-value-class ~cls ~installed)
+             ~cls))
+        (do
+          (runtime/enforce-fallback! detail)
+          ;; Keep the analysis guard in both macroexpand entry-point results.
+          `(do (runtime/guarded-deftype ~name ~fields ~@opts+specs)))))))

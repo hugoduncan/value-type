@@ -6,6 +6,9 @@ C = ⟨H, S, K⟩: human environment, interacting systems, constraints.
 
 - Stakeholders: Clojure programmers who want value objects for
   performance or for value semantics. The maintainer.
+- Library authors need silent fallback so one source library can use
+  value classes when available. They must support both representations.
+- Application authors own the fallback policy: silent, warn, or strict.
 - Expectations: `deftype` syntax and behaviour. Clear errors.
 - Capabilities: users know `deftype`. Most users do not know the class
   file format.
@@ -64,6 +67,13 @@ Status: observed in the Clojure 1.12.1 source and with `javap` on a
 - `DynamicClassLoader` keeps a static class cache by name. Each
   `DynamicClassLoader` finds classes in this cache.
 
+### JVMs without usable value-class support
+
+The fallback path uses ordinary `deftype`. It must load without JEP 401,
+preview flags or the `java.lang.classfile` API. A Valhalla JVM with preview
+disabled also needs an unavailable-capability result. API presence alone
+is not sufficient evidence that this library can define a value class.
+
 ### Other systems
 
 - `clojure.core` protocol dispatch uses the class, not the instance
@@ -72,12 +82,16 @@ Status: observed in the Clojure 1.12.1 source and with `javap` on a
 
 ## Constraints (K)
 
-- Technology: Clojure 1.12. JDK with JEP 401. No Java source in the
-  project, if practical.
+- Technology: Clojure 1.12. Usable JEP 401 support for the value-class
+  path only. Fallback adds no JDK minimum beyond Clojure. No Java source
+  in the project, if practical.
 - Compatibility: `deftype` syntax and the semantics that a value class
   can keep.
 - Time: JEP 401 is a preview. The class file details can change.
-- Quality: no silent identity class. No added runtime cost.
+- Quality: application policy controls fallback. No added per-instance
+  or method-call cost. Capability and policy checks occur at definition
+  or namespace-load boundaries, not during instance use.
 - Organization: one maintainer. Small code base.
 - Irreversibility: preview class files are tied to one JDK feature
-  release. AOT output must be rebuilt for each JDK release.
+  release. Value-class AOT output must be rebuilt for each JDK release.
+  Identity-class AOT output stays an identity class on a Valhalla JVM.
