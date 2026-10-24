@@ -98,8 +98,14 @@ The macro creates JEP 401 value objects
 ## Next
 
 - No tasks are scheduled. The user selects the next task.
-- Separate candidate: investigate the interface-call slowdown (ratio 1.14)
-  on JDK `27-jep401ea3+1-1`, including measurement stability and generated code.
+- Interface-call slowdown investigated (2026-10-24 UTC): no stable penalty
+  in 16 fresh JVMs with alternating order, two lengths and Java controls.
+  Clojure median ratios were 1.028 / 1.008; Java 1.015 / 0.998. Paired main
+  C2 loop bytes matched in separate diagnostic runs. The unchanged full
+  benchmark also passed its equality and scaling bands. Historical 1.14
+  cause remains unknown; do not treat it as a general JEP 401 penalty.
+  Report and retained evidence: `ramora/defvaluetype-design/interface-call.md`.
+  Reproduction: `spike/interface-call/`. Production code unchanged.
 - Other adjacent task (not yet created): nested `defvaluetype` in a method
   body on the value-class path (needs a loader change).
 

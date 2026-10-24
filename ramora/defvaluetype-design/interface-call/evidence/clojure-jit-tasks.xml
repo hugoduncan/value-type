@@ -1,0 +1,974 @@
+<tasks>
+<task compile_id="5087" compile_kind="osr" method="value_type.bench$interface_dt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="188" backedge_count="191944" iicount="188" osr_bci="11" stamp="1.828">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_dt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" compile_id="5084" compiler="c1" level="3" iicount="188" />
+<parse method="1476" uses="188.000000" osr_bci="11" stamp="1.829">
+<dependency type="evol_method" x0="1476" />
+<uncommon_trap bci="11" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="15" />
+<branch target_bci="63" taken="188" not_taken="192512" cnt="192700.000000" prob="                0.00" />
+<bc code="192" bci="19" />
+<uncommon_trap bci="19" reason="null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="19" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1481" name="clojure.lang.RT" flags="33" />
+<method id="1482" holder="1481" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="196976" />
+<call method="1482" count="131072" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1482" uses="192512.000000" stamp="1.829">
+<dependency type="evol_method" x0="1482" />
+<bc code="184" bci="1" />
+<klass id="1489" name="java.lang.Math" flags="49" />
+<method id="1490" holder="1489" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="202004" />
+<call method="1490" count="201832" prof_factor="0.977337" inline="1" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<uncommon_trap method="1490" bci="8" reason="unloaded" action="reinterpret" index="109" debug_id="0" klass="1469" />
+<inline_success reason="inline (hot)" />
+<parse method="1490" uses="197258.000000" stamp="1.829">
+<dependency type="evol_method" x0="1490" />
+<bc code="153" bci="5" />
+<branch target_bci="18" taken="203162" not_taken="0" cnt="203162.000000" prob="always" />
+<uncommon_trap bci="5" reason="unstable_if" action="reinterpret" debug_id="0" comment="taken always" />
+<parse_done nodes="210" live="201" memory="33432" stamp="1.829" />
+</parse>
+<parse_done nodes="211" live="201" memory="34256" stamp="1.829" />
+</parse>
+<bc code="184" bci="26" />
+<klass id="1480" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1483" holder="1481" name="aget" return="1274" arguments="1480 1267" flags="9" bytes="4" compile_id="5068" compiler="c1" level="3" iicount="193724" />
+<call method="1483" count="131072" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1483" uses="192512.000000" stamp="1.829">
+<dependency type="evol_method" x0="1483" />
+<bc code="50" bci="2" />
+<uncommon_trap bci="2" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<parse_done nodes="249" live="237" memory="41096" stamp="1.829" />
+</parse>
+<bc code="184" bci="32" />
+<klass id="1484" name="clojure.lang.Numbers" flags="33" />
+<method id="1485" holder="1484" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="118083" />
+<call method="1485" count="131072" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1485" uses="192512.000000" stamp="1.829">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="1" />
+<method id="1494" holder="1489" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="127299" />
+<call method="1494" count="127170" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="1" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_incrementExactL" nodes="15" />
+<parse_done nodes="276" live="262" memory="45840" stamp="1.829" />
+</parse>
+<bc code="192" bci="42" />
+<uncommon_trap bci="42" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="42" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="45" />
+<klass id="1479" name="value_type.bench.IDt" flags="49" />
+<method id="1497" holder="1479" name="norm" return="1268" flags="1" bytes="12" compile_id="5069" compiler="c1" level="3" iicount="204884" />
+<call method="1497" count="131072" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="45" exact="0" klass="1479" />
+<parse method="1497" uses="192512.000000" stamp="1.829">
+<dependency type="evol_method" x0="1497" />
+<bc code="184" bci="8" />
+<method id="1488" holder="1484" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="3343" compiler="c1" level="3" iicount="387969" />
+<call method="1488" count="205195" prof_factor="0.939615" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="192804.000000" stamp="1.829">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<method id="1499" holder="1489" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1499" count="417903" prof_factor="0.496957" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="355" live="337" memory="59296" stamp="1.829" />
+</parse>
+<parse_done nodes="356" live="337" memory="59576" stamp="1.829" />
+</parse>
+<bc code="184" bci="50" />
+<call method="1488" count="131072" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="192512.000000" stamp="1.829">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<call method="1499" count="417903" prof_factor="0.496205" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="381" live="360" memory="64352" stamp="1.829" />
+</parse>
+<parse_done nodes="387" live="365" memory="65520" stamp="1.829" />
+</parse>
+<loop_tree>
+<loop idx="396" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="396" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="396" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="396" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="396" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1482" />
+<dependency type="evol_method" x0="1490" />
+<dependency type="evol_method" x0="1483" />
+<dependency type="evol_method" x0="1485" />
+<dependency type="evol_method" x0="1497" />
+<dependency type="evol_method" x0="1488" />
+<code_cache total_blobs="4376" nmethods="3619" adapters="587" free_code_cache="239108864" />
+<task_done success="1" nmsize="576" count="255" backedge_count="261120" inlined_bytes="145" stamp="1.833" />
+</task>
+
+<task compile_id="5744" compile_kind="osr" method="value_type.bench$interface_vt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="532" backedge_count="543900" iicount="532" osr_bci="11" stamp="4.628">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_vt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" compile_id="5743" compiler="c1" level="3" iicount="532" />
+<parse method="1476" uses="532.000000" osr_bci="11" stamp="4.628">
+<dependency type="evol_method" x0="1476" />
+<uncommon_trap bci="11" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="11" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="15" />
+<branch target_bci="63" taken="531" not_taken="543979" cnt="544510.000000" prob="                0.00" />
+<bc code="192" bci="19" />
+<uncommon_trap bci="19" reason="null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="19" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1481" name="clojure.lang.RT" flags="33" />
+<method id="1482" holder="1481" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="4748838" />
+<call method="1482" count="482628" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1482" uses="543979.000000" stamp="4.628">
+<dependency type="evol_method" x0="1482" />
+<bc code="184" bci="1" />
+<klass id="1489" name="java.lang.Math" flags="49" />
+<method id="1490" holder="1489" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="4750367" />
+<call method="1490" count="4749812" prof_factor="0.114550" inline="1" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<uncommon_trap method="1490" bci="8" reason="unloaded" action="reinterpret" index="109" debug_id="0" klass="1469" />
+<inline_success reason="inline (hot)" />
+<parse method="1490" uses="544091.000000" stamp="4.628">
+<dependency type="evol_method" x0="1490" />
+<bc code="153" bci="5" />
+<branch target_bci="18" taken="4750363" not_taken="0" cnt="4750363.000000" prob="always" />
+<uncommon_trap bci="5" reason="unstable_if" action="reinterpret" debug_id="0" comment="taken always" />
+<parse_done nodes="210" live="201" memory="33432" stamp="4.628" />
+</parse>
+<parse_done nodes="211" live="201" memory="34256" stamp="4.628" />
+</parse>
+<bc code="184" bci="26" />
+<klass id="1480" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1483" holder="1481" name="aget" return="1274" arguments="1480 1267" flags="9" bytes="4" compile_id="5078" compiler="c2" level="4" iicount="865178" />
+<call method="1483" count="482628" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1483" uses="543979.000000" stamp="4.628">
+<dependency type="evol_method" x0="1483" />
+<bc code="50" bci="2" />
+<uncommon_trap bci="2" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<parse_done nodes="249" live="237" memory="41096" stamp="4.628" />
+</parse>
+<bc code="184" bci="32" />
+<klass id="1484" name="clojure.lang.Numbers" flags="33" />
+<method id="1485" holder="1484" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="2058448" />
+<call method="1485" count="482628" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1485" uses="543979.000000" stamp="4.628">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="1" />
+<method id="1494" holder="1489" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="2060407" />
+<call method="1494" count="2060175" prof_factor="0.264267" inline="1" />
+<uncommon_trap bci="1" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_incrementExactL" nodes="15" />
+<parse_done nodes="276" live="262" memory="45840" stamp="4.628" />
+</parse>
+<bc code="192" bci="42" />
+<uncommon_trap bci="42" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="42" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="45" />
+<klass id="1479" name="value_type.bench.IVt" flags="17" />
+<method id="1497" holder="1479" name="norm" return="1268" flags="1" bytes="12" compile_id="5737" compiler="c2" level="4" iicount="9007" />
+<call method="1497" count="482628" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="45" exact="0" klass="1479" />
+<parse method="1497" uses="543979.000000" stamp="4.628">
+<dependency type="evol_method" x0="1497" />
+<bc code="184" bci="8" />
+<method id="1488" holder="1484" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="5107" compiler="c2" level="4" iicount="2372819" />
+<call method="1488" count="8516" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="9007.000000" stamp="4.628">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<method id="1500" holder="1489" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1500" count="2375324" prof_factor="0.003796" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="388" live="370" memory="64368" stamp="4.628" />
+</parse>
+<parse_done nodes="389" live="370" memory="64648" stamp="4.628" />
+</parse>
+<bc code="184" bci="50" />
+<call method="1488" count="482627" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="543978.000000" stamp="4.628">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<call method="1500" count="2375324" prof_factor="0.229254" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="415" live="394" memory="69160" stamp="4.628" />
+</parse>
+<parse_done nodes="421" live="399" memory="70200" stamp="4.628" />
+</parse>
+<loop_tree>
+<loop idx="430" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="430" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="430" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="430" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="430" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1482" />
+<dependency type="evol_method" x0="1490" />
+<dependency type="evol_method" x0="1483" />
+<dependency type="evol_method" x0="1485" />
+<dependency type="evol_method" x0="1497" />
+<dependency type="evol_method" x0="1488" />
+<code_cache total_blobs="4795" nmethods="4020" adapters="610" free_code_cache="239366976" />
+<task_done success="1" nmsize="576" count="556" backedge_count="568402" inlined_bytes="145" stamp="4.633" />
+</task>
+
+<task compile_id="5081" compile_kind="osr" method="value_type.bench$interface_dt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="59" backedge_count="60416" iicount="59" osr_bci="11" level="3" stamp="1.794">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_dt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" iicount="60" />
+<dependency type="evol_method" x0="1476" />
+<parse method="1476" stamp="1.794">
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1479" name="clojure.lang.RT" flags="33" />
+<method id="1480" holder="1479" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="89639" />
+<call method="1480" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1480">
+<bc code="184" bci="1" />
+<klass id="1482" name="java.lang.Math" flags="49" />
+<method id="1483" holder="1482" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="89939" />
+<call method="1483" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1483">
+<bc code="183" bci="14" />
+<type id="1269" name="void" />
+<klass id="1275" name="java.lang.String" flags="49" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<method id="1486" holder="1469" name="&lt;init&gt;" return="1269" arguments="1275" flags="1" bytes="6" iicount="1" />
+<call method="1486" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="1.794" />
+</parse>
+<dependency type="evol_method" x0="1483" />
+<parse_done stamp="1.794" />
+</parse>
+<dependency type="evol_method" x0="1480" />
+<bc code="184" bci="26" />
+<klass id="1478" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1488" holder="1479" name="aget" return="1274" arguments="1478 1267" flags="9" bytes="4" compile_id="5068" compiler="c1" level="3" iicount="63065" />
+<call method="1488" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1488">
+<parse_done stamp="1.794" />
+</parse>
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="32" />
+<klass id="1491" name="clojure.lang.Numbers" flags="33" />
+<method id="1492" holder="1491" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="10746" />
+<call method="1492" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1492">
+<bc code="184" bci="1" />
+<method id="1494" holder="1482" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="10746" />
+<call method="1494" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1494">
+<bc code="183" bci="14" />
+<call method="1486" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="1.794" />
+</parse>
+<dependency type="evol_method" x0="1494" />
+<parse_done stamp="1.794" />
+</parse>
+<dependency type="evol_method" x0="1492" />
+<bc code="185" bci="45" />
+<klass id="1497" name="value_type.bench.INorm" flags="1537" />
+<method id="1498" holder="1497" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1498" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="50" />
+<method id="1499" holder="1491" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="3343" compiler="c1" level="3" iicount="128275" />
+<call method="1499" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1499">
+<bc code="184" bci="2" />
+<method id="1501" holder="1482" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1501" instr="invokestatic" />
+<inline_fail reason="callee is too large" />
+<parse_done stamp="1.795" />
+</parse>
+<dependency type="evol_method" x0="1499" />
+<parse_done stamp="1.795" />
+</parse>
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1483" />
+<dependency type="evol_method" x0="1480" />
+<dependency type="evol_method" x0="1488" />
+<dependency type="evol_method" x0="1494" />
+<dependency type="evol_method" x0="1492" />
+<dependency type="evol_method" x0="1499" />
+<code_cache total_blobs="4364" nmethods="3606" adapters="587" free_code_cache="239143936" />
+<task_done success="1" nmsize="2792" count="128" backedge_count="131072" inlined_bytes="63" stamp="1.814" />
+</task>
+
+<task compile_id="5084" method="value_type.bench$interface_dt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="129" backedge_count="132057" iicount="129" level="3" stamp="1.814">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_dt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" iicount="129" />
+<dependency type="evol_method" x0="1476" />
+<parse method="1476" stamp="1.814">
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1481" name="clojure.lang.RT" flags="33" />
+<method id="1482" holder="1481" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="138855" />
+<call method="1482" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1482">
+<bc code="184" bci="1" />
+<klass id="1484" name="java.lang.Math" flags="49" />
+<method id="1485" holder="1484" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="139373" />
+<call method="1485" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1485">
+<bc code="183" bci="14" />
+<type id="1269" name="void" />
+<klass id="1275" name="java.lang.String" flags="49" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<method id="1488" holder="1469" name="&lt;init&gt;" return="1269" arguments="1275" flags="1" bytes="6" iicount="1" />
+<call method="1488" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1485" />
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1482" />
+<bc code="184" bci="26" />
+<klass id="1480" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1490" holder="1481" name="aget" return="1274" arguments="1480 1267" flags="9" bytes="4" compile_id="5068" compiler="c1" level="3" iicount="134311" />
+<call method="1490" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1490">
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1490" />
+<bc code="184" bci="32" />
+<klass id="1492" name="clojure.lang.Numbers" flags="33" />
+<method id="1493" holder="1492" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="61500" />
+<call method="1493" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1493">
+<bc code="184" bci="1" />
+<method id="1495" holder="1484" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="61500" />
+<call method="1495" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1495">
+<bc code="183" bci="14" />
+<call method="1488" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1495" />
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1493" />
+<bc code="185" bci="45" />
+<klass id="1498" name="value_type.bench.INorm" flags="1537" />
+<method id="1499" holder="1498" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1499" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="50" />
+<method id="1500" holder="1492" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="3343" compiler="c1" level="3" iicount="273281" />
+<call method="1500" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1500">
+<bc code="184" bci="2" />
+<method id="1502" holder="1484" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1502" instr="invokestatic" />
+<inline_fail reason="callee is too large" />
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1500" />
+<parse_done stamp="1.814" />
+</parse>
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1485" />
+<dependency type="evol_method" x0="1482" />
+<dependency type="evol_method" x0="1490" />
+<dependency type="evol_method" x0="1495" />
+<dependency type="evol_method" x0="1493" />
+<dependency type="evol_method" x0="1500" />
+<code_cache total_blobs="4369" nmethods="3612" adapters="587" free_code_cache="239163840" />
+<task_done success="1" nmsize="2592" count="183" backedge_count="187392" inlined_bytes="63" stamp="1.828" />
+</task>
+
+<task compile_id="5741" compile_kind="osr" method="value_type.bench$interface_vt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="59" backedge_count="60416" iicount="59" osr_bci="11" level="3" stamp="4.601">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_vt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" iicount="60" />
+<dependency type="evol_method" x0="1476" />
+<parse method="1476" stamp="4.601">
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1479" name="clojure.lang.RT" flags="33" />
+<method id="1480" holder="1479" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="4283980" />
+<call method="1480" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1480">
+<bc code="184" bci="1" />
+<klass id="1482" name="java.lang.Math" flags="49" />
+<method id="1483" holder="1482" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="4284310" />
+<call method="1483" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1483">
+<bc code="183" bci="14" />
+<type id="1269" name="void" />
+<klass id="1275" name="java.lang.String" flags="49" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<method id="1486" holder="1469" name="&lt;init&gt;" return="1269" arguments="1275" flags="1" bytes="6" iicount="1" />
+<call method="1486" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1483" />
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1480" />
+<bc code="184" bci="26" />
+<klass id="1478" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1488" holder="1479" name="aget" return="1274" arguments="1478 1267" flags="9" bytes="4" compile_id="5078" compiler="c2" level="4" iicount="400761" />
+<call method="1488" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1488">
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="32" />
+<klass id="1491" name="clojure.lang.Numbers" flags="33" />
+<method id="1492" holder="1491" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="1594017" />
+<call method="1492" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1492">
+<bc code="184" bci="1" />
+<method id="1494" holder="1482" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="1594017" />
+<call method="1494" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1494">
+<bc code="183" bci="14" />
+<call method="1486" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1494" />
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1492" />
+<bc code="185" bci="45" />
+<klass id="1497" name="value_type.bench.INorm" flags="1537" />
+<method id="1498" holder="1497" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1498" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="50" />
+<method id="1499" holder="1491" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="5107" compiler="c2" level="4" iicount="1908364" />
+<call method="1499" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1499">
+<bc code="184" bci="2" />
+<method id="1501" holder="1482" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1501" instr="invokestatic" />
+<inline_fail reason="callee is too large" />
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1499" />
+<parse_done stamp="4.601" />
+</parse>
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1483" />
+<dependency type="evol_method" x0="1480" />
+<dependency type="evol_method" x0="1488" />
+<dependency type="evol_method" x0="1494" />
+<dependency type="evol_method" x0="1492" />
+<dependency type="evol_method" x0="1499" />
+<code_cache total_blobs="4792" nmethods="4016" adapters="610" free_code_cache="239365056" />
+<task_done success="1" nmsize="2792" count="255" backedge_count="261120" inlined_bytes="63" stamp="4.614" />
+</task>
+
+<task compile_id="5743" method="value_type.bench$interface_vt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="256" backedge_count="261359" iicount="256" level="3" stamp="4.614">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_vt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" iicount="256" />
+<dependency type="evol_method" x0="1476" />
+<parse method="1476" stamp="4.614">
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1481" name="clojure.lang.RT" flags="33" />
+<method id="1482" holder="1481" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="4466924" />
+<call method="1482" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1482">
+<bc code="184" bci="1" />
+<klass id="1484" name="java.lang.Math" flags="49" />
+<method id="1485" holder="1484" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="4467255" />
+<call method="1485" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1485">
+<bc code="183" bci="14" />
+<type id="1269" name="void" />
+<klass id="1275" name="java.lang.String" flags="49" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<method id="1488" holder="1469" name="&lt;init&gt;" return="1269" arguments="1275" flags="1" bytes="6" iicount="1" />
+<call method="1488" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1485" />
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1482" />
+<bc code="184" bci="26" />
+<klass id="1480" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1490" holder="1481" name="aget" return="1274" arguments="1480 1267" flags="9" bytes="4" compile_id="5078" compiler="c2" level="4" iicount="583679" />
+<call method="1490" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1490">
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1490" />
+<bc code="184" bci="32" />
+<klass id="1492" name="clojure.lang.Numbers" flags="33" />
+<method id="1493" holder="1492" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="1777067" />
+<call method="1493" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1493">
+<bc code="184" bci="1" />
+<method id="1495" holder="1484" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="1777144" />
+<call method="1495" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1495">
+<bc code="183" bci="14" />
+<call method="1488" instr="invokespecial" />
+<inline_fail reason="don't inline Throwable constructors" />
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1495" />
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1493" />
+<bc code="185" bci="45" />
+<klass id="1498" name="value_type.bench.INorm" flags="1537" />
+<method id="1499" holder="1498" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1499" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="50" />
+<method id="1500" holder="1492" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="5107" compiler="c2" level="4" iicount="2091758" />
+<call method="1500" instr="invokestatic" />
+<inline_success reason="inline" />
+<parse method="1500">
+<bc code="184" bci="2" />
+<method id="1502" holder="1484" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1502" instr="invokestatic" />
+<inline_fail reason="callee is too large" />
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1500" />
+<parse_done stamp="4.615" />
+</parse>
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1485" />
+<dependency type="evol_method" x0="1482" />
+<dependency type="evol_method" x0="1490" />
+<dependency type="evol_method" x0="1495" />
+<dependency type="evol_method" x0="1493" />
+<dependency type="evol_method" x0="1500" />
+<code_cache total_blobs="4793" nmethods="4019" adapters="610" free_code_cache="239374656" />
+<task_done success="1" nmsize="2592" count="532" backedge_count="543825" inlined_bytes="63" stamp="4.628" />
+</task>
+
+<task compile_id="5106" method="value_type.bench$interface_dt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="260" backedge_count="265471" iicount="260" stamp="1.834">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_dt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" compile_id="5084" compiler="c1" level="3" iicount="260" />
+<parse method="1476" uses="260.000000" stamp="1.834">
+<dependency type="evol_method" x0="1476" />
+<bc code="192" bci="1" />
+<uncommon_trap bci="1" reason="null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="1" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="15" />
+<branch target_bci="63" taken="259" not_taken="265318" cnt="265577.000000" prob="                0.00" />
+<uncommon_trap bci="15" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1481" name="clojure.lang.RT" flags="33" />
+<method id="1482" holder="1481" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="269935" />
+<call method="1482" count="204091" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1482" uses="265318.000000" stamp="1.834">
+<dependency type="evol_method" x0="1482" />
+<bc code="184" bci="1" />
+<klass id="1489" name="java.lang.Math" flags="49" />
+<method id="1490" holder="1489" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="270235" />
+<call method="1490" count="269677" prof_factor="0.982896" inline="1" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<uncommon_trap method="1490" bci="8" reason="unloaded" action="reinterpret" index="109" debug_id="0" klass="1469" />
+<inline_success reason="inline (hot)" />
+<parse method="1490" uses="265318.000000" stamp="1.834">
+<dependency type="evol_method" x0="1490" />
+<bc code="153" bci="5" />
+<branch target_bci="18" taken="270235" not_taken="0" cnt="270235.000000" prob="always" />
+<uncommon_trap bci="5" reason="unstable_if" action="reinterpret" debug_id="0" comment="taken always" />
+<parse_done nodes="190" live="181" memory="30112" stamp="1.834" />
+</parse>
+<parse_done nodes="190" live="180" memory="30368" stamp="1.834" />
+</parse>
+<bc code="184" bci="26" />
+<klass id="1480" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1483" holder="1481" name="aget" return="1274" arguments="1480 1267" flags="9" bytes="4" compile_id="5078" compiler="c2" level="4" iicount="266693" />
+<call method="1483" count="204091" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1483" uses="265318.000000" stamp="1.834">
+<dependency type="evol_method" x0="1483" />
+<bc code="50" bci="2" />
+<uncommon_trap bci="2" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<parse_done nodes="227" live="215" memory="36296" stamp="1.834" />
+</parse>
+<bc code="184" bci="32" />
+<klass id="1484" name="clojure.lang.Numbers" flags="33" />
+<method id="1485" holder="1484" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="191042" />
+<call method="1485" count="204091" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1485" uses="265318.000000" stamp="1.834">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="1" />
+<method id="1494" holder="1489" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="194114" />
+<call method="1494" count="193857" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="1" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_incrementExactL" nodes="15" />
+<parse_done nodes="253" live="239" memory="41400" stamp="1.834" />
+</parse>
+<bc code="192" bci="42" />
+<uncommon_trap bci="42" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="42" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="45" />
+<klass id="1479" name="value_type.bench.IDt" flags="49" />
+<method id="1497" holder="1479" name="norm" return="1268" flags="1" bytes="12" compile_id="5079" compiler="c2" level="4" iicount="211016" />
+<call method="1497" count="204091" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="45" exact="0" klass="1479" />
+<parse method="1497" uses="265318.000000" stamp="1.834">
+<dependency type="evol_method" x0="1497" />
+<bc code="184" bci="8" />
+<method id="1488" holder="1484" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="5107" compiler="c2" level="4" iicount="479492" />
+<call method="1488" count="210559" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="211016.000000" stamp="1.834">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<method id="1499" holder="1489" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1499" count="486529" prof_factor="0.440082" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="332" live="314" memory="54536" stamp="1.834" />
+</parse>
+<parse_done nodes="332" live="313" memory="54664" stamp="1.834" />
+</parse>
+<bc code="184" bci="50" />
+<call method="1488" count="204091" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="265318.000000" stamp="1.834">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<call method="1499" count="486529" prof_factor="0.553331" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="356" live="335" memory="59288" stamp="1.834" />
+</parse>
+<bc code="156" bci="15" />
+<branch target_bci="63" taken="259" not_taken="265318" cnt="265317.000000" prob="                0.00" />
+<parse_done nodes="375" live="353" memory="62616" stamp="1.834" />
+</parse>
+<loop_tree>
+<loop idx="433">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="447">
+<loop idx="448">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="447">
+<loop idx="778" inner_loop="1">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="646" inner_loop="1">
+</loop>
+<loop idx="447">
+<loop idx="778" inner_loop="1">
+</loop>
+</loop>
+<loop idx="528" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="646" inner_loop="1">
+</loop>
+<loop idx="447">
+<loop idx="778" inner_loop="1">
+</loop>
+</loop>
+<loop idx="528" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="646" inner_loop="1">
+</loop>
+<loop idx="447">
+<loop idx="778" inner_loop="1">
+</loop>
+</loop>
+<loop idx="528" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1482" />
+<dependency type="evol_method" x0="1490" />
+<dependency type="evol_method" x0="1483" />
+<dependency type="evol_method" x0="1485" />
+<dependency type="evol_method" x0="1497" />
+<dependency type="evol_method" x0="1488" />
+<code_cache total_blobs="4397" nmethods="3640" adapters="587" free_code_cache="239022720" />
+<task_done success="1" nmsize="832" count="380" backedge_count="389136" inlined_bytes="145" stamp="1.840" />
+</task>
+
+<task compile_id="5745" method="value_type.bench$interface_vt invokeStatic (Ljava/lang/Object;)J" bytes="66" count="564" backedge_count="576594" iicount="564" stamp="4.634">
+<type id="1268" name="long" />
+<klass id="1274" name="java.lang.Object" flags="33" />
+<klass id="1475" name="value_type.bench$interface_vt" flags="49" />
+<method id="1476" holder="1475" name="invokeStatic" return="1268" arguments="1274" flags="9" bytes="66" compile_id="5743" compiler="c1" level="3" iicount="564" />
+<parse method="1476" uses="564.000000" stamp="4.634">
+<dependency type="evol_method" x0="1476" />
+<bc code="192" bci="1" />
+<uncommon_trap bci="1" reason="null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="1" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="15" />
+<branch target_bci="63" taken="563" not_taken="576581" cnt="577144.000000" prob="                0.00" />
+<uncommon_trap bci="15" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="15" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="184" bci="23" />
+<type id="1267" name="int" />
+<klass id="1481" name="clojure.lang.RT" flags="33" />
+<method id="1482" holder="1481" name="intCast" return="1267" arguments="1268" flags="9" bytes="5" compile_id="2251" compiler="c2" level="4" iicount="4780329" />
+<call method="1482" count="515243" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1482" uses="576581.000000" stamp="4.634">
+<dependency type="evol_method" x0="1482" />
+<bc code="184" bci="1" />
+<klass id="1489" name="java.lang.Math" flags="49" />
+<method id="1490" holder="1489" name="toIntExact" return="1267" arguments="1268" flags="9" bytes="21" compile_id="1107" compiler="c1" level="3" iicount="4780659" />
+<call method="1490" count="4780071" prof_factor="0.120615" inline="1" />
+<klass id="1469" name="java.lang.ArithmeticException" flags="33" />
+<uncommon_trap method="1490" bci="8" reason="unloaded" action="reinterpret" index="109" debug_id="0" klass="1469" />
+<inline_success reason="inline (hot)" />
+<parse method="1490" uses="576581.000000" stamp="4.634">
+<dependency type="evol_method" x0="1490" />
+<bc code="153" bci="5" />
+<branch target_bci="18" taken="4780659" not_taken="0" cnt="4780659.000000" prob="always" />
+<uncommon_trap bci="5" reason="unstable_if" action="reinterpret" debug_id="0" comment="taken always" />
+<parse_done nodes="190" live="181" memory="30112" stamp="4.634" />
+</parse>
+<parse_done nodes="190" live="180" memory="30368" stamp="4.634" />
+</parse>
+<bc code="184" bci="26" />
+<klass id="1480" name="[Ljava.lang.Object;" flags="1073" />
+<method id="1483" holder="1481" name="aget" return="1274" arguments="1480 1267" flags="9" bytes="4" compile_id="5078" compiler="c2" level="4" iicount="896606" />
+<call method="1483" count="515243" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1483" uses="576581.000000" stamp="4.634">
+<dependency type="evol_method" x0="1483" />
+<bc code="50" bci="2" />
+<uncommon_trap bci="2" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<parse_done nodes="227" live="215" memory="36296" stamp="4.634" />
+</parse>
+<bc code="184" bci="32" />
+<klass id="1484" name="clojure.lang.Numbers" flags="33" />
+<method id="1485" holder="1484" name="inc" return="1268" arguments="1268" flags="9" bytes="5" compile_id="5070" compiler="c2" level="4" iicount="2089862" />
+<call method="1485" count="515243" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1485" uses="576581.000000" stamp="4.634">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="1" />
+<method id="1494" holder="1489" name="incrementExact" return="1268" arguments="1268" flags="9" bytes="22" compile_id="3499" compiler="c1" level="3" iicount="2089952" />
+<call method="1494" count="2089717" prof_factor="0.275894" inline="1" />
+<uncommon_trap bci="1" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_incrementExactL" nodes="15" />
+<parse_done nodes="253" live="239" memory="41400" stamp="4.634" />
+</parse>
+<bc code="192" bci="42" />
+<uncommon_trap bci="42" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="42" reason="class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="45" />
+<klass id="1479" name="value_type.bench.IVt" flags="17" />
+<method id="1497" holder="1479" name="norm" return="1268" flags="1" bytes="12" compile_id="5737" compiler="c2" level="4" iicount="9007" />
+<call method="1497" count="515243" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="45" exact="0" klass="1479" />
+<parse method="1497" uses="576581.000000" stamp="4.634">
+<dependency type="evol_method" x0="1497" />
+<bc code="184" bci="8" />
+<method id="1488" holder="1484" name="add" return="1268" arguments="1268 1268" flags="9" bytes="6" compile_id="5107" compiler="c2" level="4" iicount="2404209" />
+<call method="1488" count="8516" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="9007.000000" stamp="4.634">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<method id="1500" holder="1489" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5074" compiler="c2" level="4" iicount="9079" />
+<call method="1500" count="2404886" prof_factor="0.003746" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="365" live="347" memory="59624" stamp="4.634" />
+</parse>
+<parse_done nodes="365" live="346" memory="59752" stamp="4.634" />
+</parse>
+<bc code="184" bci="50" />
+<call method="1488" count="515242" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<parse method="1488" uses="576580.000000" stamp="4.634">
+<dependency type="evol_method" x0="1488" />
+<bc code="184" bci="2" />
+<call method="1500" count="2404886" prof_factor="0.239821" inline="1" />
+<uncommon_trap bci="2" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="390" live="369" memory="64616" stamp="4.634" />
+</parse>
+<bc code="156" bci="15" />
+<branch target_bci="63" taken="563" not_taken="576581" cnt="576580.000000" prob="                0.00" />
+<parse_done nodes="409" live="387" memory="68488" stamp="4.634" />
+</parse>
+<loop_tree>
+<loop idx="467">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="481">
+<loop idx="482">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="481">
+<loop idx="812" inner_loop="1">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="680" inner_loop="1">
+</loop>
+<loop idx="481">
+<loop idx="812" inner_loop="1">
+</loop>
+</loop>
+<loop idx="562" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="680" inner_loop="1">
+</loop>
+<loop idx="481">
+<loop idx="812" inner_loop="1">
+</loop>
+</loop>
+<loop idx="562" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="680" inner_loop="1">
+</loop>
+<loop idx="481">
+<loop idx="812" inner_loop="1">
+</loop>
+</loop>
+<loop idx="562" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1476" />
+<dependency type="evol_method" x0="1482" />
+<dependency type="evol_method" x0="1490" />
+<dependency type="evol_method" x0="1483" />
+<dependency type="evol_method" x0="1485" />
+<dependency type="evol_method" x0="1497" />
+<dependency type="evol_method" x0="1488" />
+<code_cache total_blobs="4796" nmethods="4021" adapters="610" free_code_cache="239365824" />
+<task_done success="1" nmsize="832" count="594" backedge_count="608261" inlined_bytes="145" stamp="4.657" />
+</task>
+
+</tasks>

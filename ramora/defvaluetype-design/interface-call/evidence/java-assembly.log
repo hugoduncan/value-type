@@ -1,0 +1,1675 @@
+CompileCommand: blackhole criterium/blackhole/Blackhole.consume bool blackhole = true
+CompileCommand: print value_type/bench$interface_dt.invokeStatic bool print = true
+CompileCommand: print value_type/bench$interface_vt.invokeStatic bool print = true
+CompileCommand: print investigation/InterfaceControl.identityPass bool print = true
+CompileCommand: print investigation/InterfaceControl.valuePass bool print = true
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+[1.934s][warning][os] Loading hsdis library failed
+
+Compiled method (c1) 1934 5059 %     3       investigation.InterfaceControl::identityPass @ 4 (40 bytes)
+ total in heap  [0x000000011214a748,0x000000011214ae50] = 1800
+ main code      [0x000000011214a840,0x000000011214add0] = 1424
+ stub code      [0x000000011214add0,0x000000011214ae48] = 120
+ oops           [0x000000011214ae48,0x000000011214ae50] = 8
+ mutable data [0x00000076b330c700,0x00000076b330c7d0] = 208
+ relocation     [0x00000076b330c700,0x00000076b330c7a8] = 168
+ metadata       [0x00000076b330c7a8,0x00000076b330c7d0] = 40
+ immutable data [0x00000076b50c3d40,0x00000076b50c3ecc] = 396
+ dependencies   [0x00000076b50c3d40,0x00000076b50c3d48] = 8
+ nul chk table  [0x00000076b50c3d48,0x00000076b50c3d60] = 24
+ scopes pcs     [0x00000076b50c3d60,0x00000076b50c3e30] = 208
+ scopes data    [0x00000076b50c3e30,0x00000076b50c3ec8] = 152
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x000000011214a840: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ffc3 01d1 | fd7b 06a9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000011214a860: e000 0054 
+
+  0x000000011214a864: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011214a864: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0b00 0000 
+
+  0x000000011214a87c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214a87c: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 4224 1f12 | 5f00 0071 
+  0x000000011214a89c: a024 0054 | fd03 01aa | 0200 80d2 | 0300 80d2 | e500 0014 | 417c 40d3 | a00f 40b9 | 3f00 006b 
+  0x000000011214a8bc: a224 0054 
+
+  0x000000011214a8c0: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214a8c0: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 00e0 0391 | e403 1daa | 8408 40b9 | 8428 5ed2 | 0900 40f9 
+  0x000000011214a8e0: 8400 09ca | 88f4 7e92 | 0802 00b4 | e401 0837 | a901 00b4 | 3f05 00f1 | 6001 0054 | bf39 03d5 
+  0x000000011214a900: 8400 09ca | 0900 40f9 | 8400 09ca | 88f4 7e92 | c800 00b4 | 0900 40f9 | 2901 7fb2 | 0900 00f9 
+  0x000000011214a920: 0200 0014 | 0400 00f9 | a003 40f9 | 1f00 40f2 | 8100 0054 | a00b 40b9 | 0028 5ed2 | 0050 40f9 
+  0x000000011214a940: 1f00 78f2 
+
+  0x000000011214a944: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214a944: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 04c4 8339 | 0800 a052 | e903 1b32 | 0501 899a | 8400 052a 
+  0x000000011214a964: 04c4 0339 | a503 40f9 | bf00 40f2 | 8100 0054 | a50b 40b9 | a528 5ed2 | a550 40f9 | a500 7792 
+  0x000000011214a984: 251f 00b5 | 217c 4093 | 21f4 7ed3 | 2140 0091 | a46b 61b8 | 4400 00b4 | 640f 048b 
+
+  0x000000011214a9a0: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214a9a0: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 2100 0491 | e003 04aa | a000 00b5 | 2900 40f9 | 2901 40b2 
+  0x000000011214a9c0: 2900 00f9 | 1600 0014 | 0008 40b9 | 0028 5ed2 | 2900 40f9 | 0000 09ca | 08f4 7e92 | 0802 00b4 
+  0x000000011214a9e0: e001 0837 | a901 00b4 | 3f05 00f1 | 6001 0054 | bf39 03d5 | 0000 09ca | 2900 40f9 | 0000 09ca 
+  0x000000011214aa00: 08f4 7e92 | c800 00b4 | 2900 40f9 | 2901 7fb2 | 2900 00f9 | 0200 0014 | 2000 00f9 
+
+  0x000000011214aa1c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214aa1c: 058b 8ed2 | c59e a9f2 | 2500 c0f2 | a400 00b5 | a824 4439 | 0801 40b2 | a824 0439 | 2b00 0014 
+  0x000000011214aa3c: 8108 40b9 | 2128 5ed2 | 0923 80d2 | a868 69f8 | 1f01 01eb | 4002 0054 | 2941 0091 | 28e1 04d1 
+  0x000000011214aa5c: 68ff ffb5 | 0923 80d2 | a868 69f8 | a800 00b4 | 2941 0091 | 28e1 04d1 | 88ff ffb5 | 0600 0014 
+  0x000000011214aa7c: a960 298b | e803 1faa | 217d a8c8 | 1f01 1feb | eeff ff17 | 0922 80d2 | 0200 0014 | 2921 0091 
+  0x000000011214aa9c: a868 69f8 | 0805 0091 | a868 29f8 
+
+  0x000000011214aaa8: ;   {metadata('investigation/InterfaceControl$Norm')}
+  0x000000011214aaa8: 0131 9ed2 | 0137 a0f2 | 81ff c3f2 | 8508 40b9 | a528 5ed2 | a810 40f9 | 3f00 08eb | 0001 0054 
+  0x000000011214aac8: bf00 01eb | c000 0054 | e507 bfa9 
+
+  0x000000011214aad4: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000011214aad4: 1bb2 ce95 | e507 41f8 | e514 0034 | 0100 0014 | e103 04aa 
+
+  0x000000011214aae8: ; implicit exception: dispatches to 0x000000011214ad80
+  0x000000011214aae8: 3f00 40f9 | e003 01aa 
+
+  0x000000011214aaf0: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214aaf0: 048b 8ed2 | c49e a9f2 | 2400 c0f2 | 0008 40b9 | 0028 5ed2 | 0929 80d2 | 8868 69f8 | 1f01 00eb 
+  0x000000011214ab10: 4002 0054 | 2941 0091 | 28a1 05d1 | 68ff ffb5 | 0929 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 
+  0x000000011214ab30: 28a1 05d1 | 88ff ffb5 | 0600 0014 | 8960 298b | e803 1faa | 207d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000011214ab50: 0928 80d2 | 0200 0014 | 2921 0091 | 8868 69f8 | 0805 0091 | 8868 29f8 | fd0b 04a9 | fd03 03aa 
+  0x000000011214ab70: 09ea 88d2 | 292e b7f2 | c90e c0f2 
+
+  0x000000011214ab7c: ; ImmutableOopMap {[64]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@20 (line 33)
+                      ;   {virtual_call}
+  0x000000011214ab7c: 3167 ee95 
+
+  0x000000011214ab80: ;   {post_call_nop}
+  0x000000011214ab80: 1f20 03d5 | 1f87 80f2 | 1f00 80f2 
+
+  0x000000011214ab8c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214ab8c: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 28b8 40f9 | 0805 0091 | 28b8 00f9 | e103 1daa | e203 00aa 
+  0x000000011214abac: ; ImmutableOopMap {[64]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@25 (line 33)
+                      ;   {static_call}
+  0x000000011214abac: 353d e895 
+
+  0x000000011214abb0: ;   {post_call_nop}
+  0x000000011214abb0: 1f20 03d5 | 1f8d 80f2 | 1f20 80f2 | fd03 00aa 
+
+  0x000000011214abc0: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214abc0: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 28c0 40f9 | 0805 0091 | 28c0 00f9 | e127 40f9 | e203 40b2 
+  0x000000011214abe0: ; ImmutableOopMap {[64]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@31 (line 32)
+                      ;   {static_call}
+  0x000000011214abe0: 283d e895 
+
+  0x000000011214abe4: ;   {post_call_nop}
+  0x000000011214abe4: 1f20 03d5 | 9f93 80f2 | 1f40 80f2 
+
+  0x000000011214abf0: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214abf0: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 2294 40b9 | 4208 0011 | 2294 00b9 | 4230 1f12 | 5f00 0071 
+  0x000000011214ac10: a00b 0054 
+
+  0x000000011214ac14: ; ImmutableOopMap {[64]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@35 (line 32)
+  0x000000011214ac14: 881b 40f9 
+
+  0x000000011214ac18: ;   {poll}
+  0x000000011214ac18: 1f01 40b9 
+
+  0x000000011214ac1c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214ac1c: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 22c8 40f9 | 4204 0091 | 22c8 00f9 | e203 00aa | e303 1daa 
+  0x000000011214ac3c: fd23 40f9 
+
+  0x000000011214ac40: ; implicit exception: dispatches to 0x000000011214ada4
+  0x000000011214ac40: a00f 40b9 | 007c 4093 | e103 02aa | 3f00 00eb 
+
+  0x000000011214ac50: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214ac50: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 01b1 899a | 0468 61f8 | 8404 0091 
+  0x000000011214ac70: 0468 21f8 | ebe1 ff54 | fd03 03aa | e003 1daa | fd7b 46a9 | ffc3 0191 
+
+  0x000000011214ac88: ;   {poll_return}
+  0x000000011214ac88: 8817 40f9 | ff63 28eb | c808 0054 | c003 5fd6 | e953 40d1 | 3f01 00f9 | ffc3 01d1 | fd7b 06a9 
+  0x000000011214aca8: 2801 0018 | 8923 40b9 | 1f01 09eb | e000 0054 
+
+  0x000000011214acb8: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011214acb8: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0000 0000 | e003 1b32 | 007c 4093 
+  0x000000011214acd8: 3d68 60f8 | e003 1c32 | 007c 4093 | 2268 60f8 | 0000 a052 | 007c 4093 | 2368 60f8 | e003 01aa 
+  0x000000011214acf8: fd0b 03a9 | fd03 03aa 
+
+  0x000000011214ad00: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x000000011214ad00: 0837 9bd2 | 8812 a1f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x000000011214ad10: ;   {post_call_nop}
+  0x000000011214ad10: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 | e203 1daa | e01f 40f9 | e303 00aa | fd1b 40f9 | c5ff ff17 
+  0x000000011214ad30: ;   {metadata({method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214ad30: 08a6 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011214ad48: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*synchronization entry
+                      ; - investigation.InterfaceControl::identityPass@-1 (line 31)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011214ad48: 7eb7 ce95 | d5fe ff17 | e803 01aa | e903 1daa 
+
+  0x000000011214ad58: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011214ad58: 1e28 89d2 | fe29 a3f2 | 3e00 c0f2 
+
+  0x000000011214ad64: ; ImmutableOopMap {rfp=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@16 (line 33)
+  0x000000011214ad64: c003 3fd6 | e177 00a9 
+
+  0x000000011214ad6c: ; ImmutableOopMap {rfp=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@16 (line 33)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x000000011214ad6c: 15ac ce95 | e403 00aa | 0bff ff17 | e803 04aa 
+
+  0x000000011214ad7c: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@17 (line 33)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011214ad7c: f1af ce95 
+
+  0x000000011214ad80: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@20 (line 33)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011214ad80: 10a8 ce95 
+
+  0x000000011214ad84: ;   {metadata({method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011214ad84: 08a6 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 6804 80d2 | e803 00f9 
+
+  0x000000011214ad9c: ; ImmutableOopMap {[64]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@35 (line 32)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011214ad9c: 69b7 ce95 | 9dff ff17 
+
+  0x000000011214ada4: ; ImmutableOopMap {rfp=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@6 (line 32)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011214ada4: 07a8 ce95 
+
+  0x000000011214ada8: ;   {internal_word}
+  0x000000011214ada8: 08f7 ff10 | 8853 02f9 
+
+  0x000000011214adb0: ;   {runtime_call SafepointBlob}
+  0x000000011214adb0: 3459 c915 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 46a9 | ffc3 0191 
+
+  0x000000011214adc8: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000011214adc8: 4ea5 ce15 | 0000 0000 
+[Stub Code]
+  0x000000011214add0: ;   {static_stub}
+  0x000000011214add0: df3f 03d5 
+
+  0x000000011214add4: ;   {metadata(nullptr)}
+  0x000000011214add4: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000011214ade8: ;   {trampoline_stub}
+  0x000000011214ade8: 4800 0058 | 0001 1fd6 | 4048 ce19 | 0100 0000 
+
+  0x000000011214adf8: ;   {trampoline_stub}
+  0x000000011214adf8: 4800 0058 | 0001 1fd6 | 80a0 b519 | 0100 0000 
+
+  0x000000011214ae08: ;   {trampoline_stub}
+  0x000000011214ae08: 4800 0058 | 0001 1fd6 | 80a0 b519 | 0100 0000 
+
+  0x000000011214ae18: ;   {static_stub}
+  0x000000011214ae18: df3f 03d5 
+
+  0x000000011214ae1c: ;   {metadata(nullptr)}
+  0x000000011214ae1c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011214ae2c: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011214ae2c: 05af ce95 
+
+  0x000000011214ae30: ;   {external_word}
+  0x000000011214ae30: 60dc 90d2 | a017 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000011214ae40: ;   {runtime_call DeoptimizationBlob}
+  0x000000011214ae40: 9059 c995 
+[Deopt Handler Entry Point]
+  0x000000011214ae44: ffff ff17 
+[/MachCode]
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c1) 1941 5062       3       investigation.InterfaceControl::identityPass (40 bytes)
+ total in heap  [0x0000000112023d48,0x0000000112024360] = 1560
+ main code      [0x0000000112023e40,0x00000001120242e0] = 1184
+ stub code      [0x00000001120242e0,0x0000000112024358] = 120
+ oops           [0x0000000112024358,0x0000000112024360] = 8
+ mutable data [0x00000076b330e300,0x00000076b330e3c8] = 200
+ relocation     [0x00000076b330e300,0x00000076b330e3a0] = 160
+ metadata       [0x00000076b330e3a0,0x00000076b330e3c8] = 40
+ immutable data [0x00000076b50c3800,0x00000076b50c398c] = 396
+ dependencies   [0x00000076b50c3800,0x00000076b50c3808] = 8
+ nul chk table  [0x00000076b50c3808,0x00000076b50c3820] = 24
+ scopes pcs     [0x00000076b50c3820,0x00000076b50c38f0] = 208
+ scopes data    [0x00000076b50c38f0,0x00000076b50c3988] = 152
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl'
+  # parm0:    c_rarg1:c_rarg1 
+                        = '[Ljava/lang/Object;'
+  #           [sp+0x60]  (sp of caller)
+  0x0000000112023e40: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff83 01d1 | fd7b 05a9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x0000000112023e60: e000 0054 
+
+  0x0000000112023e64: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000112023e64: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0b00 0000 | fd03 01aa | fd1b 00f9 
+  0x0000000112023e84: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112023e84: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 2124 1f12 | 3f00 0071 
+  0x0000000112023ea4: 001d 0054 | 0200 80d2 | 0300 80d2 | cf00 0014 | 417c 40d3 | a00f 40b9 | 3f00 006b | 221d 0054 
+  0x0000000112023ec4: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112023ec4: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 00e0 0391 | e403 1daa | 8408 40b9 | 8428 5ed2 | 0900 40f9 
+  0x0000000112023ee4: 8400 09ca | 88f4 7e92 | a800 00b4 | 8400 0837 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | a003 40f9 
+  0x0000000112023f04: 1f00 40f2 | 8100 0054 | a00b 40b9 | 0028 5ed2 | 0050 40f9 | 1f00 78f2 
+
+  0x0000000112023f1c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112023f1c: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 04c4 8339 | 0800 a052 | e903 1b32 | 0501 899a | 8400 052a 
+  0x0000000112023f3c: 04c4 0339 | a503 40f9 | bf00 40f2 | 8100 0054 | a50b 40b9 | a528 5ed2 | a550 40f9 | a500 7792 
+  0x0000000112023f5c: 0519 00b5 | 217c 4093 | 21f4 7ed3 | 2140 0091 | a46b 61b8 | 4400 00b4 | 640f 048b 
+
+  0x0000000112023f78: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112023f78: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 2100 0491 | e003 04aa | a000 00b5 | 2900 40f9 | 2901 40b2 
+  0x0000000112023f98: 2900 00f9 | 0b00 0014 | 0008 40b9 | 0028 5ed2 | 2900 40f9 | 0000 09ca | 08f4 7e92 | a800 00b4 
+  0x0000000112023fb8: 8000 0837 | 2900 40f9 | 2901 7fb2 | 2900 00f9 
+
+  0x0000000112023fc8: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112023fc8: 058b 8ed2 | c59e a9f2 | 2500 c0f2 | a400 00b5 | a824 4439 | 0801 40b2 | a824 0439 | 2b00 0014 
+  0x0000000112023fe8: 8108 40b9 | 2128 5ed2 | 0923 80d2 | a868 69f8 | 1f01 01eb | 4002 0054 | 2941 0091 | 28e1 04d1 
+  0x0000000112024008: 68ff ffb5 | 0923 80d2 | a868 69f8 | a800 00b4 | 2941 0091 | 28e1 04d1 | 88ff ffb5 | 0600 0014 
+  0x0000000112024028: a960 298b | e803 1faa | 217d a8c8 | 1f01 1feb | eeff ff17 | 0922 80d2 | 0200 0014 | 2921 0091 
+  0x0000000112024048: a868 69f8 | 0805 0091 | a868 29f8 
+
+  0x0000000112024054: ;   {metadata('investigation/InterfaceControl$Norm')}
+  0x0000000112024054: 0131 9ed2 | 0137 a0f2 | 81ff c3f2 | 8508 40b9 | a528 5ed2 | a810 40f9 | 3f00 08eb | 0001 0054 
+  0x0000000112024074: bf00 01eb | c000 0054 | e507 bfa9 
+
+  0x0000000112024080: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x0000000112024080: b04c d395 | e507 41f8 | 2510 0034 | 0100 0014 | e103 04aa 
+
+  0x0000000112024094: ; implicit exception: dispatches to 0x0000000112024294
+  0x0000000112024094: 3f00 40f9 | e003 01aa 
+
+  0x000000011202409c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011202409c: 048b 8ed2 | c49e a9f2 | 2400 c0f2 | 0008 40b9 | 0028 5ed2 | 0929 80d2 | 8868 69f8 | 1f01 00eb 
+  0x00000001120240bc: 4002 0054 | 2941 0091 | 28a1 05d1 | 68ff ffb5 | 0929 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 
+  0x00000001120240dc: 28a1 05d1 | 88ff ffb5 | 0600 0014 | 8960 298b | e803 1faa | 207d a8c8 | 1f01 1feb | eeff ff17 
+  0x00000001120240fc: 0928 80d2 | 0200 0014 | 2921 0091 | 8868 69f8 | 0805 0091 | 8868 29f8 | e21f 00f9 | fd03 03aa 
+  0x000000011202411c: 090e 89d2 | 292e b7f2 | c90e c0f2 
+
+  0x0000000112024128: ; ImmutableOopMap {[48]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@20 (line 33)
+                      ;   {virtual_call}
+  0x0000000112024128: 36ef cd95 
+
+  0x000000011202412c: ;   {post_call_nop}
+  0x000000011202412c: 1f20 03d5 | 9f7c 80f2 | 1f00 80f2 
+
+  0x0000000112024138: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112024138: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 28b8 40f9 | 0805 0091 | 28b8 00f9 | e103 1daa | e203 00aa 
+  0x0000000112024158: ; ImmutableOopMap {[48]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@25 (line 33)
+                      ;   {static_call}
+  0x0000000112024158: aaef cd95 
+
+  0x000000011202415c: ;   {post_call_nop}
+  0x000000011202415c: 1f20 03d5 | 9f82 80f2 | 1f20 80f2 | fd03 00aa 
+
+  0x000000011202416c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011202416c: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 28c0 40f9 | 0805 0091 | 28c0 00f9 | e11f 40f9 | e203 40b2 
+  0x000000011202418c: ; ImmutableOopMap {[48]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@31 (line 32)
+                      ;   {static_call}
+  0x000000011202418c: 9def cd95 
+
+  0x0000000112024190: ;   {post_call_nop}
+  0x0000000112024190: 1f20 03d5 | 1f89 80f2 | 1f40 80f2 
+
+  0x000000011202419c: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011202419c: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 2294 40b9 | 4208 0011 | 2294 00b9 | 4230 1f12 | 5f00 0071 
+  0x00000001120241bc: e006 0054 
+
+  0x00000001120241c0: ; ImmutableOopMap {[48]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@35 (line 32)
+  0x00000001120241c0: 881b 40f9 
+
+  0x00000001120241c4: ;   {poll}
+  0x00000001120241c4: 1f01 40b9 
+
+  0x00000001120241c8: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001120241c8: 018b 8ed2 | c19e a9f2 | 2100 c0f2 | 22c8 40f9 | 4204 0091 | 22c8 00f9 | e203 00aa | e303 1daa 
+  0x00000001120241e8: fd1b 40f9 
+
+  0x00000001120241ec: ; implicit exception: dispatches to 0x00000001120242b8
+  0x00000001120241ec: a00f 40b9 | 007c 4093 | e103 02aa | 3f00 00eb 
+
+  0x00000001120241fc: ;   {metadata(method data for {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001120241fc: 008b 8ed2 | c09e a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 01b1 899a | 0468 61f8 | 8404 0091 
+  0x000000011202421c: 0468 21f8 | abe4 ff54 | fd03 03aa | e003 1daa | fd7b 45a9 | ff83 0191 
+
+  0x0000000112024234: ;   {poll_return}
+  0x0000000112024234: 8817 40f9 | ff63 28eb | 0804 0054 | c003 5fd6 
+
+  0x0000000112024244: ;   {metadata({method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112024244: 08a6 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011202425c: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*synchronization entry
+                      ; - investigation.InterfaceControl::identityPass@-1 (line 31)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011202425c: 3952 d395 | 12ff ff17 | e803 01aa | e903 1daa 
+
+  0x000000011202426c: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011202426c: 1e28 89d2 | fe29 a3f2 | 3e00 c0f2 
+
+  0x0000000112024278: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@16 (line 33)
+  0x0000000112024278: c003 3fd6 | e177 00a9 
+
+  0x0000000112024280: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@16 (line 33)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x0000000112024280: d046 d395 | e403 00aa | 3cff ff17 | e803 04aa 
+
+  0x0000000112024290: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@17 (line 33)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x0000000112024290: ac4a d395 
+
+  0x0000000112024294: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop [48]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@20 (line 33)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x0000000112024294: cb42 d395 
+
+  0x0000000112024298: ;   {metadata({method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x0000000112024298: 08a6 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 6804 80d2 | e803 00f9 
+
+  0x00000001120242b0: ; ImmutableOopMap {[48]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@35 (line 32)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x00000001120242b0: 2452 d395 | c3ff ff17 
+
+  0x00000001120242b8: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@6 (line 32)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x00000001120242b8: c242 d395 
+
+  0x00000001120242bc: ;   {internal_word}
+  0x00000001120242bc: c8fb ff10 | 8853 02f9 
+
+  0x00000001120242c4: ;   {runtime_call SafepointBlob}
+  0x00000001120242c4: eff3 cd15 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 45a9 | ff83 0191 
+
+  0x00000001120242dc: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x00000001120242dc: 0940 d315 
+[Stub Code]
+  0x00000001120242e0: ;   {static_stub}
+  0x00000001120242e0: df3f 03d5 
+
+  0x00000001120242e4: ;   {metadata(nullptr)}
+  0x00000001120242e4: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x00000001120242f8: ;   {trampoline_stub}
+  0x00000001120242f8: 4800 0058 | 0001 1fd6 | 00fe 3919 | 0100 0000 
+
+  0x0000000112024308: ;   {trampoline_stub}
+  0x0000000112024308: 4800 0058 | 0001 1fd6 | 0000 3a19 | 0100 0000 
+
+  0x0000000112024318: ;   {trampoline_stub}
+  0x0000000112024318: 4800 0058 | 0001 1fd6 | 0000 3a19 | 0100 0000 
+
+  0x0000000112024328: ;   {static_stub}
+  0x0000000112024328: df3f 03d5 
+
+  0x000000011202432c: ;   {metadata(nullptr)}
+  0x000000011202432c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011202433c: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011202433c: c149 d395 
+
+  0x0000000112024340: ;   {external_word}
+  0x0000000112024340: 60dc 90d2 | a017 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x0000000112024350: ;   {runtime_call DeoptimizationBlob}
+  0x0000000112024350: 4cf4 cd95 
+[Deopt Handler Entry Point]
+  0x0000000112024354: ffff ff17 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 1948 5064 %     4       investigation.InterfaceControl::identityPass @ 4 (40 bytes)
+ total in heap  [0x0000000119c1ff08,0x0000000119c20260] = 856
+ main code      [0x0000000119c20000,0x0000000119c20250] = 592
+ stub code      [0x0000000119c20250,0x0000000119c20258] = 8
+ oops           [0x0000000119c20258,0x0000000119c20260] = 8
+ mutable data [0x00000076b0f38310,0x00000076b0f38380] = 112
+ relocation     [0x00000076b0f38310,0x00000076b0f38358] = 72
+ metadata       [0x00000076b0f38358,0x00000076b0f38380] = 40
+ immutable data [0x00000076b50c2d80,0x00000076b50c2f24] = 420
+ dependencies   [0x00000076b50c2d80,0x00000076b50c2d88] = 8
+ nul chk table  [0x00000076b50c2d88,0x00000076b50c2da0] = 24
+ scopes pcs     [0x00000076b50c2da0,0x00000076b50c2e60] = 192
+ scopes data    [0x00000076b50c2e60,0x00000076b50c2f20] = 192
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x0000000119c20000: 0000 20d4 | 1f20 03d5 | 1f20 03d5 | 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff03 01d1 | fd7b 03a9 
+  0x0000000119c20020: 4811 0018 | 8923 40b9 | 1f01 09eb | 4110 0054 | 3510 40f9 | 3308 40f9 | 3400 40f9 | e003 01aa 
+  0x0000000119c20040: c900 0010 | 89ff 01f9 
+
+  0x0000000119c20048: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x0000000119c20048: 0837 9bd2 | 8812 a1f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x0000000119c20058: ;   {post_call_nop}
+  0x0000000119c20058: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 
+
+  0x0000000119c20064: ; implicit exception: dispatches to 0x0000000119c2020c
+  0x0000000119c20064: ab0a 40b9 | 6a29 5ed2 | 4a1d 40f9 
+
+  0x0000000119c20070: ;   {metadata('java/lang/Object'[])}
+  0x0000000119c20070: 0bf2 92d2 | 0b03 a0f2 | 8bff c3f2 | 5f01 0beb | c108 0054 | ab0a 40b9 
+
+  0x0000000119c20088: ;   {metadata('java/lang/Object'[])}
+  0x0000000119c20088: 2d06 a0d2 | 0de1 9af2 | 7f01 0d6b | aa0e 40b9 | e108 0054 | af0e 40b9 | 4a7d 4093 
+
+  0x0000000119c200a4: ;   {metadata('investigation/InterfaceControl$IdentityPoint')}
+  0x0000000119c200a4: 1137 a0d2 | 1178 9ef2 | 0500 0014 | 8b1b 40f9 | 9406 0091 
+
+  0x0000000119c200b8: ; ImmutableOopMap {rdispatch=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@35 (line 32)
+  0x0000000119c200b8: 7302 0d8b 
+
+  0x0000000119c200bc: ;   {poll}
+  0x0000000119c200bc: 7f01 40b9 | 9f02 0aeb | 0a03 0054 | ec03 142a | abca 2c8b | 9f01 0f6b | 6203 0054 | 6b11 40b9 
+  0x0000000119c200dc: 6c0f 0b8b 
+
+  0x0000000119c200e0: ; implicit exception: dispatches to 0x0000000119c201f0
+  0x0000000119c200e0: 8e09 40b9 | df01 116b | 4107 0054 | 8b31 41a9 | 7f01 0cab | 6d01 0c8b | 4603 0054 | 7f02 0dab 
+  0x0000000119c20100: e603 0054 | 9f06 00b1 | 47fd ff54 | 2106 8012 | fd03 14aa 
+
+  0x0000000119c20114: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@31 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c20114: bb69 e397 
+
+  0x0000000119c20118: ;   {post_call_nop}
+  0x0000000119c20118: 1f20 03d5 | 1f42 80f2 | 1f20 80f2 | e003 13aa | fd7b 43a9 | ff03 0191 
+
+  0x0000000119c20130: ;   {poll_return}
+  0x0000000119c20130: 8817 40f9 | ff63 28eb | 8807 0054 | c003 5fd6 | 6103 8012 | f44f 00a9 | f50b 00f9 | ec1b 00b9 
+  0x0000000119c20150: ; ImmutableOopMap {[16]=Oop }
+                      ;*aaload {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@16 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c20150: ac69 e397 
+
+  0x0000000119c20154: ;   {post_call_nop}
+  0x0000000119c20154: 1f20 03d5 | 9f49 80f2 | 1f40 80f2 | 2106 8012 | fd03 0baa | ec03 00f9 
+
+  0x0000000119c2016c: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl$IdentityPoint::norm@8 (line 11)
+                      ; - investigation.InterfaceControl::identityPass@20 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c2016c: a569 e397 
+
+  0x0000000119c20170: ;   {post_call_nop}
+  0x0000000119c20170: 1f20 03d5 | 1f4d 80f2 | 1f60 80f2 | 2106 8012 | fd03 13aa | ed03 00f9 
+
+  0x0000000119c20188: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@25 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c20188: 9e69 e397 
+
+  0x0000000119c2018c: ;   {post_call_nop}
+  0x0000000119c2018c: 1f20 03d5 | 9f50 80f2 | 1f80 80f2 | 410f 8012 | fd03 15aa | f353 00a9 
+
+  0x0000000119c201a4: ; ImmutableOopMap {rfp=Oop }
+                      ;*lload_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@4 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c201a4: 9769 e397 
+
+  0x0000000119c201a8: ;   {post_call_nop}
+  0x0000000119c201a8: 1f20 03d5 | 1f54 80f2 | 1fa0 80f2 | 2108 8012 | fd03 15aa | f353 00a9 
+
+  0x0000000119c201c0: ; ImmutableOopMap {rfp=Oop }
+                      ;*lload_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@4 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c201c0: 9069 e397 
+
+  0x0000000119c201c4: ;   {post_call_nop}
+  0x0000000119c201c4: 1f20 03d5 | 9f57 80f2 | 1fc0 80f2 | 2114 8012 | fd03 15aa | f44f 00a9 | eb13 00b9 
+
+  0x0000000119c201e0: ; ImmutableOopMap {rfp=Oop [16]=NarrowOop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@17 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c201e0: 8869 e397 
+
+  0x0000000119c201e4: ;   {post_call_nop}
+  0x0000000119c201e4: 1f20 03d5 | 9f5b 80f2 | 1fe0 80f2 | 6115 8012 | fd03 15aa | f44f 00a9 
+
+  0x0000000119c201fc: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@17 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c201fc: 8169 e397 
+
+  0x0000000119c20200: ;   {post_call_nop}
+  0x0000000119c20200: 1f20 03d5 | 1f5f 80f2 | 1f00 81f2 | 2112 8012 | fd03 13aa | f403 00f9 
+
+  0x0000000119c20218: ; ImmutableOopMap {}
+                      ;*lload_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@4 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c20218: 7a69 e397 
+
+  0x0000000119c2021c: ;   {post_call_nop}
+  0x0000000119c2021c: 1f20 03d5 | 9f62 80f2 | 1f20 81f2 
+
+  0x0000000119c20228: ;   {internal_word}
+  0x0000000119c20228: 48f8 ff10 | 8853 02f9 
+
+  0x0000000119c20230: ;   {runtime_call SafepointBlob}
+  0x0000000119c20230: 1404 de17 
+
+  0x0000000119c20234: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000119c20234: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 7bff ff17 
+
+  0x0000000119c20248: ;   {entry_guard}
+  0x0000000119c20248: 0b00 0000 | 0000 0000 
+[Stub Code]
+  0x0000000119c20250: ;   {runtime_call DeoptimizationBlob}
+  0x0000000119c20250: 8c04 de97 
+[Deopt Handler Entry Point]
+  0x0000000119c20254: ffff ff17 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 1953 5067       4       investigation.InterfaceControl::identityPass (40 bytes)
+ total in heap  [0x0000000119c5dd08,0x0000000119c5e0e8] = 992
+ main code      [0x0000000119c5de00,0x0000000119c5e0d8] = 728
+ stub code      [0x0000000119c5e0d8,0x0000000119c5e0e0] = 8
+ oops           [0x0000000119c5e0e0,0x0000000119c5e0e8] = 8
+ mutable data [0x00000076b0f3a6f0,0x00000076b0f3a758] = 104
+ relocation     [0x00000076b0f3a6f0,0x00000076b0f3a738] = 72
+ metadata       [0x00000076b0f3a738,0x00000076b0f3a758] = 32
+ immutable data [0x00000076b0feab80,0x00000076b0feace4] = 356
+ dependencies   [0x00000076b0feab80,0x00000076b0feab88] = 8
+ nul chk table  [0x00000076b0feab88,0x00000076b0feabb0] = 40
+ scopes pcs     [0x00000076b0feabb0,0x00000076b0feac50] = 160
+ scopes data    [0x00000076b0feac50,0x00000076b0feace0] = 144
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014cf4ed30} 'identityPass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl'
+  # parm0:    c_rarg1:c_rarg1 
+                        = '[Ljava/lang/Object;'
+  #           [sp+0x40]  (sp of caller)
+  0x0000000119c5de00: e953 40d1 | 3f01 00f9 | ff03 01d1 | fd7b 03a9 | 0816 0018 | 8923 40b9 | 1f01 09eb | 0115 0054 
+  0x0000000119c5de20: ; implicit exception: dispatches to 0x0000000119c5e09c
+  0x0000000119c5de20: 2a0c 40b9 | ef03 1faa | ca10 0034 | 4a7d 4093 | ff01 0aeb | fd07 9f1a | bda7 9d5a | 2c08 40b9 
+  0x0000000119c5de40: ;   {metadata('java/lang/Object'[])}
+  0x0000000119c5de40: 2b06 a0d2 | 0be1 9af2 | 9f01 0b6b | a110 0054 | e203 01aa | 4b0c 40b9 | a8ff 9f52 | e8ff af72 
+  0x0000000119c5de60: 7f01 086b | 2c0f 0054 | e003 0b2a | 1104 0051 | 8b0f 0034 | 3f02 0b6b | 420f 0054 | 4a10 40b9 
+  0x0000000119c5de80: 660f 0a8b | e303 1f2a 
+
+  0x0000000119c5de88: ; implicit exception: dispatches to 0x0000000119c5dfec
+  0x0000000119c5de88: cb08 40b9 
+
+  0x0000000119c5de8c: ;   {metadata('investigation/InterfaceControl$IdentityPoint')}
+  0x0000000119c5de8c: 0a37 a0d2 | 0a78 9ef2 | 7f01 0a6b | 210f 0054 | ca2c 41a9 | 5f01 0bab | 260b 0054 | 4f01 0b8b 
+  0x0000000119c5deac: e303 0032 | 3f06 0071 | 4d06 0054 | 10fa 8052 
+
+  0x0000000119c5debc: ;   {metadata('investigation/InterfaceControl$IdentityPoint')}
+  0x0000000119c5debc: 0137 a0d2 | 0178 9ef2 
+
+  0x0000000119c5dec4: ;   {metadata('investigation/InterfaceControl$IdentityPoint')}
+  0x0000000119c5dec4: 0537 a0d2 | 0578 9ef2 | 0b00 034b | 3f02 036b | 6a05 0051 | eab3 8a1a | 5f41 1f71 | 0a82 8a1a 
+  0x0000000119c5dee4: 4401 030b | 1f20 03d5 | 1f20 03d5 | 6c7c 4093 | 4a68 2c8b | 4d11 40b9 | 660f 0d8b 
+
+  0x0000000119c5df00: ; implicit exception: dispatches to 0x0000000119c5dfec
+  0x0000000119c5df00: cb08 40b9 | 7f01 016b | 4e15 40b9 | 810b 0054 | ca2c 41a9 | 5f01 0bab | 660f 0e8b | 4d01 0b8b 
+  0x0000000119c5df20: 4607 0054 | ff01 0dab | e607 0054 | af01 0f8b | ce05 0034 | ca08 40b9 | 5f01 056b | e109 0054 
+  0x0000000119c5df40: ca2c 41a9 | 5f01 0bab | 4d01 0b8b | e605 0054 | ff01 0dab | 8606 0054 | 6308 0011 | af01 0f8b 
+  0x0000000119c5df60: 7f00 046b | 6bfc ff54 | 8a1b 40f9 
+
+  0x0000000119c5df6c: ; ImmutableOopMap {c_rarg2=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@35 (line 32)
+  0x0000000119c5df6c: 8b09 0091 
+
+  0x0000000119c5df70: ;   {poll}
+  0x0000000119c5df70: 5f01 40b9 | 7f00 116b | abfa ff54 | 7f00 006b | 6a02 0054 
+
+  0x0000000119c5df84: ;   {metadata('investigation/InterfaceControl$IdentityPoint')}
+  0x0000000119c5df84: 0c37 a0d2 | 0c78 9ef2 | 4ac8 238b | 4b11 40b9 | 660f 0b8b 
+
+  0x0000000119c5df98: ; implicit exception: dispatches to 0x0000000119c5dfec
+  0x0000000119c5df98: cb08 40b9 | 7f01 0c6b | e106 0054 | ca2c 41a9 | 5f01 0bab | 4d01 0b8b | c602 0054 | ff01 0dab 
+  0x0000000119c5dfb8: 6603 0054 | 6304 0011 | ef01 0d8b | 7f00 006b | 2bfe ff54 | e003 0faa | fd7b 43a9 | ff03 0191 
+  0x0000000119c5dfd8: ;   {poll_return}
+  0x0000000119c5dfd8: 8817 40f9 | ff63 28eb | 8806 0054 | c003 5fd6 | 6304 0011 | 7d7c 4093 | 6115 8012 | e23f 00a9 
+  0x0000000119c5dff8: ; ImmutableOopMap {[0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@17 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5dff8: 0272 e297 
+
+  0x0000000119c5dffc: ;   {post_call_nop}
+  0x0000000119c5dffc: 1f20 03d5 | 9f5e 80f2 | 1f20 80f2 | 2106 8012 | fd03 0aaa | eb03 00f9 
+
+  0x0000000119c5e014: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl$IdentityPoint::norm@8 (line 11)
+                      ; - investigation.InterfaceControl::identityPass@20 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5e014: fb71 e297 
+
+  0x0000000119c5e018: ;   {post_call_nop}
+  0x0000000119c5e018: 1f20 03d5 | 1f62 80f2 | 1f40 80f2 | 2106 8012 | fd03 0faa | ed03 00f9 
+
+  0x0000000119c5e030: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@25 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5e030: f471 e297 
+
+  0x0000000119c5e034: ;   {post_call_nop}
+  0x0000000119c5e034: 1f20 03d5 | 9f65 80f2 | 1f60 80f2 | e003 1faa | e3ff ff17 | e103 00f9 | 211b 8012 
+
+  0x0000000119c5e050: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@9 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5e050: ec71 e297 
+
+  0x0000000119c5e054: ;   {post_call_nop}
+  0x0000000119c5e054: 1f20 03d5 | 9f69 80f2 | 1f80 80f2 | e103 00f9 | 2112 8012 
+
+  0x0000000119c5e068: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::identityPass@9 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5e068: e671 e297 
+
+  0x0000000119c5e06c: ;   {post_call_nop}
+  0x0000000119c5e06c: 1f20 03d5 | 9f6c 80f2 | 1fa0 80f2 | 6304 0011 | 7d7c 4093 | 2114 8012 | e23f 00a9 | e60b 00f9 
+  0x0000000119c5e08c: ; ImmutableOopMap {[0]=Oop [16]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@17 (line 33)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5e08c: dd71 e297 
+
+  0x0000000119c5e090: ;   {post_call_nop}
+  0x0000000119c5e090: 1f20 03d5 | 1f71 80f2 | 1fc0 80f2 | 2101 8012 
+
+  0x0000000119c5e0a0: ; ImmutableOopMap {}
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::identityPass@6 (line 32)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119c5e0a0: d871 e297 
+
+  0x0000000119c5e0a4: ;   {post_call_nop}
+  0x0000000119c5e0a4: 1f20 03d5 | 9f73 80f2 | 1fe0 80f2 
+
+  0x0000000119c5e0b0: ;   {internal_word}
+  0x0000000119c5e0b0: 48f9 ff10 | 8853 02f9 
+
+  0x0000000119c5e0b8: ;   {runtime_call SafepointBlob}
+  0x0000000119c5e0b8: 720c dd17 
+
+  0x0000000119c5e0bc: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000119c5e0bc: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 55ff ff17 
+
+  0x0000000119c5e0d0: ;   {entry_guard}
+  0x0000000119c5e0d0: 0b00 0000 | 0000 0000 
+[Stub Code]
+  0x0000000119c5e0d8: ;   {runtime_call DeoptimizationBlob}
+  0x0000000119c5e0d8: ea0c dd97 
+[Deopt Handler Entry Point]
+  0x0000000119c5e0dc: ffff ff17 
+[/MachCode]
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c1) 4749 5799 %     3       investigation.InterfaceControl::valuePass @ 4 (40 bytes)
+ total in heap  [0x000000011223aa88,0x000000011223b190] = 1800
+ main code      [0x000000011223ab80,0x000000011223b110] = 1424
+ stub code      [0x000000011223b110,0x000000011223b188] = 120
+ oops           [0x000000011223b188,0x000000011223b190] = 8
+ mutable data [0x00000076b504b3a0,0x00000076b504b470] = 208
+ relocation     [0x00000076b504b3a0,0x00000076b504b448] = 168
+ metadata       [0x00000076b504b448,0x00000076b504b470] = 40
+ immutable data [0x00000076b83cc1c0,0x00000076b83cc34c] = 396
+ dependencies   [0x00000076b83cc1c0,0x00000076b83cc1c8] = 8
+ nul chk table  [0x00000076b83cc1c8,0x00000076b83cc1e0] = 24
+ scopes pcs     [0x00000076b83cc1e0,0x00000076b83cc2b0] = 208
+ scopes data    [0x00000076b83cc2b0,0x00000076b83cc348] = 152
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x000000011223ab80: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ffc3 01d1 | fd7b 06a9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000011223aba0: e000 0054 
+
+  0x000000011223aba4: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011223aba4: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 2300 0000 
+
+  0x000000011223abbc: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223abbc: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 4224 1f12 | 5f00 0071 
+  0x000000011223abdc: a024 0054 | fd03 01aa | 0200 80d2 | 0300 80d2 | e500 0014 | 417c 40d3 | a00f 40b9 | 3f00 006b 
+  0x000000011223abfc: a224 0054 
+
+  0x000000011223ac00: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223ac00: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 00e0 0391 | e403 1daa | 8408 40b9 | 8428 5ed2 | 0900 40f9 
+  0x000000011223ac20: 8400 09ca | 88f4 7e92 | 0802 00b4 | e401 0837 | a901 00b4 | 3f05 00f1 | 6001 0054 | bf39 03d5 
+  0x000000011223ac40: 8400 09ca | 0900 40f9 | 8400 09ca | 88f4 7e92 | c800 00b4 | 0900 40f9 | 2901 7fb2 | 0900 00f9 
+  0x000000011223ac60: 0200 0014 | 0400 00f9 | a003 40f9 | 1f00 40f2 | 8100 0054 | a00b 40b9 | 0028 5ed2 | 0050 40f9 
+  0x000000011223ac80: 1f00 78f2 
+
+  0x000000011223ac84: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223ac84: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 04c4 8339 | 0800 a052 | e903 1b32 | 0501 899a | 8400 052a 
+  0x000000011223aca4: 04c4 0339 | a503 40f9 | bf00 40f2 | 8100 0054 | a50b 40b9 | a528 5ed2 | a550 40f9 | a500 7792 
+  0x000000011223acc4: 251f 00b5 | 217c 4093 | 21f4 7ed3 | 2140 0091 | a46b 61b8 | 4400 00b4 | 640f 048b 
+
+  0x000000011223ace0: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223ace0: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 2100 0491 | e003 04aa | a000 00b5 | 2900 40f9 | 2901 40b2 
+  0x000000011223ad00: 2900 00f9 | 1600 0014 | 0008 40b9 | 0028 5ed2 | 2900 40f9 | 0000 09ca | 08f4 7e92 | 0802 00b4 
+  0x000000011223ad20: e001 0837 | a901 00b4 | 3f05 00f1 | 6001 0054 | bf39 03d5 | 0000 09ca | 2900 40f9 | 0000 09ca 
+  0x000000011223ad40: 08f4 7e92 | c800 00b4 | 2900 40f9 | 2901 7fb2 | 2900 00f9 | 0200 0014 | 2000 00f9 
+
+  0x000000011223ad5c: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223ad5c: 05b8 9fd2 | 4537 a0f2 | 85ff c3f2 | a400 00b5 | a824 4439 | 0801 40b2 | a824 0439 | 2b00 0014 
+  0x000000011223ad7c: 8108 40b9 | 2128 5ed2 | 0923 80d2 | a868 69f8 | 1f01 01eb | 4002 0054 | 2941 0091 | 28e1 04d1 
+  0x000000011223ad9c: 68ff ffb5 | 0923 80d2 | a868 69f8 | a800 00b4 | 2941 0091 | 28e1 04d1 | 88ff ffb5 | 0600 0014 
+  0x000000011223adbc: a960 298b | e803 1faa | 217d a8c8 | 1f01 1feb | eeff ff17 | 0922 80d2 | 0200 0014 | 2921 0091 
+  0x000000011223addc: a868 69f8 | 0805 0091 | a868 29f8 
+
+  0x000000011223ade8: ;   {metadata('investigation/InterfaceControl$Norm')}
+  0x000000011223ade8: 0131 9ed2 | 0137 a0f2 | 81ff c3f2 | 8508 40b9 | a528 5ed2 | a810 40f9 | 3f00 08eb | 0001 0054 
+  0x000000011223ae08: bf00 01eb | c000 0054 | e507 bfa9 
+
+  0x000000011223ae14: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000011223ae14: 4bf1 ca95 | e507 41f8 | e514 0034 | 0100 0014 | e103 04aa 
+
+  0x000000011223ae28: ; implicit exception: dispatches to 0x000000011223b0c0
+  0x000000011223ae28: 3f00 40f9 | e003 01aa 
+
+  0x000000011223ae30: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223ae30: 04b8 9fd2 | 4437 a0f2 | 84ff c3f2 | 0008 40b9 | 0028 5ed2 | 0929 80d2 | 8868 69f8 | 1f01 00eb 
+  0x000000011223ae50: 4002 0054 | 2941 0091 | 28a1 05d1 | 68ff ffb5 | 0929 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 
+  0x000000011223ae70: 28a1 05d1 | 88ff ffb5 | 0600 0014 | 8960 298b | e803 1faa | 207d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000011223ae90: 0928 80d2 | 0200 0014 | 2921 0091 | 8868 69f8 | 0805 0091 | 8868 29f8 | fd0b 04a9 | fd03 03aa 
+  0x000000011223aeb0: 094c 8dd2 | 292e b7f2 | c90e c0f2 
+
+  0x000000011223aebc: ; ImmutableOopMap {[64]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@20 (line 41)
+                      ;   {virtual_call}
+  0x000000011223aebc: 969b e395 
+
+  0x000000011223aec0: ;   {post_call_nop}
+  0x000000011223aec0: 1f20 03d5 | 1f87 80f2 | 1f00 80f2 
+
+  0x000000011223aecc: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223aecc: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 28b8 40f9 | 0805 0091 | 28b8 00f9 | e103 1daa | e203 00aa 
+  0x000000011223aeec: ; ImmutableOopMap {[64]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@25 (line 41)
+                      ;   {static_call}
+  0x000000011223aeec: 657c e495 
+
+  0x000000011223aef0: ;   {post_call_nop}
+  0x000000011223aef0: 1f20 03d5 | 1f8d 80f2 | 1f20 80f2 | fd03 00aa 
+
+  0x000000011223af00: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223af00: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 28c0 40f9 | 0805 0091 | 28c0 00f9 | e127 40f9 | e203 40b2 
+  0x000000011223af20: ; ImmutableOopMap {[64]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@31 (line 40)
+                      ;   {static_call}
+  0x000000011223af20: 587c e495 
+
+  0x000000011223af24: ;   {post_call_nop}
+  0x000000011223af24: 1f20 03d5 | 9f93 80f2 | 1f40 80f2 
+
+  0x000000011223af30: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223af30: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 2294 40b9 | 4208 0011 | 2294 00b9 | 4230 1f12 | 5f00 0071 
+  0x000000011223af50: a00b 0054 
+
+  0x000000011223af54: ; ImmutableOopMap {[64]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@35 (line 40)
+  0x000000011223af54: 881b 40f9 
+
+  0x000000011223af58: ;   {poll}
+  0x000000011223af58: 1f01 40b9 
+
+  0x000000011223af5c: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223af5c: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 22c8 40f9 | 4204 0091 | 22c8 00f9 | e203 00aa | e303 1daa 
+  0x000000011223af7c: fd23 40f9 
+
+  0x000000011223af80: ; implicit exception: dispatches to 0x000000011223b0e4
+  0x000000011223af80: a00f 40b9 | 007c 4093 | e103 02aa | 3f00 00eb 
+
+  0x000000011223af90: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223af90: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 081d 80d2 | 091b 80d2 | 01b1 899a | 0468 61f8 | 8404 0091 
+  0x000000011223afb0: 0468 21f8 | ebe1 ff54 | fd03 03aa | e003 1daa | fd7b 46a9 | ffc3 0191 
+
+  0x000000011223afc8: ;   {poll_return}
+  0x000000011223afc8: 8817 40f9 | ff63 28eb | c808 0054 | c003 5fd6 | e953 40d1 | 3f01 00f9 | ffc3 01d1 | fd7b 06a9 
+  0x000000011223afe8: 2801 0018 | 8923 40b9 | 1f01 09eb | e000 0054 
+
+  0x000000011223aff8: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011223aff8: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0000 0000 | e003 1b32 | 007c 4093 
+  0x000000011223b018: 3d68 60f8 | e003 1c32 | 007c 4093 | 2268 60f8 | 0000 a052 | 007c 4093 | 2368 60f8 | e003 01aa 
+  0x000000011223b038: fd0b 03a9 | fd03 03aa 
+
+  0x000000011223b040: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x000000011223b040: 0837 9bd2 | 8812 a1f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x000000011223b050: ;   {post_call_nop}
+  0x000000011223b050: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 | e203 1daa | e01f 40f9 | e303 00aa | fd1b 40f9 | c5ff ff17 
+  0x000000011223b070: ;   {metadata({method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223b070: 08c4 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011223b088: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*synchronization entry
+                      ; - investigation.InterfaceControl::valuePass@-1 (line 39)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011223b088: aef6 ca95 | d5fe ff17 | e803 01aa | e903 1daa 
+
+  0x000000011223b098: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011223b098: 1e28 89d2 | fe29 a3f2 | 3e00 c0f2 
+
+  0x000000011223b0a4: ; ImmutableOopMap {rfp=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@16 (line 41)
+  0x000000011223b0a4: c003 3fd6 | e177 00a9 
+
+  0x000000011223b0ac: ; ImmutableOopMap {rfp=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@16 (line 41)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x000000011223b0ac: 45eb ca95 | e403 00aa | 0bff ff17 | e803 04aa 
+
+  0x000000011223b0bc: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@17 (line 41)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011223b0bc: 21ef ca95 
+
+  0x000000011223b0c0: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@20 (line 41)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011223b0c0: 40e7 ca95 
+
+  0x000000011223b0c4: ;   {metadata({method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x000000011223b0c4: 08c4 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 6804 80d2 | e803 00f9 
+
+  0x000000011223b0dc: ; ImmutableOopMap {[64]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@35 (line 40)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011223b0dc: 99f6 ca95 | 9dff ff17 
+
+  0x000000011223b0e4: ; ImmutableOopMap {rfp=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@6 (line 40)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011223b0e4: 37e7 ca95 
+
+  0x000000011223b0e8: ;   {internal_word}
+  0x000000011223b0e8: 08f7 ff10 | 8853 02f9 
+
+  0x000000011223b0f0: ;   {runtime_call SafepointBlob}
+  0x000000011223b0f0: 6498 c515 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 46a9 | ffc3 0191 
+
+  0x000000011223b108: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000011223b108: 7ee4 ca15 | 0000 0000 
+[Stub Code]
+  0x000000011223b110: ;   {static_stub}
+  0x000000011223b110: df3f 03d5 
+
+  0x000000011223b114: ;   {metadata(nullptr)}
+  0x000000011223b114: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000011223b128: ;   {trampoline_stub}
+  0x000000011223b128: 4800 0058 | 0001 1fd6 | 141d b219 | 0100 0000 
+
+  0x000000011223b138: ;   {trampoline_stub}
+  0x000000011223b138: 4800 0058 | 0001 1fd6 | 80a0 b519 | 0100 0000 
+
+  0x000000011223b148: ;   {trampoline_stub}
+  0x000000011223b148: 4800 0058 | 0001 1fd6 | 80a0 b519 | 0100 0000 
+
+  0x000000011223b158: ;   {static_stub}
+  0x000000011223b158: df3f 03d5 
+
+  0x000000011223b15c: ;   {metadata(nullptr)}
+  0x000000011223b15c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011223b16c: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011223b16c: 35ee ca95 
+
+  0x000000011223b170: ;   {external_word}
+  0x000000011223b170: 60dc 90d2 | a017 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000011223b180: ;   {runtime_call DeoptimizationBlob}
+  0x000000011223b180: c098 c595 
+[Deopt Handler Entry Point]
+  0x000000011223b184: ffff ff17 
+[/MachCode]
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c1) 4756 5801       3       investigation.InterfaceControl::valuePass (40 bytes)
+ total in heap  [0x00000001122acdc8,0x00000001122ad3e0] = 1560
+ main code      [0x00000001122acec0,0x00000001122ad360] = 1184
+ stub code      [0x00000001122ad360,0x00000001122ad3d8] = 120
+ oops           [0x00000001122ad3d8,0x00000001122ad3e0] = 8
+ mutable data [0x00000076b504b560,0x00000076b504b628] = 200
+ relocation     [0x00000076b504b560,0x00000076b504b600] = 160
+ metadata       [0x00000076b504b600,0x00000076b504b628] = 40
+ immutable data [0x00000076b83cd180,0x00000076b83cd30c] = 396
+ dependencies   [0x00000076b83cd180,0x00000076b83cd188] = 8
+ nul chk table  [0x00000076b83cd188,0x00000076b83cd1a0] = 24
+ scopes pcs     [0x00000076b83cd1a0,0x00000076b83cd270] = 208
+ scopes data    [0x00000076b83cd270,0x00000076b83cd308] = 152
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl'
+  # parm0:    c_rarg1:c_rarg1 
+                        = '[Ljava/lang/Object;'
+  #           [sp+0x60]  (sp of caller)
+  0x00000001122acec0: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff83 01d1 | fd7b 05a9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x00000001122acee0: e000 0054 
+
+  0x00000001122acee4: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x00000001122acee4: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 2300 0000 | fd03 01aa | fd1b 00f9 
+  0x00000001122acf04: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122acf04: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 2124 1f12 | 3f00 0071 
+  0x00000001122acf24: 001d 0054 | 0200 80d2 | 0300 80d2 | cf00 0014 | 417c 40d3 | a00f 40b9 | 3f00 006b | 221d 0054 
+  0x00000001122acf44: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122acf44: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 00e0 0391 | e403 1daa | 8408 40b9 | 8428 5ed2 | 0900 40f9 
+  0x00000001122acf64: 8400 09ca | 88f4 7e92 | a800 00b4 | 8400 0837 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | a003 40f9 
+  0x00000001122acf84: 1f00 40f2 | 8100 0054 | a00b 40b9 | 0028 5ed2 | 0050 40f9 | 1f00 78f2 
+
+  0x00000001122acf9c: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122acf9c: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 04c4 8339 | 0800 a052 | e903 1b32 | 0501 899a | 8400 052a 
+  0x00000001122acfbc: 04c4 0339 | a503 40f9 | bf00 40f2 | 8100 0054 | a50b 40b9 | a528 5ed2 | a550 40f9 | a500 7792 
+  0x00000001122acfdc: 0519 00b5 | 217c 4093 | 21f4 7ed3 | 2140 0091 | a46b 61b8 | 4400 00b4 | 640f 048b 
+
+  0x00000001122acff8: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122acff8: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 2100 0491 | e003 04aa | a000 00b5 | 2900 40f9 | 2901 40b2 
+  0x00000001122ad018: 2900 00f9 | 0b00 0014 | 0008 40b9 | 0028 5ed2 | 2900 40f9 | 0000 09ca | 08f4 7e92 | a800 00b4 
+  0x00000001122ad038: 8000 0837 | 2900 40f9 | 2901 7fb2 | 2900 00f9 
+
+  0x00000001122ad048: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad048: 05b8 9fd2 | 4537 a0f2 | 85ff c3f2 | a400 00b5 | a824 4439 | 0801 40b2 | a824 0439 | 2b00 0014 
+  0x00000001122ad068: 8108 40b9 | 2128 5ed2 | 0923 80d2 | a868 69f8 | 1f01 01eb | 4002 0054 | 2941 0091 | 28e1 04d1 
+  0x00000001122ad088: 68ff ffb5 | 0923 80d2 | a868 69f8 | a800 00b4 | 2941 0091 | 28e1 04d1 | 88ff ffb5 | 0600 0014 
+  0x00000001122ad0a8: a960 298b | e803 1faa | 217d a8c8 | 1f01 1feb | eeff ff17 | 0922 80d2 | 0200 0014 | 2921 0091 
+  0x00000001122ad0c8: a868 69f8 | 0805 0091 | a868 29f8 
+
+  0x00000001122ad0d4: ;   {metadata('investigation/InterfaceControl$Norm')}
+  0x00000001122ad0d4: 0131 9ed2 | 0137 a0f2 | 81ff c3f2 | 8508 40b9 | a528 5ed2 | a810 40f9 | 3f00 08eb | 0001 0054 
+  0x00000001122ad0f4: bf00 01eb | c000 0054 | e507 bfa9 
+
+  0x00000001122ad100: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x00000001122ad100: 9028 c995 | e507 41f8 | 2510 0034 | 0100 0014 | e103 04aa 
+
+  0x00000001122ad114: ; implicit exception: dispatches to 0x00000001122ad314
+  0x00000001122ad114: 3f00 40f9 | e003 01aa 
+
+  0x00000001122ad11c: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad11c: 04b8 9fd2 | 4437 a0f2 | 84ff c3f2 | 0008 40b9 | 0028 5ed2 | 0929 80d2 | 8868 69f8 | 1f01 00eb 
+  0x00000001122ad13c: 4002 0054 | 2941 0091 | 28a1 05d1 | 68ff ffb5 | 0929 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 
+  0x00000001122ad15c: 28a1 05d1 | 88ff ffb5 | 0600 0014 | 8960 298b | e803 1faa | 207d a8c8 | 1f01 1feb | eeff ff17 
+  0x00000001122ad17c: 0928 80d2 | 0200 0014 | 2921 0091 | 8868 69f8 | 0805 0091 | 8868 29f8 | e21f 00f9 | fd03 03aa 
+  0x00000001122ad19c: 092e 8dd2 | 292e b7f2 | c90e c0f2 
+
+  0x00000001122ad1a8: ; ImmutableOopMap {[48]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@20 (line 41)
+                      ;   {virtual_call}
+  0x00000001122ad1a8: dbd2 e195 
+
+  0x00000001122ad1ac: ;   {post_call_nop}
+  0x00000001122ad1ac: 1f20 03d5 | 9f7c 80f2 | 1f00 80f2 
+
+  0x00000001122ad1b8: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad1b8: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 28b8 40f9 | 0805 0091 | 28b8 00f9 | e103 1daa | e203 00aa 
+  0x00000001122ad1d8: ; ImmutableOopMap {[48]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@25 (line 41)
+                      ;   {static_call}
+  0x00000001122ad1d8: aab3 e295 
+
+  0x00000001122ad1dc: ;   {post_call_nop}
+  0x00000001122ad1dc: 1f20 03d5 | 9f82 80f2 | 1f20 80f2 | fd03 00aa 
+
+  0x00000001122ad1ec: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad1ec: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 28c0 40f9 | 0805 0091 | 28c0 00f9 | e11f 40f9 | e203 40b2 
+  0x00000001122ad20c: ; ImmutableOopMap {[48]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@31 (line 40)
+                      ;   {static_call}
+  0x00000001122ad20c: 9db3 e295 
+
+  0x00000001122ad210: ;   {post_call_nop}
+  0x00000001122ad210: 1f20 03d5 | 1f89 80f2 | 1f40 80f2 
+
+  0x00000001122ad21c: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad21c: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 2294 40b9 | 4208 0011 | 2294 00b9 | 4230 1f12 | 5f00 0071 
+  0x00000001122ad23c: e006 0054 
+
+  0x00000001122ad240: ; ImmutableOopMap {[48]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@35 (line 40)
+  0x00000001122ad240: 881b 40f9 
+
+  0x00000001122ad244: ;   {poll}
+  0x00000001122ad244: 1f01 40b9 
+
+  0x00000001122ad248: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad248: 01b8 9fd2 | 4137 a0f2 | 81ff c3f2 | 22c8 40f9 | 4204 0091 | 22c8 00f9 | e203 00aa | e303 1daa 
+  0x00000001122ad268: fd1b 40f9 
+
+  0x00000001122ad26c: ; implicit exception: dispatches to 0x00000001122ad338
+  0x00000001122ad26c: a00f 40b9 | 007c 4093 | e103 02aa | 3f00 00eb 
+
+  0x00000001122ad27c: ;   {metadata(method data for {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad27c: 00b8 9fd2 | 4037 a0f2 | 80ff c3f2 | 081d 80d2 | 091b 80d2 | 01b1 899a | 0468 61f8 | 8404 0091 
+  0x00000001122ad29c: 0468 21f8 | abe4 ff54 | fd03 03aa | e003 1daa | fd7b 45a9 | ff83 0191 
+
+  0x00000001122ad2b4: ;   {poll_return}
+  0x00000001122ad2b4: 8817 40f9 | ff63 28eb | 0804 0054 | c003 5fd6 
+
+  0x00000001122ad2c4: ;   {metadata({method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad2c4: 08c4 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x00000001122ad2dc: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*synchronization entry
+                      ; - investigation.InterfaceControl::valuePass@-1 (line 39)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x00000001122ad2dc: 192e c995 | 12ff ff17 | e803 01aa | e903 1daa 
+
+  0x00000001122ad2ec: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x00000001122ad2ec: 1e28 89d2 | fe29 a3f2 | 3e00 c0f2 
+
+  0x00000001122ad2f8: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@16 (line 41)
+  0x00000001122ad2f8: c003 3fd6 | e177 00a9 
+
+  0x00000001122ad300: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@16 (line 41)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x00000001122ad300: b022 c995 | e403 00aa | 3cff ff17 | e803 04aa 
+
+  0x00000001122ad310: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@17 (line 41)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x00000001122ad310: 8c26 c995 
+
+  0x00000001122ad314: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop [48]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@20 (line 41)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x00000001122ad314: ab1e c995 
+
+  0x00000001122ad318: ;   {metadata({method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl')}
+  0x00000001122ad318: 08c4 9dd2 | 889e a9f2 | 2800 c0f2 | e807 00f9 | 6804 80d2 | e803 00f9 
+
+  0x00000001122ad330: ; ImmutableOopMap {[48]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@35 (line 40)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x00000001122ad330: 042e c995 | c3ff ff17 
+
+  0x00000001122ad338: ; ImmutableOopMap {rfp=Oop [48]=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@6 (line 40)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x00000001122ad338: a21e c995 
+
+  0x00000001122ad33c: ;   {internal_word}
+  0x00000001122ad33c: c8fb ff10 | 8853 02f9 
+
+  0x00000001122ad344: ;   {runtime_call SafepointBlob}
+  0x00000001122ad344: cfcf c315 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 45a9 | ff83 0191 
+
+  0x00000001122ad35c: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x00000001122ad35c: e91b c915 
+[Stub Code]
+  0x00000001122ad360: ;   {static_stub}
+  0x00000001122ad360: df3f 03d5 
+
+  0x00000001122ad364: ;   {metadata(nullptr)}
+  0x00000001122ad364: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x00000001122ad378: ;   {trampoline_stub}
+  0x00000001122ad378: 4800 0058 | 0001 1fd6 | 141d b219 | 0100 0000 
+
+  0x00000001122ad388: ;   {trampoline_stub}
+  0x00000001122ad388: 4800 0058 | 0001 1fd6 | 80a0 b519 | 0100 0000 
+
+  0x00000001122ad398: ;   {trampoline_stub}
+  0x00000001122ad398: 4800 0058 | 0001 1fd6 | 80a0 b519 | 0100 0000 
+
+  0x00000001122ad3a8: ;   {static_stub}
+  0x00000001122ad3a8: df3f 03d5 
+
+  0x00000001122ad3ac: ;   {metadata(nullptr)}
+  0x00000001122ad3ac: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x00000001122ad3bc: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x00000001122ad3bc: a125 c995 
+
+  0x00000001122ad3c0: ;   {external_word}
+  0x00000001122ad3c0: 60dc 90d2 | a017 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x00000001122ad3d0: ;   {runtime_call DeoptimizationBlob}
+  0x00000001122ad3d0: 2cd0 c395 
+[Deopt Handler Entry Point]
+  0x00000001122ad3d4: ffff ff17 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 4764 5803 %     4       investigation.InterfaceControl::valuePass @ 4 (40 bytes)
+ total in heap  [0x0000000119d8ea08,0x0000000119d8ed60] = 856
+ main code      [0x0000000119d8eb00,0x0000000119d8ed50] = 592
+ stub code      [0x0000000119d8ed50,0x0000000119d8ed58] = 8
+ oops           [0x0000000119d8ed58,0x0000000119d8ed60] = 8
+ mutable data [0x00000076b0eb6530,0x00000076b0eb65a0] = 112
+ relocation     [0x00000076b0eb6530,0x00000076b0eb6578] = 72
+ metadata       [0x00000076b0eb6578,0x00000076b0eb65a0] = 40
+ immutable data [0x00000076b520b640,0x00000076b520b7e4] = 420
+ dependencies   [0x00000076b520b640,0x00000076b520b648] = 8
+ nul chk table  [0x00000076b520b648,0x00000076b520b660] = 24
+ scopes pcs     [0x00000076b520b660,0x00000076b520b720] = 192
+ scopes data    [0x00000076b520b720,0x00000076b520b7e0] = 192
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x0000000119d8eb00: 0000 20d4 | 1f20 03d5 | 1f20 03d5 | 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff03 01d1 | fd7b 03a9 
+  0x0000000119d8eb20: 4811 0018 | 8923 40b9 | 1f01 09eb | 4110 0054 | 3510 40f9 | 3308 40f9 | 3400 40f9 | e003 01aa 
+  0x0000000119d8eb40: c900 0010 | 89ff 01f9 
+
+  0x0000000119d8eb48: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x0000000119d8eb48: 0837 9bd2 | 8812 a1f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x0000000119d8eb58: ;   {post_call_nop}
+  0x0000000119d8eb58: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 
+
+  0x0000000119d8eb64: ; implicit exception: dispatches to 0x0000000119d8ed0c
+  0x0000000119d8eb64: ab0a 40b9 | 6a29 5ed2 | 4a1d 40f9 
+
+  0x0000000119d8eb70: ;   {metadata('java/lang/Object'[])}
+  0x0000000119d8eb70: 0bf2 92d2 | 0b03 a0f2 | 8bff c3f2 | 5f01 0beb | c108 0054 | ab0a 40b9 
+
+  0x0000000119d8eb88: ;   {metadata('java/lang/Object'[])}
+  0x0000000119d8eb88: 2d06 a0d2 | 0de1 9af2 | 7f01 0d6b | aa0e 40b9 | e108 0054 | af0e 40b9 | 4a7d 4093 
+
+  0x0000000119d8eba4: ;   {metadata('investigation/InterfaceControl$ValuePoint')}
+  0x0000000119d8eba4: 1137 a0d2 | 11c3 9ef2 | 0500 0014 | 8b1b 40f9 | 9406 0091 
+
+  0x0000000119d8ebb8: ; ImmutableOopMap {rdispatch=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@35 (line 40)
+  0x0000000119d8ebb8: 7302 0d8b 
+
+  0x0000000119d8ebbc: ;   {poll}
+  0x0000000119d8ebbc: 7f01 40b9 | 9f02 0aeb | 0a03 0054 | ec03 142a | abca 2c8b | 9f01 0f6b | 6203 0054 | 6b11 40b9 
+  0x0000000119d8ebdc: 6c0f 0b8b 
+
+  0x0000000119d8ebe0: ; implicit exception: dispatches to 0x0000000119d8ecf0
+  0x0000000119d8ebe0: 8e09 40b9 | df01 116b | 4107 0054 | 8b31 41a9 | 7f01 0cab | 6d01 0c8b | 4603 0054 | 7f02 0dab 
+  0x0000000119d8ec00: e603 0054 | 9f06 00b1 | 47fd ff54 | 2106 8012 | fd03 14aa 
+
+  0x0000000119d8ec14: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@31 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ec14: fbae dd97 
+
+  0x0000000119d8ec18: ;   {post_call_nop}
+  0x0000000119d8ec18: 1f20 03d5 | 1f42 80f2 | 1f20 80f2 | e003 13aa | fd7b 43a9 | ff03 0191 
+
+  0x0000000119d8ec30: ;   {poll_return}
+  0x0000000119d8ec30: 8817 40f9 | ff63 28eb | 8807 0054 | c003 5fd6 | 6103 8012 | f44f 00a9 | f50b 00f9 | ec1b 00b9 
+  0x0000000119d8ec50: ; ImmutableOopMap {[16]=Oop }
+                      ;*aaload {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@16 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ec50: ecae dd97 
+
+  0x0000000119d8ec54: ;   {post_call_nop}
+  0x0000000119d8ec54: 1f20 03d5 | 9f49 80f2 | 1f40 80f2 | 2106 8012 | fd03 0baa | ec03 00f9 
+
+  0x0000000119d8ec6c: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl$ValuePoint::norm@8 (line 18)
+                      ; - investigation.InterfaceControl::valuePass@20 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ec6c: e5ae dd97 
+
+  0x0000000119d8ec70: ;   {post_call_nop}
+  0x0000000119d8ec70: 1f20 03d5 | 1f4d 80f2 | 1f60 80f2 | 2106 8012 | fd03 13aa | ed03 00f9 
+
+  0x0000000119d8ec88: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@25 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ec88: deae dd97 
+
+  0x0000000119d8ec8c: ;   {post_call_nop}
+  0x0000000119d8ec8c: 1f20 03d5 | 9f50 80f2 | 1f80 80f2 | 410f 8012 | fd03 15aa | f353 00a9 
+
+  0x0000000119d8eca4: ; ImmutableOopMap {rfp=Oop }
+                      ;*lload_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@4 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8eca4: d7ae dd97 
+
+  0x0000000119d8eca8: ;   {post_call_nop}
+  0x0000000119d8eca8: 1f20 03d5 | 1f54 80f2 | 1fa0 80f2 | 2108 8012 | fd03 15aa | f353 00a9 
+
+  0x0000000119d8ecc0: ; ImmutableOopMap {rfp=Oop }
+                      ;*lload_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@4 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ecc0: d0ae dd97 
+
+  0x0000000119d8ecc4: ;   {post_call_nop}
+  0x0000000119d8ecc4: 1f20 03d5 | 9f57 80f2 | 1fc0 80f2 | 2114 8012 | fd03 15aa | f44f 00a9 | eb13 00b9 
+
+  0x0000000119d8ece0: ; ImmutableOopMap {rfp=Oop [16]=NarrowOop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@17 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ece0: c8ae dd97 
+
+  0x0000000119d8ece4: ;   {post_call_nop}
+  0x0000000119d8ece4: 1f20 03d5 | 9f5b 80f2 | 1fe0 80f2 | 6115 8012 | fd03 15aa | f44f 00a9 
+
+  0x0000000119d8ecfc: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@17 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ecfc: c1ae dd97 
+
+  0x0000000119d8ed00: ;   {post_call_nop}
+  0x0000000119d8ed00: 1f20 03d5 | 1f5f 80f2 | 1f00 81f2 | 2112 8012 | fd03 13aa | f403 00f9 
+
+  0x0000000119d8ed18: ; ImmutableOopMap {}
+                      ;*lload_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@4 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119d8ed18: baae dd97 
+
+  0x0000000119d8ed1c: ;   {post_call_nop}
+  0x0000000119d8ed1c: 1f20 03d5 | 9f62 80f2 | 1f20 81f2 
+
+  0x0000000119d8ed28: ;   {internal_word}
+  0x0000000119d8ed28: 48f8 ff10 | 8853 02f9 
+
+  0x0000000119d8ed30: ;   {runtime_call SafepointBlob}
+  0x0000000119d8ed30: 5449 d817 
+
+  0x0000000119d8ed34: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000119d8ed34: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 7bff ff17 
+
+  0x0000000119d8ed48: ;   {entry_guard}
+  0x0000000119d8ed48: 2300 0000 | 0000 0000 
+[Stub Code]
+  0x0000000119d8ed50: ;   {runtime_call DeoptimizationBlob}
+  0x0000000119d8ed50: cc49 d897 
+[Deopt Handler Entry Point]
+  0x0000000119d8ed54: ffff ff17 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 4769 5804       4       investigation.InterfaceControl::valuePass (40 bytes)
+ total in heap  [0x0000000119b2d788,0x0000000119b2db68] = 992
+ main code      [0x0000000119b2d880,0x0000000119b2db58] = 728
+ stub code      [0x0000000119b2db58,0x0000000119b2db60] = 8
+ oops           [0x0000000119b2db60,0x0000000119b2db68] = 8
+ mutable data [0x00000076b0eb64c0,0x00000076b0eb6528] = 104
+ relocation     [0x00000076b0eb64c0,0x00000076b0eb6508] = 72
+ metadata       [0x00000076b0eb6508,0x00000076b0eb6528] = 32
+ immutable data [0x00000076b0f25e00,0x00000076b0f25f64] = 356
+ dependencies   [0x00000076b0f25e00,0x00000076b0f25e08] = 8
+ nul chk table  [0x00000076b0f25e08,0x00000076b0f25e30] = 40
+ scopes pcs     [0x00000076b0f25e30,0x00000076b0f25ed0] = 160
+ scopes data    [0x00000076b0f25ed0,0x00000076b0f25f60] = 144
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014cf4ee20} 'valuePass' '([Ljava/lang/Object;)J' in 'investigation/InterfaceControl'
+  # parm0:    c_rarg1:c_rarg1 
+                        = '[Ljava/lang/Object;'
+  #           [sp+0x40]  (sp of caller)
+  0x0000000119b2d880: e953 40d1 | 3f01 00f9 | ff03 01d1 | fd7b 03a9 | 0816 0018 | 8923 40b9 | 1f01 09eb | 0115 0054 
+  0x0000000119b2d8a0: ; implicit exception: dispatches to 0x0000000119b2db1c
+  0x0000000119b2d8a0: 2a0c 40b9 | ef03 1faa | ca10 0034 | 4a7d 4093 | ff01 0aeb | fd07 9f1a | bda7 9d5a | 2c08 40b9 
+  0x0000000119b2d8c0: ;   {metadata('java/lang/Object'[])}
+  0x0000000119b2d8c0: 2b06 a0d2 | 0be1 9af2 | 9f01 0b6b | a110 0054 | e203 01aa | 4b0c 40b9 | a8ff 9f52 | e8ff af72 
+  0x0000000119b2d8e0: 7f01 086b | 2c0f 0054 | e003 0b2a | 1104 0051 | 8b0f 0034 | 3f02 0b6b | 420f 0054 | 4a10 40b9 
+  0x0000000119b2d900: 660f 0a8b | e303 1f2a 
+
+  0x0000000119b2d908: ; implicit exception: dispatches to 0x0000000119b2da6c
+  0x0000000119b2d908: cb08 40b9 
+
+  0x0000000119b2d90c: ;   {metadata('investigation/InterfaceControl$ValuePoint')}
+  0x0000000119b2d90c: 0a37 a0d2 | 0ac3 9ef2 | 7f01 0a6b | 210f 0054 | ca2c 41a9 | 5f01 0bab | 260b 0054 | 4f01 0b8b 
+  0x0000000119b2d92c: e303 0032 | 3f06 0071 | 4d06 0054 | 10fa 8052 
+
+  0x0000000119b2d93c: ;   {metadata('investigation/InterfaceControl$ValuePoint')}
+  0x0000000119b2d93c: 0137 a0d2 | 01c3 9ef2 
+
+  0x0000000119b2d944: ;   {metadata('investigation/InterfaceControl$ValuePoint')}
+  0x0000000119b2d944: 0537 a0d2 | 05c3 9ef2 | 0b00 034b | 3f02 036b | 6a05 0051 | eab3 8a1a | 5f41 1f71 | 0a82 8a1a 
+  0x0000000119b2d964: 4401 030b | 1f20 03d5 | 1f20 03d5 | 6c7c 4093 | 4a68 2c8b | 4d11 40b9 | 660f 0d8b 
+
+  0x0000000119b2d980: ; implicit exception: dispatches to 0x0000000119b2da6c
+  0x0000000119b2d980: cb08 40b9 | 7f01 016b | 4e15 40b9 | 810b 0054 | ca2c 41a9 | 5f01 0bab | 660f 0e8b | 4d01 0b8b 
+  0x0000000119b2d9a0: 4607 0054 | ff01 0dab | e607 0054 | af01 0f8b | ce05 0034 | ca08 40b9 | 5f01 056b | e109 0054 
+  0x0000000119b2d9c0: ca2c 41a9 | 5f01 0bab | 4d01 0b8b | e605 0054 | ff01 0dab | 8606 0054 | 6308 0011 | af01 0f8b 
+  0x0000000119b2d9e0: 7f00 046b | 6bfc ff54 | 8a1b 40f9 
+
+  0x0000000119b2d9ec: ; ImmutableOopMap {c_rarg2=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@35 (line 40)
+  0x0000000119b2d9ec: 8b09 0091 
+
+  0x0000000119b2d9f0: ;   {poll}
+  0x0000000119b2d9f0: 5f01 40b9 | 7f00 116b | abfa ff54 | 7f00 006b | 6a02 0054 
+
+  0x0000000119b2da04: ;   {metadata('investigation/InterfaceControl$ValuePoint')}
+  0x0000000119b2da04: 0c37 a0d2 | 0cc3 9ef2 | 4ac8 238b | 4b11 40b9 | 660f 0b8b 
+
+  0x0000000119b2da18: ; implicit exception: dispatches to 0x0000000119b2da6c
+  0x0000000119b2da18: cb08 40b9 | 7f01 0c6b | e106 0054 | ca2c 41a9 | 5f01 0bab | 4d01 0b8b | c602 0054 | ff01 0dab 
+  0x0000000119b2da38: 6603 0054 | 6304 0011 | ef01 0d8b | 7f00 006b | 2bfe ff54 | e003 0faa | fd7b 43a9 | ff03 0191 
+  0x0000000119b2da58: ;   {poll_return}
+  0x0000000119b2da58: 8817 40f9 | ff63 28eb | 8806 0054 | c003 5fd6 | 6304 0011 | 7d7c 4093 | 6115 8012 | e23f 00a9 
+  0x0000000119b2da78: ; ImmutableOopMap {[0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@17 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2da78: 6233 e797 
+
+  0x0000000119b2da7c: ;   {post_call_nop}
+  0x0000000119b2da7c: 1f20 03d5 | 9f5e 80f2 | 1f20 80f2 | 2106 8012 | fd03 0aaa | eb03 00f9 
+
+  0x0000000119b2da94: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl$ValuePoint::norm@8 (line 18)
+                      ; - investigation.InterfaceControl::valuePass@20 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2da94: 5b33 e797 
+
+  0x0000000119b2da98: ;   {post_call_nop}
+  0x0000000119b2da98: 1f20 03d5 | 1f62 80f2 | 1f40 80f2 | 2106 8012 | fd03 0faa | ed03 00f9 
+
+  0x0000000119b2dab0: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@25 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2dab0: 5433 e797 
+
+  0x0000000119b2dab4: ;   {post_call_nop}
+  0x0000000119b2dab4: 1f20 03d5 | 9f65 80f2 | 1f60 80f2 | e003 1faa | e3ff ff17 | e103 00f9 | 211b 8012 
+
+  0x0000000119b2dad0: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@9 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2dad0: 4c33 e797 
+
+  0x0000000119b2dad4: ;   {post_call_nop}
+  0x0000000119b2dad4: 1f20 03d5 | 9f69 80f2 | 1f80 80f2 | e103 00f9 | 2112 8012 
+
+  0x0000000119b2dae8: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) investigation.InterfaceControl::valuePass@9 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2dae8: 4633 e797 
+
+  0x0000000119b2daec: ;   {post_call_nop}
+  0x0000000119b2daec: 1f20 03d5 | 9f6c 80f2 | 1fa0 80f2 | 6304 0011 | 7d7c 4093 | 2114 8012 | e23f 00a9 | e60b 00f9 
+  0x0000000119b2db0c: ; ImmutableOopMap {[0]=Oop [16]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@17 (line 41)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2db0c: 3d33 e797 
+
+  0x0000000119b2db10: ;   {post_call_nop}
+  0x0000000119b2db10: 1f20 03d5 | 1f71 80f2 | 1fc0 80f2 | 2101 8012 
+
+  0x0000000119b2db20: ; ImmutableOopMap {}
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - investigation.InterfaceControl::valuePass@6 (line 40)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000119b2db20: 3833 e797 
+
+  0x0000000119b2db24: ;   {post_call_nop}
+  0x0000000119b2db24: 1f20 03d5 | 9f73 80f2 | 1fe0 80f2 
+
+  0x0000000119b2db30: ;   {internal_word}
+  0x0000000119b2db30: 48f9 ff10 | 8853 02f9 
+
+  0x0000000119b2db38: ;   {runtime_call SafepointBlob}
+  0x0000000119b2db38: d2cd e117 
+
+  0x0000000119b2db3c: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000119b2db3c: 0848 90d2 | 2828 a3f2 | 2800 c0f2 | 0001 3fd6 | 55ff ff17 
+
+  0x0000000119b2db50: ;   {entry_guard}
+  0x0000000119b2db50: 2300 0000 | 0000 0000 
+[Stub Code]
+  0x0000000119b2db58: ;   {runtime_call DeoptimizationBlob}
+  0x0000000119b2db58: 4ace e197 
+[Deopt Handler Entry Point]
+  0x0000000119b2db5c: ffff ff17 
+[/MachCode]
+{:mode "java", :n 1024, :order "dt-first", :java-version "27-jep401ea3+1-1", :os-version "27.0.1", :results {:dt {:ns-per-element 0.4475763494318182, :batch-size 22}, :vt {:ns-per-element 0.48091264204545453, :batch-size 22}}, :ratio 1.0744818010512744}
+------------------------------------------------------------------------
+static investigation.InterfaceControl::identityPass([Ljava/lang/Object;)J
+  interpreter_invocation_count:         356
+  invocation_counter:                   356
+  backedge_counter:                  364560
+  decompile_count:                        0
+  mdo size: 488 bytes
+
+   0 lconst_0
+   1 lstore_1
+   2 lconst_0
+   3 lstore_3
+   4 lload_3
+   5 fast_aload_0
+   6 arraylength
+   7 i2l
+   8 lcmp
+   9 ifge 38
+  0    bci: 9    BranchData         taken(296) displacement(208)
+                                    not taken(303104)
+  12 lload_1
+  13 fast_aload_0
+  14 lload_3
+  15 l2i
+  16 aaload
+  32   bci: 16   ArrayLoad          
+                array               'java/lang/Object'[]
+                element             'investigation/InterfaceControl$IdentityPoint'
+  17 checkcast 17 <investigation/InterfaceControl$Norm>
+  56   bci: 17   ReceiverTypeData   count(0) entries(1)
+                                    'investigation/InterfaceControl$IdentityPoint'(303104 1.00)
+  20 invokeinterface 19 <investigation/InterfaceControl$Norm.norm()J> 
+  104  bci: 20   VirtualCallData    count(0) entries(1)
+                                    'investigation/InterfaceControl$IdentityPoint'(303104 1.00)
+  25 invokestatic 23 <java/lang/Math.addExact(JJ)J> 
+  152  bci: 25   CounterData        count(303104)
+  28 lstore_1
+  29 lload_3
+  30 lconst_1
+  31 invokestatic 23 <java/lang/Math.addExact(JJ)J> 
+  168  bci: 31   CounterData        count(303104)
+  34 lstore_3
+  35 goto 4
+  184  bci: 35   JumpData           taken(303104) displacement(-184)
+  38 lload_1
+  39 lreturn
+------------------------------------------------------------------------
+static investigation.InterfaceControl::valuePass([Ljava/lang/Object;)J
+  interpreter_invocation_count:         318
+  invocation_counter:                   318
+  backedge_counter:                  325637
+  decompile_count:                        0
+  mdo size: 488 bytes
+
+   0 lconst_0
+   1 lstore_1
+   2 lconst_0
+   3 lstore_3
+   4 lload_3
+   5 fast_aload_0
+   6 arraylength
+   7 i2l
+   8 lcmp
+   9 ifge 38
+  0    bci: 9    BranchData         taken(258) displacement(208)
+                                    not taken(264192)
+  12 lload_1
+  13 fast_aload_0
+  14 lload_3
+  15 l2i
+  16 aaload
+  32   bci: 16   ArrayLoad          
+                array               'java/lang/Object'[]
+                element             'investigation/InterfaceControl$ValuePoint'
+  17 checkcast 17 <investigation/InterfaceControl$Norm>
+  56   bci: 17   ReceiverTypeData   count(0) entries(1)
+                                    'investigation/InterfaceControl$ValuePoint'(264192 1.00)
+  20 invokeinterface 19 <investigation/InterfaceControl$Norm.norm()J> 
+  104  bci: 20   VirtualCallData    count(0) entries(1)
+                                    'investigation/InterfaceControl$ValuePoint'(264192 1.00)
+  25 invokestatic 23 <java/lang/Math.addExact(JJ)J> 
+  152  bci: 25   CounterData        count(264192)
+  28 lstore_1
+  29 lload_3
+  30 lconst_1
+  31 invokestatic 23 <java/lang/Math.addExact(JJ)J> 
+  168  bci: 31   CounterData        count(264192)
+  34 lstore_3
+  35 goto 4
+  184  bci: 35   JumpData           taken(264192) displacement(-184)
+  38 lload_1
+  39 lreturn
+------------------------------------------------------------------------
+Total MDO size: 976 bytes

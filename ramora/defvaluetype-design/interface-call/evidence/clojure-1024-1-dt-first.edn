@@ -1,0 +1,1 @@
+{:mode "clojure", :n 1024, :order "dt-first", :java-version "27-jep401ea3+1-1", :os-version "27.0.1", :results {:dt {:ns-per-element 0.42724609375, :batch-size 24}, :vt {:ns-per-element 0.4560953776041667, :batch-size 24}}, :ratio 1.0675238095238095}

@@ -6,6 +6,11 @@ the same body. It gives evidence for the success criterion in
 `deftype` with the same body." It is manual and not a gate (D11).
 Code: `bench/value_type/bench.clj` (`value-type.bench`).
 
+Follow-up: the [interface-call investigation](interface-call.md) on 2026-10-24
+found no stable slowdown in 16 fresh JVMs. Java controls behaved similarly;
+the inspected paired C2 loops had identical instructions. The results below
+remain the historical 2026-10-20 measurements, not a general penalty claim.
+
 ## Environment
 
 - JDK: `java.vm.version` `27-jep401ea3+1-1` (Valhalla early access).

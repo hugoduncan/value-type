@@ -1,0 +1,2601 @@
+CompileCommand: blackhole criterium/blackhole/Blackhole.consume bool blackhole = true
+CompileCommand: print value_type/bench$interface_dt.invokeStatic bool print = true
+CompileCommand: print value_type/bench$interface_vt.invokeStatic bool print = true
+CompileCommand: print investigation/InterfaceControl.identityPass bool print = true
+CompileCommand: print investigation/InterfaceControl.valuePass bool print = true
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+[1.799s][warning][os] Loading hsdis library failed
+
+Compiled method (c1) 1798 5081 %     3       value_type.bench$interface_dt::invokeStatic @ 11 (66 bytes)
+ total in heap  [0x000000011fe2f948,0x000000011fe30550] = 3080
+ main code      [0x000000011fe2fa40,0x000000011fe30488] = 2632
+ stub code      [0x000000011fe30488,0x000000011fe30528] = 160
+ oops           [0x000000011fe30528,0x000000011fe30550] = 40
+ mutable data [0x00000076f366da00,0x00000076f366dbd8] = 472
+ relocation     [0x00000076f366da00,0x00000076f366db40] = 320
+ metadata       [0x00000076f366db40,0x00000076f366dbd8] = 152
+ immutable data [0x00000076f9475000,0x00000076f9475394] = 916
+ dependencies   [0x00000076f9475000,0x00000076f9475010] = 16
+ nul chk table  [0x00000076f9475010,0x00000076f9475030] = 32
+ scopes pcs     [0x00000076f9475030,0x00000076f94751e0] = 432
+ scopes data    [0x00000076f94751e0,0x00000076f9475390] = 432
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x000000011fe2fa40: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff83 03d1 | fd7b 0da9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000011fe2fa60: e000 0054 
+
+  0x000000011fe2fa64: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011fe2fa64: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0b00 0000 
+
+  0x000000011fe2fa7c: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fa7c: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 4224 1f12 | 5f00 0071 
+  0x000000011fe2fa9c: 4043 0054 
+
+  0x000000011fe2faa0: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2faa0: 0450 95d2 | 64de a9f2 | 2400 c0f2 | a100 00b5 | 8844 4339 | 0801 40b2 | 8844 0339 | 2500 0014 
+  0x000000011fe2fac0: 2308 40b9 | 6338 60d2 | e90b 7bb2 | 8868 69f8 | 1f01 03eb | 4002 0054 | 2941 0091 | 2801 04d1 
+  0x000000011fe2fae0: 68ff ffb5 | e90b 7bb2 | 8868 69f8 | a800 00b4 | 2941 0091 | 2801 04d1 | 88ff ffb5 | 0600 0014 
+  0x000000011fe2fb00: 8960 298b | e803 1faa | 237d a8c8 | 1f01 1feb | eeff ff17 | 091b 80d2 | 0200 0014 | 2921 0091 
+  0x000000011fe2fb20: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000011fe2fb2c: ;   {metadata('java/lang/Object'[])}
+  0x000000011fe2fb2c: 03f2 92d2 | 0303 a0f2 | e3ff cff2 | 2408 40b9 | 8438 60d2 | 881c 40f9 | 7f00 08eb | e13e 0054 
+  0x000000011fe2fb4c: 0100 0014 | e003 01aa 
+
+  0x000000011fe2fb54: ; implicit exception: dispatches to 0x000000011fe3032c
+  0x000000011fe2fb54: 000c 40b9 | fd03 00aa | 0200 80d2 | 0500 80d2 | a07f 4093 | e303 05aa | 7f00 00eb 
+
+  0x000000011fe2fb70: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fb70: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 0821 80d2 | 0923 80d2 | 03a1 899a | 0468 63f8 | 8404 0091 
+  0x000000011fe2fb90: 0468 23f8 | ca2b 0054 
+
+  0x000000011fe2fb98: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fb98: 0450 95d2 | 64de a9f2 | 2400 c0f2 | a100 00b5 | 8884 4439 | 0801 40b2 | 8884 0439 | 2500 0014 
+  0x000000011fe2fbb8: 2308 40b9 | 6338 60d2 | 0926 80d2 | 8868 69f8 | 1f01 03eb | 4002 0054 | 2941 0091 | 2841 05d1 
+  0x000000011fe2fbd8: 68ff ffb5 | 0926 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 | 2841 05d1 | 88ff ffb5 | 0600 0014 
+  0x000000011fe2fbf8: 8960 298b | e803 1faa | 237d a8c8 | 1f01 1feb | eeff ff17 | 0925 80d2 | 0200 0014 | 2921 0091 
+  0x000000011fe2fc18: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000011fe2fc24: ;   {metadata('java/lang/Object'[])}
+  0x000000011fe2fc24: 03f2 92d2 | 0303 a0f2 | e3ff cff2 | 2408 40b9 | 8438 60d2 | 881c 40f9 | 7f00 08eb | 8137 0054 
+  0x000000011fe2fc44: 0100 0014 | e603 01aa 
+
+  0x000000011fe2fc4c: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fc4c: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 08ac 40f9 | 0805 0091 | 08ac 00f9 
+
+  0x000000011fe2fc64: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011fe2fc64: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fc84: a035 0054 
+
+  0x000000011fe2fc88: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011fe2fc88: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000011fe2fca0: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe2fca0: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fcc0: c034 0054 | a37c 40d3 | 607c 4093 | 1f00 05eb 
+
+  0x000000011fe2fcd0: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe2fcd0: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 0411 899a | 0768 64f8 | e704 0091 
+  0x000000011fe2fcf0: 0768 24f8 | 6126 0054 
+
+  0x000000011fe2fcf8: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fcf8: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 08b4 40f9 | 0805 0091 | 08b4 00f9 
+
+  0x000000011fe2fd10: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fd10: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0490 40b9 | 8408 0011 | 0490 00b9 | 844c 1f12 | 9f00 0071 
+  0x000000011fe2fd30: 4032 0054 
+
+  0x000000011fe2fd34: ; implicit exception: dispatches to 0x000000011fe30398
+  0x000000011fe2fd34: c00c 40b9 | 7f00 006b | 0233 0054 
+
+  0x000000011fe2fd40: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fd40: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0060 0391 | e403 06aa | 8408 40b9 | 8438 60d2 | 0900 40f9 
+  0x000000011fe2fd60: 8400 09ca | 88f4 7e92 | a800 00b4 | 8400 0837 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | c000 40f9 
+  0x000000011fe2fd80: 1f00 40f2 | 8100 0054 | c008 40b9 | 0038 60d2 | 0050 40f9 | 1f00 78f2 
+
+  0x000000011fe2fd98: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fd98: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0444 8339 | 0800 a052 | e903 1b32 | 0701 899a | 8400 072a 
+  0x000000011fe2fdb8: 0444 0339 | c400 40f9 | 9f00 40f2 | 8100 0054 | c408 40b9 | 8438 60d2 | 8450 40f9 | 8400 7792 
+  0x000000011fe2fdd8: e42e 00b5 | 637c 4093 | 63f4 7ed3 | 6040 0091 | c768 60b8 | 4700 00b4 | 670f 078b 
+
+  0x000000011fe2fdf4: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fdf4: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0080 0391 | e303 07aa | 8300 00b5 | 0900 40f9 | 2901 40b2 
+  0x000000011fe2fe14: 0900 00f9 
+
+  0x000000011fe2fe18: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fe18: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 08bc 40f9 | 0805 0091 | 08bc 00f9 
+
+  0x000000011fe2fe30: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011fe2fe30: 0004 9ad2 | 40bd a9f2 | 2000 c0f2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fe50: a02b 0054 
+
+  0x000000011fe2fe54: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011fe2fe54: 0004 9ad2 | 40bd a9f2 | 2000 c0f2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000011fe2fe6c: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe2fe6c: 0090 83d2 | c0a6 a9f2 | 2000 c0f2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fe8c: c02a 0054 | e003 05aa | e3fb 40b2 | 1f00 03eb 
+
+  0x000000011fe2fe9c: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe2fe9c: 0090 83d2 | c0a6 a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 0301 899a | 0468 63f8 | 8404 0091 
+  0x000000011fe2febc: 0468 23f8 | 6013 0054 | a004 0091 | e04b 00f9 | fd8f 00b9 | e14f 00f9 
+
+  0x000000011fe2fed4: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2fed4: 0650 95d2 | 66de a9f2 | 2600 c0f2 | a700 00b5 | c804 4639 | 0801 40b2 | c804 0639 | 2b00 0014 
+  0x000000011fe2fef4: e508 40b9 | a538 60d2 | 0932 80d2 | c868 69f8 | 1f01 05eb | 4002 0054 | 2941 0091 | 28c1 06d1 
+  0x000000011fe2ff14: 68ff ffb5 | 0932 80d2 | c868 69f8 | a800 00b4 | 2941 0091 | 28c1 06d1 | 88ff ffb5 | 0600 0014 
+  0x000000011fe2ff34: c960 298b | e803 1faa | 257d a8c8 | 1f01 1feb | eeff ff17 | 0931 80d2 | 0200 0014 | 2921 0091 
+  0x000000011fe2ff54: c868 69f8 | 0805 0091 | c868 29f8 
+
+  0x000000011fe2ff60: ;   {metadata('value_type/bench/INorm')}
+  0x000000011fe2ff60: 0500 9cd2 | a536 a0f2 | e5ff cff2 | e608 40b9 | c638 60d2 | c810 40f9 | bf00 08eb | 0001 0054 
+  0x000000011fe2ff80: df00 05eb | c000 0054 | e617 bfa9 
+
+  0x000000011fe2ff8c: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000011fe2ff8c: 8d1f d795 | e607 41f8 | 8623 0034 | 0100 0014 | e303 07aa 
+
+  0x000000011fe2ffa0: ; implicit exception: dispatches to 0x000000011fe3040c
+  0x000000011fe2ffa0: 7f00 40f9 | e403 03aa 
+
+  0x000000011fe2ffa8: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe2ffa8: 0550 95d2 | 65de a9f2 | 2500 c0f2 | 8408 40b9 | 8438 60d2 | e90b 7ab2 | a868 69f8 | 1f01 04eb 
+  0x000000011fe2ffc8: 4002 0054 | 2941 0091 | 2881 07d1 | 68ff ffb5 | e90b 7ab2 | a868 69f8 | a800 00b4 | 2941 0091 
+  0x000000011fe2ffe8: 2881 07d1 | 88ff ffb5 | 0600 0014 | a960 298b | e803 1faa | 247d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000011fe30008: 0937 80d2 | 0200 0014 | 2921 0091 | a868 69f8 | 0805 0091 | a868 29f8 | e103 03aa | fd03 02aa 
+  0x000000011fe30028: 0900 8ed2 | a928 bff2 | c90e c0f2 
+
+  0x000000011fe30034: ; ImmutableOopMap {[152]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@45 (line 62)
+                      ;   {virtual_call}
+  0x000000011fe30034: 83c0 0394 
+
+  0x000000011fe30038: ;   {post_call_nop}
+  0x000000011fe30038: 1f20 03d5 | 1fde 80f2 | 1f00 80f2 
+
+  0x000000011fe30044: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe30044: 0150 95d2 | 61de a9f2 | 2100 c0f2 | 28f4 40f9 | 0805 0091 | 28f4 00f9 
+
+  0x000000011fe3005c: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011fe3005c: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 2290 40b9 | 4208 0011 | 2290 00b9 | 424c 1f12 | 5f00 0071 
+  0x000000011fe3007c: a01c 0054 
+
+  0x000000011fe30080: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011fe30080: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 286c 40f9 | 0805 0091 | 286c 00f9 | e103 1daa | e203 00aa 
+  0x000000011fe300a0: ; ImmutableOopMap {[152]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_dt::invokeStatic@50 (line 62)
+                      ;   {static_call}
+  0x000000011fe300a0: 480d f995 
+
+  0x000000011fe300a4: ;   {post_call_nop}
+  0x000000011fe300a4: 1f20 03d5 | 9feb 80f2 | 1f20 80f2 
+
+  0x000000011fe300b0: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe300b0: 0350 95d2 | 63de a9f2 | 2300 c0f2 | 6494 40b9 | 8408 0011 | 6494 00b9 | 8430 1f12 | 9f00 0071 
+  0x000000011fe300d0: 001b 0054 
+
+  0x000000011fe300d4: ; ImmutableOopMap {[152]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@56 (line 62)
+  0x000000011fe300d4: 881b 40f9 
+
+  0x000000011fe300d8: ;   {poll}
+  0x000000011fe300d8: 1f01 40b9 
+
+  0x000000011fe300dc: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe300dc: 0350 95d2 | 63de a9f2 | 2300 c0f2 | 64fc 40f9 | 8404 0091 | 64fc 00f9 | fd03 00aa | e54b 40f9 
+  0x000000011fe300fc: e203 1daa | fd8f 40b9 | e14f 40f9 | 97fe ff17 | fd03 02aa | e003 1daa | fd7b 4da9 | ff83 0391 
+  0x000000011fe3011c: ;   {poll_return}
+  0x000000011fe3011c: 8817 40f9 | ff63 28eb | 6819 0054 | c003 5fd6 | e757 00f9 | fd8f 00b9 | e14f 00f9 | fd03 02aa 
+  0x000000011fe3013c: ; ImmutableOopMap {[152]=Oop [168]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011fe3013c: f122 d795 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | 6818 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011fe3015c: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e203 00aa 
+  0x000000011fe3017c: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe3017c: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 287c 40f9 | 0805 0091 | 287c 00f9 
+
+  0x000000011fe30194: ;   {oop("long overflow"{0x00000079f12ca9e0})}
+  0x000000011fe30194: 023c 95d2 | 8225 bef2 | 220f c0f2 | e103 00aa | e053 00f9 
+
+  0x000000011fe301a8: ; ImmutableOopMap {[152]=Oop [160]=Oop [168]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@14 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011fe301a8: 96be d195 
+
+  0x000000011fe301ac: ;   {post_call_nop}
+  0x000000011fe301ac: 1f20 03d5 | 9f0c 81f2 | 1f80 80f2 | e053 40f9 | af00 0014 | e59b 0ba9 | fd8f 00b9 | e14f 00f9 
+  0x000000011fe301cc: fd03 02aa 
+
+  0x000000011fe301d0: ; ImmutableOopMap {[152]=Oop [192]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011fe301d0: cc22 d795 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | 0814 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011fe301f0: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e203 00aa 
+  0x000000011fe30210: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe30210: 03b3 8bd2 | e3a2 a9f2 | 2300 c0f2 | 687c 40f9 | 0805 0091 | 687c 00f9 
+
+  0x000000011fe30228: ;   {oop("integer overflow"{0x00000079f12d3210})}
+  0x000000011fe30228: 0242 86d2 | a225 bef2 | 220f c0f2 | e103 00aa | e05b 00f9 
+
+  0x000000011fe3023c: ; ImmutableOopMap {[152]=Oop [176]=Oop [192]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@14 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011fe3023c: 71be d195 
+
+  0x000000011fe30240: ;   {post_call_nop}
+  0x000000011fe30240: 1f20 03d5 | 1f1f 81f2 | 1fc0 80f2 | e05b 40f9 | 8a00 0014 | e953 40d1 | 3f01 00f9 | ff83 03d1 
+  0x000000011fe30260: fd7b 0da9 | 2801 0018 | 8923 40b9 | 1f01 09eb | e000 0054 
+
+  0x000000011fe30274: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011fe30274: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0000 0000 | e007 1c32 | 007c 4093 
+  0x000000011fe30294: 3d68 60f8 | 0005 8052 | 007c 4093 | 2268 60b8 | e007 1d32 | 007c 4093 | 2368 60f8 | e003 1d32 
+  0x000000011fe302b4: 007c 4093 | 2468 60f8 | e003 01aa | e28b 00b9 | fd8f 07a9 | fd03 04aa 
+
+  0x000000011fe302cc: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x000000011fe302cc: 0837 93d2 | 28f5 a0f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x000000011fe302dc: ;   {post_call_nop}
+  0x000000011fe302dc: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 | e203 1daa | e343 40f9 | e503 03aa | e13f 40f9 | e08b 40b9 
+  0x000000011fe302fc: fd03 00aa | 19fe ff17 
+
+  0x000000011fe30304: ;   {metadata({method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe30304: 089c 94d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe3031c: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*synchronization entry
+                      ; - value_type.bench$interface_dt::invokeStatic@-1 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe3031c: d923 d795 | e0fd ff17 | e803 01aa 
+
+  0x000000011fe30328: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@1 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011fe30328: 461c d795 
+
+  0x000000011fe3032c: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@4 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011fe3032c: 7513 d795 | e803 01aa 
+
+  0x000000011fe30334: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@19 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011fe30334: 431c d795 
+
+  0x000000011fe30338: ;   {metadata({method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011fe30338: 08d5 93d2 | 28a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30350: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::intCast@-1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30350: cc23 d795 | 4dfe ff17 
+
+  0x000000011fe30358: ;   {metadata({method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe30358: 08a3 96d2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30370: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::toIntExact@-1 (line 1374)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30370: c423 d795 | 54fe ff17 
+
+  0x000000011fe30378: ;   {metadata({method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe30378: 08b3 83d2 | 48a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30390: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::aget@-1 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30390: bc23 d795 | 68fe ff17 
+
+  0x000000011fe30398: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011fe30398: 5a13 d795 | e803 03aa | e903 06aa 
+
+  0x000000011fe303a4: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011fe303a4: 1e90 89d2 | fee7 a4f2 | 3e00 c0f2 
+
+  0x000000011fe303b0: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+  0x000000011fe303b0: c003 3fd6 | e31b 00a9 
+
+  0x000000011fe303b8: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x000000011fe303b8: 5217 d795 | e703 00aa | 8dfe ff17 
+
+  0x000000011fe303c4: ;   {metadata({method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011fe303c4: 08dc 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe303dc: ; ImmutableOopMap {c_rarg1=Oop c_rarg7=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::inc@-1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe303dc: a923 d795 | 9dfe ff17 
+
+  0x000000011fe303e4: ;   {metadata({method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe303e4: 0883 9ad2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe303fc: ; ImmutableOopMap {c_rarg1=Oop c_rarg7=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::incrementExact@-1 (line 1281)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe303fc: a123 d795 | a4fe ff17 | e803 07aa 
+
+  0x000000011fe30408: ; ImmutableOopMap {[152]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@42 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011fe30408: 0e1c d795 
+
+  0x000000011fe3040c: ; ImmutableOopMap {c_rarg3=Oop [152]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@45 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011fe3040c: 3d13 d795 
+
+  0x000000011fe30410: ;   {metadata({method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011fe30410: 0836 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30428: ; ImmutableOopMap {[152]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::add@-1 (line 1922)
+                      ; - value_type.bench$interface_dt::invokeStatic@50 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30428: 9623 d795 | 15ff ff17 
+
+  0x000000011fe30430: ;   {metadata({method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011fe30430: 089c 94d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | e80b 7db2 | e803 00f9 
+
+  0x000000011fe30448: ; ImmutableOopMap {[152]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@56 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30448: 8e23 d795 | 22ff ff17 
+
+  0x000000011fe30450: ;   {internal_word}
+  0x000000011fe30450: 68e6 ff10 | 8853 02f9 
+
+  0x000000011fe30458: ;   {runtime_call SafepointBlob}
+  0x000000011fe30458: 8ac3 d115 
+
+  0x000000011fe3045c: ; ImmutableOopMap {[152]=Oop [168]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011fe3045c: 7914 d795 | 46ff ff17 
+
+  0x000000011fe30464: ; ImmutableOopMap {[152]=Oop [192]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011fe30464: 7714 d795 | 69ff ff17 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 4da9 | ff83 0391 
+
+  0x000000011fe30480: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000011fe30480: 4011 d715 | 0000 0000 
+[Stub Code]
+  0x000000011fe30488: ;   {static_stub}
+  0x000000011fe30488: df3f 03d5 
+
+  0x000000011fe3048c: ;   {metadata(nullptr)}
+  0x000000011fe3048c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000011fe304a0: ;   {trampoline_stub}
+  0x000000011fe304a0: 4800 0058 | 0001 1fd6 | 4002 f21f | 0100 0000 
+
+  0x000000011fe304b0: ;   {trampoline_stub}
+  0x000000011fe304b0: 4800 0058 | 0001 1fd6 | c035 c727 | 0100 0000 
+
+  0x000000011fe304c0: ;   {trampoline_stub}
+  0x000000011fe304c0: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011fe304d0: ;   {trampoline_stub}
+  0x000000011fe304d0: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011fe304e0: ;   {static_stub}
+  0x000000011fe304e0: df3f 03d5 
+
+  0x000000011fe304e4: ;   {metadata(nullptr)}
+  0x000000011fe304e4: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000011fe304f4: ;   {static_stub}
+  0x000000011fe304f4: df3f 03d5 
+
+  0x000000011fe304f8: ;   {metadata(nullptr)}
+  0x000000011fe304f8: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011fe30508: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011fe30508: 0e1b d795 
+
+  0x000000011fe3050c: ;   {external_word}
+  0x000000011fe3050c: 60dc 88d2 | 40fa a0f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000011fe3051c: ;   {runtime_call DeoptimizationBlob}
+  0x000000011fe3051c: d9c3 d195 
+[Deopt Handler Entry Point]
+  0x000000011fe30520: ffff ff17 | 0000 0000 
+[/MachCode]
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c1) 1814 5084       3       value_type.bench$interface_dt::invokeStatic (66 bytes)
+ total in heap  [0x000000011feb4788,0x000000011feb52c8] = 2880
+ main code      [0x000000011feb4880,0x000000011feb5200] = 2432
+ stub code      [0x000000011feb5200,0x000000011feb52a0] = 160
+ oops           [0x000000011feb52a0,0x000000011feb52c8] = 40
+ mutable data [0x00000076f366c400,0x00000076f366c5d0] = 464
+ relocation     [0x00000076f366c400,0x00000076f366c538] = 312
+ metadata       [0x00000076f366c538,0x00000076f366c5d0] = 152
+ immutable data [0x00000076f9475400,0x00000076f9475794] = 916
+ dependencies   [0x00000076f9475400,0x00000076f9475410] = 16
+ nul chk table  [0x00000076f9475410,0x00000076f9475430] = 32
+ scopes pcs     [0x00000076f9475430,0x00000076f94755e0] = 432
+ scopes data    [0x00000076f94755e0,0x00000076f9475790] = 432
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt'
+  # parm0:    c_rarg1:c_rarg1 
+                        = 'java/lang/Object'
+  #           [sp+0xd0]  (sp of caller)
+  0x000000011feb4880: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff43 03d1 | fd7b 0ca9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000011feb48a0: e000 0054 
+
+  0x000000011feb48a4: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011feb48a4: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0b00 0000 | fd03 01aa | fd3f 00f9 
+  0x000000011feb48c4: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb48c4: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 2124 1f12 | 3f00 0071 
+  0x000000011feb48e4: e03c 0054 
+
+  0x000000011feb48e8: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb48e8: 0350 95d2 | 63de a9f2 | 2300 c0f2 | bd00 00b5 | 6844 4339 | 0801 40b2 | 6844 0339 | 2500 0014 
+  0x000000011feb4908: a20b 40b9 | 4238 60d2 | e90b 7bb2 | 6868 69f8 | 1f01 02eb | 4002 0054 | 2941 0091 | 2801 04d1 
+  0x000000011feb4928: 68ff ffb5 | e90b 7bb2 | 6868 69f8 | a800 00b4 | 2941 0091 | 2801 04d1 | 88ff ffb5 | 0600 0014 
+  0x000000011feb4948: 6960 298b | e803 1faa | 227d a8c8 | 1f01 1feb | eeff ff17 | 091b 80d2 | 0200 0014 | 2921 0091 
+  0x000000011feb4968: 6868 69f8 | 0805 0091 | 6868 29f8 
+
+  0x000000011feb4974: ;   {metadata('java/lang/Object'[])}
+  0x000000011feb4974: 02f2 92d2 | 0203 a0f2 | e2ff cff2 | a30b 40b9 | 6338 60d2 | 681c 40f9 | 5f00 08eb | 8138 0054 
+  0x000000011feb4994: 0100 0014 | e003 1daa 
+
+  0x000000011feb499c: ; implicit exception: dispatches to 0x000000011feb50a8
+  0x000000011feb499c: 020c 40b9 | e28b 00b9 | 0300 80d2 | 0500 80d2 | 407c 4093 | e103 05aa | 3f00 00eb 
+
+  0x000000011feb49b8: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb49b8: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 0821 80d2 | 0923 80d2 | 01a1 899a | 0468 61f8 | 8404 0091 
+  0x000000011feb49d8: 0468 21f8 | 6a2b 0054 
+
+  0x000000011feb49e0: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb49e0: 0450 95d2 | 64de a9f2 | 2400 c0f2 | bd00 00b5 | 8884 4439 | 0801 40b2 | 8884 0439 | 2500 0014 
+  0x000000011feb4a00: a10b 40b9 | 2138 60d2 | 0926 80d2 | 8868 69f8 | 1f01 01eb | 4002 0054 | 2941 0091 | 2841 05d1 
+  0x000000011feb4a20: 68ff ffb5 | 0926 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 | 2841 05d1 | 88ff ffb5 | 0600 0014 
+  0x000000011feb4a40: 8960 298b | e803 1faa | 217d a8c8 | 1f01 1feb | eeff ff17 | 0925 80d2 | 0200 0014 | 2921 0091 
+  0x000000011feb4a60: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000011feb4a6c: ;   {metadata('java/lang/Object'[])}
+  0x000000011feb4a6c: 01f2 92d2 | 0103 a0f2 | e1ff cff2 | a40b 40b9 | 8438 60d2 | 881c 40f9 | 3f00 08eb | 2131 0054 
+  0x000000011feb4a8c: 0100 0014 | e603 1daa 
+
+  0x000000011feb4a94: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4a94: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 08ac 40f9 | 0805 0091 | 08ac 00f9 
+
+  0x000000011feb4aac: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011feb4aac: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 214c 1f12 | 3f00 0071 
+  0x000000011feb4acc: 402f 0054 
+
+  0x000000011feb4ad0: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011feb4ad0: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000011feb4ae8: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb4ae8: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 214c 1f12 | 3f00 0071 
+  0x000000011feb4b08: 602e 0054 | a17c 40d3 | 207c 4093 | 1f00 05eb 
+
+  0x000000011feb4b18: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb4b18: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 0411 899a | 0768 64f8 | e704 0091 
+  0x000000011feb4b38: 0768 24f8 | c125 0054 
+
+  0x000000011feb4b40: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4b40: 0050 95d2 | 60de a9f2 | 2000 c0f2 | 08b4 40f9 | 0805 0091 | 08b4 00f9 
+
+  0x000000011feb4b58: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4b58: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0490 40b9 | 8408 0011 | 0490 00b9 | 844c 1f12 | 9f00 0071 
+  0x000000011feb4b78: e02b 0054 
+
+  0x000000011feb4b7c: ; implicit exception: dispatches to 0x000000011feb5114
+  0x000000011feb4b7c: c00c 40b9 | 3f00 006b | a22c 0054 
+
+  0x000000011feb4b88: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4b88: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0060 0391 | e403 06aa | 8408 40b9 | 8438 60d2 | 0900 40f9 
+  0x000000011feb4ba8: 8400 09ca | 88f4 7e92 | a800 00b4 | 8400 0837 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | c000 40f9 
+  0x000000011feb4bc8: 1f00 40f2 | 8100 0054 | c008 40b9 | 0038 60d2 | 0050 40f9 | 1f00 78f2 
+
+  0x000000011feb4be0: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4be0: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0444 8339 | 0800 a052 | e903 1b32 | 0701 899a | 8400 072a 
+  0x000000011feb4c00: 0444 0339 | c400 40f9 | 9f00 40f2 | 8100 0054 | c408 40b9 | 8438 60d2 | 8450 40f9 | 8400 7792 
+  0x000000011feb4c20: 8428 00b5 | 217c 4093 | 21f4 7ed3 | 2140 0091 | c768 61b8 | 4700 00b4 | 670f 078b 
+
+  0x000000011feb4c3c: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4c3c: 01a0 93d2 | 81de a9f2 | 2100 c0f2 | 2180 0391 | e003 07aa | 8000 00b5 | 2900 40f9 | 2901 40b2 
+  0x000000011feb4c5c: 2900 00f9 
+
+  0x000000011feb4c60: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4c60: 0150 95d2 | 61de a9f2 | 2100 c0f2 | 28bc 40f9 | 0805 0091 | 28bc 00f9 
+
+  0x000000011feb4c78: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4c78: 0104 9ad2 | 41bd a9f2 | 2100 c0f2 | 2090 40b9 | 0008 0011 | 2090 00b9 | 004c 1f12 | 1f00 0071 
+  0x000000011feb4c98: 4025 0054 
+
+  0x000000011feb4c9c: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4c9c: 0104 9ad2 | 41bd a9f2 | 2100 c0f2 | 286c 40f9 | 0805 0091 | 286c 00f9 
+
+  0x000000011feb4cb4: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb4cb4: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 2090 40b9 | 0008 0011 | 2090 00b9 | 004c 1f12 | 1f00 0071 
+  0x000000011feb4cd4: 6024 0054 | e103 05aa | e0fb 40b2 | 3f00 00eb 
+
+  0x000000011feb4ce4: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb4ce4: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 081d 80d2 | 091b 80d2 | 0001 899a | 2468 60f8 | 8404 0091 
+  0x000000011feb4d04: 2468 20f8 | 0013 0054 | a004 0091 | e043 00f9 
+
+  0x000000011feb4d14: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4d14: 0650 95d2 | 66de a9f2 | 2600 c0f2 | a700 00b5 | c804 4639 | 0801 40b2 | c804 0639 | 2b00 0014 
+  0x000000011feb4d34: e508 40b9 | a538 60d2 | 0932 80d2 | c868 69f8 | 1f01 05eb | 4002 0054 | 2941 0091 | 28c1 06d1 
+  0x000000011feb4d54: 68ff ffb5 | 0932 80d2 | c868 69f8 | a800 00b4 | 2941 0091 | 28c1 06d1 | 88ff ffb5 | 0600 0014 
+  0x000000011feb4d74: c960 298b | e803 1faa | 257d a8c8 | 1f01 1feb | eeff ff17 | 0931 80d2 | 0200 0014 | 2921 0091 
+  0x000000011feb4d94: c868 69f8 | 0805 0091 | c868 29f8 
+
+  0x000000011feb4da0: ;   {metadata('value_type/bench/INorm')}
+  0x000000011feb4da0: 0500 9cd2 | a536 a0f2 | e5ff cff2 | e608 40b9 | c638 60d2 | c810 40f9 | bf00 08eb | 0001 0054 
+  0x000000011feb4dc0: df00 05eb | c000 0054 | e617 bfa9 
+
+  0x000000011feb4dcc: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000011feb4dcc: fd0b d595 | e607 41f8 | 661d 0034 | 0100 0014 | e103 07aa 
+
+  0x000000011feb4de0: ; implicit exception: dispatches to 0x000000011feb5188
+  0x000000011feb4de0: 3f00 40f9 | e403 01aa 
+
+  0x000000011feb4de8: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4de8: 0550 95d2 | 65de a9f2 | 2500 c0f2 | 8408 40b9 | 8438 60d2 | e90b 7ab2 | a868 69f8 | 1f01 04eb 
+  0x000000011feb4e08: 4002 0054 | 2941 0091 | 2881 07d1 | 68ff ffb5 | e90b 7ab2 | a868 69f8 | a800 00b4 | 2941 0091 
+  0x000000011feb4e28: 2881 07d1 | 88ff ffb5 | 0600 0014 | a960 298b | e803 1faa | 247d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000011feb4e48: 0937 80d2 | 0200 0014 | 2921 0091 | a868 69f8 | 0805 0091 | a868 29f8 | fd03 03aa | 093e 8cd2 
+  0x000000011feb4e68: a910 bff2 | c90e c0f2 
+
+  0x000000011feb4e70: ; ImmutableOopMap {[120]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@45 (line 62)
+                      ;   {virtual_call}
+  0x000000011feb4e70: f4ac 0194 
+
+  0x000000011feb4e74: ;   {post_call_nop}
+  0x000000011feb4e74: 1f20 03d5 | 9fdd 80f2 | 1f00 80f2 
+
+  0x000000011feb4e80: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4e80: 0150 95d2 | 61de a9f2 | 2100 c0f2 | 28f4 40f9 | 0805 0091 | 28f4 00f9 
+
+  0x000000011feb4e98: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4e98: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 2290 40b9 | 4208 0011 | 2290 00b9 | 424c 1f12 | 5f00 0071 
+  0x000000011feb4eb8: a016 0054 
+
+  0x000000011feb4ebc: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4ebc: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 286c 40f9 | 0805 0091 | 286c 00f9 | e103 1daa | e203 00aa 
+  0x000000011feb4edc: ; ImmutableOopMap {[120]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_dt::invokeStatic@50 (line 62)
+                      ;   {static_call}
+  0x000000011feb4edc: b9f9 f695 
+
+  0x000000011feb4ee0: ;   {post_call_nop}
+  0x000000011feb4ee0: 1f20 03d5 | 1feb 80f2 | 1f20 80f2 
+
+  0x000000011feb4eec: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4eec: 0350 95d2 | 63de a9f2 | 2300 c0f2 | 6494 40b9 | 8408 0011 | 6494 00b9 | 8430 1f12 | 9f00 0071 
+  0x000000011feb4f0c: 0015 0054 
+
+  0x000000011feb4f10: ; ImmutableOopMap {[120]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@56 (line 62)
+  0x000000011feb4f10: 881b 40f9 
+
+  0x000000011feb4f14: ;   {poll}
+  0x000000011feb4f14: 1f01 40b9 
+
+  0x000000011feb4f18: ;   {metadata(method data for {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb4f18: 0350 95d2 | 63de a9f2 | 2300 c0f2 | 64fc 40f9 | 8404 0091 | 64fc 00f9 | fd03 00aa | e543 40f9 
+  0x000000011feb4f38: e303 1daa | e28b 40b9 | fd3f 40f9 | 9afe ff17 | fd03 03aa | e003 1daa | fd7b 4ca9 | ff43 0391 
+  0x000000011feb4f58: ;   {poll_return}
+  0x000000011feb4f58: 8817 40f9 | ff63 28eb | 6813 0054 | c003 5fd6 | e74f 00f9 | fd03 03aa 
+
+  0x000000011feb4f70: ; ImmutableOopMap {[120]=Oop [152]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011feb4f70: 640f d595 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | a812 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011feb4f90: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e203 00aa 
+  0x000000011feb4fb0: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb4fb0: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 287c 40f9 | 0805 0091 | 287c 00f9 
+
+  0x000000011feb4fc8: ;   {oop("long overflow"{0x00000079f12ca9e0})}
+  0x000000011feb4fc8: 023c 95d2 | 8225 bef2 | 220f c0f2 | e103 00aa | e04b 00f9 
+
+  0x000000011feb4fdc: ; ImmutableOopMap {[120]=Oop [144]=Oop [152]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@14 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011feb4fdc: 09ab cf95 
+
+  0x000000011feb4fe0: ;   {post_call_nop}
+  0x000000011feb4fe0: 1f20 03d5 | 1f0b 81f2 | 1f80 80f2 | e04b 40f9 | 8100 0014 | e59b 0aa9 | fd03 03aa 
+
+  0x000000011feb4ffc: ; ImmutableOopMap {[120]=Oop [176]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011feb4ffc: 410f d595 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | 880e 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011feb501c: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e103 00aa 
+  0x000000011feb503c: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb503c: 03b3 8bd2 | e3a2 a9f2 | 2300 c0f2 | 687c 40f9 | 0805 0091 | 687c 00f9 
+
+  0x000000011feb5054: ;   {oop("integer overflow"{0x00000079f12d3210})}
+  0x000000011feb5054: 0242 86d2 | a225 bef2 | 220f c0f2 | e103 00aa | e053 00f9 
+
+  0x000000011feb5068: ; ImmutableOopMap {[120]=Oop [160]=Oop [176]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@14 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011feb5068: e6aa cf95 
+
+  0x000000011feb506c: ;   {post_call_nop}
+  0x000000011feb506c: 1f20 03d5 | 9f1c 81f2 | 1fc0 80f2 | e053 40f9 | 5e00 0014 
+
+  0x000000011feb5080: ;   {metadata({method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb5080: 089c 94d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb5098: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - value_type.bench$interface_dt::invokeStatic@-1 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb5098: 7a10 d595 | 13fe ff17 | e803 1daa 
+
+  0x000000011feb50a4: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@1 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011feb50a4: e708 d595 
+
+  0x000000011feb50a8: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@4 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011feb50a8: 1600 d595 | e803 1daa 
+
+  0x000000011feb50b0: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@19 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011feb50b0: e408 d595 
+
+  0x000000011feb50b4: ;   {metadata({method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011feb50b4: 08d5 93d2 | 28a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb50cc: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::intCast@-1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb50cc: 6d10 d595 | 80fe ff17 
+
+  0x000000011feb50d4: ;   {metadata({method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb50d4: 08a3 96d2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb50ec: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::toIntExact@-1 (line 1374)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb50ec: 6510 d595 | 87fe ff17 
+
+  0x000000011feb50f4: ;   {metadata({method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb50f4: 08b3 83d2 | 48a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb510c: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::aget@-1 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb510c: 5d10 d595 | 9bfe ff17 
+
+  0x000000011feb5114: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011feb5114: fbff d495 | e803 01aa | e903 06aa 
+
+  0x000000011feb5120: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011feb5120: 1e90 89d2 | fee7 a4f2 | 3e00 c0f2 
+
+  0x000000011feb512c: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+  0x000000011feb512c: c003 3fd6 | e11b 00a9 
+
+  0x000000011feb5134: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x000000011feb5134: f303 d595 | e703 00aa | c0fe ff17 
+
+  0x000000011feb5140: ;   {metadata({method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011feb5140: 08dc 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb5158: ; ImmutableOopMap {rfp=Oop c_rarg7=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::inc@-1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb5158: 4a10 d595 | d0fe ff17 
+
+  0x000000011feb5160: ;   {metadata({method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb5160: 0883 9ad2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb5178: ; ImmutableOopMap {rfp=Oop c_rarg7=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::incrementExact@-1 (line 1281)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb5178: 4210 d595 | d7fe ff17 | e803 07aa 
+
+  0x000000011feb5184: ; ImmutableOopMap {[120]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@42 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011feb5184: af08 d595 
+
+  0x000000011feb5188: ; ImmutableOopMap {c_rarg1=Oop [120]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@45 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011feb5188: deff d495 
+
+  0x000000011feb518c: ;   {metadata({method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011feb518c: 0836 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb51a4: ; ImmutableOopMap {[120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::add@-1 (line 1922)
+                      ; - value_type.bench$interface_dt::invokeStatic@50 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb51a4: 3710 d595 | 45ff ff17 
+
+  0x000000011feb51ac: ;   {metadata({method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt')}
+  0x000000011feb51ac: 089c 94d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | e80b 7db2 | e803 00f9 
+
+  0x000000011feb51c4: ; ImmutableOopMap {[120]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@56 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb51c4: 2f10 d595 | 52ff ff17 
+
+  0x000000011feb51cc: ;   {internal_word}
+  0x000000011feb51cc: 68ec ff10 | 8853 02f9 
+
+  0x000000011feb51d4: ;   {runtime_call SafepointBlob}
+  0x000000011feb51d4: 2bb0 cf15 
+
+  0x000000011feb51d8: ; ImmutableOopMap {[120]=Oop [152]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011feb51d8: 1a01 d595 | 74ff ff17 
+
+  0x000000011feb51e0: ; ImmutableOopMap {[120]=Oop [176]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011feb51e0: 1801 d595 | 95ff ff17 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 4ca9 | ff43 0391 
+
+  0x000000011feb51fc: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000011feb51fc: e1fd d415 
+[Stub Code]
+  0x000000011feb5200: ;   {static_stub}
+  0x000000011feb5200: df3f 03d5 
+
+  0x000000011feb5204: ;   {metadata(nullptr)}
+  0x000000011feb5204: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000011feb5218: ;   {trampoline_stub}
+  0x000000011feb5218: 4800 0058 | 0001 1fd6 | 4002 f21f | 0100 0000 
+
+  0x000000011feb5228: ;   {trampoline_stub}
+  0x000000011feb5228: 4800 0058 | 0001 1fd6 | c035 c727 | 0100 0000 
+
+  0x000000011feb5238: ;   {trampoline_stub}
+  0x000000011feb5238: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011feb5248: ;   {trampoline_stub}
+  0x000000011feb5248: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011feb5258: ;   {static_stub}
+  0x000000011feb5258: df3f 03d5 
+
+  0x000000011feb525c: ;   {metadata(nullptr)}
+  0x000000011feb525c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000011feb526c: ;   {static_stub}
+  0x000000011feb526c: df3f 03d5 
+
+  0x000000011feb5270: ;   {metadata(nullptr)}
+  0x000000011feb5270: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011feb5280: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011feb5280: b007 d595 
+
+  0x000000011feb5284: ;   {external_word}
+  0x000000011feb5284: 60dc 88d2 | 40fa a0f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000011feb5294: ;   {runtime_call DeoptimizationBlob}
+  0x000000011feb5294: 7bb0 cf95 
+[Deopt Handler Entry Point]
+  0x000000011feb5298: ffff ff17 | 0000 0000 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 1829 5087 %     4       value_type.bench$interface_dt::invokeStatic @ 11 (66 bytes)
+ total in heap  [0x0000000127a86a48,0x0000000127a86d98] = 848
+ main code      [0x0000000127a86b40,0x0000000127a86d78] = 568
+ stub code      [0x0000000127a86d78,0x0000000127a86d80] = 8
+ oops           [0x0000000127a86d80,0x0000000127a86d98] = 24
+ mutable data [0x00000076ef920960,0x00000076ef9209e8] = 136
+ relocation     [0x00000076ef920960,0x00000076ef9209a0] = 64
+ metadata       [0x00000076ef9209a0,0x00000076ef9209e8] = 72
+ immutable data [0x00000076f366cc00,0x00000076f366cdec] = 492
+ dependencies   [0x00000076f366cc00,0x00000076f366cc10] = 16
+ nul chk table  [0x00000076f366cc10,0x00000076f366cc28] = 24
+ scopes pcs     [0x00000076f366cc28,0x00000076f366ccd8] = 176
+ scopes data    [0x00000076f366ccd8,0x00000076f366cde8] = 272
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x0000000127a86b40: 0000 20d4 | 1f20 03d5 | 1f20 03d5 | 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff43 01d1 | fd7b 04a9 
+  0x0000000127a86b60: 8810 0018 | 8923 40b9 | 1f01 09eb | 810f 0054 | 3618 40f9 | 350c 40f9 | 3404 40f9 | 3328 40b9 
+  0x0000000127a86b80: e003 01aa | c900 0010 | 89ff 01f9 
+
+  0x0000000127a86b8c: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x0000000127a86b8c: 0837 93d2 | 28f5 a0f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x0000000127a86b9c: ;   {post_call_nop}
+  0x0000000127a86b9c: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 
+
+  0x0000000127a86ba8: ; implicit exception: dispatches to 0x0000000127a86cf0
+  0x0000000127a86ba8: cb0a 40b9 
+
+  0x0000000127a86bac: ;   {metadata('java/lang/Object'[])}
+  0x0000000127a86bac: 2a06 a0d2 | 0ae1 9af2 | 7f01 0a6b | c109 0054 | ca0e 40b9 | 6b7e 4093 
+
+  0x0000000127a86bc4: ;   {metadata('value_type/bench/IDt')}
+  0x0000000127a86bc4: cc36 a0d2 | 0c4c 94f2 | 0400 0014 | 8d1b 40f9 
+
+  0x0000000127a86bd4: ; ImmutableOopMap {rbcp=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@56 (line 62)
+  0x0000000127a86bd4: 9402 0f8b 
+
+  0x0000000127a86bd8: ;   {poll}
+  0x0000000127a86bd8: bf01 40b9 | bf02 0beb | aa03 0054 | ed03 152a | ae7d 4093 | cf6a 2e8b | df01 15eb | 8106 0054 
+  0x0000000127a86bf8: bf01 0a6b | a203 0054 | ed11 40b9 | bf06 00b1 | 6e0f 0d8b | 2604 0054 | b506 0091 
+
+  0x0000000127a86c14: ; implicit exception: dispatches to 0x0000000127a86d30
+  0x0000000127a86c14: cf09 40b9 | ff01 0c6b | a107 0054 | cd39 41a9 | bf01 0eab | af01 0e8b | e603 0054 | 9f02 0fab 
+  0x0000000127a86c34: e7fc ff54 | 2106 8012 | fd03 14aa | ef03 00f9 
+
+  0x0000000127a86c44: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_dt::invokeStatic@50 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86c44: bfcf e597 
+
+  0x0000000127a86c48: ;   {post_call_nop}
+  0x0000000127a86c48: 1f20 03d5 | 1f40 80f2 | 1f20 80f2 | e003 14aa | fd7b 44a9 | ff43 0191 
+
+  0x0000000127a86c60: ;   {poll_return}
+  0x0000000127a86c60: 8817 40f9 | ff63 28eb | 4807 0054 | c003 5fd6 | 6103 8012 | f337 0029 | f5d3 00a9 | f60f 00f9 
+  0x0000000127a86c80: ; ImmutableOopMap {[24]=Oop }
+                      ;*aaload {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_dt::invokeStatic@26 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86c80: b0cf e597 
+
+  0x0000000127a86c84: ;   {post_call_nop}
+  0x0000000127a86c84: 1f20 03d5 | 9f47 80f2 | 1f40 80f2 | 2106 8012 | fd03 15aa 
+
+  0x0000000127a86c98: ; ImmutableOopMap {}
+                      ;*invokestatic incrementExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_dt::invokeStatic@32 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86c98: aacf e597 
+
+  0x0000000127a86c9c: ;   {post_call_nop}
+  0x0000000127a86c9c: 1f20 03d5 | 9f4a 80f2 | 1f60 80f2 | 2106 8012 | fd03 0daa | ee03 00f9 
+
+  0x0000000127a86cb4: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench.IDt::norm@8 (line 24)
+                      ; - value_type.bench$interface_dt::invokeStatic@45 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86cb4: a3cf e597 
+
+  0x0000000127a86cb8: ;   {post_call_nop}
+  0x0000000127a86cb8: 1f20 03d5 | 1f4e 80f2 | 1f80 80f2 | df01 15eb | fd07 9f1a | bda7 9d5a | 4117 8012 | f30b 00b9 
+  0x0000000127a86cd8: f553 01a9 | f613 00f9 
+
+  0x0000000127a86ce0: ; ImmutableOopMap {[32]=Oop }
+                      ;*ifeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.lang.Math::toIntExact@5 (line 1374)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_dt::invokeStatic@23 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86ce0: 98cf e597 
+
+  0x0000000127a86ce4: ;   {post_call_nop}
+  0x0000000127a86ce4: 1f20 03d5 | 9f53 80f2 | 1fa0 80f2 | 2108 8012 | fd03 16aa | f303 00b9 | f5d3 00a9 
+
+  0x0000000127a86d00: ; ImmutableOopMap {rfp=Oop }
+                      ;*lload_2 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@11 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86d00: 90cf e597 
+
+  0x0000000127a86d04: ;   {post_call_nop}
+  0x0000000127a86d04: 1f20 03d5 | 9f57 80f2 | 1fc0 80f2 | 2104 8012 | fd03 16aa | f337 0029 | f5d3 00a9 
+
+  0x0000000127a86d20: ; ImmutableOopMap {rfp=Oop [4]=NarrowOop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86d20: 88cf e597 
+
+  0x0000000127a86d24: ;   {post_call_nop}
+  0x0000000127a86d24: 1f20 03d5 | 9f5b 80f2 | 1fe0 80f2 | 6115 8012 | fd03 16aa | f303 00b9 | f5d3 00a9 
+
+  0x0000000127a86d40: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127a86d40: 80cf e597 
+
+  0x0000000127a86d44: ;   {post_call_nop}
+  0x0000000127a86d44: 1f20 03d5 | 9f5f 80f2 | 1f00 81f2 
+
+  0x0000000127a86d50: ;   {internal_word}
+  0x0000000127a86d50: 88f8 ff10 | 8853 02f9 
+
+  0x0000000127a86d58: ;   {runtime_call SafepointBlob}
+  0x0000000127a86d58: 4a69 e017 
+
+  0x0000000127a86d5c: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000127a86d5c: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 81ff ff17 
+
+  0x0000000127a86d70: ;   {entry_guard}
+  0x0000000127a86d70: 0b00 0000 | 0000 0000 
+[Stub Code]
+  0x0000000127a86d78: ;   {runtime_call DeoptimizationBlob}
+  0x0000000127a86d78: c269 e097 
+[Deopt Handler Entry Point]
+  0x0000000127a86d7c: ffff ff17 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 1835 5106       4       value_type.bench$interface_dt::invokeStatic (66 bytes)
+ total in heap  [0x0000000127c81808,0x0000000127c81c58] = 1104
+ main code      [0x0000000127c81900,0x0000000127c81c38] = 824
+ stub code      [0x0000000127c81c38,0x0000000127c81c40] = 8
+ oops           [0x0000000127c81c40,0x0000000127c81c58] = 24
+ mutable data [0x00000076ef920f00,0x00000076ef920f90] = 144
+ relocation     [0x00000076ef920f00,0x00000076ef920f48] = 72
+ metadata       [0x00000076ef920f48,0x00000076ef920f90] = 72
+ immutable data [0x00000076f366f000,0x00000076f366f1d4] = 468
+ dependencies   [0x00000076f366f000,0x00000076f366f010] = 16
+ nul chk table  [0x00000076f366f010,0x00000076f366f028] = 24
+ scopes pcs     [0x00000076f366f028,0x00000076f366f0d8] = 176
+ scopes data    [0x00000076f366f0d8,0x00000076f366f1d0] = 248
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014ef3a4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_dt'
+  # parm0:    c_rarg1:c_rarg1 
+                        = 'java/lang/Object'
+  #           [sp+0x40]  (sp of caller)
+  0x0000000127c81900: e953 40d1 | 3f01 00f9 | ff03 01d1 | fd7b 03a9 | 0819 0018 | 8923 40b9 | 1f01 09eb | 0118 0054 
+  0x0000000127c81920: ; implicit exception: dispatches to 0x0000000127c81bfc
+  0x0000000127c81920: 2b08 40b9 
+
+  0x0000000127c81924: ;   {metadata('java/lang/Object'[])}
+  0x0000000127c81924: 2a06 a0d2 | 0ae1 9af2 | 7f01 0a6b | e113 0054 | f003 01aa | 020e 40b9 | e303 1faa | 0211 0034 
+  0x0000000127c81944: 4a7c 4093 | 7f00 0aeb | fd07 9f1a | bda7 9d5a | a8ff 9f52 | e8ff af72 | 5f00 086b | 4c10 0054 
+  0x0000000127c81964: e003 022a | 1104 0051 | 3f02 026b | a210 0054 | 0b12 40b9 | 660f 0b8b | fd03 40b2 
+
+  0x0000000127c81980: ; implicit exception: dispatches to 0x0000000127c81a94
+  0x0000000127c81980: ca08 40b9 
+
+  0x0000000127c81984: ;   {metadata('value_type/bench/IDt')}
+  0x0000000127c81984: cc36 a0d2 | 0c4c 94f2 | 5f01 0c6b | 6112 0054 | ce3c 41a9 | df01 0fab | a608 0054 | c301 0f8b 
+  0x0000000127c819a4: ea03 0032 | 3f06 0071 | ed09 0054 
+
+  0x0000000127c819b0: ;   {metadata('value_type/bench/IDt')}
+  0x0000000127c819b0: c136 a0d2 | 014c 94f2 | e703 7fb2 
+
+  0x0000000127c819bc: ;   {metadata('value_type/bench/IDt')}
+  0x0000000127c819bc: c536 a0d2 | 054c 94f2 | 04fa 8052 | 2800 0014 | 1f20 03d5 | ea03 0d2a | 4d7d 4093 | 0b6a 2d8b 
+  0x0000000127c819dc: 6f11 40b9 | 660f 0f8b | 2f05 0034 | ce08 40b9 | df01 016b | 6b15 40b9 | 210f 0054 | ce3c 41a9 
+  0x0000000127c819fc: df01 0fab | 660f 0b8b | d301 0f8b | 4605 0054 | 7f00 13ab | e605 0054 | 6302 038b | cb03 0034 
+  0x0000000127c81a1c: cb08 40b9 | 7f01 056b | 610d 0054 | ce3c 41a9 | df01 0fab | d301 0f8b | e603 0054 | 7f00 13ab 
+  0x0000000127c81a3c: 8604 0054 | 4d09 0011 | 6302 038b | bf01 0c6b | 2bfc ff54 | 8b1b 40f9 
+
+  0x0000000127c81a54: ; ImmutableOopMap {r16=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@56 (line 62)
+  0x0000000127c81a54: ecc0 2a8b 
+
+  0x0000000127c81a58: ;   {poll}
+  0x0000000127c81a58: 7f01 40b9 | bf01 116b | 6a04 0054 | ea03 0d2a | 0b00 0a4b | 3f02 0a6b | 6c05 0051 | ecb3 8c1a 
+  0x0000000127c81a78: 9f41 1f71 | 8c80 8c1a | 8c01 0a0b | d4ff ff17 | bd05 0091 | 0200 0014 | fdc0 2a8b | e213 00b9 
+  0x0000000127c81a98: 6115 8012 | f00f 00a9 
+
+  0x0000000127c81aa0: ; ImmutableOopMap {[0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81aa0: 28e4 dd97 
+
+  0x0000000127c81aa4: ;   {post_call_nop}
+  0x0000000127c81aa4: 1f20 03d5 | 9f53 80f2 | 1f20 80f2 | 2106 8012 | fd03 0eaa | ef03 00f9 
+
+  0x0000000127c81abc: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench.IDt::norm@8 (line 24)
+                      ; - value_type.bench$interface_dt::invokeStatic@45 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81abc: 21e4 dd97 
+
+  0x0000000127c81ac0: ;   {post_call_nop}
+  0x0000000127c81ac0: 1f20 03d5 | 1f57 80f2 | 1f40 80f2 | 2106 8012 | fd03 03aa | f303 00f9 
+
+  0x0000000127c81ad8: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_dt::invokeStatic@50 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81ad8: 1ae4 dd97 
+
+  0x0000000127c81adc: ;   {post_call_nop}
+  0x0000000127c81adc: 1f20 03d5 | 9f5a 80f2 | 1f60 80f2 | ed03 0032 | bf01 006b | aa02 0054 
+
+  0x0000000127c81af4: ;   {metadata('value_type/bench/IDt')}
+  0x0000000127c81af4: ca36 a0d2 | 0a4c 94f2 | ab7d 4093 | 0c6a 2b8b | 8e11 40b9 | 660f 0e8b | ae04 0034 | cc08 40b9 
+  0x0000000127c81b14: 9f01 0a6b | 6105 0054 | ce3c 41a9 | df01 0fab | d301 0f8b | 46fc ff54 | 7f00 13ab | e6fc ff54 
+  0x0000000127c81b34: ad05 0011 | 6300 138b | bf01 006b | ebfd ff54 | e003 03aa | fd7b 43a9 | ff03 0191 
+
+  0x0000000127c81b50: ;   {poll_return}
+  0x0000000127c81b50: 8817 40f9 | ff63 28eb | c805 0054 | c003 5fd6 | e003 1faa | f9ff ff17 | 211b 8012 | f003 00f9 
+  0x0000000127c81b70: e20b 00b9 
+
+  0x0000000127c81b74: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@15 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81b74: f3e3 dd97 
+
+  0x0000000127c81b78: ;   {post_call_nop}
+  0x0000000127c81b78: 1f20 03d5 | 1f6e 80f2 | 1f80 80f2 | 2112 8012 | f003 00f9 | e20b 00b9 
+
+  0x0000000127c81b90: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_dt::invokeStatic@15 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81b90: ece3 dd97 
+
+  0x0000000127c81b94: ;   {post_call_nop}
+  0x0000000127c81b94: 1f20 03d5 | 9f71 80f2 | 1fa0 80f2 | 7d05 0091 | e213 00b9 | bcff ff17 | fd03 01aa | 2104 8012 
+  0x0000000127c81bb4: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@1 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81bb4: e3e3 dd97 
+
+  0x0000000127c81bb8: ;   {post_call_nop}
+  0x0000000127c81bb8: 1f20 03d5 | 1f76 80f2 | 1fc0 80f2 | 7d05 0091 | e21b 00b9 | 0500 0014 | fdc0 2a8b | 0200 0014 
+  0x0000000127c81bd8: bd05 0091 | e21b 00b9 | 2104 8012 | f00f 00a9 | e60b 00f9 
+
+  0x0000000127c81bec: ; ImmutableOopMap {[0]=Oop [16]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81bec: d5e3 dd97 
+
+  0x0000000127c81bf0: ;   {post_call_nop}
+  0x0000000127c81bf0: 1f20 03d5 | 1f7d 80f2 | 1fe0 80f2 | 6101 8012 
+
+  0x0000000127c81c00: ; ImmutableOopMap {}
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_dt::invokeStatic@1 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c81c00: d0e3 dd97 
+
+  0x0000000127c81c04: ;   {post_call_nop}
+  0x0000000127c81c04: 1f20 03d5 | 9f7f 80f2 | 1f00 81f2 
+
+  0x0000000127c81c10: ;   {internal_word}
+  0x0000000127c81c10: 08fa ff10 | 8853 02f9 
+
+  0x0000000127c81c18: ;   {runtime_call SafepointBlob}
+  0x0000000127c81c18: 9a7d d817 
+
+  0x0000000127c81c1c: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000127c81c1c: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 3dff ff17 
+
+  0x0000000127c81c30: ;   {entry_guard}
+  0x0000000127c81c30: 0b00 0000 | 0000 0000 
+[Stub Code]
+  0x0000000127c81c38: ;   {runtime_call DeoptimizationBlob}
+  0x0000000127c81c38: 127e d897 
+[Deopt Handler Entry Point]
+  0x0000000127c81c3c: ffff ff17 
+[/MachCode]
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c1) 4601 5741 %     3       value_type.bench$interface_vt::invokeStatic @ 11 (66 bytes)
+ total in heap  [0x000000011fe2f948,0x000000011fe30550] = 3080
+ main code      [0x000000011fe2fa40,0x000000011fe30488] = 2632
+ stub code      [0x000000011fe30488,0x000000011fe30528] = 160
+ oops           [0x000000011fe30528,0x000000011fe30550] = 40
+ mutable data [0x00000076f2c1ac00,0x00000076f2c1add8] = 472
+ relocation     [0x00000076f2c1ac00,0x00000076f2c1ad40] = 320
+ metadata       [0x00000076f2c1ad40,0x00000076f2c1add8] = 152
+ immutable data [0x00000076f872ec00,0x00000076f872ef94] = 916
+ dependencies   [0x00000076f872ec00,0x00000076f872ec10] = 16
+ nul chk table  [0x00000076f872ec10,0x00000076f872ec30] = 32
+ scopes pcs     [0x00000076f872ec30,0x00000076f872ede0] = 432
+ scopes data    [0x00000076f872ede0,0x00000076f872ef90] = 432
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x000000011fe2fa40: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff83 03d1 | fd7b 0da9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000011fe2fa60: e000 0054 
+
+  0x000000011fe2fa64: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011fe2fa64: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 2300 0000 
+
+  0x000000011fe2fa7c: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fa7c: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 4224 1f12 | 5f00 0071 
+  0x000000011fe2fa9c: 4043 0054 
+
+  0x000000011fe2faa0: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2faa0: 0450 97d2 | 64de a9f2 | 2400 c0f2 | a100 00b5 | 8844 4339 | 0801 40b2 | 8844 0339 | 2500 0014 
+  0x000000011fe2fac0: 2308 40b9 | 6338 60d2 | e90b 7bb2 | 8868 69f8 | 1f01 03eb | 4002 0054 | 2941 0091 | 2801 04d1 
+  0x000000011fe2fae0: 68ff ffb5 | e90b 7bb2 | 8868 69f8 | a800 00b4 | 2941 0091 | 2801 04d1 | 88ff ffb5 | 0600 0014 
+  0x000000011fe2fb00: 8960 298b | e803 1faa | 237d a8c8 | 1f01 1feb | eeff ff17 | 091b 80d2 | 0200 0014 | 2921 0091 
+  0x000000011fe2fb20: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000011fe2fb2c: ;   {metadata('java/lang/Object'[])}
+  0x000000011fe2fb2c: 03f2 92d2 | 0303 a0f2 | e3ff cff2 | 2408 40b9 | 8438 60d2 | 881c 40f9 | 7f00 08eb | e13e 0054 
+  0x000000011fe2fb4c: 0100 0014 | e003 01aa 
+
+  0x000000011fe2fb54: ; implicit exception: dispatches to 0x000000011fe3032c
+  0x000000011fe2fb54: 000c 40b9 | fd03 00aa | 0200 80d2 | 0500 80d2 | a07f 4093 | e303 05aa | 7f00 00eb 
+
+  0x000000011fe2fb70: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fb70: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 0821 80d2 | 0923 80d2 | 03a1 899a | 0468 63f8 | 8404 0091 
+  0x000000011fe2fb90: 0468 23f8 | ca2b 0054 
+
+  0x000000011fe2fb98: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fb98: 0450 97d2 | 64de a9f2 | 2400 c0f2 | a100 00b5 | 8884 4439 | 0801 40b2 | 8884 0439 | 2500 0014 
+  0x000000011fe2fbb8: 2308 40b9 | 6338 60d2 | 0926 80d2 | 8868 69f8 | 1f01 03eb | 4002 0054 | 2941 0091 | 2841 05d1 
+  0x000000011fe2fbd8: 68ff ffb5 | 0926 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 | 2841 05d1 | 88ff ffb5 | 0600 0014 
+  0x000000011fe2fbf8: 8960 298b | e803 1faa | 237d a8c8 | 1f01 1feb | eeff ff17 | 0925 80d2 | 0200 0014 | 2921 0091 
+  0x000000011fe2fc18: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000011fe2fc24: ;   {metadata('java/lang/Object'[])}
+  0x000000011fe2fc24: 03f2 92d2 | 0303 a0f2 | e3ff cff2 | 2408 40b9 | 8438 60d2 | 881c 40f9 | 7f00 08eb | 8137 0054 
+  0x000000011fe2fc44: 0100 0014 | e603 01aa 
+
+  0x000000011fe2fc4c: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fc4c: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 08ac 40f9 | 0805 0091 | 08ac 00f9 
+
+  0x000000011fe2fc64: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011fe2fc64: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fc84: a035 0054 
+
+  0x000000011fe2fc88: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011fe2fc88: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000011fe2fca0: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe2fca0: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fcc0: c034 0054 | a37c 40d3 | 607c 4093 | 1f00 05eb 
+
+  0x000000011fe2fcd0: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe2fcd0: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 0411 899a | 0768 64f8 | e704 0091 
+  0x000000011fe2fcf0: 0768 24f8 | 6126 0054 
+
+  0x000000011fe2fcf8: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fcf8: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 08b4 40f9 | 0805 0091 | 08b4 00f9 
+
+  0x000000011fe2fd10: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fd10: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0490 40b9 | 8408 0011 | 0490 00b9 | 844c 1f12 | 9f00 0071 
+  0x000000011fe2fd30: 4032 0054 
+
+  0x000000011fe2fd34: ; implicit exception: dispatches to 0x000000011fe30398
+  0x000000011fe2fd34: c00c 40b9 | 7f00 006b | 0233 0054 
+
+  0x000000011fe2fd40: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fd40: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0060 0391 | e403 06aa | 8408 40b9 | 8438 60d2 | 0900 40f9 
+  0x000000011fe2fd60: 8400 09ca | 88f4 7e92 | a800 00b4 | 8400 0837 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | c000 40f9 
+  0x000000011fe2fd80: 1f00 40f2 | 8100 0054 | c008 40b9 | 0038 60d2 | 0050 40f9 | 1f00 78f2 
+
+  0x000000011fe2fd98: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fd98: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0444 8339 | 0800 a052 | e903 1b32 | 0701 899a | 8400 072a 
+  0x000000011fe2fdb8: 0444 0339 | c400 40f9 | 9f00 40f2 | 8100 0054 | c408 40b9 | 8438 60d2 | 8450 40f9 | 8400 7792 
+  0x000000011fe2fdd8: e42e 00b5 | 637c 4093 | 63f4 7ed3 | 6040 0091 | c768 60b8 | 4700 00b4 | 670f 078b 
+
+  0x000000011fe2fdf4: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe2fdf4: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0080 0391 | e303 07aa | 8300 00b5 | 0900 40f9 | 2901 40b2 
+  0x000000011fe2fe14: 0900 00f9 
+
+  0x000000011fe2fe18: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fe18: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 08bc 40f9 | 0805 0091 | 08bc 00f9 
+
+  0x000000011fe2fe30: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011fe2fe30: 0004 9ad2 | 40bd a9f2 | 2000 c0f2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fe50: a02b 0054 
+
+  0x000000011fe2fe54: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011fe2fe54: 0004 9ad2 | 40bd a9f2 | 2000 c0f2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000011fe2fe6c: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe2fe6c: 0090 83d2 | c0a6 a9f2 | 2000 c0f2 | 0390 40b9 | 6308 0011 | 0390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000011fe2fe8c: c02a 0054 | e003 05aa | e3fb 40b2 | 1f00 03eb 
+
+  0x000000011fe2fe9c: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe2fe9c: 0090 83d2 | c0a6 a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 0301 899a | 0468 63f8 | 8404 0091 
+  0x000000011fe2febc: 0468 23f8 | 6013 0054 | a004 0091 | e04b 00f9 | fd8f 00b9 | e14f 00f9 
+
+  0x000000011fe2fed4: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2fed4: 0650 97d2 | 66de a9f2 | 2600 c0f2 | a700 00b5 | c804 4639 | 0801 40b2 | c804 0639 | 2b00 0014 
+  0x000000011fe2fef4: e508 40b9 | a538 60d2 | 0932 80d2 | c868 69f8 | 1f01 05eb | 4002 0054 | 2941 0091 | 28c1 06d1 
+  0x000000011fe2ff14: 68ff ffb5 | 0932 80d2 | c868 69f8 | a800 00b4 | 2941 0091 | 28c1 06d1 | 88ff ffb5 | 0600 0014 
+  0x000000011fe2ff34: c960 298b | e803 1faa | 257d a8c8 | 1f01 1feb | eeff ff17 | 0931 80d2 | 0200 0014 | 2921 0091 
+  0x000000011fe2ff54: c868 69f8 | 0805 0091 | c868 29f8 
+
+  0x000000011fe2ff60: ;   {metadata('value_type/bench/INorm')}
+  0x000000011fe2ff60: 0500 9cd2 | a536 a0f2 | e5ff cff2 | e608 40b9 | c638 60d2 | c810 40f9 | bf00 08eb | 0001 0054 
+  0x000000011fe2ff80: df00 05eb | c000 0054 | e617 bfa9 
+
+  0x000000011fe2ff8c: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000011fe2ff8c: 8d1f d795 | e607 41f8 | 8623 0034 | 0100 0014 | e303 07aa 
+
+  0x000000011fe2ffa0: ; implicit exception: dispatches to 0x000000011fe3040c
+  0x000000011fe2ffa0: 7f00 40f9 | e403 03aa 
+
+  0x000000011fe2ffa8: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe2ffa8: 0550 97d2 | 65de a9f2 | 2500 c0f2 | 8408 40b9 | 8438 60d2 | e90b 7ab2 | a868 69f8 | 1f01 04eb 
+  0x000000011fe2ffc8: 4002 0054 | 2941 0091 | 2881 07d1 | 68ff ffb5 | e90b 7ab2 | a868 69f8 | a800 00b4 | 2941 0091 
+  0x000000011fe2ffe8: 2881 07d1 | 88ff ffb5 | 0600 0014 | a960 298b | e803 1faa | 247d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000011fe30008: 0937 80d2 | 0200 0014 | 2921 0091 | a868 69f8 | 0805 0091 | a868 29f8 | e103 03aa | fd03 02aa 
+  0x000000011fe30028: 0994 8dd2 | c926 bef2 | c90e c0f2 
+
+  0x000000011fe30034: ; ImmutableOopMap {[152]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@45 (line 62)
+                      ;   {virtual_call}
+  0x000000011fe30034: 0864 f095 
+
+  0x000000011fe30038: ;   {post_call_nop}
+  0x000000011fe30038: 1f20 03d5 | 1fde 80f2 | 1f00 80f2 
+
+  0x000000011fe30044: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe30044: 0150 97d2 | 61de a9f2 | 2100 c0f2 | 28f4 40f9 | 0805 0091 | 28f4 00f9 
+
+  0x000000011fe3005c: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011fe3005c: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 2290 40b9 | 4208 0011 | 2290 00b9 | 424c 1f12 | 5f00 0071 
+  0x000000011fe3007c: a01c 0054 
+
+  0x000000011fe30080: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011fe30080: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 286c 40f9 | 0805 0091 | 286c 00f9 | e103 1daa | e203 00aa 
+  0x000000011fe300a0: ; ImmutableOopMap {[152]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_vt::invokeStatic@50 (line 62)
+                      ;   {static_call}
+  0x000000011fe300a0: 480d f995 
+
+  0x000000011fe300a4: ;   {post_call_nop}
+  0x000000011fe300a4: 1f20 03d5 | 9feb 80f2 | 1f20 80f2 
+
+  0x000000011fe300b0: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe300b0: 0350 97d2 | 63de a9f2 | 2300 c0f2 | 6494 40b9 | 8408 0011 | 6494 00b9 | 8430 1f12 | 9f00 0071 
+  0x000000011fe300d0: 001b 0054 
+
+  0x000000011fe300d4: ; ImmutableOopMap {[152]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@56 (line 62)
+  0x000000011fe300d4: 881b 40f9 
+
+  0x000000011fe300d8: ;   {poll}
+  0x000000011fe300d8: 1f01 40b9 
+
+  0x000000011fe300dc: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe300dc: 0350 97d2 | 63de a9f2 | 2300 c0f2 | 64fc 40f9 | 8404 0091 | 64fc 00f9 | fd03 00aa | e54b 40f9 
+  0x000000011fe300fc: e203 1daa | fd8f 40b9 | e14f 40f9 | 97fe ff17 | fd03 02aa | e003 1daa | fd7b 4da9 | ff83 0391 
+  0x000000011fe3011c: ;   {poll_return}
+  0x000000011fe3011c: 8817 40f9 | ff63 28eb | 6819 0054 | c003 5fd6 | e757 00f9 | fd8f 00b9 | e14f 00f9 | fd03 02aa 
+  0x000000011fe3013c: ; ImmutableOopMap {[152]=Oop [168]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011fe3013c: f122 d795 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | 6818 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011fe3015c: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e203 00aa 
+  0x000000011fe3017c: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe3017c: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 287c 40f9 | 0805 0091 | 287c 00f9 
+
+  0x000000011fe30194: ;   {oop("long overflow"{0x00000079f12ca9e0})}
+  0x000000011fe30194: 023c 95d2 | 8225 bef2 | 220f c0f2 | e103 00aa | e053 00f9 
+
+  0x000000011fe301a8: ; ImmutableOopMap {[152]=Oop [160]=Oop [168]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@14 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011fe301a8: 96be d195 
+
+  0x000000011fe301ac: ;   {post_call_nop}
+  0x000000011fe301ac: 1f20 03d5 | 9f0c 81f2 | 1f80 80f2 | e053 40f9 | af00 0014 | e59b 0ba9 | fd8f 00b9 | e14f 00f9 
+  0x000000011fe301cc: fd03 02aa 
+
+  0x000000011fe301d0: ; ImmutableOopMap {[152]=Oop [192]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011fe301d0: cc22 d795 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | 0814 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011fe301f0: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e203 00aa 
+  0x000000011fe30210: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe30210: 03b3 8bd2 | e3a2 a9f2 | 2300 c0f2 | 687c 40f9 | 0805 0091 | 687c 00f9 
+
+  0x000000011fe30228: ;   {oop("integer overflow"{0x00000079f12d3210})}
+  0x000000011fe30228: 0242 86d2 | a225 bef2 | 220f c0f2 | e103 00aa | e05b 00f9 
+
+  0x000000011fe3023c: ; ImmutableOopMap {[152]=Oop [176]=Oop [192]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@14 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011fe3023c: 71be d195 
+
+  0x000000011fe30240: ;   {post_call_nop}
+  0x000000011fe30240: 1f20 03d5 | 1f1f 81f2 | 1fc0 80f2 | e05b 40f9 | 8a00 0014 | e953 40d1 | 3f01 00f9 | ff83 03d1 
+  0x000000011fe30260: fd7b 0da9 | 2801 0018 | 8923 40b9 | 1f01 09eb | e000 0054 
+
+  0x000000011fe30274: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011fe30274: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0000 0000 | e007 1c32 | 007c 4093 
+  0x000000011fe30294: 3d68 60f8 | 0005 8052 | 007c 4093 | 2268 60b8 | e007 1d32 | 007c 4093 | 2368 60f8 | e003 1d32 
+  0x000000011fe302b4: 007c 4093 | 2468 60f8 | e003 01aa | e28b 00b9 | fd8f 07a9 | fd03 04aa 
+
+  0x000000011fe302cc: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x000000011fe302cc: 0837 93d2 | 28f5 a0f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x000000011fe302dc: ;   {post_call_nop}
+  0x000000011fe302dc: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 | e203 1daa | e343 40f9 | e503 03aa | e13f 40f9 | e08b 40b9 
+  0x000000011fe302fc: fd03 00aa | 19fe ff17 
+
+  0x000000011fe30304: ;   {metadata({method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe30304: 089c 96d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe3031c: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*synchronization entry
+                      ; - value_type.bench$interface_vt::invokeStatic@-1 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe3031c: d923 d795 | e0fd ff17 | e803 01aa 
+
+  0x000000011fe30328: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@1 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011fe30328: 461c d795 
+
+  0x000000011fe3032c: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@4 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011fe3032c: 7513 d795 | e803 01aa 
+
+  0x000000011fe30334: ; ImmutableOopMap {c_rarg1=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@19 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011fe30334: 431c d795 
+
+  0x000000011fe30338: ;   {metadata({method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011fe30338: 08d5 93d2 | 28a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30350: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::intCast@-1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30350: cc23 d795 | 4dfe ff17 
+
+  0x000000011fe30358: ;   {metadata({method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011fe30358: 08a3 96d2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30370: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::toIntExact@-1 (line 1374)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30370: c423 d795 | 54fe ff17 
+
+  0x000000011fe30378: ;   {metadata({method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011fe30378: 08b3 83d2 | 48a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30390: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::aget@-1 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30390: bc23 d795 | 68fe ff17 
+
+  0x000000011fe30398: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011fe30398: 5a13 d795 | e803 03aa | e903 06aa 
+
+  0x000000011fe303a4: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011fe303a4: 1e90 89d2 | fee7 a4f2 | 3e00 c0f2 
+
+  0x000000011fe303b0: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+  0x000000011fe303b0: c003 3fd6 | e31b 00a9 
+
+  0x000000011fe303b8: ; ImmutableOopMap {c_rarg1=Oop c_rarg6=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x000000011fe303b8: 5217 d795 | e703 00aa | 8dfe ff17 
+
+  0x000000011fe303c4: ;   {metadata({method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011fe303c4: 08dc 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe303dc: ; ImmutableOopMap {c_rarg1=Oop c_rarg7=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::inc@-1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe303dc: a923 d795 | 9dfe ff17 
+
+  0x000000011fe303e4: ;   {metadata({method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011fe303e4: 0883 9ad2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe303fc: ; ImmutableOopMap {c_rarg1=Oop c_rarg7=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::incrementExact@-1 (line 1281)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe303fc: a123 d795 | a4fe ff17 | e803 07aa 
+
+  0x000000011fe30408: ; ImmutableOopMap {[152]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@42 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011fe30408: 0e1c d795 
+
+  0x000000011fe3040c: ; ImmutableOopMap {c_rarg3=Oop [152]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@45 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011fe3040c: 3d13 d795 
+
+  0x000000011fe30410: ;   {metadata({method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011fe30410: 0836 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011fe30428: ; ImmutableOopMap {[152]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::add@-1 (line 1922)
+                      ; - value_type.bench$interface_vt::invokeStatic@50 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30428: 9623 d795 | 15ff ff17 
+
+  0x000000011fe30430: ;   {metadata({method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011fe30430: 089c 96d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | e80b 7db2 | e803 00f9 
+
+  0x000000011fe30448: ; ImmutableOopMap {[152]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@56 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011fe30448: 8e23 d795 | 22ff ff17 
+
+  0x000000011fe30450: ;   {internal_word}
+  0x000000011fe30450: 68e6 ff10 | 8853 02f9 
+
+  0x000000011fe30458: ;   {runtime_call SafepointBlob}
+  0x000000011fe30458: 8ac3 d115 
+
+  0x000000011fe3045c: ; ImmutableOopMap {[152]=Oop [168]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011fe3045c: 7914 d795 | 46ff ff17 
+
+  0x000000011fe30464: ; ImmutableOopMap {[152]=Oop [192]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011fe30464: 7714 d795 | 69ff ff17 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 4da9 | ff83 0391 
+
+  0x000000011fe30480: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000011fe30480: 4011 d715 | 0000 0000 
+[Stub Code]
+  0x000000011fe30488: ;   {static_stub}
+  0x000000011fe30488: df3f 03d5 
+
+  0x000000011fe3048c: ;   {metadata(nullptr)}
+  0x000000011fe3048c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000011fe304a0: ;   {trampoline_stub}
+  0x000000011fe304a0: 4800 0058 | 0001 1fd6 | 5490 a427 | 0100 0000 
+
+  0x000000011fe304b0: ;   {trampoline_stub}
+  0x000000011fe304b0: 4800 0058 | 0001 1fd6 | c035 c727 | 0100 0000 
+
+  0x000000011fe304c0: ;   {trampoline_stub}
+  0x000000011fe304c0: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011fe304d0: ;   {trampoline_stub}
+  0x000000011fe304d0: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011fe304e0: ;   {static_stub}
+  0x000000011fe304e0: df3f 03d5 
+
+  0x000000011fe304e4: ;   {metadata(nullptr)}
+  0x000000011fe304e4: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000011fe304f4: ;   {static_stub}
+  0x000000011fe304f4: df3f 03d5 
+
+  0x000000011fe304f8: ;   {metadata(nullptr)}
+  0x000000011fe304f8: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011fe30508: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011fe30508: 0e1b d795 
+
+  0x000000011fe3050c: ;   {external_word}
+  0x000000011fe3050c: 60dc 88d2 | 40fa a0f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000011fe3051c: ;   {runtime_call DeoptimizationBlob}
+  0x000000011fe3051c: d9c3 d195 
+[Deopt Handler Entry Point]
+  0x000000011fe30520: ffff ff17 | 0000 0000 
+[/MachCode]
+
+============================= C1-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c1) 4614 5743       3       value_type.bench$interface_vt::invokeStatic (66 bytes)
+ total in heap  [0x000000011feb4788,0x000000011feb52c8] = 2880
+ main code      [0x000000011feb4880,0x000000011feb5200] = 2432
+ stub code      [0x000000011feb5200,0x000000011feb52a0] = 160
+ oops           [0x000000011feb52a0,0x000000011feb52c8] = 40
+ mutable data [0x00000076f2c18e00,0x00000076f2c18fd0] = 464
+ relocation     [0x00000076f2c18e00,0x00000076f2c18f38] = 312
+ metadata       [0x00000076f2c18f38,0x00000076f2c18fd0] = 152
+ immutable data [0x00000076f872f400,0x00000076f872f794] = 916
+ dependencies   [0x00000076f872f400,0x00000076f872f410] = 16
+ nul chk table  [0x00000076f872f410,0x00000076f872f430] = 32
+ scopes pcs     [0x00000076f872f430,0x00000076f872f5e0] = 432
+ scopes data    [0x00000076f872f5e0,0x00000076f872f790] = 432
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt'
+  # parm0:    c_rarg1:c_rarg1 
+                        = 'java/lang/Object'
+  #           [sp+0xd0]  (sp of caller)
+  0x000000011feb4880: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff43 03d1 | fd7b 0ca9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000011feb48a0: e000 0054 
+
+  0x000000011feb48a4: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000011feb48a4: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 2300 0000 | fd03 01aa | fd3f 00f9 
+  0x000000011feb48c4: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb48c4: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 2124 1f12 | 3f00 0071 
+  0x000000011feb48e4: e03c 0054 
+
+  0x000000011feb48e8: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb48e8: 0350 97d2 | 63de a9f2 | 2300 c0f2 | bd00 00b5 | 6844 4339 | 0801 40b2 | 6844 0339 | 2500 0014 
+  0x000000011feb4908: a20b 40b9 | 4238 60d2 | e90b 7bb2 | 6868 69f8 | 1f01 02eb | 4002 0054 | 2941 0091 | 2801 04d1 
+  0x000000011feb4928: 68ff ffb5 | e90b 7bb2 | 6868 69f8 | a800 00b4 | 2941 0091 | 2801 04d1 | 88ff ffb5 | 0600 0014 
+  0x000000011feb4948: 6960 298b | e803 1faa | 227d a8c8 | 1f01 1feb | eeff ff17 | 091b 80d2 | 0200 0014 | 2921 0091 
+  0x000000011feb4968: 6868 69f8 | 0805 0091 | 6868 29f8 
+
+  0x000000011feb4974: ;   {metadata('java/lang/Object'[])}
+  0x000000011feb4974: 02f2 92d2 | 0203 a0f2 | e2ff cff2 | a30b 40b9 | 6338 60d2 | 681c 40f9 | 5f00 08eb | 8138 0054 
+  0x000000011feb4994: 0100 0014 | e003 1daa 
+
+  0x000000011feb499c: ; implicit exception: dispatches to 0x000000011feb50a8
+  0x000000011feb499c: 020c 40b9 | e28b 00b9 | 0300 80d2 | 0500 80d2 | 407c 4093 | e103 05aa | 3f00 00eb 
+
+  0x000000011feb49b8: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb49b8: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 0821 80d2 | 0923 80d2 | 01a1 899a | 0468 61f8 | 8404 0091 
+  0x000000011feb49d8: 0468 21f8 | 6a2b 0054 
+
+  0x000000011feb49e0: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb49e0: 0450 97d2 | 64de a9f2 | 2400 c0f2 | bd00 00b5 | 8884 4439 | 0801 40b2 | 8884 0439 | 2500 0014 
+  0x000000011feb4a00: a10b 40b9 | 2138 60d2 | 0926 80d2 | 8868 69f8 | 1f01 01eb | 4002 0054 | 2941 0091 | 2841 05d1 
+  0x000000011feb4a20: 68ff ffb5 | 0926 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 | 2841 05d1 | 88ff ffb5 | 0600 0014 
+  0x000000011feb4a40: 8960 298b | e803 1faa | 217d a8c8 | 1f01 1feb | eeff ff17 | 0925 80d2 | 0200 0014 | 2921 0091 
+  0x000000011feb4a60: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000011feb4a6c: ;   {metadata('java/lang/Object'[])}
+  0x000000011feb4a6c: 01f2 92d2 | 0103 a0f2 | e1ff cff2 | a40b 40b9 | 8438 60d2 | 881c 40f9 | 3f00 08eb | 2131 0054 
+  0x000000011feb4a8c: 0100 0014 | e603 1daa 
+
+  0x000000011feb4a94: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4a94: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 08ac 40f9 | 0805 0091 | 08ac 00f9 
+
+  0x000000011feb4aac: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011feb4aac: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 214c 1f12 | 3f00 0071 
+  0x000000011feb4acc: 402f 0054 
+
+  0x000000011feb4ad0: ;   {metadata(method data for {method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011feb4ad0: 00c0 9fd2 | 8023 a0f2 | e0ff cff2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000011feb4ae8: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb4ae8: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 0190 40b9 | 2108 0011 | 0190 00b9 | 214c 1f12 | 3f00 0071 
+  0x000000011feb4b08: 602e 0054 | a17c 40d3 | 207c 4093 | 1f00 05eb 
+
+  0x000000011feb4b18: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb4b18: 00b3 8bd2 | e0a2 a9f2 | 2000 c0f2 | 081d 80d2 | 091b 80d2 | 0411 899a | 0768 64f8 | e704 0091 
+  0x000000011feb4b38: 0768 24f8 | c125 0054 
+
+  0x000000011feb4b40: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4b40: 0050 97d2 | 60de a9f2 | 2000 c0f2 | 08b4 40f9 | 0805 0091 | 08b4 00f9 
+
+  0x000000011feb4b58: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4b58: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0490 40b9 | 8408 0011 | 0490 00b9 | 844c 1f12 | 9f00 0071 
+  0x000000011feb4b78: e02b 0054 
+
+  0x000000011feb4b7c: ; implicit exception: dispatches to 0x000000011feb5114
+  0x000000011feb4b7c: c00c 40b9 | 3f00 006b | a22c 0054 
+
+  0x000000011feb4b88: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4b88: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0060 0391 | e403 06aa | 8408 40b9 | 8438 60d2 | 0900 40f9 
+  0x000000011feb4ba8: 8400 09ca | 88f4 7e92 | a800 00b4 | 8400 0837 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | c000 40f9 
+  0x000000011feb4bc8: 1f00 40f2 | 8100 0054 | c008 40b9 | 0038 60d2 | 0050 40f9 | 1f00 78f2 
+
+  0x000000011feb4be0: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4be0: 00a0 93d2 | 80de a9f2 | 2000 c0f2 | 0444 8339 | 0800 a052 | e903 1b32 | 0701 899a | 8400 072a 
+  0x000000011feb4c00: 0444 0339 | c400 40f9 | 9f00 40f2 | 8100 0054 | c408 40b9 | 8438 60d2 | 8450 40f9 | 8400 7792 
+  0x000000011feb4c20: 8428 00b5 | 217c 4093 | 21f4 7ed3 | 2140 0091 | c768 61b8 | 4700 00b4 | 670f 078b 
+
+  0x000000011feb4c3c: ;   {metadata(method data for {method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb4c3c: 01a0 93d2 | 81de a9f2 | 2100 c0f2 | 2180 0391 | e003 07aa | 8000 00b5 | 2900 40f9 | 2901 40b2 
+  0x000000011feb4c5c: 2900 00f9 
+
+  0x000000011feb4c60: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4c60: 0150 97d2 | 61de a9f2 | 2100 c0f2 | 28bc 40f9 | 0805 0091 | 28bc 00f9 
+
+  0x000000011feb4c78: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4c78: 0104 9ad2 | 41bd a9f2 | 2100 c0f2 | 2090 40b9 | 0008 0011 | 2090 00b9 | 004c 1f12 | 1f00 0071 
+  0x000000011feb4c98: 4025 0054 
+
+  0x000000011feb4c9c: ;   {metadata(method data for {method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4c9c: 0104 9ad2 | 41bd a9f2 | 2100 c0f2 | 286c 40f9 | 0805 0091 | 286c 00f9 
+
+  0x000000011feb4cb4: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb4cb4: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 2090 40b9 | 0008 0011 | 2090 00b9 | 004c 1f12 | 1f00 0071 
+  0x000000011feb4cd4: 6024 0054 | e103 05aa | e0fb 40b2 | 3f00 00eb 
+
+  0x000000011feb4ce4: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb4ce4: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 081d 80d2 | 091b 80d2 | 0001 899a | 2468 60f8 | 8404 0091 
+  0x000000011feb4d04: 2468 20f8 | 0013 0054 | a004 0091 | e043 00f9 
+
+  0x000000011feb4d14: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4d14: 0650 97d2 | 66de a9f2 | 2600 c0f2 | a700 00b5 | c804 4639 | 0801 40b2 | c804 0639 | 2b00 0014 
+  0x000000011feb4d34: e508 40b9 | a538 60d2 | 0932 80d2 | c868 69f8 | 1f01 05eb | 4002 0054 | 2941 0091 | 28c1 06d1 
+  0x000000011feb4d54: 68ff ffb5 | 0932 80d2 | c868 69f8 | a800 00b4 | 2941 0091 | 28c1 06d1 | 88ff ffb5 | 0600 0014 
+  0x000000011feb4d74: c960 298b | e803 1faa | 257d a8c8 | 1f01 1feb | eeff ff17 | 0931 80d2 | 0200 0014 | 2921 0091 
+  0x000000011feb4d94: c868 69f8 | 0805 0091 | c868 29f8 
+
+  0x000000011feb4da0: ;   {metadata('value_type/bench/INorm')}
+  0x000000011feb4da0: 0500 9cd2 | a536 a0f2 | e5ff cff2 | e608 40b9 | c638 60d2 | c810 40f9 | bf00 08eb | 0001 0054 
+  0x000000011feb4dc0: df00 05eb | c000 0054 | e617 bfa9 
+
+  0x000000011feb4dcc: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000011feb4dcc: fd0b d595 | e607 41f8 | 661d 0034 | 0100 0014 | e103 07aa 
+
+  0x000000011feb4de0: ; implicit exception: dispatches to 0x000000011feb5188
+  0x000000011feb4de0: 3f00 40f9 | e403 01aa 
+
+  0x000000011feb4de8: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4de8: 0550 97d2 | 65de a9f2 | 2500 c0f2 | 8408 40b9 | 8438 60d2 | e90b 7ab2 | a868 69f8 | 1f01 04eb 
+  0x000000011feb4e08: 4002 0054 | 2941 0091 | 2881 07d1 | 68ff ffb5 | e90b 7ab2 | a868 69f8 | a800 00b4 | 2941 0091 
+  0x000000011feb4e28: 2881 07d1 | 88ff ffb5 | 0600 0014 | a960 298b | e803 1faa | 247d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000011feb4e48: 0937 80d2 | 0200 0014 | 2921 0091 | a868 69f8 | 0805 0091 | a868 29f8 | fd03 03aa | 09dc 8dd2 
+  0x000000011feb4e68: c926 bef2 | c90e c0f2 
+
+  0x000000011feb4e70: ; ImmutableOopMap {[120]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@45 (line 62)
+                      ;   {virtual_call}
+  0x000000011feb4e70: 7950 ee95 
+
+  0x000000011feb4e74: ;   {post_call_nop}
+  0x000000011feb4e74: 1f20 03d5 | 9fdd 80f2 | 1f00 80f2 
+
+  0x000000011feb4e80: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4e80: 0150 97d2 | 61de a9f2 | 2100 c0f2 | 28f4 40f9 | 0805 0091 | 28f4 00f9 
+
+  0x000000011feb4e98: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4e98: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 2290 40b9 | 4208 0011 | 2290 00b9 | 424c 1f12 | 5f00 0071 
+  0x000000011feb4eb8: a016 0054 
+
+  0x000000011feb4ebc: ;   {metadata(method data for {method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011feb4ebc: 0171 9ed2 | 21bb a9f2 | 2100 c0f2 | 286c 40f9 | 0805 0091 | 286c 00f9 | e103 1daa | e203 00aa 
+  0x000000011feb4edc: ; ImmutableOopMap {[120]=Oop }
+                      ;*invokestatic addExact {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_vt::invokeStatic@50 (line 62)
+                      ;   {static_call}
+  0x000000011feb4edc: b9f9 f695 
+
+  0x000000011feb4ee0: ;   {post_call_nop}
+  0x000000011feb4ee0: 1f20 03d5 | 1feb 80f2 | 1f20 80f2 
+
+  0x000000011feb4eec: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4eec: 0350 97d2 | 63de a9f2 | 2300 c0f2 | 6494 40b9 | 8408 0011 | 6494 00b9 | 8430 1f12 | 9f00 0071 
+  0x000000011feb4f0c: 0015 0054 
+
+  0x000000011feb4f10: ; ImmutableOopMap {[120]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@56 (line 62)
+  0x000000011feb4f10: 881b 40f9 
+
+  0x000000011feb4f14: ;   {poll}
+  0x000000011feb4f14: 1f01 40b9 
+
+  0x000000011feb4f18: ;   {metadata(method data for {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb4f18: 0350 97d2 | 63de a9f2 | 2300 c0f2 | 64fc 40f9 | 8404 0091 | 64fc 00f9 | fd03 00aa | e543 40f9 
+  0x000000011feb4f38: e303 1daa | e28b 40b9 | fd3f 40f9 | 9afe ff17 | fd03 03aa | e003 1daa | fd7b 4ca9 | ff43 0391 
+  0x000000011feb4f58: ;   {poll_return}
+  0x000000011feb4f58: 8817 40f9 | ff63 28eb | 6813 0054 | c003 5fd6 | e74f 00f9 | fd03 03aa 
+
+  0x000000011feb4f70: ; ImmutableOopMap {[120]=Oop [152]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011feb4f70: 640f d595 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | a812 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011feb4f90: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e203 00aa 
+  0x000000011feb4fb0: ;   {metadata(method data for {method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb4fb0: 0190 83d2 | c1a6 a9f2 | 2100 c0f2 | 287c 40f9 | 0805 0091 | 287c 00f9 
+
+  0x000000011feb4fc8: ;   {oop("long overflow"{0x00000079f12ca9e0})}
+  0x000000011feb4fc8: 023c 95d2 | 8225 bef2 | 220f c0f2 | e103 00aa | e04b 00f9 
+
+  0x000000011feb4fdc: ; ImmutableOopMap {[120]=Oop [144]=Oop [152]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@14 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011feb4fdc: 09ab cf95 
+
+  0x000000011feb4fe0: ;   {post_call_nop}
+  0x000000011feb4fe0: 1f20 03d5 | 1f0b 81f2 | 1f80 80f2 | e04b 40f9 | 8100 0014 | e59b 0aa9 | fd03 03aa 
+
+  0x000000011feb4ffc: ; ImmutableOopMap {[120]=Oop [176]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call load_mirror_patching_blob (C1 runtime)}
+  0x000000011feb4ffc: 410f d595 | 80db 40f9 | 0ba0 0091 | 88e3 40f9 | 7f01 08eb | 880e 0054 | 8bdb 00f9 | 6a50 40f9 
+  0x000000011feb501c: 0a00 00f9 | 6a38 60d2 | 0a7c 0129 | 0a40 0091 | 5f01 00f9 | 5ffd 00a9 | bf3a 03d5 | e103 00aa 
+  0x000000011feb503c: ;   {metadata(method data for {method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb503c: 03b3 8bd2 | e3a2 a9f2 | 2300 c0f2 | 687c 40f9 | 0805 0091 | 687c 00f9 
+
+  0x000000011feb5054: ;   {oop("integer overflow"{0x00000079f12d3210})}
+  0x000000011feb5054: 0242 86d2 | a225 bef2 | 220f c0f2 | e103 00aa | e053 00f9 
+
+  0x000000011feb5068: ; ImmutableOopMap {[120]=Oop [160]=Oop [176]=Oop }
+                      ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@14 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {optimized virtual_call}
+  0x000000011feb5068: e6aa cf95 
+
+  0x000000011feb506c: ;   {post_call_nop}
+  0x000000011feb506c: 1f20 03d5 | 9f1c 81f2 | 1fc0 80f2 | e053 40f9 | 5e00 0014 
+
+  0x000000011feb5080: ;   {metadata({method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb5080: 089c 96d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb5098: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - value_type.bench$interface_vt::invokeStatic@-1 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb5098: 7a10 d595 | 13fe ff17 | e803 1daa 
+
+  0x000000011feb50a4: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@1 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011feb50a4: e708 d595 
+
+  0x000000011feb50a8: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*arraylength {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@4 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011feb50a8: 1600 d595 | e803 1daa 
+
+  0x000000011feb50b0: ; ImmutableOopMap {rfp=Oop [120]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@19 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011feb50b0: e408 d595 
+
+  0x000000011feb50b4: ;   {metadata({method} {0x000000014d419ea8} 'intCast' '(J)I' in 'clojure/lang/RT')}
+  0x000000011feb50b4: 08d5 93d2 | 28a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb50cc: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::intCast@-1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb50cc: 6d10 d595 | 80fe ff17 
+
+  0x000000011feb50d4: ;   {metadata({method} {0x00007fff008ab518} 'toIntExact' '(J)I' in 'java/lang/Math')}
+  0x000000011feb50d4: 08a3 96d2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb50ec: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::toIntExact@-1 (line 1374)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb50ec: 6510 d595 | 87fe ff17 
+
+  0x000000011feb50f4: ;   {metadata({method} {0x000000014d421d98} 'aget' '([Ljava/lang/Object;I)Ljava/lang/Object;' in 'clojure/lang/RT')}
+  0x000000011feb50f4: 08b3 83d2 | 48a8 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb510c: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.RT::aget@-1 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb510c: 5d10 d595 | 9bfe ff17 
+
+  0x000000011feb5114: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011feb5114: fbff d495 | e803 01aa | e903 06aa 
+
+  0x000000011feb5120: ;   {runtime_call throw_range_check_failed_blob (C1 runtime)}
+  0x000000011feb5120: 1e90 89d2 | fee7 a4f2 | 3e00 c0f2 
+
+  0x000000011feb512c: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+  0x000000011feb512c: c003 3fd6 | e11b 00a9 
+
+  0x000000011feb5134: ; ImmutableOopMap {rfp=Oop c_rarg6=Oop [120]=Oop }
+                      ;*aaload {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call load_flat_array_blob (C1 runtime)}
+  0x000000011feb5134: f303 d595 | e703 00aa | c0fe ff17 
+
+  0x000000011feb5140: ;   {metadata({method} {0x000000014d4c76e0} 'inc' '(J)J' in 'clojure/lang/Numbers')}
+  0x000000011feb5140: 08dc 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb5158: ; ImmutableOopMap {rfp=Oop c_rarg7=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::inc@-1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb5158: 4a10 d595 | d0fe ff17 
+
+  0x000000011feb5160: ;   {metadata({method} {0x00007fff008ad418} 'incrementExact' '(J)J' in 'java/lang/Math')}
+  0x000000011feb5160: 0883 9ad2 | 4811 a0f2 | e8ff cff2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb5178: ; ImmutableOopMap {rfp=Oop c_rarg7=Oop [120]=Oop }
+                      ;*synchronization entry
+                      ; - java.lang.Math::incrementExact@-1 (line 1281)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb5178: 4210 d595 | d7fe ff17 | e803 07aa 
+
+  0x000000011feb5184: ; ImmutableOopMap {[120]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@42 (line 62)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000011feb5184: af08 d595 
+
+  0x000000011feb5188: ; ImmutableOopMap {c_rarg1=Oop [120]=Oop }
+                      ;*invokeinterface norm {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@45 (line 62)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000011feb5188: deff d495 
+
+  0x000000011feb518c: ;   {metadata({method} {0x000000014d4c71b0} 'add' '(JJ)J' in 'clojure/lang/Numbers')}
+  0x000000011feb518c: 0836 8ed2 | 88a9 a9f2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000011feb51a4: ; ImmutableOopMap {[120]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Numbers::add@-1 (line 1922)
+                      ; - value_type.bench$interface_vt::invokeStatic@50 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb51a4: 3710 d595 | 45ff ff17 
+
+  0x000000011feb51ac: ;   {metadata({method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt')}
+  0x000000011feb51ac: 089c 96d2 | 68de a9f2 | 2800 c0f2 | e807 00f9 | e80b 7db2 | e803 00f9 
+
+  0x000000011feb51c4: ; ImmutableOopMap {[120]=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@56 (line 62)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000011feb51c4: 2f10 d595 | 52ff ff17 
+
+  0x000000011feb51cc: ;   {internal_word}
+  0x000000011feb51cc: 68ec ff10 | 8853 02f9 
+
+  0x000000011feb51d4: ;   {runtime_call SafepointBlob}
+  0x000000011feb51d4: 2bb0 cf15 
+
+  0x000000011feb51d8: ; ImmutableOopMap {[120]=Oop [152]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::incrementExact@8 (line 1282)
+                      ; - clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011feb51d8: 1a01 d595 | 74ff ff17 
+
+  0x000000011feb51e0: ; ImmutableOopMap {[120]=Oop [176]=Oop }
+                      ;*new {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.lang.Math::toIntExact@8 (line 1375)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call fast_new_instance_blob (C1 runtime)}
+  0x000000011feb51e0: 1801 d595 | 95ff ff17 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 4ca9 | ff43 0391 
+
+  0x000000011feb51fc: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000011feb51fc: e1fd d415 
+[Stub Code]
+  0x000000011feb5200: ;   {static_stub}
+  0x000000011feb5200: df3f 03d5 
+
+  0x000000011feb5204: ;   {metadata(nullptr)}
+  0x000000011feb5204: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000011feb5218: ;   {trampoline_stub}
+  0x000000011feb5218: 4800 0058 | 0001 1fd6 | 5490 a427 | 0100 0000 
+
+  0x000000011feb5228: ;   {trampoline_stub}
+  0x000000011feb5228: 4800 0058 | 0001 1fd6 | c035 c727 | 0100 0000 
+
+  0x000000011feb5238: ;   {trampoline_stub}
+  0x000000011feb5238: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011feb5248: ;   {trampoline_stub}
+  0x000000011feb5248: 4800 0058 | 0001 1fd6 | 00fc 2927 | 0100 0000 
+
+  0x000000011feb5258: ;   {static_stub}
+  0x000000011feb5258: df3f 03d5 
+
+  0x000000011feb525c: ;   {metadata(nullptr)}
+  0x000000011feb525c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000011feb526c: ;   {static_stub}
+  0x000000011feb526c: df3f 03d5 
+
+  0x000000011feb5270: ;   {metadata(nullptr)}
+  0x000000011feb5270: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000011feb5280: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000011feb5280: b007 d595 
+
+  0x000000011feb5284: ;   {external_word}
+  0x000000011feb5284: 60dc 88d2 | 40fa a0f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000011feb5294: ;   {runtime_call DeoptimizationBlob}
+  0x000000011feb5294: 7bb0 cf95 
+[Deopt Handler Entry Point]
+  0x000000011feb5298: ffff ff17 | 0000 0000 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 4629 5744 %     4       value_type.bench$interface_vt::invokeStatic @ 11 (66 bytes)
+ total in heap  [0x0000000127c97648,0x0000000127c97998] = 848
+ main code      [0x0000000127c97740,0x0000000127c97978] = 568
+ stub code      [0x0000000127c97978,0x0000000127c97980] = 8
+ oops           [0x0000000127c97980,0x0000000127c97998] = 24
+ mutable data [0x00000076f09b48c0,0x00000076f09b4948] = 136
+ relocation     [0x00000076f09b48c0,0x00000076f09b4900] = 64
+ metadata       [0x00000076f09b4900,0x00000076f09b4948] = 72
+ immutable data [0x00000076f85b1800,0x00000076f85b19ec] = 492
+ dependencies   [0x00000076f85b1800,0x00000076f85b1810] = 16
+ nul chk table  [0x00000076f85b1810,0x00000076f85b1828] = 24
+ scopes pcs     [0x00000076f85b1828,0x00000076f85b18d8] = 176
+ scopes data    [0x00000076f85b18d8,0x00000076f85b19e8] = 272
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  0x0000000127c97740: 0000 20d4 | 1f20 03d5 | 1f20 03d5 | 1f20 03d5 | e953 40d1 | 3f01 00f9 | ff43 01d1 | fd7b 04a9 
+  0x0000000127c97760: 8810 0018 | 8923 40b9 | 1f01 09eb | 810f 0054 | 3618 40f9 | 350c 40f9 | 3404 40f9 | 3328 40b9 
+  0x0000000127c97780: e003 01aa | c900 0010 | 89ff 01f9 
+
+  0x0000000127c9778c: ;   {runtime_call SharedRuntime::OSR_migration_end(long*)}
+  0x0000000127c9778c: 0837 93d2 | 28f5 a0f2 | 2800 c0f2 | 0001 3fd6 
+
+  0x0000000127c9779c: ;   {post_call_nop}
+  0x0000000127c9779c: 1f20 03d5 | 1f00 80f2 | 1f00 80f2 
+
+  0x0000000127c977a8: ; implicit exception: dispatches to 0x0000000127c978f0
+  0x0000000127c977a8: cb0a 40b9 
+
+  0x0000000127c977ac: ;   {metadata('java/lang/Object'[])}
+  0x0000000127c977ac: 2a06 a0d2 | 0ae1 9af2 | 7f01 0a6b | c109 0054 | ca0e 40b9 | 6b7e 4093 
+
+  0x0000000127c977c4: ;   {metadata('value_type/bench/IVt')}
+  0x0000000127c977c4: 0c37 a0d2 | 0c4c 95f2 | 0400 0014 | 8d1b 40f9 
+
+  0x0000000127c977d4: ; ImmutableOopMap {rbcp=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@56 (line 62)
+  0x0000000127c977d4: 9402 0f8b 
+
+  0x0000000127c977d8: ;   {poll}
+  0x0000000127c977d8: bf01 40b9 | bf02 0beb | aa03 0054 | ed03 152a | ae7d 4093 | cf6a 2e8b | df01 15eb | 8106 0054 
+  0x0000000127c977f8: bf01 0a6b | a203 0054 | ed11 40b9 | bf06 00b1 | 6e0f 0d8b | 2604 0054 | b506 0091 
+
+  0x0000000127c97814: ; implicit exception: dispatches to 0x0000000127c97930
+  0x0000000127c97814: cf09 40b9 | ff01 0c6b | a107 0054 | cd39 41a9 | bf01 0eab | af01 0e8b | e603 0054 | 9f02 0fab 
+  0x0000000127c97834: e7fc ff54 | 2106 8012 | fd03 14aa | ef03 00f9 
+
+  0x0000000127c97844: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_vt::invokeStatic@50 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c97844: bf8c dd97 
+
+  0x0000000127c97848: ;   {post_call_nop}
+  0x0000000127c97848: 1f20 03d5 | 1f40 80f2 | 1f20 80f2 | e003 14aa | fd7b 44a9 | ff43 0191 
+
+  0x0000000127c97860: ;   {poll_return}
+  0x0000000127c97860: 8817 40f9 | ff63 28eb | 4807 0054 | c003 5fd6 | 6103 8012 | f337 0029 | f5d3 00a9 | f60f 00f9 
+  0x0000000127c97880: ; ImmutableOopMap {[24]=Oop }
+                      ;*aaload {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.RT::aget@2 (line 2397)
+                      ; - value_type.bench$interface_vt::invokeStatic@26 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c97880: b08c dd97 
+
+  0x0000000127c97884: ;   {post_call_nop}
+  0x0000000127c97884: 1f20 03d5 | 9f47 80f2 | 1f40 80f2 | 2106 8012 | fd03 15aa 
+
+  0x0000000127c97898: ; ImmutableOopMap {}
+                      ;*invokestatic incrementExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::inc@1 (line 1954)
+                      ; - value_type.bench$interface_vt::invokeStatic@32 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c97898: aa8c dd97 
+
+  0x0000000127c9789c: ;   {post_call_nop}
+  0x0000000127c9789c: 1f20 03d5 | 9f4a 80f2 | 1f60 80f2 | 2106 8012 | fd03 0daa | ee03 00f9 
+
+  0x0000000127c978b4: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench.IVt::norm@8 (line 24)
+                      ; - value_type.bench$interface_vt::invokeStatic@45 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c978b4: a38c dd97 
+
+  0x0000000127c978b8: ;   {post_call_nop}
+  0x0000000127c978b8: 1f20 03d5 | 1f4e 80f2 | 1f80 80f2 | df01 15eb | fd07 9f1a | bda7 9d5a | 4117 8012 | f30b 00b9 
+  0x0000000127c978d8: f553 01a9 | f613 00f9 
+
+  0x0000000127c978e0: ; ImmutableOopMap {[32]=Oop }
+                      ;*ifeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.lang.Math::toIntExact@5 (line 1374)
+                      ; - clojure.lang.RT::intCast@1 (line 1267)
+                      ; - value_type.bench$interface_vt::invokeStatic@23 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c978e0: 988c dd97 
+
+  0x0000000127c978e4: ;   {post_call_nop}
+  0x0000000127c978e4: 1f20 03d5 | 9f53 80f2 | 1fa0 80f2 | 2108 8012 | fd03 16aa | f303 00b9 | f5d3 00a9 
+
+  0x0000000127c97900: ; ImmutableOopMap {rfp=Oop }
+                      ;*lload_2 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@11 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c97900: 908c dd97 
+
+  0x0000000127c97904: ;   {post_call_nop}
+  0x0000000127c97904: 1f20 03d5 | 9f57 80f2 | 1fc0 80f2 | 2104 8012 | fd03 16aa | f337 0029 | f5d3 00a9 
+
+  0x0000000127c97920: ; ImmutableOopMap {rfp=Oop [4]=NarrowOop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c97920: 888c dd97 
+
+  0x0000000127c97924: ;   {post_call_nop}
+  0x0000000127c97924: 1f20 03d5 | 9f5b 80f2 | 1fe0 80f2 | 6115 8012 | fd03 16aa | f303 00b9 | f5d3 00a9 
+
+  0x0000000127c97940: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x0000000127c97940: 808c dd97 
+
+  0x0000000127c97944: ;   {post_call_nop}
+  0x0000000127c97944: 1f20 03d5 | 9f5f 80f2 | 1f00 81f2 
+
+  0x0000000127c97950: ;   {internal_word}
+  0x0000000127c97950: 88f8 ff10 | 8853 02f9 
+
+  0x0000000127c97958: ;   {runtime_call SafepointBlob}
+  0x0000000127c97958: 4a26 d817 
+
+  0x0000000127c9795c: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x0000000127c9795c: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 81ff ff17 
+
+  0x0000000127c97970: ;   {entry_guard}
+  0x0000000127c97970: 2300 0000 | 0000 0000 
+[Stub Code]
+  0x0000000127c97978: ;   {runtime_call DeoptimizationBlob}
+  0x0000000127c97978: c226 d897 
+[Deopt Handler Entry Point]
+  0x0000000127c9797c: ffff ff17 
+[/MachCode]
+
+============================= C2-compiled nmethod ==============================
+----------------------------------- Assembly -----------------------------------
+
+Compiled method (c2) 4635 5745       4       value_type.bench$interface_vt::invokeStatic (66 bytes)
+ total in heap  [0x00000001279e4e08,0x00000001279e5258] = 1104
+ main code      [0x00000001279e4f00,0x00000001279e5238] = 824
+ stub code      [0x00000001279e5238,0x00000001279e5240] = 8
+ oops           [0x00000001279e5240,0x00000001279e5258] = 24
+ mutable data [0x00000076f09b4aa0,0x00000076f09b4b30] = 144
+ relocation     [0x00000076f09b4aa0,0x00000076f09b4ae8] = 72
+ metadata       [0x00000076f09b4ae8,0x00000076f09b4b30] = 72
+ immutable data [0x00000076f366c000,0x00000076f366c1d4] = 468
+ dependencies   [0x00000076f366c000,0x00000076f366c010] = 16
+ nul chk table  [0x00000076f366c010,0x00000076f366c028] = 24
+ scopes pcs     [0x00000076f366c028,0x00000076f366c0d8] = 176
+ scopes data    [0x00000076f366c0d8,0x00000076f366c1d0] = 248
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x000000014ef3b4e0} 'invokeStatic' '(Ljava/lang/Object;)J' in 'value_type/bench$interface_vt'
+  # parm0:    c_rarg1:c_rarg1 
+                        = 'java/lang/Object'
+  #           [sp+0x40]  (sp of caller)
+  0x00000001279e4f00: e953 40d1 | 3f01 00f9 | ff03 01d1 | fd7b 03a9 | 0819 0018 | 8923 40b9 | 1f01 09eb | 0118 0054 
+  0x00000001279e4f20: ; implicit exception: dispatches to 0x00000001279e51fc
+  0x00000001279e4f20: 2b08 40b9 
+
+  0x00000001279e4f24: ;   {metadata('java/lang/Object'[])}
+  0x00000001279e4f24: 2a06 a0d2 | 0ae1 9af2 | 7f01 0a6b | e113 0054 | f003 01aa | 020e 40b9 | e303 1faa | 0211 0034 
+  0x00000001279e4f44: 4a7c 4093 | 7f00 0aeb | fd07 9f1a | bda7 9d5a | a8ff 9f52 | e8ff af72 | 5f00 086b | 4c10 0054 
+  0x00000001279e4f64: e003 022a | 1104 0051 | 3f02 026b | a210 0054 | 0b12 40b9 | 660f 0b8b | fd03 40b2 
+
+  0x00000001279e4f80: ; implicit exception: dispatches to 0x00000001279e5094
+  0x00000001279e4f80: ca08 40b9 
+
+  0x00000001279e4f84: ;   {metadata('value_type/bench/IVt')}
+  0x00000001279e4f84: 0c37 a0d2 | 0c4c 95f2 | 5f01 0c6b | 6112 0054 | ce3c 41a9 | df01 0fab | a608 0054 | c301 0f8b 
+  0x00000001279e4fa4: ea03 0032 | 3f06 0071 | ed09 0054 
+
+  0x00000001279e4fb0: ;   {metadata('value_type/bench/IVt')}
+  0x00000001279e4fb0: 0137 a0d2 | 014c 95f2 | e703 7fb2 
+
+  0x00000001279e4fbc: ;   {metadata('value_type/bench/IVt')}
+  0x00000001279e4fbc: 0537 a0d2 | 054c 95f2 | 04fa 8052 | 2800 0014 | 1f20 03d5 | ea03 0d2a | 4d7d 4093 | 0b6a 2d8b 
+  0x00000001279e4fdc: 6f11 40b9 | 660f 0f8b | 2f05 0034 | ce08 40b9 | df01 016b | 6b15 40b9 | 210f 0054 | ce3c 41a9 
+  0x00000001279e4ffc: df01 0fab | 660f 0b8b | d301 0f8b | 4605 0054 | 7f00 13ab | e605 0054 | 6302 038b | cb03 0034 
+  0x00000001279e501c: cb08 40b9 | 7f01 056b | 610d 0054 | ce3c 41a9 | df01 0fab | d301 0f8b | e603 0054 | 7f00 13ab 
+  0x00000001279e503c: 8604 0054 | 4d09 0011 | 6302 038b | bf01 0c6b | 2bfc ff54 | 8b1b 40f9 
+
+  0x00000001279e5054: ; ImmutableOopMap {r16=Oop }
+                      ;*goto {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@56 (line 62)
+  0x00000001279e5054: ecc0 2a8b 
+
+  0x00000001279e5058: ;   {poll}
+  0x00000001279e5058: 7f01 40b9 | bf01 116b | 6a04 0054 | ea03 0d2a | 0b00 0a4b | 3f02 0a6b | 6c05 0051 | ecb3 8c1a 
+  0x00000001279e5078: 9f41 1f71 | 8c80 8c1a | 8c01 0a0b | d4ff ff17 | bd05 0091 | 0200 0014 | fdc0 2a8b | e213 00b9 
+  0x00000001279e5098: 6115 8012 | f00f 00a9 
+
+  0x00000001279e50a0: ; ImmutableOopMap {[0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e50a0: a856 e897 
+
+  0x00000001279e50a4: ;   {post_call_nop}
+  0x00000001279e50a4: 1f20 03d5 | 9f53 80f2 | 1f20 80f2 | 2106 8012 | fd03 0eaa | ef03 00f9 
+
+  0x00000001279e50bc: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench.IVt::norm@8 (line 24)
+                      ; - value_type.bench$interface_vt::invokeStatic@45 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e50bc: a156 e897 
+
+  0x00000001279e50c0: ;   {post_call_nop}
+  0x00000001279e50c0: 1f20 03d5 | 1f57 80f2 | 1f40 80f2 | 2106 8012 | fd03 03aa | f303 00f9 
+
+  0x00000001279e50d8: ; ImmutableOopMap {}
+                      ;*invokestatic addExact {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.Numbers::add@2 (line 1922)
+                      ; - value_type.bench$interface_vt::invokeStatic@50 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e50d8: 9a56 e897 
+
+  0x00000001279e50dc: ;   {post_call_nop}
+  0x00000001279e50dc: 1f20 03d5 | 9f5a 80f2 | 1f60 80f2 | ed03 0032 | bf01 006b | aa02 0054 
+
+  0x00000001279e50f4: ;   {metadata('value_type/bench/IVt')}
+  0x00000001279e50f4: 0a37 a0d2 | 0a4c 95f2 | ab7d 4093 | 0c6a 2b8b | 8e11 40b9 | 660f 0e8b | ae04 0034 | cc08 40b9 
+  0x00000001279e5114: 9f01 0a6b | 6105 0054 | ce3c 41a9 | df01 0fab | d301 0f8b | 46fc ff54 | 7f00 13ab | e6fc ff54 
+  0x00000001279e5134: ad05 0011 | 6300 138b | bf01 006b | ebfd ff54 | e003 03aa | fd7b 43a9 | ff03 0191 
+
+  0x00000001279e5150: ;   {poll_return}
+  0x00000001279e5150: 8817 40f9 | ff63 28eb | c805 0054 | c003 5fd6 | e003 1faa | f9ff ff17 | 211b 8012 | f003 00f9 
+  0x00000001279e5170: e20b 00b9 
+
+  0x00000001279e5174: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@15 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e5174: 7356 e897 
+
+  0x00000001279e5178: ;   {post_call_nop}
+  0x00000001279e5178: 1f20 03d5 | 1f6e 80f2 | 1f80 80f2 | 2112 8012 | f003 00f9 | e20b 00b9 
+
+  0x00000001279e5190: ; ImmutableOopMap {[0]=Oop }
+                      ;*ifge {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) value_type.bench$interface_vt::invokeStatic@15 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e5190: 6c56 e897 
+
+  0x00000001279e5194: ;   {post_call_nop}
+  0x00000001279e5194: 1f20 03d5 | 9f71 80f2 | 1fa0 80f2 | 7d05 0091 | e213 00b9 | bcff ff17 | fd03 01aa | 2104 8012 
+  0x00000001279e51b4: ; ImmutableOopMap {rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@1 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e51b4: 6356 e897 
+
+  0x00000001279e51b8: ;   {post_call_nop}
+  0x00000001279e51b8: 1f20 03d5 | 1f76 80f2 | 1fc0 80f2 | 7d05 0091 | e21b 00b9 | 0500 0014 | fdc0 2a8b | 0200 0014 
+  0x00000001279e51d8: bd05 0091 | e21b 00b9 | 2104 8012 | f00f 00a9 | e60b 00f9 
+
+  0x00000001279e51ec: ; ImmutableOopMap {[0]=Oop [16]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@42 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e51ec: 5556 e897 
+
+  0x00000001279e51f0: ;   {post_call_nop}
+  0x00000001279e51f0: 1f20 03d5 | 1f7d 80f2 | 1fe0 80f2 | 6101 8012 
+
+  0x00000001279e5200: ; ImmutableOopMap {}
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - value_type.bench$interface_vt::invokeStatic@1 (line 62)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x00000001279e5200: 5056 e897 
+
+  0x00000001279e5204: ;   {post_call_nop}
+  0x00000001279e5204: 1f20 03d5 | 9f7f 80f2 | 1f00 81f2 
+
+  0x00000001279e5210: ;   {internal_word}
+  0x00000001279e5210: 08fa ff10 | 8853 02f9 
+
+  0x00000001279e5218: ;   {runtime_call SafepointBlob}
+  0x00000001279e5218: 1af0 e217 
+
+  0x00000001279e521c: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x00000001279e521c: 0848 90d2 | 28e6 a4f2 | 2800 c0f2 | 0001 3fd6 | 3dff ff17 
+
+  0x00000001279e5230: ;   {entry_guard}
+  0x00000001279e5230: 2300 0000 | 0000 0000 
+[Stub Code]
+  0x00000001279e5238: ;   {runtime_call DeoptimizationBlob}
+  0x00000001279e5238: 92f0 e297 
+[Deopt Handler Entry Point]
+  0x00000001279e523c: ffff ff17 
+[/MachCode]
+{:mode "clojure", :n 1024, :order "dt-first", :java-version "27-jep401ea3+1-1", :os-version "27.0.1", :results {:dt {:ns-per-element 0.45316938920454547, :batch-size 22}, :vt {:ns-per-element 0.4901455965909091, :batch-size 22}}, :ratio 1.0815946713684004}
+------------------------------------------------------------------------
+static value_type.bench$interface_vt::invokeStatic(Ljava/lang/Object;)J
+  interpreter_invocation_count:         595
+  invocation_counter:                   595
+  backedge_counter:                  608338
+  decompile_count:                        0
+  mdo size: 592 bytes
+
+   0 fast_aload_0
+   1 checkcast 15 <[Ljava/lang/Object;>
+  0    bci: 1    ReceiverTypeData   count(0) entries(1)
+                                    'java/lang/Object'[](535 1.00)
+   4 arraylength
+   5 istore_1
+   6 lconst_0
+   7 lstore_2
+   8 lconst_0
+   9 lstore #4
+  11 lload_2
+  12 iload_1
+  13 i2l
+  14 lcmp
+  15 ifge 63
+  48   bci: 15   BranchData         taken(534) displacement(264)
+                                    not taken(546893)
+  18 fast_aload_0
+  19 checkcast 15 <[Ljava/lang/Object;>
+  80   bci: 19   ReceiverTypeData   count(0) entries(1)
+                                    'java/lang/Object'[](546893 1.00)
+  22 lload_2
+  23 invokestatic 21 <clojure/lang/RT.intCast(J)I> 
+  128  bci: 23   CounterData        count(546893)
+  26 invokestatic 25 <clojure/lang/RT.aget([Ljava/lang/Object;I)Ljava/lang/Object;> 
+  144  bci: 26   CounterData        count(546893)
+  29 astore #6
+  31 lload_2
+  32 invokestatic 31 <clojure/lang/Numbers.inc(J)J> 
+  160  bci: 32   CounterData        count(546893)
+  35 lload #4
+  37 aload #6
+  39 aconst_null
+  40 astore #6
+  42 checkcast 33 <value_type/bench/INorm>
+  176  bci: 42   ReceiverTypeData   count(0) entries(1)
+                                    'value_type/bench/IVt'(546893 1.00)
+  45 invokeinterface 37 <value_type/bench/INorm.norm()J> 
+  224  bci: 45   VirtualCallData    count(0) entries(1)
+                                    'value_type/bench/IVt'(546893 1.00)
+  50 invokestatic 41 <clojure/lang/Numbers.add(JJ)J> 
+  272  bci: 50   CounterData        count(546893)
+  53 lstore #4
+  55 lstore_2
+  56 goto 11
+  288  bci: 56   JumpData           taken(546893) displacement(-240)
+  59 nop
+  60 nop
+  61 athrow
+  62 athrow
+  63 lload #4
+  65 lreturn
+------------------------------------------------------------------------
+static value_type.bench$interface_dt::invokeStatic(Ljava/lang/Object;)J
+  interpreter_invocation_count:         380
+  invocation_counter:                   380
+  backedge_counter:                  389136
+  decompile_count:                        0
+  mdo size: 592 bytes
+
+   0 fast_aload_0
+   1 checkcast 15 <[Ljava/lang/Object;>
+  0    bci: 1    ReceiverTypeData   count(0) entries(1)
+                                    'java/lang/Object'[](320 1.00)
+   4 arraylength
+   5 istore_1
+   6 lconst_0
+   7 lstore_2
+   8 lconst_0
+   9 lstore #4
+  11 lload_2
+  12 iload_1
+  13 i2l
+  14 lcmp
+  15 ifge 63
+  48   bci: 15   BranchData         taken(320) displacement(264)
+                                    not taken(327680)
+  18 fast_aload_0
+  19 checkcast 15 <[Ljava/lang/Object;>
+  80   bci: 19   ReceiverTypeData   count(0) entries(1)
+                                    'java/lang/Object'[](327680 1.00)
+  22 lload_2
+  23 invokestatic 21 <clojure/lang/RT.intCast(J)I> 
+  128  bci: 23   CounterData        count(327680)
+  26 invokestatic 25 <clojure/lang/RT.aget([Ljava/lang/Object;I)Ljava/lang/Object;> 
+  144  bci: 26   CounterData        count(327680)
+  29 astore #6
+  31 lload_2
+  32 invokestatic 31 <clojure/lang/Numbers.inc(J)J> 
+  160  bci: 32   CounterData        count(327680)
+  35 lload #4
+  37 aload #6
+  39 aconst_null
+  40 astore #6
+  42 checkcast 33 <value_type/bench/INorm>
+  176  bci: 42   ReceiverTypeData   count(0) entries(1)
+                                    'value_type/bench/IDt'(327680 1.00)
+  45 invokeinterface 37 <value_type/bench/INorm.norm()J> 
+  224  bci: 45   VirtualCallData    count(0) entries(1)
+                                    'value_type/bench/IDt'(327680 1.00)
+  50 invokestatic 41 <clojure/lang/Numbers.add(JJ)J> 
+  272  bci: 50   CounterData        count(327680)
+  53 lstore #4
+  55 lstore_2
+  56 goto 11
+  288  bci: 56   JumpData           taken(327680) displacement(-240)
+  59 nop
+  60 nop
+  61 athrow
+  62 athrow
+  63 lload #4
+  65 lreturn
+------------------------------------------------------------------------
+Total MDO size: 1184 bytes

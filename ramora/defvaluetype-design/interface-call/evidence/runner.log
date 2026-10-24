@@ -1,0 +1,34 @@
+Note: spike/interface-call/InterfaceControl.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+START clojure-1024-1-dt-first 2026-10-24T18:18:47Z
+DONE clojure-1024-1-dt-first 2026-10-24T18:18:54Z
+START java-1024-1-dt-first 2026-10-24T18:18:54Z
+DONE java-1024-1-dt-first 2026-10-24T18:19:01Z
+START java-1024-2-vt-first 2026-10-24T18:19:01Z
+DONE java-1024-2-vt-first 2026-10-24T18:19:07Z
+START clojure-1024-2-vt-first 2026-10-24T18:19:07Z
+DONE clojure-1024-2-vt-first 2026-10-24T18:19:14Z
+START clojure-1024-3-dt-first 2026-10-24T18:19:14Z
+DONE clojure-1024-3-dt-first 2026-10-24T18:19:21Z
+START java-1024-3-dt-first 2026-10-24T18:19:21Z
+DONE java-1024-3-dt-first 2026-10-24T18:19:28Z
+START java-1024-4-vt-first 2026-10-24T18:19:28Z
+DONE java-1024-4-vt-first 2026-10-24T18:19:35Z
+START clojure-1024-4-vt-first 2026-10-24T18:19:35Z
+DONE clojure-1024-4-vt-first 2026-10-24T18:19:42Z
+START clojure-2048-1-dt-first 2026-10-24T18:19:42Z
+DONE clojure-2048-1-dt-first 2026-10-24T18:19:49Z
+START java-2048-1-dt-first 2026-10-24T18:19:49Z
+DONE java-2048-1-dt-first 2026-10-24T18:19:56Z
+START java-2048-2-vt-first 2026-10-24T18:19:56Z
+DONE java-2048-2-vt-first 2026-10-24T18:20:02Z
+START clojure-2048-2-vt-first 2026-10-24T18:20:02Z
+DONE clojure-2048-2-vt-first 2026-10-24T18:20:09Z
+START clojure-2048-3-dt-first 2026-10-24T18:20:09Z
+DONE clojure-2048-3-dt-first 2026-10-24T18:20:16Z
+START java-2048-3-dt-first 2026-10-24T18:20:16Z
+DONE java-2048-3-dt-first 2026-10-24T18:20:23Z
+START java-2048-4-vt-first 2026-10-24T18:20:23Z
+DONE java-2048-4-vt-first 2026-10-24T18:20:30Z
+START clojure-2048-4-vt-first 2026-10-24T18:20:30Z
+DONE clojure-2048-4-vt-first 2026-10-24T18:20:37Z

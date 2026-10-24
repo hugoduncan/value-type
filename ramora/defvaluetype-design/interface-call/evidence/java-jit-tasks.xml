@@ -1,0 +1,464 @@
+<tasks>
+<task compile_id="5064" compile_kind="osr" method="investigation.InterfaceControl identityPass ([Ljava/lang/Object;)J" bytes="40" count="132" backedge_count="135168" iicount="132" osr_bci="4" stamp="1.948">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="identityPass" return="1268" arguments="1476" flags="9" bytes="40" compile_id="5062" compiler="c1" level="3" iicount="133" />
+<parse method="1477" uses="133.000000" osr_bci="4" stamp="1.948">
+<dependency type="evol_method" x0="1477" />
+<uncommon_trap bci="4" reason="constraint" action="reinterpret" debug_id="0" />
+<uncommon_trap bci="4" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="190" bci="6" />
+<uncommon_trap bci="6" reason="null_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="9" />
+<branch target_bci="38" taken="131" not_taken="135835" cnt="135966.000000" prob="                0.00" />
+<bc code="50" bci="16" />
+<uncommon_trap bci="16" reason="class_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="16" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<bc code="192" bci="17" />
+<uncommon_trap bci="17" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="17" reason="speculate_class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="20" />
+<klass id="1480" name="investigation.InterfaceControl$IdentityPoint" flags="57" />
+<method id="1485" holder="1480" name="norm" return="1268" flags="1" bytes="12" compile_id="5058" compiler="c2" level="4" iicount="11195" />
+<call method="1485" count="74555" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="20" exact="0" klass="1480" />
+<parse method="1485" uses="135833.000000" stamp="1.948">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="8" />
+<klass id="1483" name="java.lang.Math" flags="49" />
+<method id="1484" holder="1483" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1484" count="10684" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="8" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="14" />
+<parse_done nodes="282" live="269" memory="44592" stamp="1.948" />
+</parse>
+<bc code="184" bci="25" />
+<call method="1484" count="74556" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="25" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<bc code="184" bci="31" />
+<call method="1484" count="74556" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="31" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="316" live="300" memory="49488" stamp="1.948" />
+</parse>
+<loop_tree>
+<loop idx="330" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="330" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="330" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="330" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="330" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="330" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1477" />
+<dependency type="evol_method" x0="1485" />
+<code_cache total_blobs="4363" nmethods="3607" adapters="587" free_code_cache="239071488" />
+<task_done success="1" nmsize="600" count="236" backedge_count="241235" inlined_bytes="108" stamp="1.952" />
+</task>
+
+<task compile_id="5067" method="investigation.InterfaceControl identityPass ([Ljava/lang/Object;)J" bytes="40" count="244" backedge_count="249858" iicount="244" stamp="1.952">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="identityPass" return="1268" arguments="1476" flags="9" bytes="40" compile_id="5062" compiler="c1" level="3" iicount="244" />
+<parse method="1477" uses="244.000000" stamp="1.952">
+<dependency type="evol_method" x0="1477" />
+<bc code="190" bci="6" />
+<uncommon_trap bci="6" reason="null_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="9" />
+<branch target_bci="38" taken="244" not_taken="249856" cnt="250100.000000" prob="                0.00" />
+<uncommon_trap bci="9" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="50" bci="16" />
+<uncommon_trap bci="16" reason="class_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="16" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<bc code="192" bci="17" />
+<uncommon_trap bci="17" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="17" reason="speculate_class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="20" />
+<klass id="1480" name="investigation.InterfaceControl$IdentityPoint" flags="57" />
+<method id="1485" holder="1480" name="norm" return="1268" flags="1" bytes="12" compile_id="5058" compiler="c2" level="4" iicount="11195" />
+<call method="1485" count="188416" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="20" exact="0" klass="1480" />
+<parse method="1485" uses="249856.000000" stamp="1.952">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="8" />
+<klass id="1483" name="java.lang.Math" flags="49" />
+<method id="1484" holder="1483" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1484" count="10684" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="8" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="14" />
+<parse_done nodes="244" live="232" memory="38392" stamp="1.952" />
+</parse>
+<bc code="184" bci="25" />
+<call method="1484" count="188416" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="25" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<bc code="184" bci="31" />
+<call method="1484" count="188416" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="31" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<bc code="156" bci="9" />
+<branch target_bci="38" taken="244" not_taken="249856" cnt="249856.000000" prob="                0.00" />
+<parse_done nodes="292" live="277" memory="46048" stamp="1.952" />
+</parse>
+<loop_tree>
+<loop idx="301" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="360">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="374">
+<loop idx="375">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="374">
+<loop idx="702" inner_loop="1">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="570" inner_loop="1">
+</loop>
+<loop idx="374">
+<loop idx="702" inner_loop="1">
+</loop>
+</loop>
+<loop idx="452" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="570" inner_loop="1">
+</loop>
+<loop idx="374">
+<loop idx="702" inner_loop="1">
+</loop>
+</loop>
+<loop idx="452" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1477" />
+<dependency type="evol_method" x0="1485" />
+<code_cache total_blobs="4379" nmethods="3623" adapters="587" free_code_cache="239034944" />
+<task_done success="1" nmsize="736" count="356" backedge_count="364560" inlined_bytes="108" stamp="1.957" />
+</task>
+
+<task compile_id="5804" method="investigation.InterfaceControl valuePass ([Ljava/lang/Object;)J" bytes="40" count="292" backedge_count="298041" iicount="292" stamp="4.768">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="valuePass" return="1268" arguments="1476" flags="9" bytes="40" compile_id="5801" compiler="c1" level="3" iicount="292" />
+<parse method="1477" uses="292.000000" stamp="4.768">
+<dependency type="evol_method" x0="1477" />
+<bc code="190" bci="6" />
+<uncommon_trap bci="6" reason="null_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="9" />
+<branch target_bci="38" taken="291" not_taken="297900" cnt="298191.000000" prob="                0.00" />
+<uncommon_trap bci="9" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="9" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="50" bci="16" />
+<uncommon_trap bci="16" reason="class_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="16" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<bc code="192" bci="17" />
+<uncommon_trap bci="17" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="17" reason="speculate_class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="20" />
+<klass id="1480" name="investigation.InterfaceControl$ValuePoint" flags="25" />
+<method id="1485" holder="1480" name="norm" return="1268" flags="1" bytes="12" compile_id="5795" compiler="c2" level="4" iicount="11845" />
+<call method="1485" count="236688" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="20" exact="0" klass="1480" />
+<parse method="1485" uses="297900.000000" stamp="4.768">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="8" />
+<klass id="1483" name="java.lang.Math" flags="49" />
+<method id="1484" holder="1483" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1484" count="11371" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="8" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="14" />
+<parse_done nodes="277" live="265" memory="43048" stamp="4.768" />
+</parse>
+<bc code="184" bci="25" />
+<call method="1484" count="236687" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="25" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<bc code="184" bci="31" />
+<call method="1484" count="236688" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="31" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<bc code="156" bci="9" />
+<branch target_bci="38" taken="291" not_taken="297900" cnt="297900.000000" prob="                0.00" />
+<parse_done nodes="326" live="311" memory="51008" stamp="4.768" />
+</parse>
+<loop_tree>
+<loop idx="335" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="394">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="408">
+<loop idx="409">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="408">
+<loop idx="736" inner_loop="1">
+</loop>
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="604" inner_loop="1">
+</loop>
+<loop idx="408">
+<loop idx="736" inner_loop="1">
+</loop>
+</loop>
+<loop idx="486" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="604" inner_loop="1">
+</loop>
+<loop idx="408">
+<loop idx="736" inner_loop="1">
+</loop>
+</loop>
+<loop idx="486" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1477" />
+<dependency type="evol_method" x0="1485" />
+<code_cache total_blobs="4826" nmethods="4047" adapters="610" free_code_cache="239134592" />
+<task_done success="1" nmsize="736" count="318" backedge_count="325637" inlined_bytes="108" stamp="4.773" />
+</task>
+
+<task compile_id="5803" compile_kind="osr" method="investigation.InterfaceControl valuePass ([Ljava/lang/Object;)J" bytes="40" count="260" backedge_count="265331" iicount="260" osr_bci="4" stamp="4.763">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="valuePass" return="1268" arguments="1476" flags="9" bytes="40" compile_id="5801" compiler="c1" level="3" iicount="260" />
+<parse method="1477" uses="260.000000" osr_bci="4" stamp="4.763">
+<dependency type="evol_method" x0="1477" />
+<uncommon_trap bci="4" reason="constraint" action="reinterpret" debug_id="0" />
+<uncommon_trap bci="4" reason="short_running_loop_or_aliasing" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="profile_predicate" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="auto_vectorization_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="4" reason="loop_limit_check" action="maybe_recompile" debug_id="0" />
+<bc code="190" bci="6" />
+<uncommon_trap bci="6" reason="null_check" action="maybe_recompile" debug_id="0" />
+<bc code="156" bci="9" />
+<branch target_bci="38" taken="259" not_taken="265351" cnt="265610.000000" prob="                0.00" />
+<bc code="50" bci="16" />
+<uncommon_trap bci="16" reason="class_check" action="maybe_recompile" debug_id="0" />
+<uncommon_trap bci="16" reason="range_check" action="make_not_entrant" debug_id="0" comment="range_check" />
+<bc code="192" bci="17" />
+<uncommon_trap bci="17" reason="speculate_null_check" action="make_not_entrant" debug_id="0" />
+<uncommon_trap bci="17" reason="speculate_class_check" action="maybe_recompile" debug_id="0" />
+<bc code="185" bci="20" />
+<klass id="1480" name="investigation.InterfaceControl$ValuePoint" flags="25" />
+<method id="1485" holder="1480" name="norm" return="1268" flags="1" bytes="12" compile_id="5795" compiler="c2" level="4" iicount="11845" />
+<call method="1485" count="204116" prof_factor="1.000000" inline="1" />
+<inline_success reason="inline (hot)" />
+<predicted_call bci="20" exact="0" klass="1480" />
+<parse method="1485" uses="265351.000000" stamp="4.763">
+<dependency type="evol_method" x0="1485" />
+<bc code="184" bci="8" />
+<klass id="1483" name="java.lang.Math" flags="49" />
+<method id="1484" holder="1483" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1484" count="11371" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="8" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="14" />
+<parse_done nodes="315" live="302" memory="49360" stamp="4.763" />
+</parse>
+<bc code="184" bci="25" />
+<call method="1484" count="204115" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="25" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<bc code="184" bci="31" />
+<call method="1484" count="204116" prof_factor="1.000000" inline="1" />
+<uncommon_trap bci="31" reason="intrinsic_or_type_checked_inlining" action="maybe_recompile" debug_id="0" />
+<intrinsic id="_addExactL" nodes="13" />
+<parse_done nodes="350" live="334" memory="55392" stamp="4.763" />
+</parse>
+<loop_tree>
+<loop idx="364" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="364" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="364" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="364" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="364" inner_loop="1">
+</loop>
+</loop_tree>
+<loop_tree>
+<loop idx="364" inner_loop="1">
+</loop>
+</loop_tree>
+<regalloc attempts="0" success="1" />
+<dependency type="evol_method" x0="1477" />
+<dependency type="evol_method" x0="1485" />
+<code_cache total_blobs="4823" nmethods="4046" adapters="610" free_code_cache="239157312" />
+<task_done success="1" nmsize="600" count="284" backedge_count="289849" inlined_bytes="108" stamp="4.767" />
+</task>
+
+<task compile_id="5059" compile_kind="osr" method="investigation.InterfaceControl identityPass ([Ljava/lang/Object;)J" bytes="40" count="60" backedge_count="60442" iicount="60" osr_bci="4" level="3" stamp="1.934">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="identityPass" return="1268" arguments="1476" flags="9" bytes="40" iicount="60" />
+<dependency type="evol_method" x0="1477" />
+<parse method="1477" stamp="1.934">
+<bc code="185" bci="20" />
+<klass id="1479" name="investigation.InterfaceControl$Norm" flags="1545" />
+<method id="1480" holder="1479" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1480" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="25" />
+<klass id="1481" name="java.lang.Math" flags="49" />
+<method id="1482" holder="1481" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1482" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<bc code="184" bci="31" />
+<call method="1482" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<parse_done stamp="1.934" />
+</parse>
+<dependency type="evol_method" x0="1477" />
+<code_cache total_blobs="4358" nmethods="3599" adapters="587" free_code_cache="239060288" />
+<task_done success="1" nmsize="1544" count="128" backedge_count="131072" stamp="1.941" />
+</task>
+
+<task compile_id="5062" method="investigation.InterfaceControl identityPass ([Ljava/lang/Object;)J" bytes="40" count="130" backedge_count="132474" iicount="130" level="3" stamp="1.942">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="identityPass" return="1268" arguments="1476" flags="9" bytes="40" iicount="130" />
+<dependency type="evol_method" x0="1477" />
+<parse method="1477" stamp="1.942">
+<bc code="185" bci="20" />
+<klass id="1481" name="investigation.InterfaceControl$Norm" flags="1545" />
+<method id="1482" holder="1481" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1482" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="25" />
+<klass id="1483" name="java.lang.Math" flags="49" />
+<method id="1484" holder="1483" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1484" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<bc code="184" bci="31" />
+<call method="1484" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<parse_done stamp="1.942" />
+</parse>
+<dependency type="evol_method" x0="1477" />
+<code_cache total_blobs="4359" nmethods="3604" adapters="587" free_code_cache="239081408" />
+<task_done success="1" nmsize="1304" count="130" backedge_count="133120" stamp="1.948" />
+</task>
+
+<task compile_id="5799" compile_kind="osr" method="investigation.InterfaceControl valuePass ([Ljava/lang/Object;)J" bytes="40" count="59" backedge_count="60416" iicount="59" osr_bci="4" level="3" stamp="4.750">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="valuePass" return="1268" arguments="1476" flags="9" bytes="40" iicount="59" />
+<dependency type="evol_method" x0="1477" />
+<parse method="1477" stamp="4.750">
+<bc code="185" bci="20" />
+<klass id="1479" name="investigation.InterfaceControl$Norm" flags="1545" />
+<method id="1480" holder="1479" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1480" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="25" />
+<klass id="1481" name="java.lang.Math" flags="49" />
+<method id="1482" holder="1481" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1482" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<bc code="184" bci="31" />
+<call method="1482" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<parse_done stamp="4.750" />
+</parse>
+<dependency type="evol_method" x0="1477" />
+<code_cache total_blobs="4819" nmethods="4043" adapters="610" free_code_cache="239167744" />
+<task_done success="1" nmsize="1544" count="200" backedge_count="204622" stamp="4.757" />
+</task>
+
+<task compile_id="5801" method="investigation.InterfaceControl valuePass ([Ljava/lang/Object;)J" bytes="40" count="201" backedge_count="204965" iicount="201" level="3" stamp="4.757">
+<type id="1268" name="long" />
+<klass id="1476" name="[Ljava.lang.Object;" flags="1073" />
+<klass id="1475" name="investigation.InterfaceControl" flags="49" />
+<method id="1477" holder="1475" name="valuePass" return="1268" arguments="1476" flags="9" bytes="40" iicount="201" />
+<dependency type="evol_method" x0="1477" />
+<parse method="1477" stamp="4.757">
+<bc code="185" bci="20" />
+<klass id="1481" name="investigation.InterfaceControl$Norm" flags="1545" />
+<method id="1482" holder="1481" name="norm" return="1268" flags="1025" bytes="0" iicount="1" />
+<call method="1482" instr="invokeinterface" />
+<inline_fail reason="no static binding" />
+<bc code="184" bci="25" />
+<klass id="1483" name="java.lang.Math" flags="49" />
+<method id="1484" holder="1483" name="addExact" return="1268" arguments="1268 1268" flags="9" bytes="32" compile_id="5048" compiler="c2" level="4" iicount="7029" />
+<call method="1484" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<bc code="184" bci="31" />
+<call method="1484" instr="invokestatic" />
+<inline_fail reason="callee uses too much stack" />
+<parse_done stamp="4.757" />
+</parse>
+<dependency type="evol_method" x0="1477" />
+<code_cache total_blobs="4820" nmethods="4044" adapters="610" free_code_cache="239166144" />
+<task_done success="1" nmsize="1304" count="255" backedge_count="261120" stamp="4.763" />
+</task>
+
+</tasks>

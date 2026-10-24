@@ -1,0 +1,38 @@
+CompileCommand: blackhole criterium/blackhole/Blackhole.consume bool blackhole = true
+n = 2048
+
+| Case | Kind | deftype (ns/call) | defvaluetype (ns/call) | Ratio |
+|---|---|---:|---:|---:|
+| `interface` | criterion | 0.488 | 0.521 | 1.07 |
+| `protocol` | criterion | 0.547 | 0.552 | 1.01 |
+| `field` | information | 0.318 | 0.317 | 1.00 |
+| `identical` | information | 0.535 | 3.926 | 7.34 |
+| `allocate` | information | 0.329 | 0.322 | 0.98 |
+
+{:n 2048,
+ :results
+ [{:case :interface,
+   :criterion? true,
+   :deftype-ns 0.48828125,
+   :defvaluetype-ns 0.520849609375,
+   :ratio 1.0667}
+  {:case :protocol,
+   :criterion? true,
+   :deftype-ns 0.5470377604166666,
+   :defvaluetype-ns 0.5518798828125,
+   :ratio 1.008851532282059}
+  {:case :field,
+   :criterion? false,
+   :deftype-ns 0.317901611328125,
+   :defvaluetype-ns 0.316619873046875,
+   :ratio 0.9959681290198714}
+  {:case :identical,
+   :criterion? false,
+   :deftype-ns 0.535107421875,
+   :defvaluetype-ns 3.92626953125,
+   :ratio 7.33734829820239}
+  {:case :allocate,
+   :criterion? false,
+   :deftype-ns 0.329345703125,
+   :defvaluetype-ns 0.32171630859375,
+   :ratio 0.9768346923647147}]}

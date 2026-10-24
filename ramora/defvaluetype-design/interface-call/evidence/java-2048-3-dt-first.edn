@@ -1,0 +1,1 @@
+{:mode "java", :n 2048, :order "dt-first", :java-version "27-jep401ea3+1-1", :os-version "27.0.1", :results {:dt {:ns-per-element 0.47163529829545453, :batch-size 11}, :vt {:ns-per-element 0.4938299005681818, :batch-size 11}}, :ratio 1.0470588235294118}

@@ -72,8 +72,12 @@ code is in `spike/valhalla/`. The transform (D5 D6,
 and tested. The macro (D1 D8 D9, `value-type.core`) is implemented
 and tested. The method-call benchmark (`value-type.bench`) gives an
 interface ratio of 1.14 (slower) and a protocol ratio of 1.00 (equal)
-on `27-jep401ea3+1-1`. A-21 is `contested` (see
-[Benchmark](defvaluetype-design/benchmark.md)).
+on `27-jep401ea3+1-1`. A later
+[interface-call investigation](defvaluetype-design/interface-call.md) found
+no stable slowdown in repeated fresh JVMs and matching paired C2 loop
+instructions. A-21 remains `contested`: the broad performance target is
+not a general guarantee. See [Benchmark](defvaluetype-design/benchmark.md)
+for the historical run.
 
 Controlled fallback (D10 D12 D13) is implemented and verified by production
 tests with Clojure 1.12.6 on Temurin `1.8.0_492-b09` and Valhalla

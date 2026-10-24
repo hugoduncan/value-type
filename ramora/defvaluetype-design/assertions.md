@@ -41,6 +41,7 @@ architecture metamodel. Fallback rows have their own scope below.
 | A-20 | observed | D9 | intendedToImprove | correctness: no identity class on the value-class path | `src/value_type/core.clj`, `value-type.core-test` (`:not-installed`, `:not-value-class` tests) | high |
 | A-21 | contested | D2 | intendedToImprove | compatibility, performance | [Qualities](qualities.md); A-28, [Benchmark](benchmark.md) | high |
 | A-28 | observed | `defvaluetype` | exhibits | method call time / `deftype` time for each criterion case: `interface` 1.14, `protocol` 1.00 | [Benchmark](benchmark.md), JDK 27 jep401ea3 | medium |
+| A-29 | observed | interface workload on Valhalla 27 EA / Apple M5 Max | exhibits | no stable slowdown in 16 fresh JVMs; Clojure median ratios 1.028 / 1.008 at 1024 / 2048 elements; Java controls 1.015 / 0.998; paired main C2 loops have identical instruction bytes in separate diagnostic runs | [Interface-call investigation](interface-call.md), 2026-10-24 | medium |
 | A-22 | inferred | D2 D3 | mayDegrade | changeability against Clojure releases | A-04 to A-07 | high |
 | A-23 | observed | invariant "each value-path target class is a value class" | verifiedBy | runtime check, integration tests | `src/value_type/core.clj`, `value-type.core-test` | high |
 | A-24 | observed | `install!` true | doesNotImply | class caught | spike: `(eval (macroexpand form))` | high |
