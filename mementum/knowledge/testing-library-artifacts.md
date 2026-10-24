@@ -1,0 +1,67 @@
+---
+title: Verify library artifacts without checkout dependencies
+status: active
+category: testing
+tags: [packaging, tools.build, classpath, integration-tests, fixtures]
+related: [mementum/knowledge/testing-clojure-generated-classes.md, mementum/memories/valhalla-jdk-selection-java-cmd.md]
+depends-on: []
+---
+
+# Verify library artifacts without checkout dependencies
+
+Source: task `008-jar-build`, its design, plan, steps and implementation
+notes. Evidence: consumer check `9ffcd42`, CLI review fix `a8750a9`,
+and input-preservation review fix `68cd858`. These checks passed on
+Valhalla JDK `27-jep401ea3+1-1`. Reusable examples are in
+`test-build/build_test.clj`.
+
+## A new JVM does not ensure an isolated consumer
+
+`value-type.test-support/run-in-new-jvm` appends the test JVM classpath.
+That is useful for consumer AOT tests, but it includes checkout sources.
+An artifact test with that classpath can pass even when the JAR lacks
+required sources or dependency metadata. The build test helper
+`build-process` also inherits a test classpath; do not use it to prove
+consumer isolation.
+
+For artifact verification:
+
+- Read runtime dependency coordinates from the generated POM, not the
+  checkout's dependency map. Resolve them with a separate deps map that
+  has `:paths []`, and a basis with `:root nil`, `:user nil` and
+  `:aliases []`.
+- Start Java with only the built artifact and the resolved runtime JARs
+  on its classpath. Check that each classpath entry is a JAR file.
+- Check that `value_type/core.clj` resolves to a `jar:` resource in the
+  exact artifact under test. A successful `require` alone is insufficient.
+- Use the supported Valhalla JDK with `--enable-preview`. Define a value
+  type, construct instances, check fields and verify `Class.isValue`.
+
+This tests the packaged dependency contract as well as the library code.
+
+## Direct function calls do not verify the CLI contract
+
+Calling `build/jar` through `clojure.main` on the build-test classpath
+bypasses `:build` alias resolution. It cannot detect a missing tool
+dependency or an incorrect `:ns-default`.
+
+Keep direct calls for detailed result checks, but also run the documented
+`clojure -T:build jar` and `clojure -T:build clean` commands in a temporary
+project. Use an empty `CLJ_CONFIG` and select Java with `JAVA_CMD`.
+Verify command results, not only exit status. Test clean without Git
+metadata and repeat it with no target directory.
+
+## Artifact correctness does not prove input preservation
+
+Archive comparisons can pass even if the build changes fixture inputs
+after packaging. Comparing archive bytes with checkout files does not
+detect this defect.
+
+Snapshot the fixture's complete source file paths and bytes, plus
+`deps.edn`, before each build or clean command. Compare the snapshot with
+the same fixture after the command. This detects additions, deletions and
+content changes outside the build's output ownership.
+
+Run destructive checks in temporary projects outside the checkout and
+its `target/`. Both build commands delete `target/`, which also holds
+benchmark output. Keep fixture cleanup unconditional.
