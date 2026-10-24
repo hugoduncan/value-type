@@ -34,8 +34,17 @@ For artifact verification:
   on its classpath. Check that each classpath entry is a JAR file.
 - Check that `value_type/core.clj` resolves to a `jar:` resource in the
   exact artifact under test. A successful `require` alone is insufficient.
-- Use the supported Valhalla JDK with `--enable-preview`. Define a value
-  type, construct instances, check fields and verify `Class.isValue`.
+- Test both representation paths with explicit Java executables and options:
+  supported Valhalla with `--enable-preview`, and a baseline JVM without
+  optional APIs or preview. Construct instances, check fields and factories,
+  and check representation-specific equality. Use `Class.isValue` only where
+  available; the baseline consumer must not require that API.
+
+Task `009-controlled-deftype-fallback` extended this same isolated consumer
+to Temurin `1.8.0_492-b09` (`aa0c8dc`). Equal-field copies compare unequal
+on the identity path and equal on the value path. Keep both checks: a
+Valhalla-only consumer cannot reveal eager optional dependencies that break
+baseline loading. This verifies the recorded JVMs, not all baseline versions.
 
 This tests the packaged dependency contract as well as the library code.
 
