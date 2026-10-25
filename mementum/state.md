@@ -99,7 +99,8 @@ The macro creates JEP 401 value objects
   (`munera/closed/010-development-quality-checks`). Pinned mise tools and
   Babashka tasks cover cljfmt, clj-kondo, Vale and Quickdoc. Pre-commit hooks
   never stage edits; quality CI checks do not repair files. Setup, scopes
-  and commands are in README and the Ramora quality-workflow documentation.
+  and commands are in `doc/development.md` and its linked guides, with
+  architecture notes in the Ramora quality-workflow documentation.
   All implementation and review follow-ups are complete. Knowledge extraction
   added `mementum/knowledge/verifying-development-quality-checks.md`
   (`481c676`). Hosted GitHub Actions execution remains unverified; cold Linux
@@ -138,3 +139,14 @@ off 15/166 each, preview on 15/141; build 6/63 with both consumer JVM paths.
 The final tooling reviews did not repeat runtime regression. Hosted Actions
 and its x86_64 runner were not verified. Closure changed records only;
 no tests were rerun.
+
+## Documentation layout
+
+Development instructions moved from README to `doc/development.md`, with
+short guides in `doc/development/quality-checks.md` and
+`doc/development/runtime.md`. README retains a link. Vale covers all three
+new documents; maintained architecture links point to the new headings.
+Verification after the move: formatting, lint, Vale, API freshness, local
+Markdown links/anchors and whitespace checks passed. Focused tooling tests
+passed (11 tests, 153 assertions, no Scry failure files). Runtime tests were
+not rerun; runtime code did not change.

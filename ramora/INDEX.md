@@ -13,11 +13,14 @@ Read this file first. Read the other files only when you need them.
   Verified on Java 8 and Valhalla 27 EA; see the scoped evidence.
 
 - [Library packaging](defvaluetype-design/embodiment.md#library-packaging):
-  source-only JAR, build artifacts, consumer requirements and README commands.
+  source-only JAR, build artifacts, consumer requirements and development commands.
 
 - [Development quality workflow](defvaluetype-design/embodiment/artifacts.md#development-quality-workflow):
   development-only tools, generated API sources, quality commands, hooks and
   CI; separate runtime-test requirements.
+
+- [Development guide](../doc/development.md): contributor setup, quality
+  checks, tests, builds and benchmarks.
 
 ## Related
 

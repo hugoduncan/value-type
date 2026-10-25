@@ -15,8 +15,8 @@
   [Library packaging](#library-packaging).
 - `LICENSE`: full EPL-2.0 text, also included at the JAR root.
 - `test-build/build_test.clj`: build contract, real CLI, input
-  preservation and isolated JAR consumer checks. See the README
-  [build-test command](../../../README.md#run-the-build-tests).
+  preservation and isolated JAR consumer checks. See the development guide
+  [build-test command](../../../doc/development/runtime.md#run-the-build-tests).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,
   `src/value_type/impl/transform.clj`.
 - `src/value_type/impl/capability.clj`, `src/value_type/impl/runtime.clj`:
@@ -34,13 +34,13 @@
 Development tools do not change runtime dependencies, the library JDK
 minimum or source-only packaging. `mise.toml` pins the tools and a Java 21
 JVM without preview. The `deps.edn` aliases `:quickdoc` and `:quickdoc-test`
-add Quickdoc and focused Scry tests only for development. See the README
-[tool setup](../../../README.md#install-development-tools).
+add Quickdoc and focused Scry tests only for development. See the development guide
+[tool setup](../../../doc/development/quality-checks.md#install-development-tools).
 
 `bb.edn` exposes formatting, dependency-config import, clj-kondo lint,
 Vale and API generation tasks. Their implementation is in `bb/value_type/`;
-focused tests are in `test-quickdoc/`. See the README
-[commands and check scopes](../../../README.md#quality-checks), including
+focused tests are in `test-quickdoc/`. See the development guide
+[commands and check scopes](../../../doc/development/quality-checks.md#quality-checks), including
 excluded paths and warning/error handling.
 
 `doc/API.md` is generated from `src/value_type/core.clj` docstrings and
@@ -52,16 +52,16 @@ Change the sources, not the generated file.
 
 `.pre-commit-config.yaml` selects local scripts in `.pre-commit-hooks/`
 for formatting and project lint. Formatting can edit files and stop a commit;
-hooks never stage edits. See the README
-[hook setup and edit behavior](../../../README.md#install-commit-hooks).
+hooks never stage edits. See the development guide
+[hook setup and edit behavior](../../../doc/development/quality-checks.md#install-commit-hooks).
 
 `.github/workflows/ci.yml` runs on pull requests and pushes to `master`.
 It prepares dependency imports, then checks formatting, code lint, prose,
 API freshness and focused tooling tests. It checks that tracked files remain
 unchanged; it does not repair files. This quality CI does not run the separate
-runtime suites: [library tests](../../../README.md#run-the-tests), the
-[fallback matrix](../../../README.md#verified-fallback-matrix) and
-[build tests](../../../README.md#run-the-build-tests) need their documented
+runtime suites: [library tests](../../../doc/development/runtime.md#run-the-tests), the
+[fallback matrix](../../../doc/development/runtime.md#verified-fallback-matrix) and
+[build tests](../../../doc/development/runtime.md#run-the-build-tests) need their documented
 JVM configurations.
 
 ## Library packaging
@@ -73,7 +73,7 @@ It excludes compiled classes, bundled dependencies and development
 files. Packaging does not load or AOT-compile library namespaces.
 The metadata basis excludes user configuration and development aliases.
 
-See the README [local JAR build guide](../../../README.md#build-a-local-jar)
+See the development guide [local JAR build guide](../../../doc/development/runtime.md#build-a-local-jar)
 for build and clean commands, return values, Git requirements, version
 limits and the target-deletion warning. `N` is the Git commit count;
 shallow history gives a partial count, and branches can share a version.

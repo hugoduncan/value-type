@@ -25,7 +25,8 @@
         (put! (str "styles/Probe/" severity ".yml")
               (str "extends: existence\nmessage: 'Found " severity " marker.'\nlevel: "
                    severity "\ntokens:\n  - '" severity "marker'\n")))
-      (doseq [path ["README.md" "AGENTS.md" "doc/API.md"]]
+      (doseq [path ["README.md" "AGENTS.md" "doc/API.md" "doc/development.md"
+                    "doc/development/quality-checks.md" "doc/development/runtime.md"]]
         (put! path "Clean prose.\n"))
       (put! "outside.md" "errormarker\n")
       (testing "suggestions are reported but do not fail; other files are excluded"
@@ -34,7 +35,8 @@
           (is (zero? (:exit result)) (pr-str result))
           (is (str/includes? (:out result) "suggestionmarker"))))
       (testing "warnings and errors fail on each scoped path without edits"
-        (doseq [path ["README.md" "AGENTS.md" "doc/API.md"]
+        (doseq [path ["README.md" "AGENTS.md" "doc/API.md" "doc/development.md"
+                      "doc/development/quality-checks.md" "doc/development/runtime.md"]
                 severity ["warning" "error"]]
           (let [text (str severity "marker\n")]
             (put! path text)
@@ -85,7 +87,8 @@
         (let [destination (io/file dir path)]
           (io/make-parents destination)
           (io/copy (io/file path) destination)))
-      (doseq [path ["README.md" "doc/API.md"]]
+      (doseq [path ["README.md" "doc/API.md" "doc/development.md"
+                    "doc/development/quality-checks.md" "doc/development/runtime.md"]]
         (let [file (io/file dir path)]
           (io/make-parents file)
           (spit file "Clean prose.\n")))

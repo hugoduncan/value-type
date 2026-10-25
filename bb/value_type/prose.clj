@@ -4,7 +4,9 @@
             [babashka.process :refer [shell]]
             [cheshire.core :as json]))
 
-(def prose-paths ["README.md" "AGENTS.md" "doc/API.md"])
+(def prose-paths
+  ["README.md" "AGENTS.md" "doc/API.md" "doc/development.md"
+   "doc/development/quality-checks.md" "doc/development/runtime.md"])
 
 (defn parse-alerts
   "Parse Vale JSON and reject unexpected result or severity data."
