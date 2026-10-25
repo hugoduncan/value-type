@@ -13,7 +13,7 @@
   (and (nil? (ns-resolve *ns* 'Transferred))
        (try
          (Class/forName (str (munge (str (ns-name *ns*))) ".Transferred")
-                       false (clojure.lang.RT/baseLoader))
+                        false (clojure.lang.RT/baseLoader))
          false
          (catch ClassNotFoundException _ true))))
 
@@ -37,7 +37,7 @@
   [expansions]
   (into {}
         (for [[mode operation] [[:eval eval]
-                               [:source #(load-string (pr-str %))]]]
+                                [:source #(load-string (pr-str %))]]]
           [mode
            (mapv (fn [index serialized]
                    (let [target (create-ns (symbol (str "transfer." (name mode) index)))]

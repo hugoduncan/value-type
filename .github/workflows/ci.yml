@@ -1,0 +1,46 @@
+name: Development quality
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned development tools
+        uses: jdx/mise-action@v2
+        with:
+          version: 2026.4.11
+          cache: false
+      - name: Report tool versions
+        run: |
+          mise --version
+          bb --version
+          clojure -Sdescribe
+          clj-kondo --version
+          cljfmt --version
+          vale --version
+          pre-commit --version
+          java -version
+      - name: Prepare dependency lint configuration
+        run: bb clj-kondo:copy-config
+      - name: Check formatting
+        run: bb clj-fmt:check
+      - name: Check code
+        run: bb clj-kondo:lint
+      - name: Check prose
+        run: bb vale
+      - name: Check API freshness
+        run: bb api-docs --check
+      - name: Test tooling contracts
+        run: clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+      - name: Verify checks left tracked files unchanged
+        if: ${{ always() }}
+        run: git diff --exit-code HEAD --

@@ -48,4 +48,4 @@
    :hinted-field (.-n ^Portable (->Portable 42 "sample"))
    :constructor (= Portable (class (Portable. 42 "sample")))
    :import (eval '(do (import 'value_type.source_checks.Portable)
-                      (= Portable (class (Portable. 42 "sample")))) )})
+                      (= Portable (class (Portable. 42 "sample")))))})

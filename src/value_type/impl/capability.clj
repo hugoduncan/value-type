@@ -31,8 +31,8 @@
             internal-name nil "java/lang/Object" nil)
     ;; JEP 401 strict fields must be assigned before the super constructor.
     (.visitEnd (.visitField writer
-                           (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL 0x800)
-                           "value" "J" nil nil))
+                            (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL 0x800)
+                            "value" "J" nil nil))
     (let [ctor (.visitMethod writer Opcodes/ACC_PUBLIC "<init>" "(J)V" nil nil)]
       (.visitCode ctor)
       (.visitVarInsn ctor Opcodes/ALOAD 0)

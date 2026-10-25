@@ -1,0 +1,19 @@
+{:paths ["bb"]
+ :tasks
+ {:requires ([value-type.quality :as quality])
+  vale {:doc "Sync styles and check maintained prose."
+        :requires ([value-type.prose :as prose])
+        :task (prose/check! *command-line-args*)}
+  api-docs {:doc "Generate API docs, or check with --check."
+            :task (apply babashka.process/shell "clojure" "-Srepro" "-M:quickdoc"
+                         "-m" "value-type.api-docs" *command-line-args*)}
+  clj-fmt {:doc "Run cljfmt: check|fix [PATHS...]."
+           :task (quality/format! *command-line-args*)}
+  clj-fmt:check {:doc "Check formatting in maintained code."
+                 :task (quality/format! ["check"])}
+  clj-fmt:fix {:doc "Fix formatting in maintained code."
+               :task (quality/format! ["fix"])}
+  clj-kondo:copy-config {:doc "Resolve dependencies and import lint configuration."
+                         :task (quality/copy-config!)}
+  clj-kondo:lint {:doc "Prepare imports and lint maintained code."
+                  :task (quality/lint!)}}}

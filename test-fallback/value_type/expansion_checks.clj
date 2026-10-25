@@ -7,7 +7,7 @@
   (and (nil? (ns-resolve 'value-type.expansion-checks type-name))
        (try
          (Class/forName (str "value_type.expansion_checks." type-name)
-                       false (clojure.lang.RT/baseLoader))
+                        false (clojure.lang.RT/baseLoader))
          false
          (catch ClassNotFoundException _ true))))
 
@@ -50,16 +50,16 @@
                      :evaluated {:returned? (some? evaluated) :absent? (absent? 'Timing)}
                      :after-evaluation (str diagnostics)})))
         thread (Thread. ^Runnable
-                        (fn []
-                          (try
-                            (deliver result
-                                     (if bound?
-                                       (with-bindings {clojure.lang.Compiler/LOADER
-                                                       (clojure.lang.DynamicClassLoader.
-                                                        (clojure.lang.RT/baseLoader))}
-                                         (check))
-                                       (check)))
-                            (catch Throwable error (deliver result error)))))]
+                (fn []
+                  (try
+                    (deliver result
+                             (if bound?
+                               (with-bindings {clojure.lang.Compiler/LOADER
+                                               (clojure.lang.DynamicClassLoader.
+                                                (clojure.lang.RT/baseLoader))}
+                                 (check))
+                               (check)))
+                    (catch Throwable error (deliver result error)))))]
     (.start thread)
     (.join thread)
     (when (instance? Throwable @result) (throw @result))
@@ -76,15 +76,15 @@
      :value-mode
      (let [result (promise)
            thread (Thread. ^Runnable
-                           (fn []
-                             (try (deliver result (expansion-attempts false))
-                                  (catch Throwable error (deliver result error)))))]
+                   (fn []
+                     (try (deliver result (expansion-attempts false))
+                          (catch Throwable error (deliver result error)))))]
        (.start thread)
        (.join thread)
        (when (instance? Throwable @result) (throw @result))
        {:unbound @result
         :bound (with-bindings {clojure.lang.Compiler/LOADER
-                              (clojure.lang.DynamicClassLoader. (clojure.lang.RT/baseLoader))}
+                               (clojure.lang.DynamicClassLoader. (clojure.lang.RT/baseLoader))}
                  (expansion-attempts true))
         ;; The earlier expansions were discarded. Evaluation shares their warning state.
         :evaluated (binding [*ns* (the-ns 'value-type.expansion-checks)]

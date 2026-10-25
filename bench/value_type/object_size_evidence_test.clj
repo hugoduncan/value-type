@@ -13,15 +13,15 @@
         results (edn/read-string (slurp (io/file directory "results.edn")))
         case-key (juxt :kind :field-count)
         expected-keys (into #{} (for [kind [:deftype :defvaluetype]
-                                     n (range 4)]
-                                 [kind n]))
+                                      n (range 4)]
+                                  [kind n]))
         raw-cases (into {} (map (juxt case-key identity)) (:cases raw))
         result-cases (into {} (map (juxt case-key identity)) (:cases results))
         sizes (into {}
                     (map (fn [[key evidence]]
                            [key (:object_size
                                  (first (filterv #(and (= (:class evidence) (:object-type %))
-                                                      (= (:thread evidence) (:thread %)))
+                                                       (= (:thread evidence) (:thread %)))
                                                  (:records evidence))))]))
                     raw-cases)]
     (testing "published measurement environment"
@@ -82,7 +82,7 @@
           (is (= 10 (count targets)))
           (is (not-any? :freed targets))
           (is (every? #(and (integer? (:object_size %))
-                           (pos? (:object_size %))) targets))
+                            (pos? (:object_size %))) targets))
           (is (= 1 (count (into #{} (map :object_size) targets))))
           (is (= (assoc (dissoc evidence :records)
                         :target-count 10 :bytes (get sizes key))

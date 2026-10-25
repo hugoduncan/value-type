@@ -15,6 +15,10 @@ Read this file first. Read the other files only when you need them.
 - [Library packaging](defvaluetype-design/embodiment.md#library-packaging):
   source-only JAR, build artifacts, consumer requirements and README commands.
 
+- [Development quality workflow](defvaluetype-design/embodiment/artifacts.md#development-quality-workflow):
+  development-only tools, generated API sources, quality commands, hooks and
+  CI; separate runtime-test requirements.
+
 ## Related
 
 - `README.md`: project summary.

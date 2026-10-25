@@ -14,7 +14,7 @@
   "`deftype` compatibility corpus: the `deftype` forms of the Clojure
   1.12.6 test suite, as `defvaluetype`."
   (:require
-   [clojure.test :refer :all]
+   [clojure.test :refer [assert-expr deftest do-report is report testing]]
    [value-type.core :refer [defvaluetype]]
    [value-type.test-support :as support :refer [value? with-temp-dir]])
   (:import
@@ -35,18 +35,18 @@
 (defmethod assert-expr 'fails-with-cause?
   [msg [_ exception-class msg-re & body :as form]]
   `(try
-   ~@body
-   (report {:type :fail, :message ~msg, :expected '~form, :actual nil})
-   (catch Throwable t#
-     (if (some (fn [cause#]
-                 (and
-                  (= ~exception-class (class cause#))
-                  (re-find ~msg-re (.getMessage cause#))))
-               (causes t#))
-       (report {:type :pass, :message ~msg,
-                :expected '~form, :actual t#})
-       (report {:type :fail, :message ~msg,
-                :expected '~form, :actual t#})))))
+     ~@body
+     (report {:type :fail, :message ~msg, :expected '~form, :actual nil})
+     (catch Throwable t#
+       (if (some (fn [cause#]
+                   (and
+                    (= ~exception-class (class cause#))
+                    (re-find ~msg-re (.getMessage cause#))))
+                 (causes t#))
+         (report {:type :pass, :message ~msg,
+                  :expected '~form, :actual t#})
+         (report {:type :fail, :message ~msg,
+                  :expected '~form, :actual t#})))))
 
 (defmethod clojure.test/assert-expr 'thrown-with-cause-msg? [msg form]
   ;; (is (thrown-with-cause-msg? c re expr))
@@ -85,15 +85,21 @@
 ;;; Markers
 ;; protocols.clj: marker-tests
 
+;; Upstream deliberately implements only part of ExampleProtocol.
+#_{:clj-kondo/ignore [:missing-protocol-method]}
 (defvaluetype HasMarkers []
   ExampleProtocol
-  (foo [this] "foo")
+  ;; clj-kondo associates this method with the following marker protocol.
+  #_{:clj-kondo/ignore [:unresolved-protocol-method]}
+  (foo [_this] "foo")
   MarkerProtocol
   MarkerProtocol2)
 
+;; Upstream deliberately implements only part of ExampleProtocol.
+#_{:clj-kondo/ignore [:missing-protocol-method]}
 (defvaluetype WillGetMarker []
   ExampleProtocol
-  (foo [this] "foo"))
+  (foo [_this] "foo"))
 
 (extend-type WillGetMarker MarkerProtocol)
 
@@ -111,35 +117,41 @@
 ;; protocols.clj: extend-test, illegal-extending
 
 (defvaluetype ExtendTestWidget [name])
+;; Upstream deliberately implements only part of ExampleProtocol.
+#_{:clj-kondo/ignore [:missing-protocol-method]}
 (defvaluetype HasProtocolInline []
   ExampleProtocol
-  (foo [this] :inline))
+  (foo [_this] :inline))
 (deftest extend-test
   (testing "you can extend deftype types"
     (extend
      ExtendTestWidget
-     ExampleProtocol
-     {:foo (fn [this] (str "widget " (.name this)))})
+      ExampleProtocol
+      {:foo (fn [this] (str "widget " (.name this)))})
     (is (= "widget z" (foo (ExtendTestWidget. "z")))))
   (is (value? ExtendTestWidget)))
 
 (deftest illegal-extending
   (testing "you cannot extend a protocol to a type that implements the protocol inline"
     (is (fails-with-cause? IllegalArgumentException #".*HasProtocolInline already directly implements interface"
-          (eval '(extend value_type.deftype_compat_test.HasProtocolInline
-                         value-type.deftype-compat-test/ExampleProtocol
-                         {:foo (fn [_] :extended)})))))
+                           (eval '(extend value_type.deftype_compat_test.HasProtocolInline
+                                    value-type.deftype-compat-test/ExampleProtocol
+                                    {:foo (fn [_] :extended)})))))
   (is (value? HasProtocolInline)))
 
 ;;; Disabled upstream
 ;; protocols.clj: extends?-test, extenders-test, satisifies?-test,
 ;; re-extending-test (all disabled with #_ in Clojure)
 
+;; Upstream deliberately implements only part of ExampleProtocol.
+#_{:clj-kondo/ignore [:missing-protocol-method]}
 (defvaluetype ExtendsTestWidget []
   ExampleProtocol)
 
 (defvaluetype ExtendersTestWidget [])
 
+;; Upstream deliberately implements only part of ExampleProtocol.
+#_{:clj-kondo/ignore [:missing-protocol-method]}
 (defvaluetype SatisfiesTestWidget []
   ExampleProtocol)
 
@@ -184,8 +196,8 @@
     (is (= (.a (TypeToTestLongHint. 42)) (.a (->TypeToTestLongHint (long 42)))))
     (testing "that invalid primitive types on hinted defrecord fields fails"
       (is (thrown?
-            IllegalArgumentException
-            (read-string "#value_type.deftype_compat_test.TypeToTestLongHint[\"\"]")))))
+           IllegalArgumentException
+           (read-string "#value_type.deftype_compat_test.TypeToTestLongHint[\"\"]")))))
   (testing "that primitive hinting requiring coercion works as expected"
     (is (= (.a (TypeToTestByteHint. 42)) (.a (->TypeToTestByteHint (byte 42))))))
   (is (value? TypeToTestLongHint))
@@ -198,7 +210,7 @@
   (-do-dashed [this]))
 (defvaluetype Dashed []
   Dasherizer
-  (-do-dashed [this] 10))
+  (-do-dashed [_this] 10))
 
 (deftest test-leading-dashes
   (is (= 10 (-do-dashed (Dashed.))))
@@ -255,22 +267,22 @@
   else."
   [x]
   (cond
-   (= x TestType1) 1
-   (= x TestType2) 2
-   (= x TestType3) 4
-   (= x TestType4) 8
-   (= x TestType5) 16
-   (= x TestType6) 32
-   (= x TestType7) 64
-   (= x TestType8) 128
-   (= x TestType9) 256
-   (= x TestType10) 512
-   (= x TestType11) 1024
-   (= x TestType12) 2048
-   (= x TestType13) 4096
-   (= x TestType14) 8192
-   (= x TestType15) 16384
-   :else (original-hash x)))
+    (= x TestType1) 1
+    (= x TestType2) 2
+    (= x TestType3) 4
+    (= x TestType4) 8
+    (= x TestType5) 16
+    (= x TestType6) 32
+    (= x TestType7) 64
+    (= x TestType8) 128
+    (= x TestType9) 256
+    (= x TestType10) 512
+    (= x TestType11) 1024
+    (= x TestType12) 2048
+    (= x TestType13) 4096
+    (= x TestType14) 8192
+    (= x TestType15) 16384
+    :else (original-hash x)))
 
 (deftest protocols-with-no-min-hash-in-13-bits
   (with-redefs [hash no-min-hash-in-13-bits]
@@ -359,9 +371,9 @@
 
 (deftest test-defrecord-deftype-err-msg
   (is (thrown-with-cause-msg? clojure.lang.Compiler$CompilerException
-                        #"defrecord and deftype fields must be symbols, value-type\.deftype-compat-test\.MyType had: :key1"
-                        (support/eval-in 'value-type.deftype-compat-test
-                                         '(defvaluetype MyType [:key1])))))
+                              #"defrecord and deftype fields must be symbols, value-type\.deftype-compat-test\.MyType had: :key1"
+                              (support/eval-in 'value-type.deftype-compat-test
+                                               '(defvaluetype MyType [:key1])))))
 
 (deftest test-array-symbols
   (testing "error conditions"
@@ -385,16 +397,16 @@
 (defvaluetype #^{Deprecated true
                  Retention RetentionPolicy/RUNTIME
                  javax.annotation.processing.SupportedOptions ["foo" "bar" "baz"]}
-  Bar [#^int a
-       #^{:tag int
-          Deprecated true
-          Retention RetentionPolicy/RUNTIME
-          javax.annotation.processing.SupportedOptions ["foo" "bar" "baz"]}
-       b]
+                Bar [#^int a
+                     #^{:tag int
+                        Deprecated true
+                        Retention RetentionPolicy/RUNTIME
+                        javax.annotation.processing.SupportedOptions ["foo" "bar" "baz"]}
+                       b]
   Foo (#^{Deprecated true
           Retention RetentionPolicy/RUNTIME
           javax.annotation.processing.SupportedOptions ["foo" "bar" "baz"]}
-       foo [this] 42))
+         foo [_this] 42))
 
 (defn annotation->map
   "Converts a Java annotation (which conceals data)
@@ -402,18 +414,18 @@
    Works recursively. Returns non-annotations unscathed."
   [#^java.lang.annotation.Annotation o]
   (cond
-   (instance? Annotation o)
-   (let [type (.annotationType o)
-         itfs (-> (into #{type} (supers type)) (disj java.lang.annotation.Annotation))
-         data-methods (into #{} (mapcat #(.getDeclaredMethods %) itfs))]
-     (into
-      {:annotationType (.annotationType o)}
-      (map
-       (fn [m] [(keyword (.getName m)) (annotation->map (.invoke m o nil))])
-       data-methods)))
-   (or (sequential? o) (.isArray (class o)))
-   (map annotation->map o)
-     :else o))
+    (instance? Annotation o)
+    (let [type (.annotationType o)
+          itfs (-> (into #{type} (supers type)) (disj java.lang.annotation.Annotation))
+          data-methods (into #{} (mapcat #(.getDeclaredMethods %) itfs))]
+      (into
+       {:annotationType (.annotationType o)}
+       (map
+        (fn [m] [(keyword (.getName m)) (annotation->map (.invoke m o nil))])
+        data-methods)))
+    (or (sequential? o) (.isArray (class o)))
+    (map annotation->map o)
+    :else o))
 
 (def expected-annotations
   #{{:annotationType java.lang.annotation.Retention, :value RetentionPolicy/RUNTIME}

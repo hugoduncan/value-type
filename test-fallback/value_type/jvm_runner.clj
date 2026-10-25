@@ -20,7 +20,7 @@
   [{:keys [java classpath form jvm-opts policy timeout-ms]
     :or {jvm-opts [] timeout-ms 120000}}]
   (let [dir (.toFile (Files/createTempDirectory
-                     "vt-jvm-" (make-array FileAttribute 0)))
+                      "vt-jvm-" (make-array FileAttribute 0)))
         out-file (io/file dir "stdout")
         err-file (io/file dir "stderr")
         command (into [java]
@@ -29,8 +29,8 @@
                               ["-cp" classpath "clojure.main" "-e" form]))]
     (try
       (let [process (.start (doto (ProcessBuilder. ^List command)
-                             (.redirectOutput out-file)
-                             (.redirectError err-file)))]
+                              (.redirectOutput out-file)
+                              (.redirectError err-file)))]
         (try
           (let [finished? (.waitFor process timeout-ms TimeUnit/MILLISECONDS)]
             (when-not finished?

@@ -29,6 +29,41 @@
 - `README.md`: usage, JDK requirement, semantic differences from
   `deftype`.
 
+## Development quality workflow
+
+Development tools do not change runtime dependencies, the library JDK
+minimum or source-only packaging. `mise.toml` pins the tools and a Java 21
+JVM without preview. The `deps.edn` aliases `:quickdoc` and `:quickdoc-test`
+add Quickdoc and focused Scry tests only for development. See the README
+[tool setup](../../../README.md#install-development-tools).
+
+`bb.edn` exposes formatting, dependency-config import, clj-kondo lint,
+Vale and API generation tasks. Their implementation is in `bb/value_type/`;
+focused tests are in `test-quickdoc/`. See the README
+[commands and check scopes](../../../README.md#quality-checks), including
+excluded paths and warning/error handling.
+
+`doc/API.md` is generated from `src/value_type/core.clj` docstrings and
+`bb/value_type/api_docs.clj` configuration and introductory prose. It documents
+`defvaluetype`, not private vars, implementation namespaces or the expansion
+helper `check-value-class`. Run `bb api-docs` to regenerate it, or
+`bb api-docs --check` to detect missing or stale output without writing.
+Change the sources, not the generated file.
+
+`.pre-commit-config.yaml` selects local scripts in `.pre-commit-hooks/`
+for formatting and project lint. Formatting can edit files and stop a commit;
+hooks never stage edits. See the README
+[hook setup and edit behavior](../../../README.md#install-commit-hooks).
+
+`.github/workflows/ci.yml` runs on pull requests and pushes to `master`.
+It prepares dependency imports, then checks formatting, code lint, prose,
+API freshness and focused tooling tests. It checks that tracked files remain
+unchanged; it does not repair files. This quality CI does not run the separate
+runtime suites: [library tests](../../../README.md#run-the-tests), the
+[fallback matrix](../../../README.md#verified-fallback-matrix) and
+[build tests](../../../README.md#run-the-build-tests) need their documented
+JVM configurations.
+
 ## Library packaging
 
 `build.clj` creates `target/value-type-0.1.N.jar` for

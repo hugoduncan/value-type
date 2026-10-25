@@ -269,9 +269,9 @@
           (let [runtime-deps
                 (with-open [archive (JarFile. artifact)
                             stream (.getInputStream
-                                     archive
-                                     (.getJarEntry archive
-                                                   "META-INF/maven/org.hugoduncan/value-type/pom.xml"))]
+                                    archive
+                                    (.getJarEntry archive
+                                                  "META-INF/maven/org.hugoduncan/value-type/pom.xml"))]
                   (pom-dependencies (xml/parse stream)))
                 consumer-deps (io/file directory "consumer-deps.edn")
                 _ (spit consumer-deps (pr-str {:paths [] :deps runtime-deps}))
@@ -282,23 +282,23 @@
                 classpath (into [(.getCanonicalPath artifact)] runtime-paths)
                 expression
                 (pr-str
-                  '(do
-                     (require '[clojure.java.io :as io])
-                     (let [resource (io/resource "value_type/core.clj")]
-                       (assert (= "jar" (.getProtocol resource)))
-                       (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
-                                  (.getCanonicalFile
-                                    (io/file (.toURI (.getJarFileURL (.openConnection resource))))))))
-                     (require '[value-type.core :refer [defvaluetype]])
-                     (defvaluetype Point [^long x ^long y])
-                     (let [a (Point. 3 7)
-                           b (Point. 11 13)]
-                       (prn {:value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
-                                                                            (.getMethods Class)))]
-                                             (.invoke predicate (class a) (object-array 0)))
-                             :equal-copy? (= a (->Point 3 7))
-                             :factory-class? (= Point (class (->Point 3 7)))
-                             :fields [(.-x a) (.-y a) (.-x b) (.-y b)]}))))]
+                 '(do
+                    (require '[clojure.java.io :as io])
+                    (let [resource (io/resource "value_type/core.clj")]
+                      (assert (= "jar" (.getProtocol resource)))
+                      (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
+                                 (.getCanonicalFile
+                                  (io/file (.toURI (.getJarFileURL (.openConnection resource))))))))
+                    (require '[value-type.core :refer [defvaluetype]])
+                    (defvaluetype Point [^long x ^long y])
+                    (let [a (Point. 3 7)
+                          b (Point. 11 13)]
+                      (prn {:value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
+                                                                               (.getMethods Class)))]
+                                            (.invoke predicate (class a) (object-array 0)))
+                            :equal-copy? (= a (->Point 3 7))
+                            :factory-class? (= Point (class (->Point 3 7)))
+                            :fields [(.-x a) (.-y a) (.-x b) (.-y b)]}))))]
             (testing "the consumer classpath contains only artifact and runtime JARs"
               (is (seq runtime-paths))
               (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
@@ -311,14 +311,14 @@
                       [] nil]]]
               (testing (str "the artifact supplies a working macro on " java)
                 (let [result (run-process
-                               directory
-                               (into [java]
-                                     (concat options
-                                       ["-Dvalue-type.fallback=silent"
-                                (str "-Dconsumer.jar=" (.getCanonicalPath artifact))
-                                "-cp" (str/join java.io.File/pathSeparator classpath)
-                                "clojure.main" "-e" expression]))
-                               {})]
+                              directory
+                              (into [java]
+                                    (concat options
+                                            ["-Dvalue-type.fallback=silent"
+                                             (str "-Dconsumer.jar=" (.getCanonicalPath artifact))
+                                             "-cp" (str/join java.io.File/pathSeparator classpath)
+                                             "clojure.main" "-e" expression]))
+                              {})]
                   (is (= 0 (:exit result)) result)
                   (when (zero? (:exit result))
                     (is (= {:value-class? expected-value?

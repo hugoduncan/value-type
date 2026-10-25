@@ -1,0 +1,9 @@
+# Bootstrap mise 2026.4.11; this JVM is for development tools only.
+[tools]
+babashka = "1.13.225"
+clojure = "1.12.6.1673"
+"github:clj-kondo/clj-kondo" = "2026.04.15"
+"github:weavejester/cljfmt" = "0.16.4"
+vale = "3.17.1"
+pre-commit = "4.6.0"
+java = "temurin-21.0.10+7.0.LTS"

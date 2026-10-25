@@ -1,0 +1,15 @@
+{;; defvaluetype retains deftype's field, method and constructor syntax.
+ :lint-as {value-type.core/defvaluetype clojure.core/deftype}
+ ;; These are assert-expr dispatch symbols, not vars. Exclude only their
+ ;; use within is in the corpus that defines them; arguments remain checked.
+ :config-in-ns
+ {value-type.deftype-compat-test
+  {:linters {:unresolved-symbol
+             {:exclude [(clojure.test/is [fails-with-cause?
+                                          thrown-with-cause-msg?])]}}}}
+ ;; The binding vector contains a name only, not a let-style value pair.
+ :hooks {:analyze-call {value-type.test-support/with-temp-dir
+                        hooks.value-type/with-temp-dir
+                        ;; Both benchmark types have implicit x and y fields.
+                        value-type.bench/defpair hooks.value-type/defpair
+                        value-type.bench/defpass hooks.value-type/defpass}}}

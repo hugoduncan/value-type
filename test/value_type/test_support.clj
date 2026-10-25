@@ -41,7 +41,7 @@
   ([f timeout-ms]
    (let [result (promise)
          thread (Thread. ^Runnable
-                         (fn [] (deliver result (try (f) (catch Throwable t t)))))]
+                 (fn [] (deliver result (try (f) (catch Throwable t t)))))]
      (.start thread)
      (deref result timeout-ms ::timeout))))
 
@@ -89,7 +89,7 @@
   (let [java (str (System/getProperty "java.home") "/bin/java")
         pb   (ProcessBuilder.
               ^List (vector java "--enable-preview" "-cp" cp
-                               "clojure.main" "-e" form))
+                            "clojure.main" "-e" form))
         p    (.start pb)
         out  (future (slurp (.getInputStream p)))
         err  (future (slurp (.getErrorStream p)))]

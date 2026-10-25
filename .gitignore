@@ -6,4 +6,10 @@
 /classes/
 /target/
 
+
+# Development tools: keep owned configuration, not downloaded data.
+/.clj-kondo/imports/
 /.clj-kondo/.cache/
+/.mise/
+/styles/proselint/
+/styles/vale/

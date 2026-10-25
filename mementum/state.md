@@ -95,6 +95,16 @@ The macro creates JEP 401 value objects
   `testing-library-artifacts.md` (854e76d). Detailed decisions and evidence
   remain in task 009's implementation notes and the fallback architecture.
 
+- Development quality checks are complete
+  (`munera/closed/010-development-quality-checks`). Pinned mise tools and
+  Babashka tasks cover cljfmt, clj-kondo, Vale and Quickdoc. Pre-commit hooks
+  never stage edits; quality CI checks do not repair files. Setup, scopes
+  and commands are in README and the Ramora quality-workflow documentation.
+  All implementation and review follow-ups are complete. Knowledge extraction
+  added `mementum/knowledge/verifying-development-quality-checks.md`
+  (`481c676`). Hosted GitHub Actions execution remains unverified; cold Linux
+  checks passed in an Ubuntu 24.04 arm64 container.
+
 ## Next
 
 - No tasks are scheduled. The user selects the next task.
@@ -118,11 +128,13 @@ The macro creates JEP 401 value objects
 
 ## Latest verification
 
-Task 009 is closed after implementation review and knowledge extraction.
-Recorded full fallback matrix: 15 tests with 166/166/141 assertions on
-Java 8 and Valhalla preview off/on. After AOT fixture extraction, the AOT
-matrix passed 4 tests / 54 assertions on each configuration. Earlier review
-also verified the value suite (64 tests / 332 assertions) and build suite
-(6 tests / 63 assertions). Recorded exits were zero, with no Scry failures.
-Final code-shape review found no new actionable issues (3fb99b1).
-Closure changed records only; no runtime tests were rerun.
+Task 010 is closed after implementation review and knowledge extraction.
+Final code-shape re-review (`e42350e`) found no new actionable issues.
+Formatting and lint passed; focused tooling tests passed (11 tests,
+135 assertions, exit 0, no Scry failure files). Earlier hook and CI failure
+probes passed with file/index protection. Runtime regression in slice 6b
+passed: library 64 tests/332 assertions; fallback Java 8 and Valhalla preview
+off 15/166 each, preview on 15/141; build 6/63 with both consumer JVM paths.
+The final tooling reviews did not repeat runtime regression. Hosted Actions
+and its x86_64 runner were not verified. Closure changed records only;
+no tests were rerun.
