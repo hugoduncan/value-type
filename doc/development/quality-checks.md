@@ -66,7 +66,7 @@ Formatting and code lint cover `src/`, `test/`, `test-build/`,
 `build.clj`, `bb.edn` and `deps.edn`. They exclude historical `spike/`
 code, generated output, caches and dependency imports.
 
-Vale checks `README.md`, prose in `AGENTS.md`, `doc/API.md`, and the
+Vale checks `README.md`, prose in `AGENTS.md`, `doc/API.md`, `doc/usage.md`, and the
 development guide and its two linked documents.
 Code blocks and lambda instruction lines are protected. Task records,
 knowledge records and design evidence are outside the prose gate.

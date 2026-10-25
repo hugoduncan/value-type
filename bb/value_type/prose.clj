@@ -5,7 +5,7 @@
             [cheshire.core :as json]))
 
 (def prose-paths
-  ["README.md" "AGENTS.md" "doc/API.md" "doc/development.md"
+  ["README.md" "AGENTS.md" "doc/API.md" "doc/usage.md" "doc/development.md"
    "doc/development/quality-checks.md" "doc/development/runtime.md"])
 
 (defn parse-alerts

@@ -15,6 +15,7 @@
        "This file is generated from source docstrings with Quickdoc. "
        "Do not edit `doc/API.md` by hand.\n\n"
        "See the [README](../README.md) for installation, examples and tested JVMs.\n\n"
+       "See the [usage guide](usage.md) for detailed behavior and error handling.\n\n"
        "Regenerate from the repository root with `bb api-docs`. "
        "Check without writing with `bb api-docs --check`.\n\n"))
 

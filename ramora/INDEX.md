@@ -22,6 +22,9 @@ Read this file first. Read the other files only when you need them.
 - [Development guide](../doc/development.md): contributor setup, quality
   checks, tests, builds and benchmarks.
 
+- [Usage guide](../doc/usage.md): fallback, AOT limits, value semantics and
+  error handling.
+
 ## Related
 
 - `README.md`: project summary.

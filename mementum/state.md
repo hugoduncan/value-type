@@ -150,3 +150,12 @@ Verification after the move: formatting, lint, Vale, API freshness, local
 Markdown links/anchors and whitespace checks passed. Focused tooling tests
 passed (11 tests, 153 assertions, no Scry failure files). Runtime tests were
 not rerun; runtime code did not change.
+
+README now introduces the problem, experimental status, quick start,
+limitations and AI usage. Detailed fallback, AOT and error guidance is in
+`doc/usage.md`, linked from README and the generated API reference and
+included in Vale scope. Formatting, lint, Vale, API freshness, local links
+and whitespace checks passed. Focused tooling tests passed (11 tests,
+160 assertions, no Scry failure files). Quick-start forms passed on Valhalla
+with preview and on the tooling JVM with fallback. Full runtime suites were
+not rerun. The user's staged readme-writing skill was left unchanged.

@@ -28,7 +28,7 @@
         (is (str/includes? markdown text) text)))
     (testing "generation instructions and navigation are present"
       (doseq [text ["generated from source docstrings" "Do not edit"
-                    "[README](../README.md)" "`bb api-docs`"
+                    "[README](../README.md)" "[usage guide](usage.md)" "`bb api-docs`"
                     "`bb api-docs --check`"
                     "https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L"]]
         (is (str/includes? markdown text) text)))

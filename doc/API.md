@@ -4,6 +4,8 @@ This file is generated from source docstrings with Quickdoc. Do not edit `doc/AP
 
 See the [README](../README.md) for installation, examples and tested JVMs.
 
+See the [usage guide](usage.md) for detailed behavior and error handling.
+
 Regenerate from the repository root with `bb api-docs`. Check without writing with `bb api-docs --check`.
 
 # Table of contents
