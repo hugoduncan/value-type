@@ -91,6 +91,20 @@ clojure -J-Dvalue-type.fallback=error -M:dev
 See the [usage guide](doc/usage.md) for field comparison rules, fallback
 policy, AOT limits and error handling.
 
+## Performance
+
+Value classes do not guarantee lower memory use or faster execution. In the
+recorded Valhalla tests, standalone `defvaluetype` objects with 1–3 `long`
+fields were 8 bytes larger than equivalent `deftype` objects. Empty objects
+had equal shallow sizes. Method-call measurements found no stable
+interface-call penalty. These results apply only to the tested JVM and
+workloads; they do not measure flattened arrays or total application memory.
+
+See the [method-call investigation](ramora/defvaluetype-design/interface-call.md)
+and [object-size comparison](ramora/defvaluetype-design/object-size.md) for
+methods, results and limits. Measure your own workload before choosing a
+representation for performance.
+
 ## Documentation
 
 - [API reference](doc/API.md): macro syntax and contract.
