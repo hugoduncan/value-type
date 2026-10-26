@@ -48,6 +48,18 @@ baseline loading. This verifies the recorded JVMs, not all baseline versions.
 
 This tests the packaged dependency contract as well as the library code.
 
+### Select the build-test JVM itself
+
+The value-path consumer in `test-build/build_test.clj` uses the test JVM's
+`java.home`, not `VALUE_TYPE_VALHALLA_JAVA`. Run the build suite itself with
+`JAVA_CMD=<Valhalla>/bin/java`; setting the cross-JVM variables alone does not
+select that consumer. Set `VALUE_TYPE_BASELINE_JAVA` for its baseline consumer.
+The fallback suite has a different configuration helper that does use the
+Valhalla override. Check each suite's launcher contract when changing CI.
+
+Source: task `011-release-workflow` plan-review handoff (`1c72284`), artifact
+tests in `0acef33`, and explicit build-suite selection in workflow `0589c16`.
+
 ## Direct function calls do not verify the CLI contract
 
 Calling `build/jar` through `clojure.main` on the build-test classpath
