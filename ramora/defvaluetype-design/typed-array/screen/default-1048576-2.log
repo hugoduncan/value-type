@@ -1,0 +1,16 @@
+CompileCommand: blackhole criterium/blackhole/Blackhole.consume bool blackhole = true
+Estimated time required for full JIT is 37.2s, but limited to 6.00s.
+  pass `:limit-time-s 37.2` to improve accuracy,
+  or consider benchmarks at a lower level.
+Estimated time required for full JIT is 55.4s, but limited to 6.00s.
+  pass `:limit-time-s 55.4` to improve accuracy,
+  or consider benchmarks at a lower level.
+WARN: ACF requires at least 20 samples, got 17
+Warning: bootstrap sample count (17) below minimum (30). Results may be unreliable.
+Estimated time required for full JIT is 71.5s, but limited to 6.00s.
+  pass `:limit-time-s 71.5` to improve accuracy,
+  or consider benchmarks at a lower level.
+WARN: ACF requires at least 20 samples, got 16
+WARN: ACF requires at least 20 samples, got 15
+Warning: bootstrap sample count (15) below minimum (30). Results may be unreliable.
+{:rotation 2, :clojure "1.12.6", :jvm-arguments ["--enable-preview" "-Xms512m" "-Xmx2g" "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED" "-javaagent:target/typed-array/probe.jar" "-XX:+UnlockExperimentalVMOptions" "-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume"], :n 1048576, :arch "aarch64", :java "27-jep401ea3+1-1", :configuration "default", :os "27.0.1", :results [{:atomic? true, :array-class "[Ltyped_array_probe.ValueLong;", :null-restricted? true, :allocated-bytes-per-element 8.000045776367188, :ns-per-pass 250916.0, :allocated-bytes-per-build 8388656.0, :flat? true, :ns-per-element 0.23929214477539062, :storage-bytes 8388624, :kind :restricted, :component-value? true, :array-bytes 8388624, :sum 549755289600, :batch-size 1} {:atomic? true, :array-class "[Ltyped_array_probe.IdentityLong;", :null-restricted? false, :allocated-bytes-per-element 28.000015258789062, :ns-per-pass 330417.0, :allocated-bytes-per-build 2.9360144E7, :flat? false, :ns-per-element 0.3151102066040039, :storage-bytes 29360144, :kind :identity, :component-value? false, :array-bytes 4194320, :sum 549755289600, :batch-size 1} {:atomic? true, :array-class "[Ltyped_array_probe.ValueLong;", :null-restricted? false, :allocated-bytes-per-element 36.00001525878906, :ns-per-pass 421750.0, :allocated-bytes-per-build 3.7748752E7, :flat? false, :ns-per-element 0.40221214294433594, :storage-bytes 37748752, :kind :value, :component-value? true, :array-bytes 4194320, :sum 549755289600, :batch-size 1}]}

@@ -120,6 +120,19 @@ The macro creates JEP 401 value objects
 
 ## Next
 
+- Typed-array investigation (2026-10-26): ordinary one-long typed value
+  arrays are not flat on EA3. Internal null-restricted atomic arrays are
+  flat: at 1,048,576 elements, storage is 8 MiB versus 28 MiB for identity
+  arrays and 36 MiB for ordinary value arrays. Current-thread allocation
+  is about 8/28/36 bytes per element. Disabling array flattening removes
+  the benefit. Six successful extended timing runs give median traversal
+  times 0.239 ns/element flat, 0.305 identity, 0.360 ordinary value (about
+  22% less time flat versus identity). Short screening runs had warnings;
+  the extended runs did not. One interrupted trial was excluded and rerun.
+  Report:
+  `ramora/defvaluetype-design/typed-array.md`; probe: `spike/typed-array/`.
+  This does not establish a benefit for ordinary Clojure collection storage
+  or wider value classes. Production code is unchanged.
 - No tasks are scheduled. The user selects the next task.
 - Interface-call slowdown investigated (2026-10-24 UTC): no stable penalty
   in 16 fresh JVMs with alternating order, two lengths and Java controls.

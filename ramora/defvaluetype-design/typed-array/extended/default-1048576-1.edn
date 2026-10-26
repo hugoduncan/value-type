@@ -1,0 +1,60 @@
+{:benchmark-limit-s 60,
+ :rotation 1,
+ :clojure "1.12.6",
+ :jvm-arguments
+ ["--enable-preview"
+  "-Xms512m"
+  "-Xmx2g"
+  "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+  "-javaagent:target/typed-array-extended/probe.jar"
+  "-XX:+UnlockExperimentalVMOptions"
+  "-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume"],
+ :n 1048576,
+ :arch "aarch64",
+ :java "27-jep401ea3+1-1",
+ :criterium "0.5.245-ALPHA",
+ :configuration "default",
+ :os "27.0.1",
+ :results
+ [{:atomic? true,
+   :array-class "[Ltyped_array_probe.ValueLong;",
+   :null-restricted? false,
+   :allocated-bytes-per-element 36.00004577636719,
+   :ns-per-pass 377771.0,
+   :allocated-bytes-per-build 3.7748784E7,
+   :flat? false,
+   :ns-per-element 0.36027050018310547,
+   :storage-bytes 37748752,
+   :kind :value,
+   :component-value? true,
+   :array-bytes 4194320,
+   :sum 549755289600,
+   :batch-size 1}
+  {:atomic? true,
+   :array-class "[Ltyped_array_probe.ValueLong;",
+   :null-restricted? true,
+   :allocated-bytes-per-element 8.000045776367188,
+   :ns-per-pass 250666.5,
+   :allocated-bytes-per-build 8388656.0,
+   :flat? true,
+   :ns-per-element 0.23905420303344727,
+   :storage-bytes 8388624,
+   :kind :restricted,
+   :component-value? true,
+   :array-bytes 8388624,
+   :sum 549755289600,
+   :batch-size 1}
+  {:atomic? true,
+   :array-class "[Ltyped_array_probe.IdentityLong;",
+   :null-restricted? false,
+   :allocated-bytes-per-element 28.000015258789062,
+   :ns-per-pass 320083.0,
+   :allocated-bytes-per-build 2.9360144E7,
+   :flat? false,
+   :ns-per-element 0.3052549362182617,
+   :storage-bytes 29360144,
+   :kind :identity,
+   :component-value? false,
+   :array-bytes 4194320,
+   :sum 549755289600,
+   :batch-size 1}]}

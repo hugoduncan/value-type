@@ -1,0 +1,50 @@
+{:run-count 6,
+ :rows
+ [{:configuration "default",
+   :n 1048576,
+   :kind :identity,
+   :storage-bytes [29360144 29360144 29360144],
+   :allocated-bytes-per-build [2.9360176E7 2.9360144E7 2.9360144E7],
+   :ns-per-element
+   [0.31151342391967773 0.3052549362182617 0.298062801361084],
+   :median-ns-per-element 0.3052549362182617}
+  {:configuration "default",
+   :n 1048576,
+   :kind :value,
+   :storage-bytes [37748752 37748752 37748752],
+   :allocated-bytes-per-build [3.7748752E7 3.7748784E7 3.7748752E7],
+   :ns-per-element
+   [0.3586606979370117 0.36027050018310547 0.362396240234375],
+   :median-ns-per-element 0.36027050018310547}
+  {:configuration "default",
+   :n 1048576,
+   :kind :restricted,
+   :storage-bytes [8388624 8388624 8388624],
+   :allocated-bytes-per-build [8388656.0 8388656.0 8388656.0],
+   :ns-per-element
+   [0.23937225341796875 0.23905420303344727 0.2416372299194336],
+   :median-ns-per-element 0.23937225341796875}
+  {:configuration "no-flattening",
+   :n 1048576,
+   :kind :identity,
+   :storage-bytes [29360144 29360144 29360144],
+   :allocated-bytes-per-build [2.9360176E7 2.9360144E7 2.9360144E7],
+   :ns-per-element
+   [0.2997713088989258 0.3160438537597656 0.3018770217895508],
+   :median-ns-per-element 0.3018770217895508}
+  {:configuration "no-flattening",
+   :n 1048576,
+   :kind :value,
+   :storage-bytes [37748752 37748752 37748752],
+   :allocated-bytes-per-build [3.7748752E7 3.7748784E7 3.7748752E7],
+   :ns-per-element
+   [0.3623170852661133 0.36025047302246094 0.36044979095458984],
+   :median-ns-per-element 0.36044979095458984}
+  {:configuration "no-flattening",
+   :n 1048576,
+   :kind :restricted,
+   :storage-bytes [37748752 37748752 37748752],
+   :allocated-bytes-per-build [3.7748784E7 3.7748784E7 3.7748784E7],
+   :ns-per-element
+   [0.35913848876953125 0.3945426940917969 0.35389232635498047],
+   :median-ns-per-element 0.35913848876953125}]}

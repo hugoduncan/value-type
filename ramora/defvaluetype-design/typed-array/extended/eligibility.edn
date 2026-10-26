@@ -1,0 +1,30 @@
+{:java "27-jep401ea3+1-1",
+ :results
+ [{:class "value_type.object_size.Value1",
+   :layouts
+   [{:kind :ordinary,
+     :flat? false,
+     :atomic? true,
+     :null-restricted? false}
+    {:kind :restricted-atomic,
+     :flat? true,
+     :atomic? true,
+     :null-restricted? true}
+    {:kind :restricted-non-atomic,
+     :flat? true,
+     :atomic? true,
+     :null-restricted? true}]}
+  {:class "value_type.object_size.Value2",
+   :layouts
+   [{:kind :ordinary,
+     :flat? false,
+     :atomic? true,
+     :null-restricted? false}
+    {:kind :restricted-atomic,
+     :flat? false,
+     :atomic? true,
+     :null-restricted? true}
+    {:kind :restricted-non-atomic,
+     :flat? false,
+     :atomic? true,
+     :null-restricted? true}]}]}
