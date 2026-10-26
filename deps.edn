@@ -18,12 +18,12 @@
          :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
          :jvm-opts ["--enable-preview"]}
   :bench {:extra-paths ["bench"]
-          :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.245-ALPHA"}}
+          :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.253-ALPHA"}}
           :jvm-opts ["--enable-preview"
                      "-XX:+UnlockExperimentalVMOptions"
                      "-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume"]}
   :object-size {:extra-paths ["bench"]
-                :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.251-ALPHA"}}
+                :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.253-ALPHA"}}
                 :jvm-opts ["--enable-preview"]}
   :quickdoc {:extra-paths ["bb"]
              :extra-deps {io.github.borkdude/quickdoc
