@@ -132,6 +132,13 @@ The macro creates JEP 401 value objects
 
 ## Next
 
+- Proposed array API design is in `ramora/value-type-array-design.md`, with
+  linked decisions and verification. It uses the architecture model and
+  selects native null-restricted atomic arrays, no array fallback, explicit
+  seeds for empty input and separate capability diagnostics. All choices
+  remain proposed; zero-length allocation and diagnostic contracts need a
+  direct check before implementation. No task was created and no production
+  code changed.
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
   arrays are not flat on EA3. Internal null-restricted atomic arrays are
   flat: at 1,048,576 elements, storage is 8 MiB versus 28 MiB for identity

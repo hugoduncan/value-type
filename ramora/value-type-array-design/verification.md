@@ -1,0 +1,94 @@
+# Array verification and evolution
+
+Status: proposed verification, except where explicitly marked observed.
+See the [design](../value-type-array-design.md) and [decisions](decisions.md).
+
+## Observed qualities
+
+Evidence: [typed-array investigation](../defvaluetype-design/typed-array.md),
+Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`, macOS aarch64.
+
+For 1,048,576 one-long elements, the restricted flat array retained about
+8 MiB, versus 28 MiB for identity arrays and 36 MiB for ordinary value arrays.
+Measured current-thread allocation was about 8/28/36 bytes per element.
+Disabling array flattening removed the storage and allocation advantage.
+
+Six extended timing runs measured median sequential traversal at 0.239
+ns/element flat, 0.305 identity and 0.360 ordinary value. These are scoped
+observations, not API performance targets. The two-long eligibility probe
+did not flatten. Reference payloads, random access, concurrency and general
+application speed are not established by this evidence.
+
+The probe constructs arrays directly. Its allocation numbers do not describe
+the proposed sequence constructor, which adds temporary storage.
+
+## Fitness conditions
+
+| Decision | Intended quality | Required verification |
+|---|---|---|
+| D1 | Native interop and store safety | Read, replace and measure length through ordinary Clojure operations; reject later null and wrong-type stores. |
+| D2 | Stable semantics | No ordinary-array fallback under any class-fallback policy; clear failure without array support. |
+| D3 | Safe loading and local dependency | Require public namespaces on Java 8 and preview-disabled Valhalla; inspect optional dependency loading and test missing exports in fresh JVMs. |
+| D4 | Correct construction | Preserve order and length; consume input once; validate seed, empty input, element types and lengths. |
+| D5 | Honest layout reporting | Compare diagnostics with direct JDK inspection; accept a non-flat restricted atomic result. |
+
+## Verification plan
+
+1. Verify the adapter contract on the selected EA build before implementation:
+   allocator signature, access checks, zero-length allocation with a seed,
+   eligible value classes and each diagnostic method's domain and meaning.
+   Check whether any capability beyond value-class status is required.
+2. Test both constructors with zero, one and several elements, primitive-field
+   and reference-field value classes, explicit seeds and the inferred seed.
+   Include wider classes without requiring flattening.
+3. Test invalid component types, `nil`, incompatible elements, fractional,
+   negative and out-of-range lengths, and empty input without a seed.
+   Test large-length validation without attempting maximum-size allocation.
+4. Use a finite lazy input with visible realization effects to verify one
+   traversal. Verify original exceptions from input realization remain visible.
+5. Verify `aget`, `aset`, `alength` and representative Java array interop.
+   Check initial contents and post-write contents. Verify null and type store
+   failures. Do not infer clone or copy-operation semantics without tests.
+6. Run fresh JVMs with preview enabled/disabled, exports present/absent and
+   flattening enabled/disabled. Include ordinary Java 8 namespace loading and
+   repeated unsupported calls. Run all class-fallback policies without changing
+   their existing behavior or warnings.
+7. Test `array-info` on ordinary reference arrays, restricted arrays and invalid
+   inputs. Verify unavailable inspection produces an error, not invented values.
+8. Add packaged-source consumer checks and update API reference, usage guide,
+   required flags and experimental-support limits. Run library regressions.
+
+Use real JVM capabilities, not mocks. Scry supplies structured test results.
+Keep VM-specific layout assertions in controlled checks, separate from portable
+semantic assertions. A non-flat but valid array is a passing semantic result.
+
+If performance is measured, distinguish seed allocation, sequence construction
+and traversal. Retain payload, flags, JVM version and flattening diagnostics.
+Do not require a speed ratio as API acceptance.
+
+## Architectural assertions
+
+| ID | Status | Relation and scope | Basis / confidence |
+|---|---|---|---|
+| A1 | observed | Internal restricted allocation permits flat one-long storage on the recorded EA setup. | Probe and retained reports; high within that scope. |
+| A2 | intended | D1 delegates post-return null and type enforcement to native array stores. | JVM array representation; verify in library tests. |
+| A3 | intended | D2 preserves null restriction across supported construction paths. | No fallback decision; not implemented. |
+| A4 | intended | D3 isolates optional JDK dependencies from namespace loading. | Adapter boundary; verify on fallback JVMs. |
+| A5 | assumed | Explicit-seed construction supports length zero without a default constructor. | Allocator shape; direct verification still required. |
+| A6 | inferred | Sequence construction can allocate more than the direct probe. | D4 temporary storage; amount unmeasured. |
+
+## Risks and evolution
+
+Internal APIs can change or disappear. Verify each supported JDK explicitly;
+change the adapter rather than exposing internal methods as the public API.
+No backward-compatibility layer is required by this design.
+
+Module exports are an application deployment choice. The library must not
+alter module access at runtime. Preview-enabled value artifacts retain their
+existing JDK constraints; this API does not make them portable.
+
+A public JDK replacement, wider flattening support or evidence that temporary
+storage is costly can justify later work. Indexed construction, non-atomic
+storage and wrappers require new contracts; they are not implicit extensions
+of this design. Unverified empty-array behavior is a design gate, not grounds
+for silently returning an ordinary array.
