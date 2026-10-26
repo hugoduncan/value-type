@@ -9,4 +9,7 @@ See the [README](../README.md) for library usage and the
 - [Tests, builds and benchmarks](development/runtime.md): Valhalla setup,
   library and fallback tests, JAR builds, benchmarks and REPL setup.
 
+- [Release procedure](development/release.md): preparation, preview, publication
+  and manual recovery.
+
 Run all commands from the repository root.

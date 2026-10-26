@@ -6,11 +6,11 @@
 
 (def maintained-paths
   ["src" "test" "test-build" "test-fallback" "bench" "build.clj"
-   "bb" "test-quickdoc" "bb.edn" "deps.edn" ".clj-kondo/hooks"])
+   "dev/release" "test-release" "bb" "test-quickdoc" "bb.edn" "deps.edn" ".clj-kondo/hooks"])
 
 (def dependency-aliases
   [:test :build :build-test :fallback-test :bench :object-size
-   :quickdoc :quickdoc-test])
+   :quickdoc :quickdoc-test :deploy :release :release-test])
 
 (defn- project-paths!
   []

@@ -6,6 +6,7 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 git archive HEAD | tar -x -C "$tmp"
 cp "$root/.pre-commit-config.yaml" "$tmp/"
+cp "$root/bb/value_type/quality.clj" "$tmp/bb/value_type/"
 mkdir -p "$tmp/.pre-commit-hooks"
 cp "$root/.pre-commit-hooks/"*.sh "$tmp/.pre-commit-hooks/"
 cd "$tmp"
@@ -73,6 +74,31 @@ grep -q 'missing-hook-symbol' "$tmp/hook.log"
 test "$before" = "$(index_tree)"
 cmp test/hook_probe.clj "$tmp/probe.expected"
 cmp README.md "$tmp/readme.expected"
+
+# Both release trees are maintained; repairs and lint never stage edits.
+rm test/hook_probe.clj
+git add -u test/hook_probe.clj
+for dir in dev/release test-release; do
+  path="$dir/release_hook_probe.clj"
+  printf '(ns release-hook-probe)\n(defn probe []\n(+ 1 2))\n' > "$path"
+  git add "$path"
+  before=$(index_tree)
+  expect_failure cljfmt-fix --files "$path"
+  test "$before" = "$(index_tree)"
+  mise exec -- bb clj-fmt check "$path"
+  printf '(ns release-hook-probe)\n(missing-release-symbol)\n' > "$path"
+  git add "$path"
+  cp "$path" "$tmp/release.expected"
+  before=$(index_tree)
+  expect_failure clj-kondo-lint --files "$path"
+  grep -q missing-release-symbol "$tmp/hook.log"
+  test "$before" = "$(index_tree)"
+  cmp "$path" "$tmp/release.expected"
+  rm "$path"
+  git add -u "$path"
+done
+printf '(ns hook-probe)\n(missing-hook-symbol)\n' > test/hook_probe.clj
+git add test/hook_probe.clj
 
 # Historical and generated paths do not trigger either hook.
 for path in spike/excluded.clj target/excluded.clj .clj-kondo/imports/excluded.clj; do

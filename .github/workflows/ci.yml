@@ -41,6 +41,24 @@ jobs:
         run: bb api-docs --check
       - name: Test tooling contracts
         run: clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+      - name: Preserve tooling failures
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tooling-failures
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: ignore
+      - name: Test release contracts
+        run: clojure -M:release:release-test -m scry.cli --dir test-release
+      - name: Preserve release failures
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-failures
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: ignore
       - name: Verify checks left tracked files unchanged
         if: ${{ always() }}
         run: git diff --exit-code HEAD --

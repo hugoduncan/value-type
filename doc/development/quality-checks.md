@@ -62,12 +62,13 @@ checkout is needed. Downloads and imports are ignored by Git.
 | `bb api-docs --check` | Fail on missing or stale API output without writing it. |
 
 Formatting and code lint cover `src/`, `test/`, `test-build/`,
-`test-fallback/`, `bench/`, `bb/`, `test-quickdoc/`, `.clj-kondo/hooks/`,
+`test-fallback/`, `bench/`, `dev/release/`, `test-release/`, `bb/`,
+`test-quickdoc/`, `.clj-kondo/hooks/`,
 `build.clj`, `bb.edn` and `deps.edn`. They exclude historical `spike/`
 code, generated output, caches and dependency imports.
 
 Vale checks `README.md`, prose in `AGENTS.md`, `doc/API.md`, `doc/usage.md`, and the
-development guide and its two linked documents.
+development guide, its three linked documents and `CHANGELOG.md`.
 Code blocks and lambda instruction lines are protected. Task records,
 knowledge records and design evidence are outside the prose gate.
 Fix generated API prose in source docstrings or `bb/value_type/api_docs.clj`,
@@ -76,10 +77,12 @@ deterministic. The focused tests check API content as well as freshness,
 real file operations and command failures. Test failures produce EDN details
 in `.scry-results/` and a nonzero exit.
 
-GitHub Actions runs the five quality checks above on pull requests and
-pushes to `master`. It prepares dependencies from the pinned setup and
-checks that tracked files remain unchanged. It does not repair files or
-run the runtime-test matrix. Setup and tool errors fail the checks.
+GitHub Actions runs the quality checks and focused tooling tests above on
+pull requests and pushes to `master`. It also runs the focused release suite:
+`clojure -M:release:release-test -m scry.cli --dir test-release`.
+It prepares dependencies from the pinned setup and checks that tracked files
+remain unchanged. It does not repair files or run the runtime-test matrix.
+Setup and tool errors fail the checks.
 
 ## Install commit hooks
 

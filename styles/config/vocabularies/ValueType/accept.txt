@@ -27,3 +27,6 @@ proselint
 unstaged
 xz
 venv
+
+Clojars
+boolean

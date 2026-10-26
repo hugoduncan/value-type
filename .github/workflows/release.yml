@@ -1,0 +1,257 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Build and check without publication
+        type: boolean
+        default: true
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Require master dispatch
+        id: require-master-dispatch
+        env:
+          DISPATCH_REF: ${{ github.ref }}
+        run: test "$DISPATCH_REF" = refs/heads/master
+      - uses: actions/checkout@v4
+        id: checkout
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install pinned development tools
+        id: install-pinned-development-tools
+        uses: jdx/mise-action@v2
+        with:
+          version: 2026.4.11
+          cache: false
+      - name: Select tooling JVM
+        id: select-tooling-jvm
+        run: echo "JAVA_CMD=$(mise which java)" >> "$GITHUB_ENV"
+      - name: Provision runtime JVMs
+        id: provision-runtime-jvms
+        run: |
+          mkdir -p "$RUNNER_TEMP/jvms/java8" "$RUNNER_TEMP/jvms/valhalla"
+          cd "$RUNNER_TEMP/jvms"
+          curl --fail --location --output java8.tar.gz 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u492-b09/OpenJDK8U-jdk_x64_linux_hotspot_8u492b09.tar.gz'
+          curl --fail --location --output valhalla.tar.gz 'https://download.java.net/java/early_access/valhalla/27/1/openjdk-27-jep401ea3+1-1_linux-x64_bin.tar.gz'
+          echo 'da257f161d7f8c6ca5b0e5d9e4090f65ac28c5e398072e68b8ae87988b1d1a2e  java8.tar.gz' | sha256sum -c -
+          echo 'b8bdd7b181c6a5ea2dd9959255e222cd9d9a9f42cca4f2400991b9b2ff7ffb7d  valhalla.tar.gz' | sha256sum -c -
+          tar -xzf java8.tar.gz -C java8 --strip-components=1
+          tar -xzf valhalla.tar.gz -C valhalla --strip-components=1
+          "$RUNNER_TEMP/jvms/java8/bin/java" -version
+          "$RUNNER_TEMP/jvms/valhalla/bin/java" -version
+          echo "VALUE_TYPE_BASELINE_JAVA=$RUNNER_TEMP/jvms/java8/bin/java" >> "$GITHUB_ENV"
+          echo "VALUE_TYPE_VALHALLA_JAVA=$RUNNER_TEMP/jvms/valhalla/bin/java" >> "$GITHUB_ENV"
+      - name: Report tooling versions
+        id: report-tooling-versions
+        run: |
+          mise --version
+          bb --version
+          clojure -Sdescribe
+          clj-kondo --version
+          cljfmt --version
+          vale --version
+          java -version
+          gh --version
+      - name: Prepare dependency lint configuration
+        id: prepare-dependency-lint-configuration
+        run: bb clj-kondo:copy-config
+      - name: Check formatting
+        id: check-formatting
+        run: bb clj-fmt:check
+      - name: Check code
+        id: check-code
+        run: bb clj-kondo:lint
+      - name: Check prose
+        id: check-prose
+        run: bb vale
+      - name: Check API freshness
+        id: check-api-freshness
+        run: bb api-docs --check
+      - name: Test tooling
+        id: tooling
+        run: clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+      - name: Preserve tooling failures
+        id: preserve-tooling-failures
+        if: ${{ failure() && steps.tooling.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-tooling
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test runtime
+        id: runtime
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:test -m scry.cli
+      - name: Preserve runtime failures
+        id: preserve-runtime-failures
+        if: ${{ failure() && steps.runtime.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-runtime
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test fallback-java8
+        id: fallback-java8
+        run: JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:fallback-test
+      - name: Preserve fallback-java8 failures
+        id: preserve-fallback-java8-failures
+        if: ${{ failure() && steps.fallback-java8.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-fallback-java8
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test fallback-preview-off
+        id: fallback-preview-off
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test
+      - name: Preserve fallback-preview-off failures
+        id: preserve-fallback-preview-off-failures
+        if: ${{ failure() && steps.fallback-preview-off.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-fallback-preview-off
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test fallback-preview-on
+        id: fallback-preview-on
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -J--enable-preview -M:fallback-test
+      - name: Preserve fallback-preview-on failures
+        id: preserve-fallback-preview-on-failures
+        if: ${{ failure() && steps.fallback-preview-on.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-fallback-preview-on
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test build
+        id: build
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:build-test -m scry.cli --dir test-build
+      - name: Preserve build failures
+        id: preserve-build-failures
+        if: ${{ failure() && steps.build.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-build
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test release
+        id: release
+        run: clojure -M:release:release-test -m scry.cli --dir test-release
+      - name: Preserve release failures
+        id: preserve-release-failures
+        if: ${{ failure() && steps.release.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-release
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Verify checks left tracked files unchanged
+        id: verify-checks-left-tracked-files-unchanged
+        run: git diff --exit-code HEAD --
+      - name: Select notes
+        id: notes
+        env:
+          PUBLISH: ${{ toJSON(inputs['dry-run']) == 'false' }}
+        run: |
+          options=()
+          if [[ "$PUBLISH" != true ]]; then options+=(--preview); fi
+          clojure -M:release -m value-type.release notes \
+            "$RUNNER_TEMP/release-notes.md" "$GITHUB_OUTPUT" "${options[@]}"
+      - name: Build preview
+        id: build-preview
+        if: ${{ toJSON(inputs['dry-run']) != 'false' }}
+        run: clojure -T:build jar
+      - name: Report selection
+        id: report-selection
+        env:
+          SHA: ${{ steps.notes.outputs.sha }}
+          VERSION: ${{ steps.notes.outputs.version }}
+          TAG: ${{ steps.notes.outputs.tag }}
+          SOURCE: ${{ steps.notes.outputs.source }}
+          PREPARATION_REQUIRED: ${{ steps.notes.outputs.preparation-required }}
+          DRY_RUN: ${{ toJSON(inputs['dry-run']) != 'false' }}
+        run: |
+          printf 'Dry run: %s\nSHA: %s\nVersion: %s\nTag: %s\nNotes source: %s\nPreparation required: %s\n' \
+            "$DRY_RUN" "$SHA" "$VERSION" "$TAG" "$SOURCE" "$PREPARATION_REQUIRED" >> "$GITHUB_STEP_SUMMARY"
+      - name: Validate publication credentials
+        id: validate-publication-credentials
+        if: ${{ toJSON(inputs['dry-run']) == 'false' }}
+        env:
+          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for variable in CLOJARS_USERNAME CLOJARS_PASSWORD GH_TOKEN; do
+            value=${!variable}
+            if [[ -z "${value//[[:space:]]/}" ]]; then
+              echo "Missing credential: $variable" >&2
+              exit 1
+            fi
+          done
+      - name: Create and push tag
+        id: create-and-push-tag
+        if: ${{ toJSON(inputs['dry-run']) == 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.notes.outputs.tag }}
+        run: |
+          git tag "$TAG" HEAD
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
+            push origin "refs/tags/$TAG:refs/tags/$TAG"
+      - name: Build and deploy to Clojars
+        id: deploy
+        if: ${{ toJSON(inputs['dry-run']) == 'false' }}
+        env:
+          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+        run: clojure -T:build:deploy deploy :github-output "\"$GITHUB_OUTPUT\""
+      - name: Create GitHub Release
+        id: create-github-release
+        if: ${{ toJSON(inputs['dry-run']) == 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TAG: ${{ steps.notes.outputs.tag }}
+          JAR_FILE: ${{ steps.deploy.outputs.jar-file }}
+          POM_FILE: ${{ steps.deploy.outputs.pom-file }}
+        run: |
+          test -f "$JAR_FILE"
+          test -f "$POM_FILE"
+          gh release create "$TAG" --repo "$REPOSITORY" --title "$TAG" \
+            --verify-tag --notes-file "$RUNNER_TEMP/release-notes.md" "$JAR_FILE" "$POM_FILE"
+      - name: Report failure
+        id: report-failure
+        if: ${{ failure() }}
+        env:
+          STEP_OUTCOMES: ${{ toJSON(steps) }}
+        run: |
+          {
+            echo 'Release workflow failed. Failed steps:'
+            jq -r 'to_entries[] | select(.value.outcome == "failure") | "- " + .key' <<< "$STEP_OUTCOMES"
+            echo 'See the failed step in the job log, including setup and quality checks.'
+            echo 'Inspect GitHub tags, Releases, assets, and Clojars before another attempt. Publication can be partial. No automatic rollback or resume is provided.'
+          } >> "$GITHUB_STEP_SUMMARY"

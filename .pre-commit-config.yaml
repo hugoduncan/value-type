@@ -5,11 +5,11 @@ repos:
         name: Format maintained Clojure files
         language: script
         entry: .pre-commit-hooks/cljfmt-fix.sh
-        files: '^(?:(?:src|test|test-build|test-fallback|bench|bb|test-quickdoc|\.clj-kondo/hooks)/.*\.(?:clj[csx]?|bb|edn)|(?:build\.clj|bb\.edn|deps\.edn))$'
+        files: '^(?:(?:src|test|test-build|test-fallback|bench|dev/release|test-release|bb|test-quickdoc|\.clj-kondo/hooks)/.*\.(?:clj[csx]?|bb|edn)|(?:build\.clj|bb\.edn|deps\.edn))$'
         pass_filenames: true
       - id: clj-kondo-lint
         name: Lint maintained Clojure files
         language: script
         entry: .pre-commit-hooks/clj-kondo-lint.sh
-        files: '^(?:(?:src|test|test-build|test-fallback|bench|bb|test-quickdoc)/.*\.(?:clj[csx]?|bb|edn)|(?:build\.clj|bb\.edn|deps\.edn)|\.clj-kondo/(?:config\.edn|hooks/.*\.(?:clj[csx]?|bb|edn)))$'
+        files: '^(?:(?:src|test|test-build|test-fallback|bench|dev/release|test-release|bb|test-quickdoc)/.*\.(?:clj[csx]?|bb|edn)|(?:build\.clj|bb\.edn|deps\.edn)|\.clj-kondo/(?:config\.edn|hooks/.*\.(?:clj[csx]?|bb|edn)))$'
         pass_filenames: false

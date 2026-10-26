@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Exercise CI command failures with real tools in an isolated Git checkout.
 set -euo pipefail
+root=$(git rev-parse --show-toplevel)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 git archive HEAD | tar -x -C "$tmp"
+cp "$root/bb/value_type/quality.clj" "$tmp/bb/value_type/"
 cd "$tmp"
 export MISE_TRUSTED_CONFIG_PATHS="$tmp"
 git init -q
@@ -41,7 +43,7 @@ mise exec -- clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-qu
 git diff --exit-code HEAD --
 
 # Required directories and files must not silently disappear from project scope.
-for path in test-build build.clj; do
+for path in test-build build.clj dev/release test-release; do
   rm -rf "$path"
   for task in clj-fmt:check clj-fmt:fix clj-kondo:lint; do
     expect_failure "missing-scope-$path-$task" bb "$task"

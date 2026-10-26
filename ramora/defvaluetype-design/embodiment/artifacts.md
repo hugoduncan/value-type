@@ -11,7 +11,7 @@
 - `deps.edn` build aliases: `:build` selects `build` with tools.build
   `0.10.10`; `:build-test` adds the separate build suite and preview
   support. Build dependencies are not runtime dependencies.
-- `build.clj`: source-only JAR assembly and target cleanup. See
+- `build.clj`: source-only JAR assembly, target cleanup and credential-checked deployment. See
   [Library packaging](#library-packaging).
 - `LICENSE`: full EPL-2.0 text, also included at the JAR root.
 - `test-build/build_test.clj`: build contract, real CLI, input
@@ -57,7 +57,7 @@ hooks never stage edits. See the development guide
 
 `.github/workflows/ci.yml` runs on pull requests and pushes to `master`.
 It prepares dependency imports, then checks formatting, code lint, prose,
-API freshness and focused tooling tests. It checks that tracked files remain
+API freshness and focused tooling and release tests. It checks that tracked files remain
 unchanged; it does not repair files. This quality CI does not run the separate
 runtime suites: [library tests](../../../doc/development/runtime.md#run-the-tests), the
 [fallback matrix](../../../doc/development/runtime.md#verified-fallback-matrix) and
@@ -96,3 +96,8 @@ loading and enforce policy on invocation. Direct class access that bypasses
 the guarded form is not protected; failed initializer retries do not re-enter
 the guard. See the README
 [consumer JDK requirement](../../../README.md#jdk-requirement).
+
+Deployment uses tooling-only deps-deploy 0.2.2 through `:deploy`, after credential
+validation. Packaging and consumer requirements do not change. See the
+[release architecture](../../release-workflow.md) and
+[operator guide](../../../doc/development/release.md).

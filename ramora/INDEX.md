@@ -25,6 +25,9 @@ Read this file first. Read the other files only when you need them.
 - [Usage guide](../doc/usage.md): fallback, AOT limits, value semantics and
   error handling.
 
+- [Release workflow](release-workflow.md): tooling ownership, preparation,
+  publication order and verification limits.
+
 ## Related
 
 - `README.md`: project summary.

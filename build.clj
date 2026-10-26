@@ -58,4 +58,34 @@
     (b/copy-dir {:src-dirs ["src"] :target-dir class-dir})
     (b/copy-file {:src "LICENSE" :target (str class-dir "/LICENSE")})
     (b/jar {:class-dir class-dir :jar-file jar-file})
-    {:jar-file jar-file :version v}))
+    {:jar-file jar-file
+     :pom-file (str class-dir "/META-INF/maven/org.hugoduncan/value-type/pom.xml")
+     :version v}))
+
+(defn- assert-deploy-credentials!
+  [environment]
+  (let [missing (filterv #(str/blank? (get environment %))
+                         ["CLOJARS_USERNAME" "CLOJARS_PASSWORD"])]
+    (when (seq missing)
+      (throw (ex-info (str "Missing deployment credentials: " (str/join ", " missing))
+                      {:missing missing})))))
+
+(defn- write-github-output!
+  [path artifact]
+  (spit path
+        (apply str (mapv (fn [key] (str (name key) "=" (get artifact key) "\n"))
+                         [:version :jar-file :pom-file]))
+        :append true))
+
+(defn deploy
+  "Checks Clojars credentials, builds HEAD, and deploys with stock deps-deploy.
+   Requires :deploy. Returns artifact paths; optionally appends :github-output."
+  [{:keys [github-output] :as options}]
+  (assert-deploy-credentials! (System/getenv))
+  (let [{:keys [jar-file pom-file] :as artifact} (jar options)]
+    (require 'deps-deploy.deps-deploy)
+    ((resolve 'deps-deploy.deps-deploy/deploy)
+     {:installer :remote :artifact jar-file :pom-file pom-file})
+    (when github-output
+      (write-github-output! github-output artifact))
+    artifact))

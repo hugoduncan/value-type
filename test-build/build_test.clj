@@ -31,7 +31,10 @@
                   (.directory directory)
                   (.redirectErrorStream true)
                   (.redirectOutput output))]
-    (.putAll (.environment builder) environment)
+    (doseq [[key value] environment]
+      (if (nil? value)
+        (.remove (.environment builder) key)
+        (.put (.environment builder) key value)))
     (let [process (.start builder)]
       (try
         (when-not (.waitFor process 60 TimeUnit/SECONDS)
@@ -123,7 +126,8 @@
       (when-not (zero? (:exit result))
         (throw (ex-info "Cannot prepare Git fixture" result)))))
   (doseq [path ["target/stale.txt" "target/classes/stale.class"
-                "test/development.clj" "bench/development.clj"]]
+                "test/development.clj" "bench/development.clj"
+                "dev/release/excluded.clj" "test-release/excluded_test.clj"]]
     (let [file (io/file directory path)]
       (io/make-parents file)
       (spit file "must not be packaged"))))
@@ -232,7 +236,9 @@
               artifact (io/file directory "target/value-type-0.1.1.jar")]
           (is (= 0 (:exit result)) result)
           (when (zero? (:exit result))
-            (is (= {:jar-file "target/value-type-0.1.1.jar" :version "0.1.1"}
+            (is (= {:jar-file "target/value-type-0.1.1.jar"
+                    :pom-file "target/classes/META-INF/maven/org.hugoduncan/value-type/pom.xml"
+                    :version "0.1.1"}
                    (edn/read-string (str/trim (:out result))))))
           (is (.isFile artifact))
           (is (not (.exists (io/file directory "target/stale.txt"))))
@@ -255,6 +261,12 @@
                       (with-open [stream (.getInputStream archive entry)]
                         (is (Arrays/equals (Files/readAllBytes (.toPath file))
                                            (.readAllBytes stream)) path)))))
+                (testing "the returned POM is the packaged POM"
+                  (with-open [stream (.getInputStream archive
+                                                      (.getJarEntry archive "META-INF/maven/org.hugoduncan/value-type/pom.xml"))]
+                    (is (Arrays/equals
+                         (Files/readAllBytes (.toPath (io/file directory "target/classes/META-INF/maven/org.hugoduncan/value-type/pom.xml")))
+                         (.readAllBytes stream)))))
                 (check-metadata archive)))))))))
 
 (deftest isolated-consumer-test
@@ -326,3 +338,47 @@
                             :factory-class? true :fields [3 7 11 13]}
                            (edn/read-string (last (str/split-lines (:out result)))))
                         result)))))))))))
+
+(deftest deployment-output-test
+  ;; Step outputs append artifact data without replacing earlier outputs.
+  (let [file (java.io.File/createTempFile "deploy-output-" ".txt")]
+    (try
+      (spit file "prior=value\n")
+      (#'build/write-github-output! file
+                                    {:version "0.1.9" :jar-file "target/library.jar" :pom-file "target/pom.xml"})
+      (is (= "prior=value\nversion=0.1.9\njar-file=target/library.jar\npom-file=target/pom.xml\n"
+             (slurp file)))
+      (finally (.delete file)))))
+
+(deftest valid-deployment-credentials-test
+  ;; Nonblank fixture credentials pass validation without building or deploying.
+  (testing "both deployment credentials are present"
+    (is (nil? (#'build/assert-deploy-credentials!
+               {"CLOJARS_USERNAME" "fixture-user"
+                "CLOJARS_PASSWORD" "fixture-password"})))))
+
+(deftest deployment-credentials-test
+  ;; Real processes reject missing credentials before build or output writes.
+  (with-project
+    (fn [directory]
+      (let [sentinel (io/file directory "target/keep")
+            output (io/file directory "github-output")
+            secret "fixture-secret-never-print"]
+        (io/make-parents sentinel)
+        (spit sentinel "unchanged")
+        (spit output "prior=value\n")
+        (doseq [missing ["CLOJARS_USERNAME" "CLOJARS_PASSWORD"]
+                value [nil "" " \t"]]
+          (testing (str missing " rejects " (pr-str value))
+            (let [result (build-process
+                          directory
+                          (str "(build/deploy {:github-output "
+                               (pr-str (str output)) "})")
+                          (assoc {"CLOJARS_USERNAME" secret
+                                  "CLOJARS_PASSWORD" secret}
+                                 missing value))]
+              (is (not= 0 (:exit result)) result)
+              (is (str/includes? (:out result) missing) result)
+              (is (not (str/includes? (:out result) secret)))
+              (is (= "unchanged" (slurp sentinel)))
+              (is (= "prior=value\n" (slurp output))))))))))

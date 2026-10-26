@@ -6,7 +6,8 @@
 
 (def prose-paths
   ["README.md" "AGENTS.md" "doc/API.md" "doc/usage.md" "doc/development.md"
-   "doc/development/quality-checks.md" "doc/development/runtime.md"])
+   "doc/development/quality-checks.md" "doc/development/runtime.md"
+   "doc/development/release.md" "CHANGELOG.md"])
 
 (defn parse-alerts
   "Parse Vale JSON and reject unexpected result or severity data."

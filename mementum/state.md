@@ -118,6 +118,18 @@ The macro creates JEP 401 value objects
   (`481c676`). Hosted GitHub Actions execution remains unverified; cold Linux
   checks passed in an Ubuntu 24.04 arm64 container.
 
+- Release tooling is complete
+  ([task 011](../munera/closed/011-release-workflow/design.md)). Local preparation
+  stamps and commits changelog notes; the manual workflow defaults to preview.
+  Publication uses stock deps-deploy 0.2.2 and Git/gh, with typed-false gates,
+  step-scoped secrets and explicit Java 8/Valhalla verification. Operator guide:
+  `doc/development/release.md`; architecture: `ramora/release-workflow.md`.
+  All implementation and review follow-ups are complete. Knowledge extraction
+  added `mementum/knowledge/release-identity-and-failure-boundaries.md`
+  (`e398ff3`) and updated artifact-test JVM guidance (`90f6eba`). The task is
+  closed at the user's request. Hosted Actions and live publication remain
+  unverified; no project push, dispatch, secret setup or publication occurred.
+
 ## Next
 
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
@@ -154,16 +166,20 @@ The macro creates JEP 401 value objects
 
 ## Latest verification
 
-Task 010 is closed after implementation review and knowledge extraction.
-Final code-shape re-review (`e42350e`) found no new actionable issues.
-Formatting and lint passed; focused tooling tests passed (11 tests,
-135 assertions, exit 0, no Scry failure files). Earlier hook and CI failure
-probes passed with file/index protection. Runtime regression in slice 6b
-passed: library 64 tests/332 assertions; fallback Java 8 and Valhalla preview
-off 15/166 each, preview on 15/141; build 6/63 with both consumer JVM paths.
-The final tooling reviews did not repeat runtime regression. Hosted Actions
-and its x86_64 runner were not verified. Closure changed records only;
-no tests were rerun.
+Task 011 is closed after implementation, review follow-ups and knowledge
+extraction. Full local acceptance passed: library 64 tests/332 assertions;
+fallback Java 8 and Valhalla preview off 15/166 each, preview on 15/141;
+build 9/96 with both isolated consumer JVMs; tooling 11/172; release 11/112.
+Quality checks, local preview/build and actionlint passed. Linux x86_64 JVM
+archives and the value-capability probe passed in emulated Ubuntu 24.04.
+Detailed evidence: `munera/closed/011-release-workflow/acceptance.md` and
+`linux-jvms.md` in the same directory.
+
+The later count-guard test and mutation check passed; the final release suite
+passed 12 tests/123 assertions, exit 0, with no Scry failure files. All final
+reviews found no new actionable issues. They did not repeat the full matrix.
+Closure changed records only; no tests were rerun. Hosted execution, permissions
+and publication remain unverified.
 
 ## Documentation layout
 
@@ -184,3 +200,27 @@ and whitespace checks passed. Focused tooling tests passed (11 tests,
 160 assertions, no Scry failure files). Quick-start forms passed on Valhalla
 with preview and on the tooling JVM with fallback. Full runtime suites were
 not rerun. The user's staged readme-writing skill was left unchanged.
+
+## Task 011 test review
+
+The test review follow-up is complete. A real CLI test uses a one-shot
+post-commit hook to verify count-mismatch failure and retained local state.
+Removing the count guard failed the exit-status and diagnostic assertions.
+With the guard restored, release tests passed: 12 tests, 123 assertions,
+exit 0, no Scry failure files. Formatting, lint and whitespace checks passed.
+Runtime/build suites were not repeated. No network writes or publication ran.
+
+Task 011 test re-review found no new actionable issues. The completed count-guard
+follow-up remains covered. Focused release tests passed again: 12 tests,
+123 assertions, exit 0, no Scry failure files. Build/runtime suites and hosted
+publication were not rerun. No new checklist items were needed.
+
+Task 011 documentation review found no new actionable issues. Release commands,
+operator guidance, changelog and architecture agree with the code and workflow.
+No follow-up steps were added. This was a static review; tests and hosted
+publication were not run.
+
+Task 011 code-shape review found no new actionable issues. Reviewed release
+parsing, preparation/export, build/deployment, workflow wiring and their tests
+and guides. No follow-up steps were needed. This was a static review; test
+suites and hosted publication were not run.

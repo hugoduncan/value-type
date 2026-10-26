@@ -71,7 +71,13 @@ only removes generated output and also succeeds when `target/` is absent.
 The artifact is `target/value-type-0.1.N.jar`, with Maven coordinates
 `org.hugoduncan/value-type`. `N` is `git rev-list --count HEAD`.
 The `build/jar` function returns
-`{:jar-file "target/value-type-0.1.N.jar" :version "0.1.N"}`.
+the version and artifact paths:
+
+```clojure
+{:jar-file "target/value-type-0.1.N.jar"
+ :pom-file "target/classes/META-INF/maven/org.hugoduncan/value-type/pom.xml"
+ :version "0.1.N"}
+```
 The JAR command needs Git and usable checkout history; failed Git
 commands or invalid counts cause an error, with no fallback version.
 The clean command does not need Git metadata.
@@ -79,7 +85,8 @@ The clean command does not need Git metadata.
 A shallow checkout counts only available history. Different branches
 can have the same count, so this version is not a unique release ID.
 This command creates a local artifact; it does not install or publish
-it. The project has no published release.
+it. See the [release procedure](release.md) for deployment, credential
+requirements and manual publication. The project has no published release.
 
 The source-only JAR contains the library sources, Maven dependency and
 project metadata, and the full EPL-2.0 license. It contains no compiled
