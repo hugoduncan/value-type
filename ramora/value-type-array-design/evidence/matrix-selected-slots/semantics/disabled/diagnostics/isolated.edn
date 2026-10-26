@@ -1,0 +1,120 @@
+{:schema-version 1,
+ :phase :isolated-diagnostics,
+ :cases
+ [{:exit 134,
+   :fatal-log "null-isFlatArray/hs_err.log",
+   :operation :array-diagnostic,
+   :command
+   "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java -XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isFlatArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -XX:-UseArrayFlattening -cp src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isFlatArray/allocation.edn target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isFlatArray/result.edn null isFlatArray",
+   :inputs {:input :null, :query "isFlatArray"},
+   :status :fatal,
+   :id :diagnostic/null-isFlatArray,
+   :environment
+   {:java-version "27-jep401ea3+1-1",
+    :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+    :os "Mac OS X",
+    :arch "aarch64",
+    :clojure-version "1.12.6",
+    :jvm-flags
+    ["-XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isFlatArray/hs_err.log"
+     "--enable-preview"
+     "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+     "-XX:-UseArrayFlattening"]},
+   :signal :SIGSEGV}
+  {:exit 134,
+   :fatal-log "null-isNullRestrictedArray/hs_err.log",
+   :operation :array-diagnostic,
+   :command
+   "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java -XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isNullRestrictedArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -XX:-UseArrayFlattening -cp src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isNullRestrictedArray/allocation.edn target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isNullRestrictedArray/result.edn null isNullRestrictedArray",
+   :inputs {:input :null, :query "isNullRestrictedArray"},
+   :status :fatal,
+   :id :diagnostic/null-isNullRestrictedArray,
+   :environment
+   {:java-version "27-jep401ea3+1-1",
+    :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+    :os "Mac OS X",
+    :arch "aarch64",
+    :clojure-version "1.12.6",
+    :jvm-flags
+    ["-XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isNullRestrictedArray/hs_err.log"
+     "--enable-preview"
+     "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+     "-XX:-UseArrayFlattening"]},
+   :signal :SIGSEGV}
+  {:exit 134,
+   :fatal-log "null-isAtomicArray/hs_err.log",
+   :operation :array-diagnostic,
+   :command
+   "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java -XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isAtomicArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -XX:-UseArrayFlattening -cp src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isAtomicArray/allocation.edn target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isAtomicArray/result.edn null isAtomicArray",
+   :inputs {:input :null, :query "isAtomicArray"},
+   :status :fatal,
+   :id :diagnostic/null-isAtomicArray,
+   :environment
+   {:java-version "27-jep401ea3+1-1",
+    :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+    :os "Mac OS X",
+    :arch "aarch64",
+    :clojure-version "1.12.6",
+    :jvm-flags
+    ["-XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/null-isAtomicArray/hs_err.log"
+     "--enable-preview"
+     "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+     "-XX:-UseArrayFlattening"]},
+   :signal :SIGSEGV}
+  {:id :diagnostic/non-array-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs {:input :non-array, :query "isFlatArray"},
+   :exit 0,
+   :environment
+   {:java-version "27-jep401ea3+1-1",
+    :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+    :os "Mac OS X",
+    :arch "aarch64",
+    :clojure-version "1.12.6",
+    :jvm-flags
+    ["-XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isFlatArray/hs_err.log"
+     "--enable-preview"
+     "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+     "-XX:-UseArrayFlattening"]},
+   :command
+   "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java -XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isFlatArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -XX:-UseArrayFlattening -cp src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isFlatArray/allocation.edn target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isFlatArray/result.edn non-array isFlatArray",
+   :status :pass,
+   :value false}
+  {:id :diagnostic/non-array-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs {:input :non-array, :query "isNullRestrictedArray"},
+   :exit 0,
+   :environment
+   {:java-version "27-jep401ea3+1-1",
+    :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+    :os "Mac OS X",
+    :arch "aarch64",
+    :clojure-version "1.12.6",
+    :jvm-flags
+    ["-XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isNullRestrictedArray/hs_err.log"
+     "--enable-preview"
+     "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+     "-XX:-UseArrayFlattening"]},
+   :command
+   "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java -XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isNullRestrictedArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -XX:-UseArrayFlattening -cp src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isNullRestrictedArray/allocation.edn target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isNullRestrictedArray/result.edn non-array isNullRestrictedArray",
+   :status :pass,
+   :value false}
+  {:id :diagnostic/non-array-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs {:input :non-array, :query "isAtomicArray"},
+   :exit 0,
+   :environment
+   {:java-version "27-jep401ea3+1-1",
+    :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+    :os "Mac OS X",
+    :arch "aarch64",
+    :clojure-version "1.12.6",
+    :jvm-flags
+    ["-XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isAtomicArray/hs_err.log"
+     "--enable-preview"
+     "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+     "-XX:-UseArrayFlattening"]},
+   :command
+   "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java -XX:ErrorFile=target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isAtomicArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -XX:-UseArrayFlattening -cp src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isAtomicArray/allocation.edn target/value-array-semantics/review-selected-slots-4/semantics/disabled/diagnostics/non-array-isAtomicArray/result.edn non-array isAtomicArray",
+   :status :pass,
+   :value false}]}

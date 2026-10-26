@@ -57,7 +57,7 @@ checks in [verification](verification.md). See the [contract](../value-type-arra
   traversal avoids repeated effects from lazy sequences. The explicit-seed
   overload supports empty input without constructing an invented value.
 - Alternatives: count then traverse can repeat work; incremental native-array
-  growth adds copies; a special empty-array allocator is not yet established.
+  growth adds copies; the selected EA3 atomic allocator has no seed-free overload.
 - Qualities: predictable order and errors, but O(n) temporary references and
   added allocation. The API is not a zero-allocation builder.
 - Scope: inputs must be finite; memory exhaustion remains possible below the
@@ -112,3 +112,24 @@ Errors from input realization propagate. Unexpected adapter, linkage and
 allocation failures remain visible; do not classify all exceptions as
 capability absence. JVM errors, including memory exhaustion, propagate.
 Later `aset` failures use native JVM exceptions, not library error wrapping.
+
+## Evidence constraints from task 012
+
+The [semantic report](semantic-verification.md) resolves the direct-JVM gates,
+not approval or implementation of these public contracts.
+
+- D1: all four tested value classes support native restricted atomic arrays.
+  Two-long arrays remain non-flat. Clojure and Java stores enforce null and
+  type restrictions, also with array flattening disabled.
+- D2/D3: discovery, diagnostic access and value allocation are distinct.
+  An Object-array query works without preview when exports are present;
+  it cannot prove allocation capability. Java 8 lacks the optional API.
+- D4: valid seeds support length zero. Null and wrong-type seeds reject even
+  then. Primitive long reports value status but allocation rejects its boxed
+  seed; public validation must check primitive status separately.
+- D5: native queries return false for primitive long arrays and String, but
+  crash on null. Validate the proposed reference-array domain before calling
+  native diagnostics. This does not change the proposed public error keys.
+
+These findings do not establish arbitrary-class eligibility, a native crash
+mechanism or concurrent behavior. See [implementation gates](verification.md#implementation-gates).

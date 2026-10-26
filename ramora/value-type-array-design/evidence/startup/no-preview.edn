@@ -1,0 +1,35 @@
+{:schema-version 1,
+ :phase :startup,
+ :environment
+ {:properties
+  {"java.home" "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+   "java.runtime.version" "27-jep401ea3+1-1",
+   "java.version" "27-jep401ea3",
+   "java.vm.name" "OpenJDK 64-Bit Server VM",
+   "os.arch" "aarch64",
+   "os.name" "Mac OS X",
+   "os.version" "27.0.1"},
+  :clojure-version "1.12.6",
+  :jvm-flags
+  ["--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+   "-Dvalue-type.fallback=error"]},
+ :cases
+ [{:id :startup/value-definition,
+   :operation :define-value-class,
+   :inputs {},
+   :status :rejection,
+   :causes
+   [{:class "clojure.lang.Compiler$CompilerException",
+     :message
+     "Unexpected error macroexpanding value-type.core/defvaluetype at (/Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/startup.clj:13:33)."}
+    {:class "java.lang.Error",
+     :message
+     "value-type: identity deftype fallback: Preview features are not enabled for value_type/probe/CapabilityProbe_1dedf6c7_6d1d_44f3_9e4e_ab66149b6e7b (class file version 71.65535). Try running with '--enable-preview'"}]}
+  {:id :startup/allocation,
+   :operation :atomic-allocation,
+   :status :unresolved,
+   :reason :value-definition-rejected}
+  {:id :startup/dependent-semantics,
+   :operation :semantic-suite,
+   :status :unresolved,
+   :reason :allocation-not-established}]}

@@ -1,0 +1,18 @@
+Compiled from "ValueClass.java"
+public final class jdk.internal.value.ValueClass {
+  public jdk.internal.value.ValueClass();
+  public static boolean isValueObjectCompatible(java.lang.Class<?>);
+  public static boolean isConcreteValueClass(java.lang.Class<?>);
+  public static boolean hasBinaryPayload(java.lang.Class<?>);
+  public static boolean isNullRestrictedField(java.lang.reflect.Field);
+  public static native java.lang.Object[] newNullRestrictedAtomicArray(java.lang.Class<?>, int, java.lang.Object);
+  public static native java.lang.Object[] newNullRestrictedNonAtomicArray(java.lang.Class<?>, int, java.lang.Object);
+  public static native java.lang.Object[] newNullableAtomicArray(java.lang.Class<?>, int);
+  public static native java.lang.Object[] newReferenceArray(java.lang.Class<?>, int);
+  public static native boolean isFlatArray(java.lang.Object);
+  public static java.lang.Object[] copyOfSpecialArray(java.lang.Object[], int);
+  public static java.lang.Object[] copyOfRangeSpecialArray(java.lang.Object[], int, int);
+  public static native boolean isNullRestrictedArray(java.lang.Object);
+  public static native boolean isAtomicArray(java.lang.Object);
+  static {};
+}

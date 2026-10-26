@@ -132,13 +132,13 @@ The macro creates JEP 401 value objects
 
 ## Next
 
-- Proposed array API design is in `ramora/value-type-array-design.md`, with
-  linked decisions and verification. It uses the architecture model and
-  selects native null-restricted atomic arrays, no array fallback, explicit
-  seeds for empty input and separate capability diagnostics. All choices
-  remain proposed; zero-length allocation and diagnostic contracts need a
-  direct check before implementation. No task was created and no production
-  code changed.
+- Proposed array API design is in `ramora/value-type-array-design.md`.
+  Closed task `munera/closed/012-verify-value-arrays/` verified direct JVM
+  allocation, seeds, stores, diagnostics and startup controls on EA3.
+  Null native diagnostic inputs crash that build; public validation must
+  reject them before invocation. Public API integration remains unimplemented.
+  Knowledge extraction is in `mementum/knowledge/value-array-jvm-boundaries.md`
+  and `mementum/knowledge/validating-retained-jvm-evidence.md`.
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
   arrays are not flat on EA3. Internal null-restricted atomic arrays are
   flat: at 1,048,576 elements, storage is 8 MiB versus 28 MiB for identity
@@ -152,7 +152,6 @@ The macro creates JEP 401 value objects
   `ramora/defvaluetype-design/typed-array.md`; probe: `spike/typed-array/`.
   This does not establish a benefit for ordinary Clojure collection storage
   or wider value classes. Production code is unchanged.
-- No tasks are scheduled. The user selects the next task.
 - Interface-call slowdown investigated (2026-10-24 UTC): no stable penalty
   in 16 fresh JVMs with alternating order, two lengths and Java controls.
   Clojure median ratios were 1.028 / 1.008; Java 1.015 / 0.998. Paired main
@@ -231,3 +230,125 @@ Task 011 code-shape review found no new actionable issues. Reviewed release
 parsing, preparation/export, build/deployment, workflow wiring and their tests
 and guides. No follow-up steps were needed. This was a static review; test
 suites and hosted publication were not run.
+
+## Task 012 implementation
+
+Slice 1 is complete. Discovery evidence is in
+`ramora/value-type-array-design/evidence/discovery/`. Diagnostic access needs
+exports but the Object-array query does not need preview. Allocation and
+store semantics remain untested; slice 2 is next.
+
+Task 012 slice 2a: allocation and initial-content checks passed (59 observations)
+on EA3. Evidence is in `ramora/value-type-array-design/evidence/allocation/`.
+Valid seeds work at length zero; null and wrong seeds do not. Primitive long
+reports value status true but allocation rejects the boxed seed. Stores, Java
+access, diagnostics and the full fresh-JVM matrix remain open.
+
+Task 012 slice 2b: 60 real-JVM Clojure/Java store checks passed, plus the
+59 allocation checks. Null and wrong-type stores reject without changing
+contents. Evidence: `ramora/value-type-array-design/evidence/stores/`.
+Diagnostics are next; the full JVM matrix and report remain open.
+
+Task 012 slice 2c: array diagnostics passed (69 observations plus 59 allocation
+checks). All three null queries crash EA3 with SIGSEGV; separate JVMs retain
+fatal logs. String and primitive long-array queries return false for all three
+methods. Evidence: `ramora/value-type-array-design/evidence/diagnostics/`.
+Slice 3 must model fatal outcomes separately; the full matrix and report remain open.
+
+Task 012 slice 3a adds validated `:fatal` process records for the six isolated
+queries. Two diagnostic runs passed; a wrong-exit evidence mutation failed.
+Evidence: `ramora/value-type-array-design/evidence/isolated-validation/`.
+The full startup/flattening matrix and final report remain open.
+
+Task 012 slice 3b: default and disabled-flattening semantic suites passed twice.
+Contents, store exception classes and non-layout diagnostics agree; exception
+messages differ and are retained. Null diagnostic crashes persist with flattening
+disabled. Evidence: `ramora/value-type-array-design/evidence/layout-comparison/`.
+Startup controls, aggregate matrix validation and the final report remain open.
+
+Task 012 slice 3c: five startup controls passed twice with identical validation
+summaries. Strict value creation rejects disabled preview and Java 8; allocation
+without exports rejects access. Evidence: array-design `evidence/startup/`.
+Aggregate matrix integration and the final report remain open.
+
+Task 012 slice 3d: the aggregate startup/semantic matrix passed twice with
+identical summaries and source hashes. Missing-result validation failed as
+expected. Retained evidence: array-design `evidence/matrix/`. Slice 3 is complete;
+the explanatory report, architecture gates and acceptance mapping remain open.
+
+Task 012 slice 4a: reproduction README revised and retained matrix revalidated.
+No new JVM run. Report, design gates, index links and acceptance mapping remain.
+
+Task 012 slice 4b: six-question semantic report is written at
+`ramora/value-type-array-design/semantic-verification.md`. Retained matrix
+validation and report links pass; no JVM rerun. Architecture gates, index
+links and acceptance mapping remain. Report commit: `3f78aaf`.
+
+Task 012 slice 4c completes design gates, index links and acceptance mapping.
+All implementation checklist items are done; the task remains open for review.
+EA3 null diagnostics require public validation; primitive value status is not
+allocation eligibility. Public API implementation remains separate. Retained
+matrix validation and local links/anchors passed; no new JVM run in this slice.
+
+Task 012 review follow-up 1: retained validation now checks required case contracts
+and startup runtime/flags. Five copy-based checks pass; read-only validation is next.
+
+Task 012 review follow-up 2 completes read-only evidence validation. Creation is
+separate; matrix fatal-log references are portable. All six copy-based checks
+pass and confirm unchanged evidence bytes. No JVM experiments were rerun.
+
+Task 012 test review adds one open follow-up for selected-slot store checks.
+Current valid writes replace all slots before checking; rejected writes stop at
+index zero. The six retained-evidence regression checks passed. No JVM probes
+were rerun. See the task checklist for the required coverage.
+
+Task 012 selected-slot review follow-up is complete. Each index is tested on a
+fresh array through Clojure and Java access, with all slots checked after each
+accepted or rejected write. Two final full matrices passed 120 store cases per
+layout with identical summaries and source hashes. Six evidence regression
+checks passed. Current evidence: array-design `evidence/matrix-selected-slots/`.
+Production code and historical evidence are unchanged.
+
+Task 012 isolated-process configuration follow-up is complete. Aggregate
+validation checks runtime and layout flags for all 12 isolated processes.
+All 55 copy-based checks passed and preserved evidence bytes; formatting and
+lint passed. No JVM probes were rerun; retained evidence is unchanged.
+
+Task 012 test review found one open startup-status validation gap. All 55
+existing copy-based checks passed, but a baseline allocation changed to
+unresolved still passed aggregate validation. The task checklist records the
+follow-up. No JVM probes were rerun.
+
+Task 012 startup-status review follow-up is complete. Baseline allocation now
+requires pass status and the expected value. All 57 copy-based checks passed
+and preserved evidence bytes, including unresolved and rejected status changes.
+Formatting and lint passed. No JVM probes were rerun; retained evidence and
+production code are unchanged.
+
+Task 012 current-evidence link follow-up is complete. The Ramora index, array
+design and verification page now link to `evidence/matrix-selected-slots/`,
+consistent with the probe README and semantic report. Linked paths and retained
+matrix validation passed. Historical evidence is unchanged; no JVM probes ran.
+
+Task 012 test review found one open signature-validation gap. All 57 existing
+copy-based checks passed, but empty discovered signature lists in all four
+Valhalla startup records still passed aggregate validation. The task checklist
+records the follow-up. No JVM probes were rerun.
+
+Task 012 signature-validation review follow-up is complete. Startup validation
+requires allocator and diagnostic parameter/return types and rejects a seed-free
+atomic overload without excluding unrelated methods. All 117 copy-based checks
+passed and preserved evidence bytes. Formatting and lint passed. No JVM probes
+were rerun; production code and retained evidence are unchanged.
+
+Task 012 documentation review follow-ups are complete. The probe README now
+describes per-file environment provenance and optional unresolved-case inputs.
+The Unreleased note links the commands and warns about isolated JVM crashes;
+no public array API was added. Retained matrix validation passed. No JVM probes
+were rerun. Both review checklist items are complete.
+
+Task 012 code-shape follow-up is complete. Reusable allocation and discovery
+helpers load without probe execution or file writes. Explicit entry-point calls
+preserve allocation-first checks and independent Java 8-safe discovery. Six
+helper-loading JVMs, standalone discovery, the full matrix and 117 evidence
+regression checks passed. Historical evidence and production code are unchanged.

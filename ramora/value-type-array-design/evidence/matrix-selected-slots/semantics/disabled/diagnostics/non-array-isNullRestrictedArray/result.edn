@@ -1,0 +1,12 @@
+{:schema-version 1,
+ :phase :diagnostics,
+ :cases
+ [{:id :diagnostic/non-array-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :non-array,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "java.lang.String"},
+   :status :pass,
+   :value false}]}

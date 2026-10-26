@@ -1,0 +1,4 @@
+89a6ee82da30ec4df89bac557a56326db3270d1ff1e64323b38b8f4beb1ae383  spike/value-array-semantics/allocation.clj
+781fea8376f9fe0fe161edcd1d1d1993059a78f15fe733654523255fe4ce6802  spike/value-array-semantics/diagnostics.clj
+3de69cd244bfb8a53fc8b253ff8977a7a811f420028bc60858453f99e2805f2b  spike/value-array-semantics/diagnostics.sh
+917d42d29a2e9bd5f14186de1967de5a8a1cfcddc2163f65600a8965d5bd6be0  spike/value-array-semantics/validate_isolated.clj

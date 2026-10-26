@@ -1,0 +1,31 @@
+{:schema-version 1,
+ :phase :startup,
+ :environment
+ {:properties
+  {"java.home" "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+   "java.runtime.version" "27-jep401ea3+1-1",
+   "java.version" "27-jep401ea3",
+   "java.vm.name" "OpenJDK 64-Bit Server VM",
+   "os.arch" "aarch64",
+   "os.name" "Mac OS X",
+   "os.version" "27.0.1"},
+  :clojure-version "1.12.6",
+  :jvm-flags
+  ["--enable-preview"
+   "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+   "-Dvalue-type.fallback=error"]},
+ :cases
+ [{:id :startup/value-definition,
+   :operation :define-value-class,
+   :inputs {},
+   :status :pass,
+   :value true}
+  {:id :startup/allocation,
+   :operation :atomic-allocation,
+   :inputs {:length 0, :seed :valid},
+   :status :pass,
+   :value {:length 0, :value-class? true}}
+  {:id :startup/dependent-semantics,
+   :operation :semantic-suite,
+   :status :unresolved,
+   :reason :run-separate-semantic-suite}]}

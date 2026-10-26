@@ -1,0 +1,20 @@
+:invoking :null isNullRestrictedArray
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x000000010b145234, pid=12531, tid=5379
+#
+# JRE version: OpenJDK Runtime Environment (27.0+1) (build 27-jep401ea3+1-1)
+# Java VM: OpenJDK 64-Bit Server VM (27-jep401ea3+1-1, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-aarch64)
+# Problematic frame:
+# V  [libjvm.dylib+0x661234]  JVM_IsNullRestrictedArray+0x1dc
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# target/value-array-semantics/diagnostics-repeat/null-isNullRestrictedArray/hs_err.log
+[0.624s][warning][os] Loading hsdis library failed
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#

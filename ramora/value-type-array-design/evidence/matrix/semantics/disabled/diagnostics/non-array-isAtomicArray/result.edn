@@ -1,0 +1,12 @@
+{:schema-version 1,
+ :phase :diagnostics,
+ :cases
+ [{:id :diagnostic/non-array-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :non-array,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "java.lang.String"},
+   :status :pass,
+   :value false}]}

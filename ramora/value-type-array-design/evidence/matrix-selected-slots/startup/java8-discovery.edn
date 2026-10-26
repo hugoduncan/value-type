@@ -1,0 +1,36 @@
+{:schema-version 1,
+ :phase :discovery,
+ :environment
+ {:properties
+  {"java.home"
+   "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/jre",
+   "java.runtime.version" "1.8.0_492-b09",
+   "java.version" "1.8.0_492",
+   "java.vm.name" "OpenJDK 64-Bit Server VM",
+   "os.arch" "x86_64",
+   "os.name" "Mac OS X",
+   "os.version" "27.0.1"},
+  :clojure-version "1.12.6",
+  :jvm-flags ["-Dvalue-type.fallback=error"]},
+ :cases
+ [{:id :discovery/presence,
+   :operation :class-for-name,
+   :inputs {:class "jdk.internal.value.ValueClass"},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ClassNotFoundException",
+     :message "jdk.internal.value.ValueClass"}]}
+  {:id :discovery/signatures,
+   :operation :public-methods,
+   :inputs {},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ClassNotFoundException",
+     :message "jdk.internal.value.ValueClass"}]}
+  {:id :discovery/access,
+   :operation :invoke,
+   :inputs {:method "isFlatArray", :input :object-array},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ClassNotFoundException",
+     :message "jdk.internal.value.ValueClass"}]}]}

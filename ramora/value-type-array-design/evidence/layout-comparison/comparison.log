@@ -1,0 +1,419 @@
+{:status :pass,
+ :scope :default-versus-disabled-array-flattening,
+ :layouts
+ {"default"
+  [{:id :diagnostic/object-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :object,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Ljava.lang.Object;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/identity-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :identity,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.IdentityValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/primitive-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :primitive,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[J"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/empty-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/empty-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/empty-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/empty-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/long-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/long-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/long-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/long-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/pair-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-null-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-null-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-null-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-null-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}
+   {:id :diagnostic/reference-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value true}],
+  "disabled"
+  [{:id :diagnostic/object-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :object,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Ljava.lang.Object;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/identity-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :identity,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.IdentityValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/primitive-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :primitive,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[J"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/empty-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/empty-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/empty-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/empty-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :empty-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.EmptyValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/long-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/long-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/long-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/long-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :long-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.LongValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/pair-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :pair-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.PairValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-null-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-null-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-null-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-null-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-null-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-ordinary-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-ordinary,
+     :query "isFlatArray",
+     :restricted? false,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-restricted-0-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-restricted-0,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-restricted-1-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-restricted-1,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}
+   {:id :diagnostic/reference-restricted-3-isFlatArray,
+    :operation :array-diagnostic,
+    :inputs
+    {:input :reference-restricted-3,
+     :query "isFlatArray",
+     :restricted? true,
+     :class "[Lallocation.ReferenceValue;"},
+    :status :pass,
+    :value false}]}}

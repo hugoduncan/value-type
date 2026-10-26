@@ -1,0 +1,4 @@
+89a6ee82da30ec4df89bac557a56326db3270d1ff1e64323b38b8f4beb1ae383  spike/value-array-semantics/allocation.clj
+4b5be762e29470b02125f9fc52fbbe8be623e171cb0c6716dacf1b71a97365c1  spike/value-array-semantics/stores.clj
+6c7732f98d83db09c7efe30ed46b0cedc147c91b3bde84aa087a3f87f76c6698  spike/value-array-semantics/stores.sh
+4cc491b8cca93e15a93051af3476ebf3b870dfa4cd46970a577ff9cf29477ca2  spike/value-array-semantics/ArrayAccess.java

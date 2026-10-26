@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+- Add experimental [value-array JVM probes and validation commands](spike/value-array-semantics/README.md).
+  These verify JVM behavior; they do not add a public array API. Reproduction
+  deliberately crashes isolated JVMs for null diagnostic inputs.
+
 - Add `defvaluetype` with value classes on supported Valhalla JVMs and
   ordinary `deftype` fallback on other JVMs.
 - Add source-only JAR packaging and isolated consumer checks on Java 8

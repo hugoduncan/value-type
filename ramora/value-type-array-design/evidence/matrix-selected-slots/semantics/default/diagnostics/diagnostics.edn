@@ -1,0 +1,624 @@
+{:schema-version 1,
+ :phase :diagnostics,
+ :cases
+ [{:id :diagnostic/object-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :object,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Ljava.lang.Object;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/object-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :object,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Ljava.lang.Object;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/object-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :object,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Ljava.lang.Object;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/identity-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :identity,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Lallocation.IdentityValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/identity-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :identity,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Lallocation.IdentityValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/identity-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :identity,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Lallocation.IdentityValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/primitive-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :primitive,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[J"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/primitive-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :primitive,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[J"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/primitive-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :primitive,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[J"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/empty-ordinary-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-ordinary,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-ordinary-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-ordinary,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/empty-ordinary-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-ordinary,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-0-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-0,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-0-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-0,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-0-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-0,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-1-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-1,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-1-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-1,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-1-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-1,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-3-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-3,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-3-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-3,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/empty-restricted-3-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :empty-restricted-3,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.EmptyValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-ordinary-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-ordinary,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/long-ordinary-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-ordinary,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/long-ordinary-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-ordinary,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-0-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-0,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-0-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-0,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-0-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-0,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-1-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-1,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-1-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-1,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-1-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-1,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-3-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-3,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-3-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-3,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/long-restricted-3-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :long-restricted-3,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.LongValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-ordinary-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-ordinary,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/pair-ordinary-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-ordinary,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/pair-ordinary-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-ordinary,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-restricted-0-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-0,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/pair-restricted-0-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-0,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-restricted-0-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-0,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-restricted-1-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-1,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/pair-restricted-1-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-1,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-restricted-1-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-1,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-restricted-3-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-3,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/pair-restricted-3-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-3,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/pair-restricted-3-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :pair-restricted-3,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.PairValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-ordinary-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-ordinary,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-ordinary-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-ordinary,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/reference-null-ordinary-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-ordinary,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-0-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-0,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-0-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-0,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-0-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-0,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-1-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-1,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-1-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-1,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-1-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-1,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-3-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-3,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-3-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-3,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-null-restricted-3-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-null-restricted-3,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-ordinary-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-ordinary,
+    :query "isFlatArray",
+    :restricted? false,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-ordinary-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-ordinary,
+    :query "isNullRestrictedArray",
+    :restricted? false,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value false}
+  {:id :diagnostic/reference-ordinary-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-ordinary,
+    :query "isAtomicArray",
+    :restricted? false,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-0-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-0,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-0-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-0,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-0-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-0,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-1-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-1,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-1-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-1,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-1-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-1,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-3-isFlatArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-3,
+    :query "isFlatArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-3-isNullRestrictedArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-3,
+    :query "isNullRestrictedArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}
+  {:id :diagnostic/reference-restricted-3-isAtomicArray,
+   :operation :array-diagnostic,
+   :inputs
+   {:input :reference-restricted-3,
+    :query "isAtomicArray",
+    :restricted? true,
+    :class "[Lallocation.ReferenceValue;"},
+   :status :pass,
+   :value true}]}

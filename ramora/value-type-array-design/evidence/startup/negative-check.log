@@ -1,0 +1,22 @@
+----- Error --------------------------------------------------------------------
+Type:     java.lang.AssertionError
+Message:  Assert failed: (= "0" (str/trim (slurp (str root "/" configuration ".exit"))))
+Location: /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_startup.clj:55:14
+
+----- Context ------------------------------------------------------------------
+51:     {:configuration configuration :validated? true
+52:      :unresolved (filterv #(= :unresolved (:status %)) (:cases result))}))
+53: 
+54: (prn {:startup-controls
+55:       (mapv #(validate-run (first *command-line-args*) %)
+                 ^--- Assert failed: (= "0" (str/trim (slurp (str root "/" configuration ".exit"))))
+56:             ["baseline" "no-exports" "no-preview" "neither" "java8"])})
+
+----- Stack trace --------------------------------------------------------------
+validate-startup/validate-run - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_startup.clj:11:1
+validate-startup              - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_startup.clj:55:14
+clojure.core/mapv             - clojure/core.clj:7054:1
+validate-startup              - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_startup.clj:55:7
+clojure.core/prn              - clojure/core.clj:3744:1
+validate-startup              - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_startup.clj:54:1
+

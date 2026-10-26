@@ -1,7 +1,8 @@
 # Value-type array design
 
 Status: proposed; not implemented. The existing spike supplies evidence, not
-an implemented library API. No Munera task is created by this document.
+an implemented library API. [Task 012](../munera/closed/012-verify-value-arrays/design.md)
+covers verification and explanation before API implementation.
 
 This design uses the architecture model in
 `~/projects/hugoduncan/architecture/ramora/INDEX.md`:
@@ -96,12 +97,18 @@ value-class semantics.
   alternatives, boundaries, state, construction flow and failures.
 - [Verification and evolution](value-type-array-design/verification.md):
   scoped observations, intended qualities, tests and unresolved assumptions.
+- [Semantic verification](value-type-array-design/semantic-verification.md):
+  six-question report, including fatal null diagnostics and capability limits.
+- [Runnable instructions](../spike/value-array-semantics/README.md) and
+  [retained matrix evidence](value-type-array-design/evidence/matrix-selected-slots/).
 - [Typed-array investigation](defvaluetype-design/typed-array.md): retained
   measurements and reproduction instructions.
 - [Controlled fallback](defvaluetype-design/fallback.md): existing class
   policy, which this design does not change.
 
-The contract and decisions are proposals. Before implementation, verify
-zero-length allocation and diagnostic semantics on the selected JDK.
+The contract and decisions remain proposals. Task 012 verified zero-length
+allocation with valid seeds and diagnostic outcomes on the recorded EA3 build.
+Null diagnostic inputs crash that JVM; public validation must reject them
+before native invocation. See the remaining [implementation gates](value-type-array-design/verification.md#implementation-gates).
 The explicit-seed overload avoids inventing a default value or adding a
 no-argument constructor requirement.

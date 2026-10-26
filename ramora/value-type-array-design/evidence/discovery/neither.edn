@@ -1,0 +1,84 @@
+{:schema-version 1,
+ :phase :discovery,
+ :environment
+ {:properties
+  {"java.home" "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+   "java.runtime.version" "27-jep401ea3+1-1",
+   "java.version" "27-jep401ea3",
+   "java.vm.name" "OpenJDK 64-Bit Server VM",
+   "os.arch" "aarch64",
+   "os.name" "Mac OS X",
+   "os.version" "27.0.1"},
+  :clojure-version "1.12.6",
+  :jvm-flags []},
+ :cases
+ [{:id :discovery/presence,
+   :operation :class-for-name,
+   :inputs {:class "jdk.internal.value.ValueClass"},
+   :status :pass,
+   :value "jdk.internal.value.ValueClass"}
+  {:id :discovery/signatures,
+   :operation :public-methods,
+   :inputs {},
+   :status :pass,
+   :value
+   [{:name "hasBinaryPayload",
+     :parameters ["java.lang.Class"],
+     :returns "boolean",
+     :modifiers "public static"}
+    {:name "isConcreteValueClass",
+     :parameters ["java.lang.Class"],
+     :returns "boolean",
+     :modifiers "public static"}
+    {:name "isNullRestrictedField",
+     :parameters ["java.lang.reflect.Field"],
+     :returns "boolean",
+     :modifiers "public static"}
+    {:name "isValueObjectCompatible",
+     :parameters ["java.lang.Class"],
+     :returns "boolean",
+     :modifiers "public static"}
+    {:name "copyOfRangeSpecialArray",
+     :parameters ["[Ljava.lang.Object;" "int" "int"],
+     :returns "[Ljava.lang.Object;",
+     :modifiers "public static"}
+    {:name "copyOfSpecialArray",
+     :parameters ["[Ljava.lang.Object;" "int"],
+     :returns "[Ljava.lang.Object;",
+     :modifiers "public static"}
+    {:name "isAtomicArray",
+     :parameters ["java.lang.Object"],
+     :returns "boolean",
+     :modifiers "public static native"}
+    {:name "isFlatArray",
+     :parameters ["java.lang.Object"],
+     :returns "boolean",
+     :modifiers "public static native"}
+    {:name "isNullRestrictedArray",
+     :parameters ["java.lang.Object"],
+     :returns "boolean",
+     :modifiers "public static native"}
+    {:name "newNullRestrictedAtomicArray",
+     :parameters ["java.lang.Class" "int" "java.lang.Object"],
+     :returns "[Ljava.lang.Object;",
+     :modifiers "public static native"}
+    {:name "newNullRestrictedNonAtomicArray",
+     :parameters ["java.lang.Class" "int" "java.lang.Object"],
+     :returns "[Ljava.lang.Object;",
+     :modifiers "public static native"}
+    {:name "newNullableAtomicArray",
+     :parameters ["java.lang.Class" "int"],
+     :returns "[Ljava.lang.Object;",
+     :modifiers "public static native"}
+    {:name "newReferenceArray",
+     :parameters ["java.lang.Class" "int"],
+     :returns "[Ljava.lang.Object;",
+     :modifiers "public static native"}]}
+  {:id :discovery/access,
+   :operation :invoke,
+   :inputs {:method "isFlatArray", :input :object-array},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.IllegalAccessException",
+     :message
+     "class discover$discover$fn__161 cannot access class jdk.internal.value.ValueClass (in module java.base) because module java.base does not export jdk.internal.value to unnamed module @59942b48"}]}]}

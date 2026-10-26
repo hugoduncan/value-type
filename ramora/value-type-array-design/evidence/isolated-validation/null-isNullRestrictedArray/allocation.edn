@@ -1,0 +1,546 @@
+{:schema-version 1,
+ :phase :allocation,
+ :environment
+ {:java-version "27-jep401ea3+1-1",
+  :java-home "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+  :os "Mac OS X",
+  :arch "aarch64",
+  :clojure-version "1.12.6",
+  :jvm-flags
+  ["-XX:ErrorFile=target/value-array-semantics/isolated-validation-repeat/null-isNullRestrictedArray/hs_err.log"
+   "--enable-preview"
+   "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"]},
+ :cases
+ [{:id :component/empty,
+   :operation :value-status,
+   :inputs {:component "allocation.EmptyValue"},
+   :status :pass,
+   :value true}
+  {:id :component/long,
+   :operation :value-status,
+   :inputs {:component "allocation.LongValue"},
+   :status :pass,
+   :value true}
+  {:id :component/pair,
+   :operation :value-status,
+   :inputs {:component "allocation.PairValue"},
+   :status :pass,
+   :value true}
+  {:id :component/reference-null,
+   :operation :value-status,
+   :inputs {:component "allocation.ReferenceValue"},
+   :status :pass,
+   :value true}
+  {:id :component/reference,
+   :operation :value-status,
+   :inputs {:component "allocation.ReferenceValue"},
+   :status :pass,
+   :value true}
+  {:id :component/identity,
+   :operation :value-status,
+   :inputs {:component "allocation.IdentityValue"},
+   :status :pass,
+   :value false}
+  {:id :component/primitive,
+   :operation :value-status,
+   :inputs {:component "long"},
+   :status :pass,
+   :value true}
+  {:id :allocation/empty-0-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 0, :seed :valid},
+   :status :pass,
+   :value
+   {:length 0,
+    :component "allocation.EmptyValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/empty-0-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 0, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/empty-0-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 0, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/empty-1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 1, :seed :valid},
+   :status :pass,
+   :value
+   {:length 1,
+    :component "allocation.EmptyValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/empty-1-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 1, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/empty-1-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 1, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/empty-3-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 3, :seed :valid},
+   :status :pass,
+   :value
+   {:length 3,
+    :component "allocation.EmptyValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/empty-3-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 3, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/empty-3-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length 3, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/long-0-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length 0, :seed :valid},
+   :status :pass,
+   :value
+   {:length 0,
+    :component "allocation.LongValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/long-0-null,
+   :operation :atomic-allocation,
+   :inputs {:component "allocation.LongValue", :length 0, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/long-0-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length 0, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/long-1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length 1, :seed :valid},
+   :status :pass,
+   :value
+   {:length 1,
+    :component "allocation.LongValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/long-1-null,
+   :operation :atomic-allocation,
+   :inputs {:component "allocation.LongValue", :length 1, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/long-1-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length 1, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/long-3-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length 3, :seed :valid},
+   :status :pass,
+   :value
+   {:length 3,
+    :component "allocation.LongValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/long-3-null,
+   :operation :atomic-allocation,
+   :inputs {:component "allocation.LongValue", :length 3, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/long-3-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length 3, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/pair-0-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length 0, :seed :valid},
+   :status :pass,
+   :value
+   {:length 0,
+    :component "allocation.PairValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/pair-0-null,
+   :operation :atomic-allocation,
+   :inputs {:component "allocation.PairValue", :length 0, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/pair-0-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length 0, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/pair-1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length 1, :seed :valid},
+   :status :pass,
+   :value
+   {:length 1,
+    :component "allocation.PairValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/pair-1-null,
+   :operation :atomic-allocation,
+   :inputs {:component "allocation.PairValue", :length 1, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/pair-1-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length 1, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/pair-3-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length 3, :seed :valid},
+   :status :pass,
+   :value
+   {:length 3,
+    :component "allocation.PairValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/pair-3-null,
+   :operation :atomic-allocation,
+   :inputs {:component "allocation.PairValue", :length 3, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/pair-3-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length 3, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/reference-null-0-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 0, :seed :valid},
+   :status :pass,
+   :value
+   {:length 0,
+    :component "allocation.ReferenceValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/reference-null-0-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 0, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/reference-null-0-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 0, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/reference-null-1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 1, :seed :valid},
+   :status :pass,
+   :value
+   {:length 1,
+    :component "allocation.ReferenceValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/reference-null-1-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 1, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/reference-null-1-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 1, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/reference-null-3-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 3, :seed :valid},
+   :status :pass,
+   :value
+   {:length 3,
+    :component "allocation.ReferenceValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/reference-null-3-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 3, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/reference-null-3-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 3, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/reference-0-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 0, :seed :valid},
+   :status :pass,
+   :value
+   {:length 0,
+    :component "allocation.ReferenceValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/reference-0-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 0, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/reference-0-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 0, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/reference-1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 1, :seed :valid},
+   :status :pass,
+   :value
+   {:length 1,
+    :component "allocation.ReferenceValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/reference-1-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 1, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/reference-1-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 1, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/reference-3-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 3, :seed :valid},
+   :status :pass,
+   :value
+   {:length 3,
+    :component "allocation.ReferenceValue",
+    :all-slots-match-seed? true}}
+  {:id :allocation/reference-3-null,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 3, :seed :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Initial value cannot be null"}]}
+  {:id :allocation/reference-3-wrong,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length 3, :seed :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}
+  {:id :allocation/empty--1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.EmptyValue", :length -1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Array length is negative"}]}
+  {:id :allocation/long--1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.LongValue", :length -1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Array length is negative"}]}
+  {:id :allocation/pair--1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.PairValue", :length -1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Array length is negative"}]}
+  {:id :allocation/reference-null--1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length -1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Array length is negative"}]}
+  {:id :allocation/reference--1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.ReferenceValue", :length -1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Array length is negative"}]}
+  {:id :allocation/identity-1-valid,
+   :operation :atomic-allocation,
+   :inputs
+   {:component "allocation.IdentityValue", :length 1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Element class is not a value class"}]}
+  {:id :allocation/primitive-1-valid,
+   :operation :atomic-allocation,
+   :inputs {:component "long", :length 1, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.reflect.InvocationTargetException",
+     :message nil}
+    {:class "java.lang.IllegalArgumentException",
+     :message "Type mismatch between array and initial value"}]}]}

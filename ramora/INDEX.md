@@ -11,6 +11,9 @@ Read this file first. Read the other files only when you need them.
 - [Value-type array design](value-type-array-design.md): proposed native,
   null-restricted atomic array API, capability boundary, construction contract
   and verification. Not implemented.
+  [Semantic report](value-type-array-design/semantic-verification.md),
+  [runnable instructions](../spike/value-array-semantics/README.md) and
+  [retained evidence](value-type-array-design/evidence/matrix-selected-slots/) cover EA3.
 
 - [Controlled fallback](defvaluetype-design/fallback.md): implemented policy,
   capability boundary, warning and Error behaviour, AOT limits and tests.

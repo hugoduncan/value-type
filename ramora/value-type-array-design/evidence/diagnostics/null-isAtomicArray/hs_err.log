@@ -1,0 +1,2434 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x000000010ad955b0, pid=12542, tid=6403
+#
+# JRE version: OpenJDK Runtime Environment (27.0+1) (build 27-jep401ea3+1-1)
+# Java VM: OpenJDK 64-Bit Server VM (27-jep401ea3+1-1, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-aarch64)
+# Problematic frame:
+# V  [libjvm.dylib+0x6615b0]  JVM_IsAtomicArray+0x1d0
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -XX:ErrorFile=target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/allocation.edn target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/result.edn null isAtomicArray
+
+Host: "Mac17,7" arm64, 18 cores, 128G, Darwin 27.0.0, macOS 27.0.1 (26A434)
+Time: Mon Oct 26 18:18:18 2026 EDT elapsed time: 0.612084 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000104fe8160):  JavaThread "main"             [_thread_in_vm, id=6403, stack(0x000000016b448000,0x000000016b64b000) (2060K)]
+
+Stack: [0x000000016b448000,0x000000016b64b000],  sp=0x000000016b649630,  free space=2053k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.dylib+0x6615b0]  JVM_IsAtomicArray+0x1d0
+j  jdk.internal.value.ValueClass.isAtomicArray(Ljava/lang/Object;)Z+0 java.base@27-jep401ea3
+j  java.lang.invoke.DirectMethodHandle$Holder.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)I+10 java.base@27-jep401ea3
+j  java.lang.invoke.LambdaForm$MH+0x00000f80013d6c00.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+15 java.base@27-jep401ea3
+j  java.lang.invoke.Invokers$Holder.invokeExact_MT(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+20 java.base@27-jep401ea3
+j  jdk.internal.reflect.DirectMethodHandleAccessor.invokeImpl(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+55 java.base@27-jep401ea3
+j  jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+23 java.base@27-jep401ea3
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+102 java.base@27-jep401ea3
+j  diagnostics$diagnostic_case$fn__499.invoke()Ljava/lang/Object;+61
+j  allocation$observe$fn__401.invoke()Ljava/lang/Object;+36
+j  allocation$observe.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+66
+j  allocation$observe.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+9
+j  diagnostics$diagnostic_case.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+360
+j  diagnostics$diagnostic_case.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+6
+j  diagnostics$eval516$iter__519__525$fn__526$iter__521__527$fn__528$fn__529.invoke()Ljava/lang/Object;+140
+j  diagnostics$eval516$iter__519__525$fn__526$iter__521__527$fn__528.invoke()Ljava/lang/Object;+139
+J 1717 c2 clojure.lang.RT.seq(Ljava/lang/Object;)Lclojure/lang/ISeq; (32 bytes) @ 0x000000012a213090 [0x000000012a212f00+0x0000000000000190]
+J 2294 c2 clojure.core$seq__5486.invoke(Ljava/lang/Object;)Ljava/lang/Object; (7 bytes) @ 0x000000012a238e08 [0x000000012a238dc0+0x0000000000000048]
+j  diagnostics$eval516$iter__519__525$fn__526.invoke()Ljava/lang/Object;+127
+J 1717 c2 clojure.lang.RT.seq(Ljava/lang/Object;)Lclojure/lang/ISeq; (32 bytes) @ 0x000000012a213090 [0x000000012a212f00+0x0000000000000190]
+J 2041 c1 clojure.core.protocols$seq_reduce.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (70 bytes) @ 0x000000012295b100 [0x000000012295b040+0x00000000000000c0]
+J 2043 c1 clojure.core.protocols$fn__8262.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000012295cb84 [0x000000012295ca80+0x0000000000000104]
+J 2040 c1 clojure.core.protocols$fn__8203$G__8198__8216.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (101 bytes) @ 0x000000012295ad68 [0x000000012295a400+0x0000000000000968]
+J 2029 c1 clojure.core$reduce.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (94 bytes) @ 0x0000000122952fe8 [0x00000001229528c0+0x0000000000000728]
+J 2582 c1 clojure.core$into.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (55 bytes) @ 0x0000000122abcd54 [0x0000000122abc980+0x00000000000003d4]
+j  clojure.core$into.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+6
+j  diagnostics$eval516.invokeStatic()Ljava/lang/Object;+108
+j  diagnostics$eval516.invoke()Ljava/lang/Object;+0
+j  clojure.lang.Compiler.eval(Ljava/lang/Object;Z)Ljava/lang/Object;+374
+j  clojure.lang.Compiler.load(Ljava/io/Reader;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;+354
+j  clojure.lang.Compiler.loadFile(Ljava/lang/String;)Ljava/lang/Object;+42
+j  clojure.main$load_script.invokeStatic(Ljava/lang/Object;)Ljava/lang/Object;+67
+j  clojure.main$script_opt.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+378
+j  clojure.main$script_opt.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+6
+j  clojure.main$main.invokeStatic(Lclojure/lang/ISeq;)Ljava/lang/Object;+376
+j  clojure.main$main.doInvoke(Ljava/lang/Object;)Ljava/lang/Object;+6
+j  clojure.lang.RestFn.applyTo(Lclojure/lang/ISeq;)Ljava/lang/Object;+136
+j  clojure.lang.Var.applyTo(Lclojure/lang/ISeq;)Ljava/lang/Object;+5
+j  clojure.main.main([Ljava/lang/String;)V+20
+v  ~StubRoutines::call_stub_stub (stub gen) 0x0000000129a64454
+V  [libjvm.dylib+0x570f78]  JavaCalls::call_helper(JavaValue*, methodHandle const&, JavaCallArguments*, JavaThread*)+0x414
+V  [libjvm.dylib+0x603014]  jni_invoke_static(JNIEnv_*, JavaValue*, _jobject*, JNICallType, _jmethodID*, JNI_ArgumentPusher*, JavaThread*)+0x17c
+V  [libjvm.dylib+0x60886c]  jni_CallStaticVoidMethod+0x1d8
+C  [libjli.dylib+0x7790]  JavaMain+0x91c
+C  [libjli.dylib+0xa1b4]  ThreadJavaMain+0xc
+C  [libsystem_pthread.dylib+0x6d00]  _pthread_start+0x88
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  jdk.internal.value.ValueClass.isAtomicArray(Ljava/lang/Object;)Z+0 java.base@27-jep401ea3
+j  java.lang.invoke.DirectMethodHandle$Holder.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)I+10 java.base@27-jep401ea3
+j  java.lang.invoke.LambdaForm$MH+0x00000f80013d6c00.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+15 java.base@27-jep401ea3
+j  java.lang.invoke.Invokers$Holder.invokeExact_MT(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+20 java.base@27-jep401ea3
+j  jdk.internal.reflect.DirectMethodHandleAccessor.invokeImpl(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+55 java.base@27-jep401ea3
+j  jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+23 java.base@27-jep401ea3
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+102 java.base@27-jep401ea3
+j  diagnostics$diagnostic_case$fn__499.invoke()Ljava/lang/Object;+61
+j  allocation$observe$fn__401.invoke()Ljava/lang/Object;+36
+j  allocation$observe.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+66
+j  allocation$observe.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+9
+j  diagnostics$diagnostic_case.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+360
+j  diagnostics$diagnostic_case.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+6
+j  diagnostics$eval516$iter__519__525$fn__526$iter__521__527$fn__528$fn__529.invoke()Ljava/lang/Object;+140
+j  diagnostics$eval516$iter__519__525$fn__526$iter__521__527$fn__528.invoke()Ljava/lang/Object;+139
+J 1717 c2 clojure.lang.RT.seq(Ljava/lang/Object;)Lclojure/lang/ISeq; (32 bytes) @ 0x000000012a213090 [0x000000012a212f00+0x0000000000000190]
+J 2294 c2 clojure.core$seq__5486.invoke(Ljava/lang/Object;)Ljava/lang/Object; (7 bytes) @ 0x000000012a238e08 [0x000000012a238dc0+0x0000000000000048]
+j  diagnostics$eval516$iter__519__525$fn__526.invoke()Ljava/lang/Object;+127
+J 1717 c2 clojure.lang.RT.seq(Ljava/lang/Object;)Lclojure/lang/ISeq; (32 bytes) @ 0x000000012a213090 [0x000000012a212f00+0x0000000000000190]
+J 2041 c1 clojure.core.protocols$seq_reduce.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (70 bytes) @ 0x000000012295b100 [0x000000012295b040+0x00000000000000c0]
+J 2043 c1 clojure.core.protocols$fn__8262.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000012295cb84 [0x000000012295ca80+0x0000000000000104]
+J 2040 c1 clojure.core.protocols$fn__8203$G__8198__8216.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (101 bytes) @ 0x000000012295ad68 [0x000000012295a400+0x0000000000000968]
+J 2029 c1 clojure.core$reduce.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (94 bytes) @ 0x0000000122952fe8 [0x00000001229528c0+0x0000000000000728]
+J 2582 c1 clojure.core$into.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (55 bytes) @ 0x0000000122abcd54 [0x0000000122abc980+0x00000000000003d4]
+j  clojure.core$into.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+6
+j  diagnostics$eval516.invokeStatic()Ljava/lang/Object;+108
+j  diagnostics$eval516.invoke()Ljava/lang/Object;+0
+j  clojure.lang.Compiler.eval(Ljava/lang/Object;Z)Ljava/lang/Object;+374
+j  clojure.lang.Compiler.load(Ljava/io/Reader;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;+354
+j  clojure.lang.Compiler.loadFile(Ljava/lang/String;)Ljava/lang/Object;+42
+j  clojure.main$load_script.invokeStatic(Ljava/lang/Object;)Ljava/lang/Object;+67
+j  clojure.main$script_opt.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+378
+j  clojure.main$script_opt.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+6
+j  clojure.main$main.invokeStatic(Lclojure/lang/ISeq;)Ljava/lang/Object;+376
+j  clojure.main$main.doInvoke(Ljava/lang/Object;)Ljava/lang/Object;+6
+j  clojure.lang.RestFn.applyTo(Lclojure/lang/ISeq;)Ljava/lang/Object;+136
+j  clojure.lang.Var.applyTo(Lclojure/lang/ISeq;)Ljava/lang/Object;+5
+j  clojure.main.main([Ljava/lang/String;)V+20
+v  ~StubRoutines::call_stub_stub (stub gen) 0x0000000129a64454
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 2 (SEGV_ACCERR), si_addr: 0x0000000000000000
+
+Registers:
+ x0=0x0000000000000002  x1=0x0000000000000000  x2=0x0000000000000000  x3=0x0000000000000000
+ x4=0x0000000000000000  x5=0x0000000000000000  x6=0x0000000000000000  x7=0x0000000000000000
+ x8=0x0000000000000000  x9=0x0000000000000002 x10=0x0000000000000000 x11=0x0000000000000002
+x12=0x0000000000000000 x13=0x0000000000000000 x14=0x0000000000000000 x15=0x0000000000000002
+x16=0x000000019fc8ca1c x17=0x00000002073f9a40 x18=0x0000000000000000 x19=0x0000000104fe8160
+x20=0x0000000000000000 x21=0x0000000000000001 x22=0x000000010b648bcc x23=0x0000000104fe8160
+x24=0x0000000000000001 x25=0x0000007d420ad67c x26=0x00000f80003421e0 x27=0x0000007d3d000000
+x28=0x0000000104fe8160  fp=0x000000016b649680  lr=0x000000010ad95494  sp=0x000000016b649630
+pc=0x000000010ad955b0 cpsr=0x0000000080000000
+
+Register to memory mapping:
+
+x0 =0x0000000000000002 is an unknown value
+x1 =0x0 is null
+x2 =0x0 is null
+x3 =0x0 is null
+x4 =0x0 is null
+x5 =0x0 is null
+x6 =0x0 is null
+x7 =0x0 is null
+x8 =0x0 is null
+x9 =0x0000000000000002 is an unknown value
+x10=0x0 is null
+x11=0x0000000000000002 is an unknown value
+x12=0x0 is null
+x13=0x0 is null
+x14=0x0 is null
+x15=0x0000000000000002 is an unknown value
+x16=0x000000019fc8ca1c: pthread_mutex_unlock+0 in /usr/lib/system/libsystem_pthread.dylib at 0x000000019fc8b000
+x17=0x00000002073f9a40 points into unknown readable memory: 0x000000019fc8ca1c | 1c ca c8 9f 01 00 00 00
+x18=0x0 is null
+x19=0x0000000104fe8160 is a thread
+x20=0x0 is null
+x21=0x0000000000000001 is an unknown value
+x22=0x000000010b648bcc: _MergedGlobals+0x2c in /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/server/libjvm.dylib at 0x000000010a734000
+x23=0x0000000104fe8160 is a thread
+x24=0x0000000000000001 is an unknown value
+x25=0x0000007d420ad67c is an unknown heap location
+x26=0x00000f80003421e0 is pointing into metadata
+x27=0x0000007d3d000000 is an unknown value
+x28=0x0000000104fe8160 is a thread
+ fp=0x000000016b649680 is pointing into the stack for thread: 0x0000000104fe8160
+ lr=0x000000010ad95494: JVM_IsAtomicArray+0xb4 in /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/server/libjvm.dylib at 0x000000010a734000
+ sp=0x000000016b649630 is pointing into the stack for thread: 0x0000000104fe8160
+
+Top of Stack: (sp=0x000000016b649630)
+0x000000016b649630:   0000000104fe8160 0000000100000001   `...............
+0x000000016b649640:   000000010b648bcc 000000016b64ac20   ..d..... .dk....
+0x000000016b649650:   000000016b649718 0000000000000015   ..dk............
+0x000000016b649660:   0000000000000000 000000010b5ec3f8   ..........^.....
+0x000000016b649670:   000000016b649698 0000000129a6ad80   ..dk.......)....
+0x000000016b649680:   000000016b6496f0 0000000129a6d334   ..dk....4..)....
+0x000000016b649690:   000000010b636524 000000016b64ac20   $ec..... .dk....
+0x000000016b6496a0:   fffffffffffffff6 0000000000000000   ................
+0x000000016b6496b0:   0000000000000005 00000f80003421e0   .........!4.....
+0x000000016b6496c0:   00000084bb07b810 fffffffffffffff4   ................
+0x000000016b6496d0:   0000000000000000 00000f80003429e8   .........)4.....
+0x000000016b6496e0:   0000000000000000 000000016b6496f0   ..........dk....
+0x000000016b6496f0:   000000016b649770 0000000129a69090   p.dk.......)....
+0x000000016b649700:   00000084bb07b810 0000000129a6ad80   ...........)....
+0x000000016b649710:   0000007d4538e850 0000000000000000   P.8E}...........
+0x000000016b649720:   fffffffffffffff6 00000f8000323c52   ........R<2.....
+0x000000016b649730:   0000000000000005 00000f8000322d58   ........X-2.....
+0x000000016b649740:   00000084bb07b098 fffffffffffffff0   ................
+0x000000016b649750:   0000000000000000 00000f8000323ba8   .........;2.....
+0x000000016b649760:   fffffffffffffff4 000000016b649770   ........p.dk....
+0x000000016b649770:   000000016b6497f0 0000000129a69090   ..dk.......)....
+0x000000016b649780:   000000016b649880 0000007d4538e850   ..dk....P.8E}...
+0x000000016b649790:   0000000000000000 0000007d4538e898   ..........8E}...
+0x000000016b6497a0:   fffffffffffffff6 0000000150e00a97   ...........P....
+0x000000016b6497b0:   0000000000000007 0000000150e00cb0   ...........P....
+0x000000016b6497c0:   0000007d453a1e98 fffffffffffffff0   ..:E}...........
+0x000000016b6497d0:   0000000000000000 0000000150e00ab8   ...........P....
+0x000000016b6497e0:   fffffffffffffff4 000000016b649800   ..........dk....
+0x000000016b6497f0:   000000016b649880 0000000129a68f20   ..dk.... ..)....
+0x000000016b649800:   0000000000000000 0000000000000000   ................
+0x000000016b649810:   0000007d4538e898 0000000000000000   ..8E}...........
+0x000000016b649820:   0000000000000000 0000007d45396a40   ........@j9E}...
+
+Instructions: (pc=0x000000010ad955b0)
+  0x000000010ad954b0:   78 ba 43 b9 1f 03 00 6b 41 01 00 54 1c 00 00 14
+  0x000000010ad954c0:   08 00 80 d2 17 00 80 d2 e8 0f 00 f9 88 45 00 f0
+  0x000000010ad954d0:   00 cd 4b b9 78 ba 43 b9 1f 03 00 6b 80 02 00 54
+  0x000000010ad954e0:   60 ba 03 b9 1f 08 00 71 02 02 00 54 ca 6d 0c 94
+  0x000000010ad954f0:   f8 0b 00 b9 15 02 00 37 12 00 00 14 bf 3b 03 d5
+  0x000000010ad95500:   68 a2 00 91 08 c1 bf f8 08 fa 07 36 e0 03 13 aa
+  0x000000010ad95510:   21 00 80 52 02 00 80 52 ee 16 0f 94 68 92 44 b9
+  0x000000010ad95520:   88 f9 1f 37 cd ff ff 17 a1 17 00 54 f8 0b 00 b9
+  0x000000010ad95530:   95 00 00 34 e8 03 00 91 e8 92 03 f9 f6 96 03 f9
+  0x000000010ad95540:   88 06 40 92 1f 09 00 f1 a0 01 00 54 1f 05 00 f1
+  0x000000010ad95550:   01 03 00 54 80 06 00 d1 48 40 00 b0 08 71 44 f9
+  0x000000010ad95560:   00 01 3f d6 c8 40 00 f0 08 a1 28 91 08 01 40 b9
+  0x000000010ad95570:   1f 05 00 71 61 01 00 54 14 00 00 14 80 0a 00 d1
+  0x000000010ad95580:   28 40 00 90 08 45 40 f9 00 01 3f d6 c8 40 00 f0
+  0x000000010ad95590:   08 a1 28 91 08 01 40 b9 1f 05 00 71 60 01 00 54
+  0x000000010ad955a0:   e8 02 00 35 09 00 40 f9 29 fd 6a d3 08 00 00 14
+=>0x000000010ad955b0:   80 02 40 f9 c8 40 00 f0 08 a1 28 91 08 01 40 b9
+  0x000000010ad955c0:   1f 05 00 71 e1 fe ff 54 09 08 40 b9 4a 40 00 d0
+  0x000000010ad955d0:   4a 81 33 91 4a 01 40 f9 4b 40 00 d0 6b a1 33 91
+  0x000000010ad955e0:   6b 01 40 b9 29 21 cb 9a 29 01 0a 8b 29 19 40 79
+  0x000000010ad955f0:   3f 21 00 71 c1 00 00 54 47 00 00 14 09 04 40 f9
+  0x000000010ad95600:   29 19 40 79 3f 21 00 71 60 08 00 54 09 00 40 f9
+  0x000000010ad95610:   2a 05 40 92 5f 05 00 f1 c1 00 00 54 6a 40 80 52
+  0x000000010ad95620:   29 01 0a 8a 3f 05 08 f1 20 03 00 54 34 00 00 14
+  0x000000010ad95630:   1f 05 00 71 a0 00 00 54 28 02 00 35 09 00 40 f9
+  0x000000010ad95640:   29 fd 6a d3 02 00 00 14 09 08 40 b9 4a 40 00 d0
+  0x000000010ad95650:   4a 81 33 91 4a 01 40 f9 4b 40 00 d0 6b a1 33 91
+  0x000000010ad95660:   6b 01 40 b9 29 21 cb 9a 29 01 0a 8b 29 19 40 79
+  0x000000010ad95670:   3f 25 00 71 c0 00 00 54 21 00 00 14 09 04 40 f9
+  0x000000010ad95680:   29 19 40 79 3f 25 00 71 a1 03 00 54 1f 05 00 71
+  0x000000010ad95690:   a0 00 00 54 48 02 00 35 08 00 40 f9 08 fd 6a d3
+  0x000000010ad956a0:   02 00 00 14 08 08 40 b9 49 40 00 d0 29 81 33 91
+
+
+Stack slot to memory mapping:
+
+stack at sp + 0 slots: 0x0000000104fe8160 is a thread
+stack at sp + 1 slots: 0x0000000100000001 is an unknown value
+stack at sp + 2 slots: 0x000000010b648bcc: _MergedGlobals+0x2c in /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/server/libjvm.dylib at 0x000000010a734000
+stack at sp + 3 slots: 0x000000016b64ac20 is pointing into the stack for thread: 0x0000000104fe8160
+stack at sp + 4 slots: 0x000000016b649718 is pointing into the stack for thread: 0x0000000104fe8160
+stack at sp + 5 slots: 0x0000000000000015 is an unknown value
+stack at sp + 6 slots: 0x0 is null
+stack at sp + 7 slots: 0x000000010b5ec3f8: _ZN19TemplateInterpreter13_active_tableE+0 in /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/server/libjvm.dylib at 0x000000010a734000
+
+Lock stack of current Java thread (top to bottom):
+
+
+Compiled method (c2) 636 1717       4       clojure.lang.RT::seq (32 bytes)
+ total in heap  [0x000000012a212e08,0x000000012a213f78] = 4464
+ main code      [0x000000012a212f00,0x000000012a213e88] = 3976
+ stub code      [0x000000012a213e88,0x000000012a213f70] = 232
+ oops           [0x000000012a213f70,0x000000012a213f78] = 8
+ mutable data [0x00000078e9937980,0x00000078e9937bc0] = 576
+ relocation     [0x00000078e9937980,0x00000078e9937ad8] = 344
+ metadata       [0x00000078e9937ad8,0x00000078e9937bc0] = 232
+ immutable data [0x00000078e9922a00,0x00000078e99230a4] = 1700
+ dependencies   [0x00000078e9922a00,0x00000078e9922a30] = 48
+ nul chk table  [0x00000078e9922a30,0x00000078e9922a58] = 40
+ handler table  [0x00000078e9922a58,0x00000078e9922b30] = 216
+ scopes pcs     [0x00000078e9922b30,0x00000078e9922d60] = 560
+ scopes data    [0x00000078e9922d60,0x00000078e99230a0] = 832
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x0000000150415ca8} 'seq' '(Ljava/lang/Object;)Lclojure/lang/ISeq;' in 'clojure/lang/RT'
+  # parm0:    c_rarg1:c_rarg1 
+                        = 'java/lang/Object'
+  #           [sp+0x60]  (sp of caller)
+  0x000000012a212f00: e953 40d1 | 3f01 00f9 | ff83 01d1 | fd7b 05a9 | a87b 0018 | 8923 40b9 | 1f01 09eb | a17a 0054 
+  0x000000012a212f20: 611b 00b4 | 2b08 40b9 | 6a11 59d2 | 4a21 40f9 
+
+  0x000000012a212f30: ;   {metadata('clojure/lang/ASeq')}
+  0x000000012a212f30: 0c84 9ad2 | 8c20 a0f2 | 0cf0 c1f2 | 5f01 0ceb | 8103 0054 | e003 01aa | fd7b 45a9 | ff83 0191 
+  0x000000012a212f50: 8897 42f9 | ff63 28eb | 4302 0054 | fd7b bfa9 | fd03 0091 
+
+  0x000000012a212f64: ;   {runtime_call SharedRuntime::enable_stack_reserved_zone(JavaThread*)}
+  0x000000012a212f64: 08bb 9bd2 | e862 a1f2 | 2800 c0f2 | e003 1caa | 0001 3fd6 | bf03 0091 | fd7b c1a8 
+
+  0x000000012a212f80: ;   {runtime_call throw_delayed_StackOverflowError_blob (shared runtime)}
+  0x000000012a212f80: 0820 90d2 | c834 a5f2 | 2800 c0f2 | 0001 1fd6 
+
+  0x000000012a212f90: ;   {external_word}
+  0x000000012a212f90: 60dc 90d2 | 0068 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000012a212fa0: ;   {poll_return}
+  0x000000012a212fa0: 8817 40f9 | ff63 28eb | e875 0054 | c003 5fd6 
+
+  0x000000012a212fb0: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a212fb0: ac20 a0d2 | 0cd8 95f2 | 7f01 0c6b | 8116 0054 | ee03 01aa | cf71 0091 | ebfd df88 | 8aef 41f9 
+  0x000000012a212fd0: 5101 40f9 | 2b15 0034 | edfd df88 | 700f 0d8b 
+
+  0x000000012a212fe0: ; implicit exception: dispatches to 0x000000012a213908
+  0x000000012a212fe0: 0a0a 40b9 
+
+  0x000000012a212fe4: ;   {metadata('java/util/concurrent/locks/ReentrantLock')}
+  0x000000012a212fe4: 0c05 a0d2 | 0c88 83f2 | 5f01 0c6b | c133 0054 | 000e 40b9 | e031 0034 | 6a0f 008b | ec03 0032 
+  0x000000012a213004: ed03 1f2a | 4b61 0091 | e803 0daa | 6cfd e888 | 1f01 0d6b | ec17 9f1a | fdfd df88 | cc35 0034 
+  0x000000012a213024: 4a31 0091 | 8c23 4139 | cc48 0035 | 2b02 1bcb | 6bfd 43d3 | 4b01 00b9 | 4c01 11ca | 8cfd 58d3 
+  0x000000012a213044: cc00 00b4 | 4cfd 49d3 | 8d2b 40f9 | 8869 6d38 | 4800 0036 | 9f69 2d38 | fd34 0034 | cb11 40b9 
+  0x000000012a213064: 6b2c 0034 | fd03 0faa | ee47 00a9 | f00b 00f9 | e103 0baa | 4b00 00b4 | 610f 0b8b | 09be 95d2 
+  0x000000012a213084: 89d6 bcf2 | 090f c0f2 
+
+  0x000000012a21308c: ; ImmutableOopMap {[0]=Oop rfp=Derived_oop_[0] [8]=Oop [16]=Oop }
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::force@12 (line 50)
+                      ; - clojure.lang.LazySeq::realize@23 (line 87)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {virtual_call}
+  0x000000012a21308c: a967 ed97 
+
+  0x000000012a213090: ;   {post_call_nop}
+  0x000000012a213090: 1f20 03d5 | 1f51 80f2 | 1f00 80f2 | e203 1faa | ee03 40f9 | cb41 0091 | 9023 4139 | d047 0035 
+  0x000000012a2130b0: 6201 00b9 | ca51 0091 | 8b23 4139 | 0b4a 0035 | 0c00 1beb | 8c21 9f9a | 8cfd 43d3 | 4c01 00b9 
+  0x000000012a2130d0: 4b01 00ca | 6bfd 58d3 | eb00 00b4 | c000 00b4 | 4bfd 49d3 | 8d2b 40f9 | 6869 6d38 | 4800 0036 
+  0x000000012a2130f0: 7f69 2d38 | ef03 1daa | f1c3 40a9 | e103 1faa | ca51 0091 | 8c23 4139 | 6c4a 0035 | 4101 00b9 
+  0x000000012a213110: 2025 00b4 | 0a08 40b9 
+
+  0x000000012a213118: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a213118: ac20 a0d2 | 0cd8 95f2 | 5f01 0c6b | 6103 0054 
+
+  0x000000012a213128: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a213128: bd20 a0d2 | 1dd8 95f2 | 0600 0014 | 1f20 03d5 | 1f20 03d5 | 1f20 03d5 | ee3f 40a9 | f047 41a9 
+  0x000000012a213148: ; implicit exception: dispatches to 0x000000012a213878
+  0x000000012a213148: 0b08 40b9 
+
+  0x000000012a21314c: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a21314c: ac20 a0d2 | 0cd8 95f2 | 7f01 0c6b | 0126 0054 | e103 00aa | ee3f 00a9 | f047 01a9 
+
+  0x000000012a213168: ; ImmutableOopMap {[0]=Oop [8]=Derived_oop_[0] [16]=Oop [24]=Oop }
+                      ;*invokespecial sval {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::unwrap@11 (line 75)
+                      ; - clojure.lang.LazySeq::realize@45 (line 91)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {optimized virtual_call}
+  0x000000012a213168: 3ef7 0294 
+
+  0x000000012a21316c: ;   {post_call_nop}
+  0x000000012a21316c: 1f20 03d5 | 9f6c 80f2 | 1f20 80f2 | a021 00b4 | 0b08 40b9 | 7f01 1d6b | e0fd ff54 | ee3f 40a9 
+  0x000000012a21318c: f047 41a9 | 0b08 40b9 | 6a11 59d2 | 4a21 40f9 
+
+  0x000000012a21319c: ;   {metadata('clojure/lang/ASeq')}
+  0x000000012a21319c: 0c84 9ad2 | 8c20 a0f2 | 0cf0 c1f2 | 5f01 0ceb | a107 0054 | ca61 0091 | 8d23 4139 | 2d48 0035 
+  0x000000012a2131bc: 0c00 1beb | 8c21 9f9a | 8cfd 43d3 | 4c01 00b9 | 4d01 00ca | adfd 58d3 | ed00 00b4 | c000 00b4 
+  0x000000012a2131dc: 4dfd 49d3 | 8b2b 40f9 | a869 6b38 | 4800 0036 | bf69 2b38 | e003 1faa | 8c23 4139 | 2c49 0035 
+  0x000000012a2131fc: e0fd 9f88 | 0f0e 40b9 | 6a0f 0f8b | 4f22 0034 | 4b61 0091 | 6cfd df88 | 5d0d 40b9 | ed03 1daa 
+  0x000000012a21321c: 5d00 00b4 | 6d0f 1d8b | bf01 11eb | 4127 0054 | 9d05 0051 | 9f05 0071 | 4124 0054 | f103 1faa 
+  0x000000012a21323c: 4c31 0091 | 8d23 4139 | cd49 0035 | 9101 00b9 | 7dfd 9f88 | 4a41 0091 | 5dfd df88 | 7d21 0035 
+  0x000000012a21325c: fd03 0eaa | e103 1faa 
+
+  0x000000012a213264: ; ImmutableOopMap {rfp=Oop }
+                      ;*invokestatic signalNext {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@12 (line 1100)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {static_call}
+  0x000000012a213264: 0714 0094 
+
+  0x000000012a213268: ;   {post_call_nop}
+  0x000000012a213268: 1f20 03d5 | 1f8c 80f2 | 1f40 80f2 | ee03 1daa | ca19 40b9 | e003 0aaa | 4a00 00b4 | 600f 0a8b 
+  0x000000012a213288: 30ff ff17 
+
+  0x000000012a21328c: ; ImmutableOopMap {}
+                      ;*invokestatic seqFrom {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.RT::seq@28 (line 557)
+                      ;   {static_call}
+  0x000000012a21328c: 7d7b 0194 
+
+  0x000000012a213290: ;   {post_call_nop}
+  0x000000012a213290: 1f20 03d5 | 1f91 80f2 | 1f60 80f2 | 2bff ff17 
+
+  0x000000012a2132a0: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a2132a0: ac20 a0d2 | 0cd8 95f2 | 7f01 0c6b | a117 0054 | 0270 0091 | 4bfc df88 | ab16 0034 | 4bfc df88 
+  0x000000012a2132c0: 630f 0b8b 
+
+  0x000000012a2132c4: ; implicit exception: dispatches to 0x000000012a213924
+  0x000000012a2132c4: 6a08 40b9 
+
+  0x000000012a2132c8: ;   {metadata('java/util/concurrent/locks/ReentrantLock')}
+  0x000000012a2132c8: 0c05 a0d2 | 0c88 83f2 | 5f01 0c6b | 8124 0054 | 640c 40b9 | 8422 0034 | 6a0f 048b | ec03 0032 
+  0x000000012a2132e8: ed03 1f2a | 4b61 0091 | e803 0daa | 6cfd e888 | 1f01 0d6b | eb17 9f1a | 5dfc df88 | 8b25 0034 
+  0x000000012a213308: 4a31 0091 | 8d23 4139 | 6d46 0035 | 2c02 1bcb | 8cfd 43d3 | 4c01 00b9 | 4d01 11ca | adfd 58d3 
+  0x000000012a213328: cd00 00b4 | 4dfd 49d3 | 8b2b 40f9 | a869 6b38 | 4800 0036 | bf69 2b38 | dd24 0034 | 0a10 40b9 
+  0x000000012a213348: ea15 0034 | fd03 0faa | ee47 00a9 | f003 01a9 | e20f 02a9 | e103 0aaa | 4a00 00b4 | 610f 0a8b 
+  0x000000012a213368: 09c3 95d2 | 89d6 bcf2 | 090f c0f2 
+
+  0x000000012a213374: ; ImmutableOopMap {[0]=Oop rfp=Derived_oop_[0] [8]=Oop [16]=Oop [24]=Oop [32]=Derived_oop_[24] [40]=Oop }
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::force@12 (line 50)
+                      ; - clojure.lang.LazySeq::realize@23 (line 87)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {virtual_call}
+  0x000000012a213374: a332 e297 
+
+  0x000000012a213378: ;   {post_call_nop}
+  0x000000012a213378: 1f20 03d5 | 1fae 80f2 | 1f80 80f2 | ea03 00aa | e00f 40f9 | 0b50 0091 | 8f23 4139 | 8f45 0035 
+  0x000000012a213398: 4e01 1beb | ce21 9f9a | cefd 43d3 | 6e01 00b9 | 6f01 0aca | effd 58d3 | ef00 00b4 | ca00 00b4 
+  0x000000012a2133b8: 6ffd 49d3 | 902b 40f9 | e869 7038 | 4800 0036 | ff69 3038 | e103 0aaa | ef03 1faa | 0c40 0091 
+  0x000000012a2133d8: 8b23 4139 | 0b46 0035 | 8f01 00b9 | ee03 40f9 | ef03 1daa | f1c3 40a9 | e20f 42a9 | e403 1faa 
+  0x000000012a2133f8: 0a50 0091 | 8d23 4139 | ad47 0035 | 4401 00b9 | 010f 00b4 | 2a08 40b9 
+
+  0x000000012a213410: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a213410: ac20 a0d2 | 0cd8 95f2 | 5f01 0c6b | 610e 0054 
+
+  0x000000012a213420: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a213420: bd20 a0d2 | 1dd8 95f2 | 0600 0014 | 1f20 03d5 | ee3f 40a9 | f003 41a9 | f10f 42a9 | e21b 40f9 
+  0x000000012a213440: ; implicit exception: dispatches to 0x000000012a2138e8
+  0x000000012a213440: 2b08 40b9 
+
+  0x000000012a213444: ;   {metadata('clojure/lang/LazySeq')}
+  0x000000012a213444: aa20 a0d2 | 0ad8 95f2 | 7f01 0a6b | 6112 0054 | ee3f 00a9 | f003 01a9 | f10f 02a9 | e21b 00f9 
+  0x000000012a213464: ; ImmutableOopMap {[0]=Oop [8]=Derived_oop_[0] [16]=Oop [24]=Oop [48]=Derived_oop_[24] [32]=Oop [40]=Oop }
+                      ;*invokespecial sval {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::unwrap@11 (line 75)
+                      ; - clojure.lang.LazySeq::realize@45 (line 91)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {optimized virtual_call}
+  0x000000012a213464: e731 e297 
+
+  0x000000012a213468: ;   {post_call_nop}
+  0x000000012a213468: 1f20 03d5 | 1fcc 80f2 | 1fa0 80f2 | e103 00aa | 8000 00b4 | 0b08 40b9 | 7f01 1d6b | 60fd ff54 
+  0x000000012a213488: ee3f 40a9 | f003 41a9 | e38b 42a9 | fd03 02aa | ee3f 00a9 | f003 01a9 | e317 00f9 
+
+  0x000000012a2134a4: ; ImmutableOopMap {[0]=Oop [8]=Derived_oop_[0] [16]=Oop [24]=Oop rfp=Derived_oop_[24] [32]=Oop [40]=Oop }
+                      ;*invokestatic seq {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {static_call}
+  0x000000012a2134a4: d732 e297 
+
+  0x000000012a2134a8: ;   {post_call_nop}
+  0x000000012a2134a8: 1f20 03d5 | 1fd4 80f2 | 1fc0 80f2 | f00f 40f9 | 0a62 0091 | 8c23 4139 | 2c45 0035 | 0d00 1beb 
+  0x000000012a2134c8: ad21 9f9a | adfd 43d3 | 4d01 00b9 | 4c01 00ca | 8cfd 58d3 | ec00 00b4 | c000 00b4 | 4cfd 49d3 
+  0x000000012a2134e8: 8b2b 40f9 | 8869 6b38 | 4800 0036 | 9f69 2b38 | ef03 1faa | 8c23 4139 | ec45 0035 | afff 9f88 
+  0x000000012a213508: ea17 40f9 | 4f0d 40b9 | 6a0f 0f8b | cf11 0034 | 4b61 0091 | 6dfd df88 | 5d0d 40b9 | ec03 1daa 
+  0x000000012a213528: 5d00 00b4 | 6c0f 1d8b | f113 40f9 | 9f01 11eb | e115 0054 | bd05 0051 | bf05 0071 | a112 0054 
+  0x000000012a213548: e003 1faa | 4c31 0091 | 8f23 4139 | cf45 0035 | 8001 00b9 | 7dfd 9f88 | 4a41 0091 | 5dfd df88 
+  0x000000012a213568: fd10 0035 | e103 1faa 
+
+  0x000000012a213570: ; ImmutableOopMap {[0]=Oop [8]=Derived_oop_[0] [16]=Oop [24]=Oop [32]=Oop }
+                      ;*invokestatic signalNext {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@12 (line 1100)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {static_call}
+  0x000000012a213570: a432 e297 
+
+  0x000000012a213574: ;   {post_call_nop}
+  0x000000012a213574: 1f20 03d5 | 9fed 80f2 | 1fe0 80f2 | ee3f 40a9 | f003 41a9 | f113 40f9 | 0b18 40b9 | e003 0baa 
+  0x000000012a213594: 4b00 00b4 | 600f 0b8b | 05ff ff17 | e103 00aa | f107 00f9 | 0500 0014 | ee3f 40a9 | f047 41a9 
+  0x000000012a2135b4: e103 00aa | f107 00f9 | fd03 0faa | ee03 00f9 | f00b 00f9 
+
+  0x000000012a2135c8: ; ImmutableOopMap {[0]=Oop rfp=Derived_oop_[0] [8]=Oop [16]=Oop }
+                      ;*invokestatic seqFrom {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.lang.RT::seq@28 (line 557)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {static_call}
+  0x000000012a2135c8: ae7a 0194 
+
+  0x000000012a2135cc: ;   {post_call_nop}
+  0x000000012a2135cc: 1f20 03d5 | 9ff8 80f2 | 1f00 81f2 | ee03 40f9 | ef03 1daa | f1c3 40a9 | f3fe ff17 | f113 00f9 
+  0x000000012a2135ec: aaff ff17 | ca15 40b9 | e003 0aaa | 4a00 00b4 | 600f 0a8b | bffe ff17 | 0b14 40b9 | e103 0baa 
+  0x000000012a21360c: 4b00 00b4 | 610f 0b8b | 78ff ff17 | ee43 00a9 | 2104 8012 | fd03 00aa 
+
+  0x000000012a213624: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::unwrap@8 (line 75)
+                      ; - clojure.lang.LazySeq::realize@45 (line 91)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213624: f798 e797 
+
+  0x000000012a213628: ;   {post_call_nop}
+  0x000000012a213628: 1f20 03d5 | 1f04 81f2 | 1f20 81f2 | f003 00f9 | fd03 0eaa | 2101 8012 
+
+  0x000000012a213640: ; ImmutableOopMap {rfp=Oop [0]=Oop }
+                      ;*invokevirtual lock {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.ReentrantLock::lock@4 (line 323)
+                      ; - clojure.lang.LazySeq::realize@10 (line 83)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213640: f098 e797 
+
+  0x000000012a213644: ;   {post_call_nop}
+  0x000000012a213644: 1f20 03d5 | 9f07 81f2 | 1f40 81f2 | fd03 0eaa | 2101 8012 
+
+  0x000000012a213658: ; ImmutableOopMap {rfp=Oop }
+                      ;*invokevirtual release {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213658: ea98 e797 
+
+  0x000000012a21365c: ;   {post_call_nop}
+  0x000000012a21365c: 1f20 03d5 | 9f0a 81f2 | 1f60 81f2 | ed03 00b9 | fd03 0eaa | 2104 8012 
+
+  0x000000012a213674: ; ImmutableOopMap {rfp=Oop [0]=NarrowOop }
+                      ;*invokeinterface lock {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::realize@10 (line 83)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213674: e398 e797 
+
+  0x000000012a213678: ;   {post_call_nop}
+  0x000000012a213678: 1f20 03d5 | 1f0e 81f2 | 1f80 81f2 | ee03 00f9 | 6102 8012 
+
+  0x000000012a21368c: ; ImmutableOopMap {rfp=NarrowOop [0]=Oop }
+                      ;*invokestatic signalNext {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@12 (line 1100)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a21368c: dd98 e797 
+
+  0x000000012a213690: ;   {post_call_nop}
+  0x000000012a213690: 1f20 03d5 | 1f11 81f2 | 1fa0 81f2 | f003 00a9 | e307 01a9 | fd03 0eaa | 2104 8012 
+
+  0x000000012a2136ac: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=Oop [24]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::unwrap@8 (line 75)
+                      ; - clojure.lang.LazySeq::realize@45 (line 91)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2136ac: d598 e797 
+
+  0x000000012a2136b0: ;   {post_call_nop}
+  0x000000012a2136b0: 1f20 03d5 | 1f15 81f2 | 1fc0 81f2 | ee03 00f9 | ef0b 00b9 | 4117 8012 
+
+  0x000000012a2136c8: ; ImmutableOopMap {[0]=Oop [8]=NarrowOop }
+                      ;*ifne {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.util.concurrent.locks.ReentrantLock$Sync::tryRelease@26 (line 177)
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@2 (line 1099)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2136c8: ce98 e797 
+
+  0x000000012a2136cc: ;   {post_call_nop}
+  0x000000012a2136cc: 1f20 03d5 | 9f18 81f2 | 1fe0 81f2 | f143 00a9 | e033 0229 | fd03 0eaa | 4117 8012 
+
+  0x000000012a2136e8: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=NarrowOop }
+                      ;*ifeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.util.concurrent.locks.ReentrantLock$NonfairSync::initialTryLock@10 (line 226)
+                      ; - java.util.concurrent.locks.ReentrantLock$Sync::lock@1 (line 153)
+                      ; - java.util.concurrent.locks.ReentrantLock::lock@4 (line 323)
+                      ; - clojure.lang.LazySeq::realize@10 (line 83)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2136e8: c698 e797 
+
+  0x000000012a2136ec: ;   {post_call_nop}
+  0x000000012a2136ec: 1f20 03d5 | 9f1c 81f2 | 1f00 82f2 | ee43 00a9 | 4117 8012 
+
+  0x000000012a213700: ; ImmutableOopMap {rfp=NarrowOop [0]=Oop [8]=Oop }
+                      ;*ifnull {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.LazySeq::realize@19 (line 86)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213700: c098 e797 
+
+  0x000000012a213704: ;   {post_call_nop}
+  0x000000012a213704: 1f20 03d5 | 9f1f 81f2 | 1f20 82f2 | ee47 00a9 | ef13 00b9 | 4117 8012 
+
+  0x000000012a21371c: ; ImmutableOopMap {rfp=NarrowOop [0]=Oop [8]=Oop [16]=NarrowOop }
+                      ;*if_acmpeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.util.concurrent.locks.ReentrantLock$Sync::tryRelease@14 (line 175)
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@2 (line 1099)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a21371c: b998 e797 
+
+  0x000000012a213720: ;   {post_call_nop}
+  0x000000012a213720: 1f20 03d5 | 1f23 81f2 | 1f40 82f2 | f003 00a9 | e30b 00f9 | fd03 0eaa | 2101 8012 
+
+  0x000000012a21373c: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=Oop }
+                      ;*invokevirtual lock {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.ReentrantLock::lock@4 (line 323)
+                      ; - clojure.lang.LazySeq::realize@10 (line 83)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a21373c: b198 e797 
+
+  0x000000012a213740: ;   {post_call_nop}
+  0x000000012a213740: 1f20 03d5 | 1f27 81f2 | 1f60 82f2 | fd03 10aa | 2101 8012 
+
+  0x000000012a213754: ; ImmutableOopMap {rfp=Oop [0]=Oop [16]=Oop }
+                      ;*invokevirtual release {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213754: ab98 e797 
+
+  0x000000012a213758: ;   {post_call_nop}
+  0x000000012a213758: 1f20 03d5 | 1f2a 81f2 | 1f80 82f2 | f003 00a9 | eb13 00b9 | fd03 0eaa | 2104 8012 
+
+  0x000000012a213774: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=NarrowOop }
+                      ;*invokeinterface lock {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::realize@10 (line 83)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213774: a398 e797 
+
+  0x000000012a213778: ;   {post_call_nop}
+  0x000000012a213778: 1f20 03d5 | 1f2e 81f2 | 1fa0 82f2 | 6102 8012 
+
+  0x000000012a213788: ; ImmutableOopMap {rfp=NarrowOop [0]=Oop [16]=Oop [24]=Oop }
+                      ;*invokestatic signalNext {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@12 (line 1100)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213788: 9e98 e797 
+
+  0x000000012a21378c: ;   {post_call_nop}
+  0x000000012a21378c: 1f20 03d5 | 9f30 81f2 | 1fc0 82f2 | f007 00f9 | ef1b 00b9 | 4117 8012 
+
+  0x000000012a2137a4: ; ImmutableOopMap {[0]=Oop [8]=Oop [16]=Oop [24]=NarrowOop }
+                      ;*ifne {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.util.concurrent.locks.ReentrantLock$Sync::tryRelease@26 (line 177)
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@2 (line 1099)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2137a4: 9798 e797 
+
+  0x000000012a2137a8: ;   {post_call_nop}
+  0x000000012a2137a8: 1f20 03d5 | 1f34 81f2 | 1fe0 82f2 | f143 00a9 | e00f 01a9 | e42f 0429 | fd03 0eaa | 4117 8012 
+  0x000000012a2137c8: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=Oop [24]=Oop [32]=NarrowOop }
+                      ;*ifeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.util.concurrent.locks.ReentrantLock$NonfairSync::initialTryLock@10 (line 226)
+                      ; - java.util.concurrent.locks.ReentrantLock$Sync::lock@1 (line 153)
+                      ; - java.util.concurrent.locks.ReentrantLock::lock@4 (line 323)
+                      ; - clojure.lang.LazySeq::realize@10 (line 83)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2137c8: 8e98 e797 
+
+  0x000000012a2137cc: ;   {post_call_nop}
+  0x000000012a2137cc: 1f20 03d5 | 9f38 81f2 | 1f00 83f2 | ee43 00a9 | e00f 01a9 | 4117 8012 
+
+  0x000000012a2137e4: ; ImmutableOopMap {rfp=NarrowOop [0]=Oop [8]=Oop [16]=Oop [24]=Oop }
+                      ;*ifnull {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.LazySeq::realize@19 (line 86)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2137e4: 8798 e797 
+
+  0x000000012a2137e8: ;   {post_call_nop}
+  0x000000012a2137e8: 1f20 03d5 | 1f3c 81f2 | 1f20 83f2 | f107 00f9 | ef23 00b9 | 4117 8012 
+
+  0x000000012a213800: ; ImmutableOopMap {rfp=NarrowOop [0]=Oop [8]=Oop [16]=Oop [24]=Oop [32]=NarrowOop }
+                      ;*if_acmpeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) java.util.concurrent.locks.ReentrantLock$Sync::tryRelease@14 (line 175)
+                      ; - java.util.concurrent.locks.AbstractQueuedSynchronizer::release@2 (line 1099)
+                      ; - java.util.concurrent.locks.ReentrantLock::unlock@5 (line 495)
+                      ; - clojure.lang.LazySeq::realize@63 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213800: 8098 e797 
+
+  0x000000012a213804: ;   {post_call_nop}
+  0x000000012a213804: 1f20 03d5 | 9f3f 81f2 | 1f40 83f2 | e103 00aa | 0200 0014 | e103 00aa | fd7b 45a9 | ff83 0191 
+  0x000000012a213824: 8897 42f9 | ff63 28eb | 4302 0054 | fd7b bfa9 | fd03 0091 
+
+  0x000000012a213838: ;   {runtime_call SharedRuntime::enable_stack_reserved_zone(JavaThread*)}
+  0x000000012a213838: 08bb 9bd2 | e862 a1f2 | 2800 c0f2 | e003 1caa | 0001 3fd6 | bf03 0091 | fd7b c1a8 
+
+  0x000000012a213854: ;   {runtime_call throw_delayed_StackOverflowError_blob (shared runtime)}
+  0x000000012a213854: 0820 90d2 | c834 a5f2 | 2800 c0f2 | 0001 1fd6 
+
+  0x000000012a213864: ;   {external_word}
+  0x000000012a213864: 60dc 90d2 | 0068 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000012a213874: ;   {runtime_call rethrow_blob (C2 runtime)}
+  0x000000012a213874: c3b8 e717 | f003 00f9 | fd03 0eaa | 6101 8012 
+
+  0x000000012a213884: ; ImmutableOopMap {rfp=Oop [0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::unwrap@8 (line 75)
+                      ; - clojure.lang.LazySeq::realize@45 (line 91)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213884: 5f98 e797 
+
+  0x000000012a213888: ;   {post_call_nop}
+  0x000000012a213888: 1f20 03d5 | 1f50 81f2 | 1f60 83f2 | 0100 0014 | fd03 00aa | 0400 0014 | fd03 00aa | 0200 0014 
+  0x000000012a2138a8: fd03 00aa | 410d 8012 
+
+  0x000000012a2138b0: ; ImmutableOopMap {rfp=Oop [0]=Oop [16]=Oop }
+                      ;*astore_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::realize@71 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2138b0: 5498 e797 
+
+  0x000000012a2138b4: ;   {post_call_nop}
+  0x000000012a2138b4: 1f20 03d5 | 9f55 81f2 | 1f80 83f2 | fd03 00aa | 0400 0014 | fd03 00aa | 0200 0014 | fd03 00aa 
+  0x000000012a2138d4: 410d 8012 
+
+  0x000000012a2138d8: ; ImmutableOopMap {rfp=Oop [0]=Oop [16]=Oop [24]=Oop [40]=Oop }
+                      ;*astore_3 {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::realize@71 (line 97)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2138d8: 4a98 e797 
+
+  0x000000012a2138dc: ;   {post_call_nop}
+  0x000000012a2138dc: 1f20 03d5 | 9f5a 81f2 | 1fa0 83f2 | f003 00a9 | e30b 00f9 | fd03 0eaa | 6101 8012 
+
+  0x000000012a2138f8: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.LazySeq::unwrap@8 (line 75)
+                      ; - clojure.lang.LazySeq::realize@45 (line 91)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a2138f8: 4298 e797 
+
+  0x000000012a2138fc: ;   {post_call_nop}
+  0x000000012a2138fc: 1f20 03d5 | 9f5e 81f2 | 1fc0 83f2 | ed03 00b9 | fd03 0eaa | 4117 8012 
+
+  0x000000012a213914: ; ImmutableOopMap {rfp=Oop [0]=NarrowOop }
+                      ;*ifnull {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.LazySeq::realize@6 (line 82)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213914: 3b98 e797 
+
+  0x000000012a213918: ;   {post_call_nop}
+  0x000000012a213918: 1f20 03d5 | 1f62 81f2 | 1fe0 83f2 | f003 00a9 | eb13 00b9 | fd03 0eaa | 4117 8012 
+
+  0x000000012a213934: ; ImmutableOopMap {rfp=Oop [0]=Oop [8]=Oop [16]=NarrowOop }
+                      ;*ifnull {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.lang.LazySeq::realize@6 (line 82)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ; - clojure.lang.LazySeq::realize@51 (line 92)
+                      ; - clojure.lang.LazySeq::seq@8 (line 104)
+                      ; - clojure.lang.RT::seq@23 (line 555)
+                      ;   {runtime_call UncommonTrapBlob}
+  0x000000012a213934: 3398 e797 
+
+  0x000000012a213938: ;   {post_call_nop}
+  0x000000012a213938: 1f20 03d5 | 1f66 81f2 | 1f00 84f2 | 4b01 40b9 | 4b00 00b4 | 6b0f 0b8b | 0bb7 ffb4 | 8c23 40f9 
+  0x000000012a213958: cc00 00b4 | 8c21 00d1 | 8c23 00f9 | 8d1f 40f9 | ab69 2cf8 | b1fd ff17 | ea3b bda9 | ef43 01a9 
+  0x000000012a213978: f17f 02a9 | e003 0baa | e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ef43 41a9 
+  0x000000012a213998: f17f 42a9 | ea3b c3a8 | a4fd ff17 | 6f01 40b9 | 4f00 00b4 | 6f0f 0f8b | 0fb8 ffb4 | 9023 40f9 
+  0x000000012a2139b8: d000 00b4 | 1022 00d1 | 9023 00f9 | 911f 40f9 | 2f6a 30f8 | b9fd ff17 | e00b bea9 | eb3b 01a9 
+  0x000000012a2139d8: e003 0faa | e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | eb3b 41a9 | e00b c2a8 
+  0x000000012a2139f8: aefd ff17 | 4c01 40b9 | 4c00 00b4 | 6c0f 0c8b | ccb5 ffb4 | 8b23 40f9 | cb00 00b4 | 6b21 00d1 
+  0x000000012a213a18: 8b23 00f9 | 8d1f 40f9 | ac69 2bf8 | a7fd ff17 | e02b bea9 | ee7f 01a9 | e003 0caa | e103 1caa 
+  0x000000012a213a38: 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ee7f 41a9 | e02b c2a8 | 9cfd ff17 | 4d01 40b9 
+  0x000000012a213a58: 4d00 00b4 | 6d0f 0d8b | 6db5 ffb4 | 8c23 40f9 | cc00 00b4 | 8c21 00d1 | 8c23 00f9 | 8b1f 40f9 
+  0x000000012a213a78: 6d69 2cf8 | a4fd ff17 | e007 bca9 | ea3b 01a9 | ef43 02a9 | f17f 03a9 | e003 0daa | e103 1caa 
+  0x000000012a213a98: 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ea3b 41a9 | ef43 42a9 | f17f 43a9 | e007 c4a8 
+  0x000000012a213ab8: 95fd ff17 | 4c01 40b9 | 4c00 00b4 | 6c0f 0c8b | acb7 ffb4 | 8d23 40f9 | cd00 00b4 | ad21 00d1 
+  0x000000012a213ad8: 8d23 00f9 | 8b1f 40f9 | 6c69 2df8 | b6fd ff17 | e02b bda9 | ee3f 01a9 | f047 02a9 | e003 0caa 
+  0x000000012a213af8: e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ee3f 41a9 | f047 42a9 | e02b c3a8 
+  0x000000012a213b18: a9fd ff17 | eb01 40b9 | 4b00 00b4 | 6b0f 0b8b | abb6 ffb4 | 8c23 40f9 | cc00 00b4 | 8c21 00d1 
+  0x000000012a213b38: 8c23 00f9 | 8a1f 40f9 | 4b69 2cf8 | aefd ff17 | e03b bda9 | ef43 01a9 | f17f 02a9 | e003 0baa 
+  0x000000012a213b58: e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ef43 41a9 | f17f 42a9 | e03b c3a8 
+  0x000000012a213b78: a1fd ff17 | 9001 40b9 | 5000 00b4 | 700f 108b | 10b6 ffb4 | 8d23 40f9 | cd00 00b4 | ad21 00d1 
+  0x000000012a213b98: 8d23 00f9 | 8f1f 40f9 | f069 2df8 | a9fd ff17 | ea2f bda9 | ec3b 01a9 | f17f 02a9 | e003 10aa 
+  0x000000012a213bb8: e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ec3b 41a9 | f17f 42a9 | ea2f c3a8 
+  0x000000012a213bd8: 9cfd ff17 | 4c01 40b9 | 4c00 00b4 | 6c0f 0c8b | 6cb9 ffb4 | 8d23 40f9 | cd00 00b4 | ad21 00d1 
+  0x000000012a213bf8: 8d23 00f9 | 8b1f 40f9 | 6c69 2df8 | c4fd ff17 | e00b bca9 | e32b 01a9 | ee3f 02a9 | f047 03a9 
+  0x000000012a213c18: e003 0caa | e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | e32b 41a9 | ee3f 42a9 
+  0x000000012a213c38: f047 43a9 | e00b c4a8 | b5fd ff17 | 6e01 40b9 | 4e00 00b4 | 6e0f 0e8b | 4eba ffb4 | 8f23 40f9 
+  0x000000012a213c58: cf00 00b4 | ef21 00d1 | 8f23 00f9 | 901f 40f9 | 0e6a 2ff8 | cbfd ff17 | e02b bea9 | eb7f 01a9 
+  0x000000012a213c78: e003 0eaa | e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | eb7f 41a9 | e02b c2a8 
+  0x000000012a213c98: c0fd ff17 | 8a01 40b9 | 4a00 00b4 | 6a0f 0a8b | cab9 ffb4 | 8b23 40f9 | cb00 00b4 | 6b21 00d1 
+  0x000000012a213cb8: 8b23 00f9 | 8d1f 40f9 | aa69 2bf8 | c7fd ff17 | e007 bea9 | ec3f 01a9 | e003 0aaa | e103 1caa 
+  0x000000012a213cd8: 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ec3f 41a9 | e007 c2a8 | bcfd ff17 | 4c01 40b9 
+  0x000000012a213cf8: 4c00 00b4 | 6c0f 0c8b | 2cb8 ffb4 | 8d23 40f9 | cd00 00b4 | ad21 00d1 | 8d23 00f9 | 8b1f 40f9 
+  0x000000012a213d18: 6c69 2df8 | bafd ff17 | e007 bba9 | e20f 01a9 | e42b 02a9 | ee3f 03a9 | f047 04a9 | e003 0caa 
+  0x000000012a213d38: e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | e20f 41a9 | e42b 42a9 | ee3f 43a9 
+  0x000000012a213d58: f047 44a9 | e007 c5a8 | a9fd ff17 | 4d01 40b9 | 4d00 00b4 | 6d0f 0d8b | adba ffb4 | 8c23 40f9 
+  0x000000012a213d78: cc00 00b4 | 8c21 00d1 | 8c23 00f9 | 8b1f 40f9 | 6d69 2cf8 | cefd ff17 | e02b bea9 | f07f 01a9 
+  0x000000012a213d98: e003 0daa | e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 | f07f 41a9 | e02b c2a8 
+  0x000000012a213db8: c3fd ff17 | ab03 40b9 | 4b00 00b4 | 6b0f 0b8b | ebb9 ffb4 | 8c23 40f9 | cc00 00b4 | 8c21 00d1 
+  0x000000012a213dd8: 8c23 00f9 | 8a1f 40f9 | 4b69 2cf8 | c8fd ff17 | ef43 bfa9 | e003 0baa | e103 1caa | 882b 9cd2 
+  0x000000012a213df8: c856 a1f2 | 2800 c0f2 | 0001 3fd6 | ef43 c1a8 | bffd ff17 | 8e01 40b9 | 4e00 00b4 | 6e0f 0e8b 
+  0x000000012a213e18: 0eba ffb4 | 8f23 40f9 | cf00 00b4 | ef21 00d1 | 8f23 00f9 | 8d1f 40f9 | ae69 2ff8 | c9fd ff17 
+  0x000000012a213e38: e02b bea9 | eb33 01a9 | e003 0eaa | e103 1caa | 882b 9cd2 | c856 a1f2 | 2800 c0f2 | 0001 3fd6 
+  0x000000012a213e58: eb33 41a9 | e02b c2a8 | befd ff17 
+
+  0x000000012a213e64: ;   {internal_word}
+  0x000000012a213e64: e889 ff10 | 8853 02f9 
+
+  0x000000012a213e6c: ;   {runtime_call SafepointBlob}
+  0x000000012a213e6c: 0535 e217 
+
+  0x000000012a213e70: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000012a213e70: 0848 90d2 | 2836 a5f2 | 2800 c0f2 | 0001 3fd6 | 28fc ff17 
+
+  0x000000012a213e84: ;   {entry_guard}
+  0x000000012a213e84: 0100 0000 
+[Stub Code]
+  0x000000012a213e88: ;   {trampoline_stub}
+  0x000000012a213e88: 4800 0058 | 0001 1fd6 | 30cf d629 | 0100 0000 
+
+  0x000000012a213e98: ;   {trampoline_stub}
+  0x000000012a213e98: 4800 0058 | 0001 1fd6 | 600e 2d2a | 0100 0000 
+
+  0x000000012a213ea8: ;   {trampoline_stub}
+  0x000000012a213ea8: 4800 0058 | 0001 1fd6 | 8082 212a | 0100 0000 
+
+  0x000000012a213eb8: ;   {trampoline_stub}
+  0x000000012a213eb8: 4800 0058 | 0001 1fd6 | 8020 272a | 0100 0000 
+
+  0x000000012a213ec8: ;   {trampoline_stub}
+  0x000000012a213ec8: 4800 0058 | 0001 1fd6 | 00fe a929 | 0100 0000 
+
+  0x000000012a213ed8: ;   {trampoline_stub}
+  0x000000012a213ed8: 4800 0058 | 0001 1fd6 | 00fc a929 | 0100 0000 
+
+  0x000000012a213ee8: ;   {trampoline_stub}
+  0x000000012a213ee8: 4800 0058 | 0001 1fd6 | 0000 aa29 | 0100 0000 
+
+  0x000000012a213ef8: ;   {trampoline_stub}
+  0x000000012a213ef8: 4800 0058 | 0001 1fd6 | 0000 aa29 | 0100 0000 
+
+  0x000000012a213f08: ;   {trampoline_stub}
+  0x000000012a213f08: 4800 0058 | 0001 1fd6 | 8020 272a | 0100 0000 
+
+  0x000000012a213f18: ;   {static_stub}
+  0x000000012a213f18: df3f 03d5 
+
+  0x000000012a213f1c: ;   {metadata(nullptr)}
+  0x000000012a213f1c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000012a213f2c: ;   {static_stub}
+  0x000000012a213f2c: df3f 03d5 
+
+  0x000000012a213f30: ;   {metadata({method} {0x0000000150415e18} 'seqFrom' '(Ljava/lang/Object;)Lclojure/lang/ISeq;' in 'clojure/lang/RT')}
+  0x000000012a213f30: 0cc3 8bd2 | 2c08 aaf2 | 2c00 c0f2 | b532 e217 
+
+  0x000000012a213f40: ;   {static_stub}
+  0x000000012a213f40: df3f 03d5 
+
+  0x000000012a213f44: ;   {metadata(nullptr)}
+  0x000000012a213f44: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000012a213f54: ;   {static_stub}
+  0x000000012a213f54: df3f 03d5 
+
+  0x000000012a213f58: ;   {metadata(nullptr)}
+  0x000000012a213f58: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000012a213f68: ;   {runtime_call DeoptimizationBlob}
+  0x000000012a213f68: 4635 e297 
+[Deopt Handler Entry Point]
+  0x000000012a213f6c: ffff ff17 
+[/MachCode]
+
+
+Compiled method (c2) 830 2294       4       clojure.core$seq__5486::invoke (7 bytes)
+ total in heap  [0x000000012a238cc8,0x000000012a238e98] = 464
+ main code      [0x000000012a238dc0,0x000000012a238e60] = 160
+ stub code      [0x000000012a238e60,0x000000012a238e90] = 48
+ oops           [0x000000012a238e90,0x000000012a238e98] = 8
+ mutable data [0x00000078e99d9780,0x00000078e99d97c0] = 64
+ relocation     [0x00000078e99d9780,0x00000078e99d97a8] = 40
+ metadata       [0x00000078e99d97a8,0x00000078e99d97c0] = 24
+ immutable data [0x00000078e9933cd0,0x00000078e9933d3c] = 108
+ dependencies   [0x00000078e9933cd0,0x00000078e9933cd8] = 8
+ handler table  [0x00000078e9933cd8,0x00000078e9933cf0] = 24
+ scopes pcs     [0x00000078e9933cf0,0x00000078e9933d20] = 48
+ scopes data    [0x00000078e9933d20,0x00000078e9933d38] = 24
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+  # {method} {0x00000001505789b8} 'invoke' '(Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core$seq__5486'
+  0x000000012a238dc0: 1f20 03d5 | 1f20 03d5 | 1f20 03d5 | 2808 40b9 | 2a09 40b9 | 1f01 0a6b | 4000 0054 
+
+  0x000000012a238ddc: ;   {runtime_call ic_miss_blob (shared runtime)}
+  0x000000012a238ddc: 099b e117 
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # this:     c_rarg1:c_rarg1 
+                        = 'clojure/core$seq__5486'
+  # parm0:    c_rarg2:c_rarg2 
+                        = 'java/lang/Object'
+  #           [sp+0x20]  (sp of caller)
+  0x000000012a238de0: e953 40d1 | 3f01 00f9 | ff83 00d1 | fd7b 01a9 | 6803 0018 | 8923 40b9 | 1f01 09eb | 6102 0054 
+  0x000000012a238e00: e103 02aa 
+
+  0x000000012a238e04: ; ImmutableOopMap {}
+                      ;*invokestatic seq {reexecute=0 rethrow=0 return_oop=1 return_scalarized=0}
+                      ; - clojure.core$seq__5486::invokeStatic@3 (line 139)
+                      ; - clojure.core$seq__5486::invoke@3 (line 139)
+                      ;   {static_call}
+  0x000000012a238e04: 3f68 ff97 
+
+  0x000000012a238e08: ;   {post_call_nop}
+  0x000000012a238e08: 1f20 03d5 | 1f28 80f2 | 1f00 80f2 | fd7b 41a9 | ff83 0091 
+
+  0x000000012a238e1c: ;   {poll_return}
+  0x000000012a238e1c: 8817 40f9 | ff63 28eb | c800 0054 | c003 5fd6 | e103 00aa | fd7b 41a9 | ff83 0091 
+
+  0x000000012a238e38: ;   {runtime_call rethrow_blob (C2 runtime)}
+  0x000000012a238e38: 5223 e717 
+
+  0x000000012a238e3c: ;   {internal_word}
+  0x000000012a238e3c: 08ff ff10 | 8853 02f9 
+
+  0x000000012a238e44: ;   {runtime_call SafepointBlob}
+  0x000000012a238e44: 0fa1 e117 
+
+  0x000000012a238e48: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000012a238e48: 0848 90d2 | 2836 a5f2 | 2800 c0f2 | 0001 3fd6 | eaff ff17 
+
+  0x000000012a238e5c: ;   {entry_guard}
+  0x000000012a238e5c: 0100 0000 
+[Stub Code]
+  0x000000012a238e60: ;   {trampoline_stub}
+  0x000000012a238e60: 4800 0058 | 0001 1fd6 | 002f 212a | 0100 0000 
+
+  0x000000012a238e70: ;   {static_stub}
+  0x000000012a238e70: df3f 03d5 
+
+  0x000000012a238e74: ;   {metadata(nullptr)}
+  0x000000012a238e74: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+
+  0x000000012a238e84: ;   {runtime_call DeoptimizationBlob}
+  0x000000012a238e84: 7fa1 e197 
+[Deopt Handler Entry Point]
+  0x000000012a238e88: ffff ff17 | 0000 0000 
+[/MachCode]
+
+
+Compiled method (c1) 832 2041       3       clojure.core.protocols$seq_reduce::invokeStatic (70 bytes)
+ total in heap  [0x000000012295af48,0x000000012295bad8] = 2960
+ main code      [0x000000012295b040,0x000000012295ba30] = 2544
+ stub code      [0x000000012295ba30,0x000000012295bac0] = 144
+ oops           [0x000000012295bac0,0x000000012295bad8] = 24
+ mutable data [0x00000078e995e4c0,0x00000078e995e648] = 392
+ relocation     [0x00000078e995e4c0,0x00000078e995e5c8] = 264
+ metadata       [0x00000078e995e5c8,0x00000078e995e648] = 128
+ immutable data [0x00000078e6b6de00,0x00000078e6b6dfcc] = 460
+ dependencies   [0x00000078e6b6de00,0x00000078e6b6de18] = 24
+ nul chk table  [0x00000078e6b6de18,0x00000078e6b6de40] = 40
+ scopes pcs     [0x00000078e6b6de40,0x00000078e6b6df40] = 256
+ scopes data    [0x00000078e6b6df40,0x00000078e6b6dfc8] = 136
+
+[Constant Pool (empty)]
+
+
+Loading hsdis library failed, undisassembled code is shown in MachCode section
+[MachCode]
+[Entry Point]
+[Inline Entry Point]
+[Verified Entry Point]
+[Verified Inline Entry Point]
+[Verified Inline Entry Point (RO)]
+  # {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce'
+  # parm0:    c_rarg1:c_rarg1 
+                        = 'java/lang/Object'
+  # parm1:    c_rarg2:c_rarg2 
+                        = 'java/lang/Object'
+  # parm2:    c_rarg3:c_rarg3 
+                        = 'java/lang/Object'
+  #           [sp+0x70]  (sp of caller)
+  0x000000012295b040: 1f20 03d5 | e953 40d1 | 3f01 00f9 | ffc3 01d1 | fd7b 06a9 | 2801 0018 | 8923 40b9 | 1f01 09eb 
+  0x000000012295b060: e000 0054 
+
+  0x000000012295b064: ;   {runtime_call Stub::method_entry_barrier_stub (stub gen)}
+  0x000000012295b064: 0848 90d2 | 2836 a5f2 | 2800 c0f2 | 0001 3fd6 | 0200 0014 | 0100 0000 | fd03 02aa 
+
+  0x000000012295b080: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b080: 0000 9ed2 | 8016 aaf2 | 2000 c0f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 4224 1f12 | 5f00 0071 
+  0x000000012295b0a0: e044 0054 | e327 00f9 
+
+  0x000000012295b0a8: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b0a8: 0000 9ed2 | 8016 aaf2 | 2000 c0f2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000012295b0c0: ;   {metadata(method data for {method} {0x0000000150578908} 'invokeStatic' '(Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core$seq__5486')}
+  0x000000012295b0c0: 00c6 8bd2 | a00e aaf2 | 2000 c0f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 424c 1f12 | 5f00 0071 
+  0x000000012295b0e0: e043 0054 
+
+  0x000000012295b0e4: ;   {metadata(method data for {method} {0x0000000150578908} 'invokeStatic' '(Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core$seq__5486')}
+  0x000000012295b0e4: 00c6 8bd2 | a00e aaf2 | 2000 c0f2 | 086c 40f9 | 0805 0091 | 086c 00f9 
+
+  0x000000012295b0fc: ; ImmutableOopMap {rfp=Oop [72]=Oop }
+                      ;*invokestatic seq {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core$seq__5486::invokeStatic@3 (line 139)
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@3 (line 24)
+                      ;   {static_call}
+  0x000000012295b0fc: 81df e295 
+
+  0x000000012295b100: ;   {post_call_nop}
+  0x000000012295b100: 1f20 03d5 | 1f37 80f2 | 1f00 80f2 | e103 00aa 
+
+  0x000000012295b110: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b110: 0000 9ed2 | 8016 aaf2 | 2000 c0f2 | 0874 40f9 | 0805 0091 | 0874 00f9 
+
+  0x000000012295b128: ;   {metadata(method data for {method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b128: 009e 8ad2 | c015 aaf2 | 2000 c0f2 | 0290 40b9 | 4208 0011 | 0290 00b9 | 424c 1f12 | 5f00 0071 
+  0x000000012295b148: a041 0054 | e003 1faa | 3f00 00eb 
+
+  0x000000012295b154: ;   {metadata(method data for {method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b154: 009e 8ad2 | c015 aaf2 | 2000 c0f2 | 081b 80d2 | 091d 80d2 | 0201 899a | 0368 62f8 | 6304 0091 
+  0x000000012295b174: 0368 22f8 | e004 0054 
+
+  0x000000012295b17c: ; implicit exception: dispatches to 0x000000012295b99c
+  0x000000012295b17c: 3f00 40f9 | e003 01aa 
+
+  0x000000012295b184: ;   {metadata(method data for {method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b184: 029e 8ad2 | c215 aaf2 | 2200 c0f2 | 0008 40b9 | 0010 59d2 | e903 78b2 | 4868 69f8 | 1f01 00eb 
+  0x000000012295b1a4: 4002 0054 | 2941 0091 | 2881 04d1 | 68ff ffb5 | e903 78b2 | 4868 69f8 | a800 00b4 | 2941 0091 
+  0x000000012295b1c4: 2881 04d1 | 88ff ffb5 | 0600 0014 | 4960 298b | e803 1faa | 207d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000012295b1e4: e913 7db2 | 0200 0014 | 2921 0091 | 4868 69f8 | 0805 0091 | 4868 29f8 | 2008 40b9 | 0010 59d2 
+  0x000000012295b204: 0038 40f9 | 0000 40f9 | e203 00aa | 0200 0014 | e203 1faa 
+
+  0x000000012295b218: ;   {oop(a 'java/lang/Class'{0x0000007d425a8a00} = 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b218: 0040 91d2 | 404b a8f2 | a00f c0f2 | 037c 40b9 | 4300 00b4 | 630f 038b 
+
+  0x000000012295b230: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b230: 0000 9ed2 | 8016 aaf2 | 2000 c0f2 | 0040 0491 | e403 02aa | a400 00b5 | 0900 40f9 | 2901 40b2 
+  0x000000012295b250: 0900 00f9 | 1600 0014 | 8408 40b9 | 8410 59d2 | 0900 40f9 | 8400 09ca | 88f4 7e92 | 0802 00b4 
+  0x000000012295b270: e401 0837 | a901 00b4 | 3f05 00f1 | 6001 0054 | bf39 03d5 | 8400 09ca | 0900 40f9 | 8400 09ca 
+  0x000000012295b290: 88f4 7e92 | c800 00b4 | 0900 40f9 | 2901 7fb2 | 0900 00f9 | 0200 0014 | 0400 00f9 
+
+  0x000000012295b2ac: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b2ac: 0400 9ed2 | 8416 aaf2 | 2400 c0f2 | 4201 00b4 | 2201 00b4 | 4500 40f9 | 2810 80d2 | a500 088a 
+  0x000000012295b2cc: bf00 08eb | 8100 0054 | 88c4 4339 | 0801 40b2 | 88c4 0339 | e403 03aa | a400 00b5 | 0904 40f9 
+  0x000000012295b2ec: 2901 40b2 | 0904 00f9 | 1700 0014 
+
+  0x000000012295b2f8: ;   {metadata('java/lang/Class')}
+  0x000000012295b2f8: 0442 9cd2 | 2403 a0f2 | 04f0 c1f2 | 0904 40f9 | 8400 09ca | 88f4 7e92 | 0802 00b4 | e401 0837 
+  0x000000012295b318: a901 00b4 | 3f05 00f1 | 6001 0054 | bf39 03d5 | 8400 09ca | 0904 40f9 | 8400 09ca | 88f4 7e92 
+  0x000000012295b338: c800 00b4 | 0904 40f9 | 2901 7fb2 | 0904 00f9 | 0200 0014 | 0404 00f9 | 5f00 03eb | 0002 0054 
+  0x000000012295b358: a201 00b4 | 8301 00b4 | 2510 80d2 | 4800 40f9 | a500 088a | 6800 40f9 | a500 088a | bf04 02f1 
+  0x000000012295b378: a100 0054 | 4608 40b9 | 6708 40b9 | df00 076b | c030 0054 | 0400 a052 | 0500 0014 | e403 0032 
+  0x000000012295b398: 0300 0014 | 80ff ffb4 | e403 0032 | 9f04 0071 
+
+  0x000000012295b3a8: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b3a8: 0200 9ed2 | 8216 aaf2 | 2200 c0f2 | e813 7db2 | 0921 80d2 | 0301 899a | 4468 63f8 | 8404 0091 
+  0x000000012295b3c8: 4468 23f8 | a012 0054 
+
+  0x000000012295b3d0: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b3d0: 0000 9ed2 | 8016 aaf2 | 2000 c0f2 | a100 00b5 | 0884 4439 | 0801 40b2 | 0884 0439 | 2b00 0014 
+  0x000000012295b3f0: 2408 40b9 | 8410 59d2 | 0926 80d2 | 0868 69f8 | 1f01 04eb | 4002 0054 | 2941 0091 | 2841 05d1 
+  0x000000012295b410: 68ff ffb5 | 0926 80d2 | 0868 69f8 | a800 00b4 | 2941 0091 | 2841 05d1 | 88ff ffb5 | 0600 0014 
+  0x000000012295b430: 0960 298b | e803 1faa | 247d a8c8 | 1f01 1feb | eeff ff17 | 0925 80d2 | 0200 0014 | 2921 0091 
+  0x000000012295b450: 0868 69f8 | 0805 0091 | 0868 29f8 
+
+  0x000000012295b45c: ;   {metadata('clojure/core/protocols/InternalReduce')}
+  0x000000012295b45c: 0400 80d2 | 0423 a0f2 | 04f0 c1f2 | 2008 40b9 | 0010 59d2 | 0810 40f9 | 9f00 08eb | 4001 0054 
+  0x000000012295b47c: 1f00 04eb | 0001 0054 | e013 bfa9 
+
+  0x000000012295b488: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000012295b488: 0e6e ca95 | e007 41f8 | 4000 0034 | 0300 0014 | e203 1faa | 0200 0014 | e203 40b2 | 5f00 0071 
+  0x000000012295b4a8: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b4a8: 0200 9ed2 | 8216 aaf2 | 2200 c0f2 | 082b 80d2 | 092d 80d2 | 0311 899a | 4468 63f8 | 8404 0091 
+  0x000000012295b4c8: 4468 23f8 | 6116 0054 
+
+  0x000000012295b4d0: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b4d0: 0200 9ed2 | 8216 aaf2 | 2200 c0f2 | 48bc 40f9 | 0805 0091 | 48bc 00f9 
+
+  0x000000012295b4e8: ;   {metadata(method data for {method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b4e8: 029e 8ad2 | c215 aaf2 | 2200 c0f2 | 4390 40b9 | 6308 0011 | 4390 00b9 | 634c 1f12 | 7f00 0071 
+  0x000000012295b508: 2025 0054 | e203 1faa | 3f00 02eb 
+
+  0x000000012295b514: ;   {metadata(method data for {method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b514: 029e 8ad2 | c215 aaf2 | 2200 c0f2 | 081b 80d2 | 091d 80d2 | 0301 899a | 4468 63f8 | 8404 0091 
+  0x000000012295b534: 4468 23f8 | c004 0054 
+
+  0x000000012295b53c: ; implicit exception: dispatches to 0x000000012295b9cc
+  0x000000012295b53c: 3f00 40f9 | e203 01aa 
+
+  0x000000012295b544: ;   {metadata(method data for {method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b544: 039e 8ad2 | c315 aaf2 | 2300 c0f2 | 4208 40b9 | 4210 59d2 | e903 78b2 | 6868 69f8 | 1f01 02eb 
+  0x000000012295b564: 4002 0054 | 2941 0091 | 2881 04d1 | 68ff ffb5 | e903 78b2 | 6868 69f8 | a800 00b4 | 2941 0091 
+  0x000000012295b584: 2881 04d1 | 88ff ffb5 | 0600 0014 | 6960 298b | e803 1faa | 227d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000012295b5a4: e913 7db2 | 0200 0014 | 2921 0091 | 6868 69f8 | 0805 0091 | 6868 29f8 | 2208 40b9 | 4210 59d2 
+  0x000000012295b5c4: 4238 40f9 | 4200 40f9 | 0200 0014 | e203 1faa 
+
+  0x000000012295b5d4: ;   {oop(a 'java/lang/Class'{0x0000007d425a8a00} = 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b5d4: 0340 91d2 | 434b a8f2 | a30f c0f2 | 8423 4139 | 9f00 0071 | 411f 0054 | 4800 1beb | 0821 9f9a 
+  0x000000012295b5f4: 08fd 43d3 | 687c 00b9 | 6400 02ca | 84fc 58d3 | e400 00b4 | c200 00b4 | 64fc 49d3 | 802b 40f9 
+  0x000000012295b614: 8868 6038 | 4800 0036 | 9f68 2038 
+
+  0x000000012295b620: ;   {oop(a 'clojure/lang/Var'{0x0000007d423a7750})}
+  0x000000012295b620: 02ea 8ed2 | 4247 a8f2 | a20f c0f2 | e303 02aa 
+
+  0x000000012295b630: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b630: 0400 9ed2 | 8416 aaf2 | 2400 c0f2 | 6308 40b9 | 6310 59d2 | 0932 80d2 | 8868 69f8 | 1f01 03eb 
+  0x000000012295b650: 4002 0054 | 2941 0091 | 28c1 06d1 | 68ff ffb5 | 0932 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 
+  0x000000012295b670: 28c1 06d1 | 88ff ffb5 | 0600 0014 | 8960 298b | e803 1faa | 237d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000012295b690: 0931 80d2 | 0200 0014 | 2921 0091 | 8868 69f8 | 0805 0091 | 8868 29f8 | bf3b 03d5 | 4018 40b9 
+  0x000000012295b6b0: 4000 00b4 | 600f 008b | bf39 03d5 
+
+  0x000000012295b6bc: ; implicit exception: dispatches to 0x000000012295b9ec
+  0x000000012295b6bc: 1f00 40f9 | e203 00aa 
+
+  0x000000012295b6c4: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b6c4: 0300 9ed2 | 8316 aaf2 | 2300 c0f2 | 4208 40b9 | 4210 59d2 | e90b 7ab2 | 6868 69f8 | 1f01 02eb 
+  0x000000012295b6e4: 4002 0054 | 2941 0091 | 2881 07d1 | 68ff ffb5 | e90b 7ab2 | 6868 69f8 | a800 00b4 | 2941 0091 
+  0x000000012295b704: 2881 07d1 | 88ff ffb5 | 0600 0014 | 6960 298b | e803 1faa | 227d a8c8 | 1f01 1feb | eeff ff17 
+  0x000000012295b724: 0937 80d2 | 0200 0014 | 2921 0091 | 6868 69f8 | 0805 0091 | 6868 29f8 | e203 01aa | e303 1daa 
+  0x000000012295b744: e427 40f9 | e103 00aa | 09ce 91d2 | c932 bdf2 | 090f c0f2 
+
+  0x000000012295b758: ; ImmutableOopMap {}
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@47 (line 31)
+                      ;   {virtual_call}
+  0x000000012295b758: 2a01 0094 
+
+  0x000000012295b75c: ;   {post_call_nop}
+  0x000000012295b75c: 1f20 03d5 | 9f02 81f2 | 1f20 80f2 
+
+  0x000000012295b768: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b768: 0200 9ed2 | 8216 aaf2 | 2200 c0f2 | 43f4 40f9 | 6304 0091 | 43f4 00f9 | fd7b 46a9 | ffc3 0191 
+  0x000000012295b788: ;   {poll_return}
+  0x000000012295b788: 8817 40f9 | ff63 28eb | 0813 0054 | c003 5fd6 | e327 40f9 
+
+  0x000000012295b79c: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b79c: 0400 9ed2 | 8416 aaf2 | 2400 c0f2 | a100 00b5 | 88e4 4739 | 0801 40b2 | 88e4 0739 | 2b00 0014 
+  0x000000012295b7bc: 2008 40b9 | 0010 59d2 | 0941 80d2 | 8868 69f8 | 1f01 00eb | 4002 0054 | 2941 0091 | 28a1 08d1 
+  0x000000012295b7dc: 68ff ffb5 | 0941 80d2 | 8868 69f8 | a800 00b4 | 2941 0091 | 28a1 08d1 | 88ff ffb5 | 0600 0014 
+  0x000000012295b7fc: 8960 298b | e803 1faa | 207d a8c8 | 1f01 1feb | eeff ff17 | e903 77b2 | 0200 0014 | 2921 0091 
+  0x000000012295b81c: 8868 69f8 | 0805 0091 | 8868 29f8 
+
+  0x000000012295b828: ;   {metadata('clojure/core/protocols/InternalReduce')}
+  0x000000012295b828: 0000 80d2 | 0023 a0f2 | 00f0 c1f2 | 2408 40b9 | 8410 59d2 | 8810 40f9 | 1f00 08eb | 0001 0054 
+  0x000000012295b848: 9f00 00eb | c000 0054 | e403 bfa9 
+
+  0x000000012295b854: ;   {runtime_call slow_subtype_check_blob (C1 runtime)}
+  0x000000012295b854: 1b6d ca95 | e407 41f8 | 040d 0034 | 0100 0014 | 2101 00b4 
+
+  0x000000012295b868: ;   {metadata('clojure/core/VecSeq')}
+  0x000000012295b868: 0495 8ad2 | 2423 a0f2 | 04f0 c1f2 | 2808 40b9 | 0811 59d2 | 1f01 04eb | 210c 0054 | 0100 0014 
+  0x000000012295b888: e203 01aa 
+
+  0x000000012295b88c: ; implicit exception: dispatches to 0x000000012295ba08
+  0x000000012295b88c: 3f00 40f9 | e203 01aa 
+
+  0x000000012295b894: ;   {metadata(method data for {method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b894: 0000 9ed2 | 8016 aaf2 | 2000 c0f2 
+
+  0x000000012295b8a0: ;   {metadata('clojure/core/VecSeq')}
+  0x000000012295b8a0: 0295 8ad2 | 2223 a0f2 | 02f0 c1f2 | 0947 80d2 | 0868 69f8 | 1f01 02eb | 4002 0054 | 2941 0091 
+  0x000000012295b8c0: 2861 09d1 | 68ff ffb5 | 0947 80d2 | 0868 69f8 | a800 00b4 | 2941 0091 | 2861 09d1 | 88ff ffb5 
+  0x000000012295b8e0: 0600 0014 | 0960 298b | e803 1faa | 227d a8c8 | 1f01 1feb | eeff ff17 | 0946 80d2 | 0200 0014 
+  0x000000012295b900: 2921 0091 | 0868 69f8 | 0805 0091 | 0868 29f8 | e203 1daa 
+
+  0x000000012295b914: ; ImmutableOopMap {}
+                      ;*invokeinterface internal_reduce {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@64 (line 31)
+                      ;   {optimized virtual_call}
+  0x000000012295b914: bb10 c595 
+
+  0x000000012295b918: ;   {post_call_nop}
+  0x000000012295b918: 1f20 03d5 | 1f3a 81f2 | 1f40 80f2 | fd7b 46a9 | ffc3 0191 
+
+  0x000000012295b92c: ;   {poll_return}
+  0x000000012295b92c: 8817 40f9 | ff63 28eb | c806 0054 | c003 5fd6 
+
+  0x000000012295b93c: ;   {metadata({method} {0x00000001507ce750} 'invokeStatic' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core/protocols$seq_reduce')}
+  0x000000012295b93c: 08ea 9cd2 | 880f aaf2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000012295b954: ; ImmutableOopMap {c_rarg1=Oop rfp=Oop c_rarg3=Oop }
+                      ;*synchronization entry
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@-1 (line 24)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000012295b954: db72 ca95 | d3fd ff17 
+
+  0x000000012295b95c: ;   {metadata({method} {0x0000000150578908} 'invokeStatic' '(Ljava/lang/Object;)Ljava/lang/Object;' in 'clojure/core$seq__5486')}
+  0x000000012295b95c: 0821 91d2 | e80a aaf2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000012295b974: ; ImmutableOopMap {c_rarg1=Oop rfp=Oop [72]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.core$seq__5486::invokeStatic@-1 (line 139)
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@3 (line 24)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000012295b974: d372 ca95 | dbfd ff17 
+
+  0x000000012295b97c: ;   {metadata({method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b97c: 0888 9cd2 | 8808 aaf2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000012295b994: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop [72]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Util::classOf@-1 (line 139)
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@11 (line 31)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000012295b994: cb72 ca95 | edfd ff17 
+
+  0x000000012295b99c: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop [72]=Oop }
+                      ;*invokevirtual getClass {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.Util::classOf@5 (line 140)
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@11 (line 31)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000012295b99c: 6963 ca95 | e30b 00a9 
+
+  0x000000012295b9a4: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop c_rarg2=Oop c_rarg3=Oop [72]=Oop }
+                      ;*if_acmpeq {reexecute=1 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - (reexecute) clojure.core.protocols$seq_reduce::invokeStatic@17 (line 31)
+                      ;   {runtime_call substitutability_check_blob (C1 runtime)}
+  0x000000012295b9a4: 6768 ca95 | 7dfe ff17 
+
+  0x000000012295b9ac: ;   {metadata({method} {0x000000015044e440} 'classOf' '(Ljava/lang/Object;)Ljava/lang/Class;' in 'clojure/lang/Util')}
+  0x000000012295b9ac: 0888 9cd2 | 8808 aaf2 | 2800 c0f2 | e807 00f9 | 0800 8092 | e803 00f9 
+
+  0x000000012295b9c4: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop [72]=Oop }
+                      ;*synchronization entry
+                      ; - clojure.lang.Util::classOf@-1 (line 139)
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@28 (line 31)
+                      ;   {runtime_call counter_overflow_blob (C1 runtime)}
+  0x000000012295b9c4: bf72 ca95 | d1fe ff17 
+
+  0x000000012295b9cc: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop [72]=Oop }
+                      ;*invokevirtual getClass {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.lang.Util::classOf@5 (line 140)
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@28 (line 31)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000012295b9cc: 5d63 ca95 | 647c 40b9 | 4400 00b4 | 640f 048b | 84e0 ffb4 | e403 00f9 
+
+  0x000000012295b9e4: ;   {runtime_call g1_pre_barrier_slow}
+  0x000000012295b9e4: 6774 ca95 | 01ff ff17 
+
+  0x000000012295b9ec: ; ImmutableOopMap {rfp=Oop c_rarg1=Oop c_rarg0=Oop [72]=Oop }
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@47 (line 31)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000012295b9ec: 5563 ca95 
+
+  0x000000012295b9f0: ;   {internal_word}
+  0x000000012295b9f0: c8ec ff10 | 8853 02f9 
+
+  0x000000012295b9f8: ;   {runtime_call SafepointBlob}
+  0x000000012295b9f8: 2216 c515 | e803 01aa 
+
+  0x000000012295ba00: ; ImmutableOopMap {c_rarg3=Oop rfp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@55 (line 31)
+                      ;   {runtime_call throw_class_cast_exception_blob (C1 runtime)}
+  0x000000012295ba00: 306b ca95 
+
+  0x000000012295ba04: ; ImmutableOopMap {c_rarg3=Oop rfp=Oop c_rarg1=Oop }
+                      ;*invokeinterface internal_reduce {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@64 (line 31)
+                      ;   {runtime_call throw_incompatible_class_change_error_blob (C1 runtime)}
+  0x000000012295ba04: 8f6b ca95 
+
+  0x000000012295ba08: ; ImmutableOopMap {c_rarg3=Oop rfp=Oop c_rarg1=Oop }
+                      ;*invokeinterface internal_reduce {reexecute=0 rethrow=0 return_oop=0 return_scalarized=0}
+                      ; - clojure.core.protocols$seq_reduce::invokeStatic@64 (line 31)
+                      ;   {runtime_call throw_null_pointer_exception_blob (C1 runtime)}
+  0x000000012295ba08: 4e63 ca95 
+
+  0x000000012295ba0c: ;   {internal_word}
+  0x000000012295ba0c: 08f9 ff10 | 8853 02f9 
+
+  0x000000012295ba14: ;   {runtime_call SafepointBlob}
+  0x000000012295ba14: 1b16 c515 | 80ab 42f9 | 9fab 02f9 | 9faf 02f9 | fd7b 46a9 | ffc3 0191 
+
+  0x000000012295ba2c: ;   {runtime_call unwind_exception_blob (C1 runtime)}
+  0x000000012295ba2c: 9560 ca15 
+[Stub Code]
+  0x000000012295ba30: ;   {trampoline_stub}
+  0x000000012295ba30: 4800 0058 | 0001 1fd6 | 002f 212a | 0100 0000 
+
+  0x000000012295ba40: ;   {static_stub}
+  0x000000012295ba40: df3f 03d5 
+
+  0x000000012295ba44: ;   {metadata(nullptr)}
+  0x000000012295ba44: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000012295ba58: ;   {trampoline_stub}
+  0x000000012295ba58: 4800 0058 | 0001 1fd6 | 00bc 9522 | 0100 0000 
+
+  0x000000012295ba68: ;   {static_stub}
+  0x000000012295ba68: df3f 03d5 
+
+  0x000000012295ba6c: ;   {metadata(nullptr)}
+  0x000000012295ba6c: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 | 1f20 03d5 
+
+  0x000000012295ba80: ;   {trampoline_stub}
+  0x000000012295ba80: 4800 0058 | 0001 1fd6 | 00fc a929 | 0100 0000 
+
+  0x000000012295ba90: ;   {static_stub}
+  0x000000012295ba90: df3f 03d5 
+
+  0x000000012295ba94: ;   {metadata(nullptr)}
+  0x000000012295ba94: 0c00 80d2 | 0c00 a0f2 | 0c00 c0f2 | 0000 0014 
+[Exception Handler]
+  0x000000012295baa4: ;   {runtime_call handle_exception_from_callee_blob (C1 runtime)}
+  0x000000012295baa4: 476a ca95 
+
+  0x000000012295baa8: ;   {external_word}
+  0x000000012295baa8: 60dc 90d2 | 0068 a1f2 | 2000 c0f2 | c1d5 bbd4 
+
+  0x000000012295bab8: ;   {runtime_call DeoptimizationBlob}
+  0x000000012295bab8: 7216 c595 
+[Deopt Handler Entry Point]
+  0x000000012295babc: ffff ff17 
+[/MachCode]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00000078e98370a0, length=17, elements={
+0x0000000104fe8160, 0x0000000105002160, 0x00000078e8864000, 0x00000078e8864800,
+0x00000078e8865000, 0x00000078e8865800, 0x00000078e8866000, 0x00000078e8866800,
+0x00000078e8867000, 0x00000078e8867800, 0x00000078e89bc000, 0x00000078e89bc800,
+0x00000078e89be000, 0x00000078e8beb800, 0x00000078e9840000, 0x00000078e9841000,
+0x00000078e9842800
+}
+
+Java Threads: ( => current thread )
+=>0x0000000104fe8160 JavaThread "main"                              [_thread_in_vm, id=6403, stack(0x000000016b448000,0x000000016b64b000) (2060K)]
+  0x0000000105002160 JavaThread "Reference Handler"          daemon [_thread_blocked, id=23555, stack(0x000000016c3b4000,0x000000016c5b7000) (2060K)]
+  0x00000078e8864000 JavaThread "Finalizer"                  daemon [_thread_blocked, id=28931, stack(0x000000016c5c0000,0x000000016c7c3000) (2060K)]
+  0x00000078e8864800 JavaThread "Signal Dispatcher"          daemon [_thread_blocked, id=28675, stack(0x000000016c7cc000,0x000000016c9cf000) (2060K)]
+  0x00000078e8865000 JavaThread "Service Thread"             daemon [_thread_blocked, id=28163, stack(0x000000016c9d8000,0x000000016cbdb000) (2060K)]
+  0x00000078e8865800 JavaThread "Monitor Deflation Thread"   daemon [_thread_blocked, id=24323, stack(0x000000016cbe4000,0x000000016cde7000) (2060K)]
+  0x00000078e8866000 JavaThread "C2 CompilerThread0"         daemon [_thread_blocked, id=24579, stack(0x000000016cdf0000,0x000000016cff3000) (2060K)]
+  0x00000078e8866800 JavaThread "C1 CompilerThread0"         daemon [_thread_blocked, id=24835, stack(0x000000016cffc000,0x000000016d1ff000) (2060K)]
+  0x00000078e8867000 JavaThread "C1 CompilerThread1"         daemon [_thread_blocked, id=25347, stack(0x000000016d208000,0x000000016d40b000) (2060K)]
+  0x00000078e8867800 JavaThread "C1 CompilerThread2"         daemon [_thread_blocked, id=25859, stack(0x000000016d414000,0x000000016d617000) (2060K)]
+  0x00000078e89bc000 JavaThread "Notification Thread"        daemon [_thread_blocked, id=26115, stack(0x000000016d620000,0x000000016d823000) (2060K)]
+  0x00000078e89bc800 JavaThread "Common-Cleaner"             daemon [_thread_blocked, id=26627, stack(0x000000016d82c000,0x000000016da2f000) (2060K)]
+  0x00000078e89be000 JavaThread "C2 CompilerThread1"         daemon [_thread_blocked, id=32771, stack(0x000000016da38000,0x000000016dc3b000) (2060K)]
+  0x00000078e8beb800 JavaThread "C1 CompilerThread3"         daemon [_thread_blocked, id=43011, stack(0x000000016dc44000,0x000000016de47000) (2060K)]
+  0x00000078e9840000 JavaThread "C2 CompilerThread2"         daemon [_thread_blocked, id=34307, stack(0x000000016e88c000,0x000000016ea8f000) (2060K)]
+  0x00000078e9841000 JavaThread "C2 CompilerThread3"         daemon [_thread_blocked, id=40451, stack(0x000000016ea98000,0x000000016ec9b000) (2060K)]
+  0x00000078e9842800 JavaThread "C2 CompilerThread4"         daemon [_thread_blocked, id=40195, stack(0x000000016eca4000,0x000000016eea7000) (2060K)]
+Total: 17
+
+Other Threads:
+  0x00000078e6c8d000 VMThread "VM Thread"                           [id=19459, stack(0x000000016c090000,0x000000016c293000) (2060K)]
+  0x00000078e6c8d800 WatcherThread "VM Periodic Task Thread"        [id=21515, stack(0x000000016be84000,0x000000016c087000) (2060K)]
+  0x0000000104ff0250 WorkerThread "GC Thread#0"                     [id=13059, stack(0x000000016b654000,0x000000016b857000) (2060K)]
+  0x00000078e6a37400 WorkerThread "GC Thread#1"                     [id=41219, stack(0x000000016e268000,0x000000016e46b000) (2060K)]
+  0x00000078e6a9c400 WorkerThread "GC Thread#2"                     [id=33539, stack(0x000000016e474000,0x000000016e677000) (2060K)]
+  0x00000078e6a9cc00 WorkerThread "GC Thread#3"                     [id=33795, stack(0x000000016e680000,0x000000016e883000) (2060K)]
+  0x00000078e6ac0c00 WorkerThread "GC Thread#4"                     [id=34819, stack(0x000000016eeb0000,0x000000016f0b3000) (2060K)]
+  0x00000078e6a9d400 WorkerThread "GC Thread#5"                     [id=35331, stack(0x000000016f0bc000,0x000000016f2bf000) (2060K)]
+  0x00000078e6b7c000 WorkerThread "GC Thread#6"                     [id=35587, stack(0x000000016f2c8000,0x000000016f4cb000) (2060K)]
+  0x00000078e6b7c400 WorkerThread "GC Thread#7"                     [id=35843, stack(0x000000016f4d4000,0x000000016f6d7000) (2060K)]
+  0x00000078e6102800 WorkerThread "GC Thread#8"                     [id=38915, stack(0x000000016f6e0000,0x000000016f8e3000) (2060K)]
+  0x00000078e6102c00 WorkerThread "GC Thread#9"                     [id=36355, stack(0x000000016f8ec000,0x000000016faef000) (2060K)]
+  0x00000078e6103000 WorkerThread "GC Thread#10"                    [id=36611, stack(0x000000016faf8000,0x000000016fcfb000) (2060K)]
+  0x00000078e6a34c00 ConcurrentGCThread "G1 Main Marker"            [id=42499, stack(0x000000016de50000,0x000000016e053000) (2060K)]
+  0x00000078e6a35000 WorkerThread "G1 Conc#0"                       [id=41731, stack(0x000000016e05c000,0x000000016e25f000) (2060K)]
+  0x0000000104ff2050 WorkerThread "G1 Refinement Workers#0"         [id=14083, stack(0x000000016ba6c000,0x000000016bc6f000) (2060K)]
+  0x00000078e70a4000 ConcurrentGCThread "G1 Refine Control"         [id=14595, stack(0x000000016b860000,0x000000016ba63000) (2060K)]
+  0x00000078e70a4500 ConcurrentGCThread "G1 Service"                [id=16387, stack(0x000000016bc78000,0x000000016be7b000) (2060K)]
+Total: 18
+
+Threads with active compile tasks:
+Total: 0
+
+VM state: not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap address: 0x0000007d3e000000, size: 30688 MB, Compressed Oops mode: Non-zero based: 0x0000007d3d000000, Oop shift amount: 3
+
+CDS archive(s) mapped at: [0x00000f8000000000-0x00000f8000eb4000-0x00000f8000eb4000), size 15417344, SharedBaseAddress: 0x00000f8000000000, ArchiveRelocationMode: 1.
+Compressed class space mapped at: 0x00000f8001000000-0x00000f8041000000, reserved size: 1073741824
+UseCompressedClassPointers 1, UseCompactObjectHeaders 0
+Narrow klass pointer bits 32, Max shift 3
+Narrow klass base: 0x00000f8000000000, Narrow klass shift: 0
+Encoding Range: [0x00000f8000000000 - 0x00000f8100000000), (4294967296 bytes)
+Klass Range:    [0x00000f8000000000 - 0x00000f8041000000), (1090519040 bytes)
+Klass ID Range:  [8 - 1090519033) (1090519025)
+Protection zone: [0x00000f8000000000 - 0x00000f8000004000), (16384 bytes)
+
+GC Precious Log:
+ CardTable entry size: 512
+ Card Set container configuration: InlinePtr #cards 3 size 8 Array Of Cards #cards 128 size 272 Howl #buckets 8 coarsen threshold 29491 Howl Bitmap #cards 4096 size 528 coarsen threshold 3686 Card regions per heap region 1 cards per card region 32768
+ CPUs: 18 total, 18 available
+ Memory: 128G
+ Large Page Support: Disabled
+ NUMA Support: Disabled
+ Compressed Oops: Enabled (Non-zero based)
+ Heap Region Size: 16M
+ Heap Min Capacity: 16M
+ Heap Initial Capacity: 16M
+ Heap Max Capacity: 30688M
+ Pre-touch: Disabled
+ Parallel Workers: 14
+ Concurrent Workers: 4
+ Concurrent Refinement Workers: 14
+ Periodic GC: Disabled
+
+Heap:
+ garbage-first heap   total reserved 31424512K, committed 196608K, used 57233K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 4 eden (64M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 6 free (96M)
+
+Heap Regions: E=young(eden), S=young(survivor), O=old, HS=humongous(starts), HC=humongous(continues), CS=collection set, F=free, TAMS=top-at-mark-start, PB=parsable bottom
+|    0|0x0000007d3e000000, 0x0000007d3e000000, 0x0000007d3f000000|  0%| F|  |TAMS 0x0000007d3e000000| PB 0x0000007d3e000000| Untracked |  0
+|    1|0x0000007d3f000000, 0x0000007d3f000000, 0x0000007d40000000|  0%| F|  |TAMS 0x0000007d3f000000| PB 0x0000007d3f000000| Untracked |  0
+|    2|0x0000007d40000000, 0x0000007d40000000, 0x0000007d41000000|  0%| F|  |TAMS 0x0000007d40000000| PB 0x0000007d40000000| Untracked |  0
+|    3|0x0000007d41000000, 0x0000007d41000000, 0x0000007d42000000|  0%| F|  |TAMS 0x0000007d41000000| PB 0x0000007d41000000| Untracked |  0
+|    4|0x0000007d42000000, 0x0000007d426bfc68, 0x0000007d43000000| 42%| S|CS|TAMS 0x0000007d42000000| PB 0x0000007d42000000| Complete  |  0
+|    5|0x0000007d43000000, 0x0000007d43000000, 0x0000007d44000000|  0%| F|  |TAMS 0x0000007d43000000| PB 0x0000007d43000000| Untracked |  0
+|    6|0x0000007d44000000, 0x0000007d44000000, 0x0000007d45000000|  0%| F|  |TAMS 0x0000007d44000000| PB 0x0000007d44000000| Untracked |  0
+|    7|0x0000007d45000000, 0x0000007d4556ba48, 0x0000007d46000000| 33%| E|CS|TAMS 0x0000007d45000000| PB 0x0000007d45000000| Complete  |  0
+|    8|0x0000007d46000000, 0x0000007d47000000, 0x0000007d47000000|100%| E|CS|TAMS 0x0000007d46000000| PB 0x0000007d46000000| Complete  |  0
+|    9|0x0000007d47000000, 0x0000007d48000000, 0x0000007d48000000|100%| E|CS|TAMS 0x0000007d47000000| PB 0x0000007d47000000| Complete  |  0
+|   10|0x0000007d48000000, 0x0000007d49000000, 0x0000007d49000000|100%| E|CS|TAMS 0x0000007d48000000| PB 0x0000007d48000000| Complete  |  0
+| 1917|0x00000084bb000000, 0x00000084bb124b78, 0x00000084bc000000|  7%| O|  |TAMS 0x0000000000000000| PB 0x00000084bb000000| Untracked |  0
+
+Card table byte_map: [0x0000000118324000,0x000000011bf14000] _byte_map_base: 0x00000000d9934000
+Refinement table byte_map: [0x000000011bf14000,0x000000011fb04000] _byte_map_base: 0x00000000dd524000
+
+Marking Bits: (CMBitMap*) 0x0000000104ff0c80
+ Bits: [0x0000000131608000, 0x000000014f588000)
+
+Polling page: 0x0000000104a6c000
+
+Metaspace:
+Metaspace        used 17134K, committed 17728K, reserved 1114112K
+ class space     used 3689K, committed 3904K, reserved 1048576K
+
+Usage:
+  Non-class:     13.13 MB used.
+      Class:      3.60 MB used.
+       Both:     16.73 MB used.
+
+Virtual space:
+  Non-class space:       64.00 MB reserved,      13.50 MB ( 21%) committed,  1 nodes.
+      Class space:        1.00 GB reserved,       3.81 MB ( <1%) committed,  1 nodes.
+             Both:        1.06 GB reserved,      17.31 MB (  2%) committed. 
+
+Chunk freelists:
+   Non-Class:  2.00 MB
+       Class:  12.16 MB
+        Both:  14.16 MB
+
+MaxMetaspaceSize: unlimited
+CompressedClassSpaceSize: 1.00 GB
+Initial GC threshold: 21.00 MB
+Current GC threshold: 21.00 MB
+CDS: on
+ - commit_granule_bytes: 65536.
+ - commit_granule_words: 8192.
+ - virtual_space_node_default_size: 8388608.
+ - enlarge_chunks_in_place: 1.
+UseCompressedClassPointers 1, UseCompactObjectHeaders 0
+Narrow klass pointer bits 32, Max shift 3
+Narrow klass base: 0x00000f8000000000, Narrow klass shift: 0
+Encoding Range: [0x00000f8000000000 - 0x00000f8100000000), (4294967296 bytes)
+Klass Range:    [0x00000f8000000000 - 0x00000f8041000000), (1090519040 bytes)
+Klass ID Range:  [8 - 1090519033) (1090519025)
+Protection zone: [0x00000f8000000000 - 0x00000f8000004000), (16384 bytes)
+
+
+Internal statistics:
+
+num_allocs_failed_limit: 0.
+num_arena_births: 354.
+num_arena_deaths: 0.
+num_vsnodes_births: 2.
+num_vsnodes_deaths: 0.
+num_space_committed: 276.
+num_space_uncommitted: 0.
+num_chunks_returned_to_freelist: 0.
+num_chunks_taken_from_freelist: 910.
+num_chunk_merges: 0.
+num_chunk_splits: 665.
+num_chunks_enlarged: 470.
+num_inconsistent_stats: 0.
+
+CodeHeap 'non-profiled nmethods': size=119168Kb used=1258Kb max_used=1258Kb free=117909Kb
+ bounds [0x000000012a1a8000, 0x000000012a418000, 0x0000000131608000]
+CodeHeap 'profiled nmethods': size=119168Kb used=7049Kb max_used=7049Kb free=112118Kb
+ bounds [0x0000000122604000, 0x0000000122cf4000, 0x0000000129a64000]
+CodeHeap 'non-nmethods': size=7440Kb used=3823Kb max_used=3937Kb free=3616Kb
+ bounds [0x0000000129a64000, 0x0000000129e54000, 0x000000012a1a8000]
+CodeCache: size=245776Kb, used=12130Kb, max_used=12244Kb, free=233643Kb
+ total_blobs=4203, nmethods=3494, adapters=542, full_count=0
+Compilation: enabled, stopped_count=0, restarted_count=0
+
+Compilation events (20 events):
+Event: 0.599 Thread 0x00000078e8867800 nmethod 3520 0x0000000122ce1d48 code [0x0000000122ce1e40, 0x0000000122ce2410]
+Event: 0.599 Thread 0x00000078e8beb800 3522       3       clojure.asm.Frame::merge (621 bytes)
+Event: 0.600 Thread 0x00000078e9840000 nmethod 3517% 0x000000012a2d8348 code [0x000000012a2d8440, 0x000000012a2d8740]
+Event: 0.600 Thread 0x00000078e9840000 3516       4       clojure.lang.Util::classOf (11 bytes)
+Event: 0.600 Thread 0x00000078e9840000 nmethod 3516 0x000000012a2d8788 code [0x000000012a2d8880, 0x000000012a2d88f8]
+Event: 0.600 Thread 0x00000078e9840000 3521       4       clojure.asm.Type::getDescriptor (18 bytes)
+Event: 0.600 Thread 0x00000078e8beb800 nmethod 3522 0x0000000122ce2448 code [0x0000000122ce2540, 0x0000000122ce3950]
+Event: 0.600 Thread 0x00000078e8867800 3523       3       java.lang.reflect.AccessibleObject::slowVerifyAccess (67 bytes)
+Event: 0.600 Thread 0x00000078e8867000 3524       3       java.lang.Module::allows (60 bytes)
+Event: 0.600 Thread 0x00000078e8867800 nmethod 3523 0x0000000122ce3988 code [0x0000000122ce3a80, 0x0000000122ce4180]
+Event: 0.600 Thread 0x00000078e8867000 nmethod 3524 0x0000000122ce4188 code [0x0000000122ce4280, 0x0000000122ce4a50]
+Event: 0.601 Thread 0x00000078e9842800 nmethod 3513 0x000000012a2d8908 code [0x000000012a2d8a00, 0x000000012a2d9b08]
+Event: 0.602 Thread 0x00000078e8beb800 3525       3       java.lang.invoke.DirectMethodHandle$Holder::newInvokeSpecial (21 bytes)
+Event: 0.602 Thread 0x00000078e8beb800 nmethod 3525 0x0000000122ce4a88 code [0x0000000122ce4b80, 0x0000000122ce5390]
+Event: 0.602 Thread 0x00000078e8867800 3526       3       java.lang.invoke.LambdaForm$Name::<init> (20 bytes)
+Event: 0.602 Thread 0x00000078e8867000 3527       3       jdk.internal.classfile.impl.ClassFileImpl::passDebugElements (23 bytes)
+Event: 0.603 Thread 0x00000078e8867000 nmethod 3527 0x0000000122ce53c8 code [0x0000000122ce54c0, 0x0000000122ce5828]
+Event: 0.603 Thread 0x00000078e8beb800 3528       3       jdk.internal.misc.VM::isSystemDomainLoader (17 bytes)
+Event: 0.603 Thread 0x00000078e8867800 nmethod 3526 0x0000000122ce5848 code [0x0000000122ce5940, 0x0000000122ce61e0]
+Event: 0.603 Thread 0x00000078e8beb800 nmethod 3528 0x0000000122ce6208 code [0x0000000122ce6300, 0x0000000122ce6668]
+
+GC Heap Usage History (8 events):
+Event: 0.143 {heap Before GC invocations=0 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 32768K, used 17554K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 1 eden (16M), 0 survivor (0M), 1 old (16M), 0 humongous (0M), 0 free (0M)
+}
+Event: 0.145 {heap After GC invocations=1 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 49152K, used 4019K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 0 eden (0M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 1 free (16M)
+}
+Event: 0.190 {heap Before GC invocations=1 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 49152K, used 20403K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 1 eden (16M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 0 free (0M)
+}
+Event: 0.192 {heap After GC invocations=2 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 65536K, used 4700K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 0 eden (0M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 2 free (32M)
+}
+Event: 0.290 {heap Before GC invocations=2 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 65536K, used 21084K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 1 eden (16M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 1 free (16M)
+}
+Event: 0.293 {heap After GC invocations=3 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 196608K, used 6275K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 0 eden (0M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 10 free (160M)
+}
+Event: 0.551 {heap Before GC invocations=3 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 196608K, used 104579K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 6 eden (96M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 4 free (64M)
+}
+Event: 0.553 {heap After GC invocations=4 (full 0):
+ garbage-first heap   total reserved 31424512K, committed 196608K, used 8081K [0x0000007d3e000000, 0x00000084bc000000)
+  region size 16M, 0 eden (0M), 1 survivor (16M), 1 old (16M), 0 humongous (0M), 10 free (160M)
+}
+
+Metaspace Usage History (8 events):
+Event: 0.143 {metaspace Before GC invocations=0 (full 0):
+ Metaspace       used 6208K, committed 6400K, reserved 1114112K
+  class space    used 1311K, committed 1408K, reserved 1048576K
+}
+Event: 0.145 {metaspace After GC invocations=1 (full 0):
+ Metaspace       used 6208K, committed 6400K, reserved 1114112K
+  class space    used 1311K, committed 1408K, reserved 1048576K
+}
+Event: 0.190 {metaspace Before GC invocations=1 (full 0):
+ Metaspace       used 8430K, committed 8576K, reserved 1114112K
+  class space    used 1938K, committed 1984K, reserved 1048576K
+}
+Event: 0.192 {metaspace After GC invocations=2 (full 0):
+ Metaspace       used 8430K, committed 8576K, reserved 1114112K
+  class space    used 1938K, committed 1984K, reserved 1048576K
+}
+Event: 0.290 {metaspace Before GC invocations=2 (full 0):
+ Metaspace       used 12454K, committed 12672K, reserved 1114112K
+  class space    used 2732K, committed 2816K, reserved 1048576K
+}
+Event: 0.293 {metaspace After GC invocations=3 (full 0):
+ Metaspace       used 12454K, committed 12672K, reserved 1114112K
+  class space    used 2732K, committed 2816K, reserved 1048576K
+}
+Event: 0.551 {metaspace Before GC invocations=3 (full 0):
+ Metaspace       used 17000K, committed 17536K, reserved 1114112K
+  class space    used 3661K, committed 3840K, reserved 1048576K
+}
+Event: 0.553 {metaspace After GC invocations=4 (full 0):
+ Metaspace       used 17000K, committed 17536K, reserved 1114112K
+  class space    used 3661K, committed 3840K, reserved 1048576K
+}
+
+Dll operation events (14 events):
+Event: 0.014 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjava.dylib
+Event: 0.016 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjava.dylib
+Event: 0.035 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libnio.dylib
+Event: 0.036 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libnio.dylib
+Event: 0.039 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libzip.dylib
+Event: 0.039 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libzip.dylib
+Event: 0.071 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjimage.dylib
+Event: 0.071 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjimage.dylib
+Event: 0.262 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libnet.dylib
+Event: 0.262 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libnet.dylib
+Event: 0.480 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libmanagement.dylib
+Event: 0.480 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libmanagement.dylib
+Event: 0.480 Attempting to load shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libmanagement_ext.dylib
+Event: 0.481 Loaded shared library /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libmanagement_ext.dylib
+
+Deoptimization events (20 events):
+Event: 0.595 Thread 0x0000000104fe8160 Uncommon trap: trap_request=0xffffffde fr.pc=0x000000012a29bc4c relative=0x00000000000000cc
+Event: 0.595 Thread 0x0000000104fe8160 Uncommon trap: reason=class_check action=maybe_recompile pc=0x000000012a29bc4c method=java.util.TreeMap.getEntry(Ljava/lang/Object;)Ljava/util/TreeMap$Entry; @ 19 c2
+Event: 0.595 Thread 0x0000000104fe8160 DEOPT PACKING pc=0x000000012a29bc4c sp=0x000000016b648cb0
+Event: 0.595 Thread 0x0000000104fe8160 DEOPT UNPACKING pc=0x0000000129bf9a9c sp=0x000000016b648c40 mode 2
+Event: 0.599 Thread 0x0000000104fe8160 Uncommon trap: trap_request=0xffffff45 fr.pc=0x000000012a25ec14 relative=0x0000000000001294
+Event: 0.599 Thread 0x0000000104fe8160 Uncommon trap: reason=unstable_if action=reinterpret pc=0x000000012a25ec14 method=clojure.asm.Frame.merge(Lclojure/asm/SymbolTable;I[II)Z @ 282 c2
+Event: 0.599 Thread 0x0000000104fe8160 DEOPT PACKING pc=0x000000012a25ec14 sp=0x000000016b649c50
+Event: 0.599 Thread 0x0000000104fe8160 DEOPT UNPACKING pc=0x0000000129bf9a9c sp=0x000000016b649b00 mode 2
+Event: 0.600 Thread 0x0000000104fe8160 Uncommon trap: trap_request=0xffffffde fr.pc=0x000000012a2603f4 relative=0x0000000000000434
+Event: 0.600 Thread 0x0000000104fe8160 Uncommon trap: reason=class_check action=maybe_recompile pc=0x000000012a2603f4 method=clojure.lang.RT.nthFrom(Ljava/lang/Object;ILjava/lang/Object;)Ljava/lang/Object; @ 235 c2
+Event: 0.600 Thread 0x0000000104fe8160 DEOPT PACKING pc=0x000000012a2603f4 sp=0x000000016b64a280
+Event: 0.600 Thread 0x0000000104fe8160 DEOPT UNPACKING pc=0x0000000129bf9a9c sp=0x000000016b64a1f0 mode 2
+Event: 0.600 Thread 0x0000000104fe8160 Uncommon trap: trap_request=0xffffffde fr.pc=0x000000012a2603f4 relative=0x0000000000000434
+Event: 0.600 Thread 0x0000000104fe8160 Uncommon trap: reason=class_check action=maybe_recompile pc=0x000000012a2603f4 method=clojure.lang.RT.nthFrom(Ljava/lang/Object;ILjava/lang/Object;)Ljava/lang/Object; @ 235 c2
+Event: 0.600 Thread 0x0000000104fe8160 DEOPT PACKING pc=0x000000012a2603f4 sp=0x000000016b64a280
+Event: 0.600 Thread 0x0000000104fe8160 DEOPT UNPACKING pc=0x0000000129bf9a9c sp=0x000000016b64a1f0 mode 2
+Event: 0.600 Thread 0x0000000104fe8160 Uncommon trap: trap_request=0xffffff6e fr.pc=0x000000012a2d0ad0 relative=0x0000000000000490
+Event: 0.600 Thread 0x0000000104fe8160 Uncommon trap: reason=predicate action=maybe_recompile pc=0x000000012a2d0ad0 method=clojure.lang.PersistentVector.reduce(Lclojure/lang/IFn;Ljava/lang/Object;)Ljava/lang/Object; @ 30 c2
+Event: 0.600 Thread 0x0000000104fe8160 DEOPT PACKING pc=0x000000012a2d0ad0 sp=0x000000016b64a040
+Event: 0.600 Thread 0x0000000104fe8160 DEOPT UNPACKING pc=0x0000000129bf9a9c sp=0x000000016b649fe0 mode 2
+
+Classes loaded (20 events):
+Event: 0.482 Loading class java/lang/management/DefaultPlatformMBeanProvider$9
+Event: 0.482 Loading class java/lang/management/DefaultPlatformMBeanProvider$9 done
+Event: 0.482 Loading class java/lang/management/DefaultPlatformMBeanProvider$10
+Event: 0.482 Loading class java/lang/management/DefaultPlatformMBeanProvider$10 done
+Event: 0.482 Loading class java/lang/management/DefaultPlatformMBeanProvider$11
+Event: 0.482 Loading class java/lang/management/DefaultPlatformMBeanProvider$11 done
+Event: 0.482 Loading class jdk/management/jfr/FlightRecorderMXBean
+Event: 0.482 Loading class jdk/management/jfr/FlightRecorderMXBean done
+Event: 0.482 Loading class jdk/management/jfr/internal/FlightRecorderMXBeanProvider$SingleMBeanComponent
+Event: 0.482 Loading class jdk/management/jfr/internal/FlightRecorderMXBeanProvider$SingleMBeanComponent done
+Event: 0.482 Loading class java/util/stream/ReduceOps$2
+Event: 0.482 Loading class java/util/stream/ReduceOps$2 done
+Event: 0.482 Loading class java/util/stream/ReduceOps$2ReducingSink
+Event: 0.482 Loading class java/util/stream/ReduceOps$2ReducingSink done
+Event: 0.483 Loading class sun/management/RuntimeImpl
+Event: 0.483 Loading class sun/management/RuntimeImpl done
+Event: 0.507 Loading class java/util/concurrent/locks/AbstractQueuedLongSynchronizer$Node
+Event: 0.507 Loading class java/util/concurrent/locks/AbstractQueuedLongSynchronizer$Node done
+Event: 0.583 Loading class java/io/FileOutputStream$1
+Event: 0.583 Loading class java/io/FileOutputStream$1 done
+
+Classes unloaded (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (20 events):
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d451270e0}: Initial value cannot be null> (0x0000007d451270e0) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 527]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d451284b0}: Type mismatch between array and initial value> (0x0000007d451284b0) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 532]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4512a640}: Initial value cannot be null> (0x0000007d4512a640) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 527]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4512ba10}: Type mismatch between array and initial value> (0x0000007d4512ba10) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 532]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4512de18}: Initial value cannot be null> (0x0000007d4512de18) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 527]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4512f498}: Type mismatch between array and initial value> (0x0000007d4512f498) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 532]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d45131838}: Initial value cannot be null> (0x0000007d45131838) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 527]
+Event: 0.478 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d45132c08}: Type mismatch between array and initial value> (0x0000007d45132c08) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 532]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d45134ce8}: Initial value cannot be null> (0x0000007d45134ce8) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 527]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d451360b8}: Type mismatch between array and initial value> (0x0000007d451360b8) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 532]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d45137990}: Array length is negative> (0x0000007d45137990) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 434]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d45138d38}: Array length is negative> (0x0000007d45138d38) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 434]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4513a0e0}: Array length is negative> (0x0000007d4513a0e0) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 434]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4513b498}: Array length is negative> (0x0000007d4513b498) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 434]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4513c850}: Array length is negative> (0x0000007d4513c850) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 434]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4513df90}: Element class is not a value class> (0x0000007d4513df90) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 438]
+Event: 0.479 Thread 0x0000000104fe8160 Exception <a 'java/lang/IllegalArgumentException'{0x0000007d4513f360}: Type mismatch between array and initial value> (0x0000007d4513f360) 
+thrown [open/src/hotspot/share/prims/jvm.cpp, line 532]
+Event: 0.486 Thread 0x0000000104fe8160 Implicit null exception at 0x000000012a1dded4 to 0x000000012a1de96c
+Event: 0.488 Thread 0x0000000104fe8160 Implicit null exception at 0x000000012a22c73c to 0x000000012a22d10c
+Event: 0.578 Thread 0x0000000104fe8160 Implicit null exception at 0x000000012a290b2c to 0x000000012a290cf0
+
+VM Operations (20 events):
+Event: 0.155 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.155 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.190 Executing safepoint VM operation: G1CollectForAllocation (G1 Evacuation Pause)
+Event: 0.192 Executing safepoint VM operation: G1CollectForAllocation (G1 Evacuation Pause) done
+Event: 0.236 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.236 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.290 Executing safepoint VM operation: G1CollectForAllocation (G1 Evacuation Pause)
+Event: 0.293 Executing safepoint VM operation: G1CollectForAllocation (G1 Evacuation Pause) done
+Event: 0.350 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.350 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.441 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.441 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.441 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.441 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.445 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.445 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.479 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize)
+Event: 0.479 Executing non-safepoint VM operation: HandshakeAllThreads (Deoptimize) done
+Event: 0.551 Executing safepoint VM operation: G1CollectForAllocation (G1 Evacuation Pause)
+Event: 0.554 Executing safepoint VM operation: G1CollectForAllocation (G1 Evacuation Pause) done
+
+Memory protections (19 events):
+Event: 0.014 Protecting memory [0x000000016b448000,0x000000016b454000] with protection modes 0
+Event: 0.017 Protecting memory [0x0000007d3d000000,0x0000007d3e000000] with protection modes 0
+Event: 0.020 Protecting memory [0x00000f8000000000,0x00000f8000004000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016c3b4000,0x000000016c3c0000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016c5c0000,0x000000016c5cc000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016c7cc000,0x000000016c7d8000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016c9d8000,0x000000016c9e4000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016cbe4000,0x000000016cbf0000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016cdf0000,0x000000016cdfc000] with protection modes 0
+Event: 0.027 Protecting memory [0x000000016cffc000,0x000000016d008000] with protection modes 0
+Event: 0.030 Protecting memory [0x000000016d208000,0x000000016d214000] with protection modes 0
+Event: 0.030 Protecting memory [0x000000016d414000,0x000000016d420000] with protection modes 0
+Event: 0.034 Protecting memory [0x000000016d620000,0x000000016d62c000] with protection modes 0
+Event: 0.035 Protecting memory [0x000000016d82c000,0x000000016d838000] with protection modes 0
+Event: 0.039 Protecting memory [0x000000016da38000,0x000000016da44000] with protection modes 0
+Event: 0.114 Protecting memory [0x000000016dc44000,0x000000016dc50000] with protection modes 0
+Event: 0.164 Protecting memory [0x000000016e88c000,0x000000016e898000] with protection modes 0
+Event: 0.168 Protecting memory [0x000000016ea98000,0x000000016eaa4000] with protection modes 0
+Event: 0.168 Protecting memory [0x000000016eca4000,0x000000016ecb0000] with protection modes 0
+
+Nmethod flushes (0 events):
+No events
+
+Events (20 events):
+Event: 0.020 Thread 0x0000000104fe8160 Thread added: 0x0000000104fe8160
+Event: 0.023 Thread 0x0000000104fe8160 JVMTI - enter early start phase
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x0000000105002160
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x00000078e8864000
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x00000078e8864800
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x00000078e8865000
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x00000078e8865800
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x00000078e8866000
+Event: 0.027 Thread 0x0000000104fe8160 Thread added: 0x00000078e8866800
+Event: 0.030 Thread 0x00000078e8866000 Thread added: 0x00000078e8867000
+Event: 0.030 Thread 0x00000078e8866000 Thread added: 0x00000078e8867800
+Event: 0.034 Thread 0x0000000104fe8160 JVMTI - enter start phase
+Event: 0.034 Thread 0x0000000104fe8160 JVMTI - enter live phase
+Event: 0.034 Thread 0x0000000104fe8160 Thread added: 0x00000078e89bc000
+Event: 0.035 Thread 0x0000000104fe8160 Thread added: 0x00000078e89bc800
+Event: 0.039 Thread 0x00000078e8866000 Thread added: 0x00000078e89be000
+Event: 0.114 Thread 0x00000078e8866000 Thread added: 0x00000078e8beb800
+Event: 0.164 Thread 0x00000078e8867800 Thread added: 0x00000078e9840000
+Event: 0.168 Thread 0x00000078e8867000 Thread added: 0x00000078e9841000
+Event: 0.168 Thread 0x00000078e8867000 Thread added: 0x00000078e9842800
+
+
+Dynamic libraries:
+0x0000000104a7c000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjli.dylib
+0x00000001be8f0000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices
+0x00000001a6ad3000 	/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics
+0x00000001a2d45000 	/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText
+0x00000001ad402000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO
+0x00000001a7808000 	/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync
+0x00000001b4acb000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/ATS
+0x00000001b6eea000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices
+0x00000001a7288000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/HIServices
+0x00000001b31b3000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/PrintCore.framework/Versions/A/PrintCore
+0x00000001b4e1f000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/QD.framework/Versions/A/QD
+0x00000001b4e1a000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ColorSyncLegacy.framework/Versions/A/ColorSyncLegacy
+0x00000001b4ac0000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/SpeechSynthesis.framework/Versions/A/SpeechSynthesis
+0x00000001b08a2000 	/usr/lib/libSystem.B.dylib
+0x00000001a6497000 	/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLight
+0x00000001a73a6000 	/System/Library/PrivateFrameworks/ProtocolBuffer.framework/Versions/A/ProtocolBuffer
+0x00000001b08a6000 	/System/Library/PrivateFrameworks/SoftLinking.framework/Versions/A/SoftLinking
+0x00000001a3b17000 	/usr/lib/libicucore.A.dylib
+0x00000001a9e45000 	/System/Library/PrivateFrameworks/CoreAnalytics.framework/Versions/A/CoreAnalytics
+0x00000001ace29000 	/System/Library/PrivateFrameworks/FontServices.framework/libFontParser.dylib
+0x00000001b70f7000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate
+0x00000001ac923000 	/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface
+0x00000001aabf4000 	/usr/lib/libxml2.2.dylib
+0x00000001a6035000 	/System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork
+0x000000019fcd1000 	/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+0x00000001a13fb000 	/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation
+0x00000001b07ef000 	/usr/lib/libz.1.dylib
+0x000000019f808000 	/usr/lib/libobjc.A.dylib
+0x000000019fb9c000 	/usr/lib/libc++.1.dylib
+0x00000001a3707000 	/System/Library/Frameworks/Security.framework/Versions/A/Security
+0x0000000253124000 	/System/Library/PrivateFrameworks/CollectionsInternal.framework/Versions/A/CollectionsInternal
+0x00000001b41fc000 	/usr/lib/swift/libswiftCore.dylib
+0x00000001d0834000 	/usr/lib/swift/libswiftCoreFoundation.dylib
+0x00000001bc19a000 	/usr/lib/swift/libswiftDispatch.dylib
+0x00000001d088e000 	/usr/lib/swift/libswiftIOKit.dylib
+0x00000001befcc000 	/usr/lib/swift/libswiftObjectiveC.dylib
+0x00000001d0843000 	/usr/lib/swift/libswiftXPC.dylib
+0x00000002cc580000 	/usr/lib/swift/libswift_Builtin_float.dylib
+0x000000024f808000 	/System/Library/PrivateFrameworks/BiomeLibrary.framework/Versions/A/BiomeLibrary
+0x00000001a83af000 	/System/Library/PrivateFrameworks/BaseBoard.framework/Versions/A/BaseBoard
+0x00000001bc487000 	/System/Library/PrivateFrameworks/BoardServices.framework/Versions/A/BoardServices
+0x00000001be242000 	/System/Library/PrivateFrameworks/BackBoardServices.framework/Versions/A/BackBoardServices
+0x000000024eba4000 	/System/Library/PrivateFrameworks/BackBoardHIDEventFoundation.framework/Versions/A/BackBoardHIDEventFoundation
+0x00000001aacdb000 	/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo
+0x00000001a9e7c000 	/usr/lib/libDiagnosticMessagesClient.dylib
+0x00000001a2867000 	/System/Library/Frameworks/CoreDisplay.framework/Versions/A/CoreDisplay
+0x00000001afb4c000 	/usr/lib/libbsm.0.dylib
+0x00000001b2b00000 	/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox
+0x00000001b0b43000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/MetalPerformanceShaders
+0x00000001af2da000 	/System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/Versions/A/IOMobileFramebuffer
+0x00000002a6047000 	/System/Library/PrivateFrameworks/ProDisplayLibrary.framework/Versions/A/ProDisplayLibrary
+0x00000001c22a0000 	/System/Library/PrivateFrameworks/IOSurfaceAccelerator.framework/Versions/A/IOSurfaceAccelerator
+0x00000001a8484000 	/System/Library/PrivateFrameworks/RunningBoardServices.framework/Versions/A/RunningBoardServices
+0x00000001a1064000 	/System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration
+0x00000001ac946000 	/System/Library/Frameworks/Metal.framework/Versions/A/Metal
+0x00000001ac93c000 	/System/Library/PrivateFrameworks/IOAccelerator.framework/Versions/A/IOAccelerator
+0x00000001acbf7000 	/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia
+0x00000001a6471000 	/System/Library/PrivateFrameworks/TCC.framework/Versions/A/TCC
+0x00000001a63cd000 	/usr/lib/libMobileGestalt.dylib
+0x00000001b4ccf000 	/usr/lib/libSMC.dylib
+0x00000001b2aba000 	/System/Library/PrivateFrameworks/WatchdogClient.framework/Versions/A/WatchdogClient
+0x00000001aa3d5000 	/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore
+0x00000001a416e000 	/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit
+0x00000001b0b4b000 	/usr/lib/libcompression.dylib
+0x00000001b2abc000 	/System/Library/PrivateFrameworks/MultitouchSupport.framework/Versions/A/MultitouchSupport
+0x00000001a9f86000 	/System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration
+0x000000024ebf5000 	/System/Library/PrivateFrameworks/BackBoardHIDTouchEventProcessor.framework/Versions/A/BackBoardHIDTouchEventProcessor
+0x00000002698e4000 	/System/Library/PrivateFrameworks/Gestures.framework/Versions/A/Gestures
+0x00000001e8682000 	/usr/lib/swift/libswiftAccelerate.dylib
+0x00000001d0815000 	/usr/lib/swift/libswiftCoreAudio.dylib
+0x00000001de083000 	/usr/lib/swift/libswiftMetal.dylib
+0x00000001ee413000 	/usr/lib/swift/libswiftOSLog.dylib
+0x00000001e3e8c000 	/usr/lib/swift/libswiftQuartzCore.dylib
+0x00000001e8674000 	/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib
+0x00000001befd0000 	/usr/lib/swift/libswiftos.dylib
+0x00000001d3fa8000 	/usr/lib/swift/libswiftsimd.dylib
+0x00000001df808000 	/System/Library/PrivateFrameworks/BiomeStreams.framework/Versions/A/BiomeStreams
+0x00000001e5c1b000 	/System/Library/PrivateFrameworks/BiomeStorage.framework/Versions/A/BiomeStorage
+0x00000001db79f000 	/System/Library/PrivateFrameworks/BiomeFoundation.framework/Versions/A/BiomeFoundation
+0x000000027d6ea000 	/System/Library/PrivateFrameworks/IntelligencePlatformLibrary.framework/Versions/A/IntelligencePlatformLibrary
+0x00000001a8115000 	/usr/lib/libsqlite3.dylib
+0x00000002a45a8000 	/System/Library/PrivateFrameworks/PoirotSchematizer.framework/Versions/A/PoirotSchematizer
+0x000000024ecff000 	/System/Library/PrivateFrameworks/BiomeSync.framework/Versions/A/BiomeSync
+0x00000001e2aa5000 	/System/Library/PrivateFrameworks/OSAnalytics.framework/Versions/A/OSAnalytics
+0x000000024eceb000 	/System/Library/PrivateFrameworks/BiomeDSL.framework/Versions/A/BiomeDSL
+0x00000001e5bca000 	/System/Library/PrivateFrameworks/BiomePubSub.framework/Versions/A/BiomePubSub
+0x00000001d070e000 	/System/Library/PrivateFrameworks/LoggingSupport.framework/Versions/A/LoggingSupport
+0x00000001bf0d5000 	/System/Library/PrivateFrameworks/ProactiveSupport.framework/Versions/A/ProactiveSupport
+0x0000000220115000 	/System/Library/PrivateFrameworks/FeatureFlags.framework/Versions/A/FeatureFlags
+0x00000001f7265000 	/System/Library/PrivateFrameworks/InternalSwiftProtobuf.framework/Versions/A/InternalSwiftProtobuf
+0x00000002a4665000 	/System/Library/PrivateFrameworks/PoirotUDFs.framework/Versions/A/PoirotUDFs
+0x00000002cc6b0000 	/usr/lib/swift/libswift_StringProcessing.dylib
+0x00000001b089d000 	/usr/lib/system/libcache.dylib
+0x00000001b085a000 	/usr/lib/system/libcommonCrypto.dylib
+0x00000001b0883000 	/usr/lib/system/libcompiler_rt.dylib
+0x00000001b0878000 	/usr/lib/system/libcopyfile.dylib
+0x000000019f9c4000 	/usr/lib/system/libcorecrypto.dylib
+0x000000019facf000 	/usr/lib/system/libdispatch.dylib
+0x000000019f863000 	/usr/lib/system/libdyld.dylib
+0x00000001b0893000 	/usr/lib/system/libkeymgr.dylib
+0x00000001b083d000 	/usr/lib/system/libmacho.dylib
+0x00000001afb24000 	/usr/lib/system/libquarantine.dylib
+0x00000001b0890000 	/usr/lib/system/libremovefile.dylib
+0x00000001a6459000 	/usr/lib/system/libsystem_asl.dylib
+0x000000019f94a000 	/usr/lib/system/libsystem_blocks.dylib
+0x000000019fb19000 	/usr/lib/system/libsystem_c.dylib
+0x00000001b0887000 	/usr/lib/system/libsystem_collections.dylib
+0x00000001adf3b000 	/usr/lib/system/libsystem_configuration.dylib
+0x00000001ac8e8000 	/usr/lib/system/libsystem_containermanager.dylib
+0x00000001b0236000 	/usr/lib/system/libsystem_coreservices.dylib
+0x00000001a3dfa000 	/usr/lib/system/libsystem_darwin.dylib
+0x00000002ccb0d000 	/usr/lib/system/libsystem_darwindirectory.dylib
+0x00000001b0894000 	/usr/lib/system/libsystem_dnssd.dylib
+0x00000002ccb11000 	/usr/lib/system/libsystem_eligibility.dylib
+0x000000019fb16000 	/usr/lib/system/libsystem_featureflags.dylib
+0x000000019fca2000 	/usr/lib/system/libsystem_info.dylib
+0x00000001b07fe000 	/usr/lib/system/libsystem_m.dylib
+0x000000019fa79000 	/usr/lib/system/libsystem_malloc.dylib
+0x00000001a63b1000 	/usr/lib/system/libsystem_networkextension.dylib
+0x00000001a4254000 	/usr/lib/system/libsystem_notify.dylib
+0x00000001adf40000 	/usr/lib/system/libsystem_sandbox.dylib
+0x00000002ccb1c000 	/usr/lib/system/libsystem_sanitizers.dylib
+0x00000001b088d000 	/usr/lib/system/libsystem_secinit.dylib
+0x000000019fc4c000 	/usr/lib/system/libsystem_kernel.dylib
+0x000000019fc98000 	/usr/lib/system/libsystem_platform.dylib
+0x000000019fc8b000 	/usr/lib/system/libsystem_pthread.dylib
+0x00000001a8550000 	/usr/lib/system/libsystem_symptoms.dylib
+0x000000019f9a4000 	/usr/lib/system/libsystem_trace.dylib
+0x00000002ccb26000 	/usr/lib/system/libsystem_trial.dylib
+0x00000001b0867000 	/usr/lib/system/libunwind.dylib
+0x000000019f94e000 	/usr/lib/system/libxpc.dylib
+0x000000019fc32000 	/usr/lib/libc++abi.dylib
+0x00000001a7404000 	/usr/lib/objc/libobjcMsgSend.dylib
+0x00000002cc11e000 	/usr/lib/libRosetta.dylib
+0x00000002cc970000 	/usr/lib/swift/libswiftSynchronization.dylib
+0x000000028dfd9000 	/System/Library/PrivateFrameworks/NSPredicateSecurityPolicy.framework/Versions/A/NSPredicateSecurityPolicy
+0x00000001aabb5000 	/System/Library/PrivateFrameworks/CoreAutoLayout.framework/Versions/A/CoreAutoLayout
+0x00000001b08a4000 	/usr/lib/libfakelink.dylib
+0x00000001b08f7000 	/usr/lib/libarchive.2.dylib
+0x00000001adf4d000 	/usr/lib/liblangid.dylib
+0x00000001b6a28000 	/System/Library/Frameworks/Combine.framework/Versions/A/Combine
+0x00000002a6d15000 	/System/Library/PrivateFrameworks/ReflectionInternal.framework/Versions/A/ReflectionInternal
+0x00000002a82f1000 	/System/Library/PrivateFrameworks/RuntimeInternal.framework/Versions/A/RuntimeInternal
+0x00000001ccf8b000 	/usr/lib/swift/libswiftDarwin.dylib
+0x00000002cc7c7000 	/usr/lib/swift/libswiftObservation.dylib
+0x00000002cc984000 	/usr/lib/swift/libswiftSystem.dylib
+0x00000002cc581000 	/usr/lib/swift/libswift_Concurrency.dylib
+0x00000002cc60e000 	/usr/lib/swift/libswift_DarwinFoundation1.dylib
+0x00000001a40f5000 	/System/Library/PrivateFrameworks/CoreServicesInternal.framework/Versions/A/CoreServicesInternal
+0x00000001b0871000 	/usr/lib/liboah.dylib
+0x00000001be41e000 	/System/Library/PrivateFrameworks/DiskImages.framework/Versions/A/DiskImages
+0x00000001ccacb000 	/System/Library/Frameworks/NetFS.framework/Versions/A/NetFS
+0x00000001aab84000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/FSEvents
+0x00000001a3e04000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/CarbonCore
+0x00000001a9f05000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Metadata
+0x00000001b023d000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/OSServices.framework/Versions/A/OSServices
+0x00000001b09ef000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SearchKit.framework/Versions/A/SearchKit
+0x00000001a84dd000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/AE.framework/Versions/A/AE
+0x00000001a0162000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/LaunchServices
+0x00000001b1ef0000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/DictionaryServices.framework/Versions/A/DictionaryServices
+0x00000001aab90000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SharedFileList.framework/Versions/A/SharedFileList
+0x00000001b0a80000 	/usr/lib/libapple_nghttp2.dylib
+0x00000001a8558000 	/System/Library/Frameworks/Network.framework/Versions/A/Network
+0x00000001a63cc000 	/usr/lib/libenergytrace.dylib
+0x00000001b0841000 	/usr/lib/system/libkxld.dylib
+0x000000024b92a000 	/System/Library/PrivateFrameworks/AppleKeyStore.framework/Versions/A/AppleKeyStore
+0x00000002cb0ef000 	/usr/lib/libCoreEntitlements.dylib
+0x00000002cc2ff000 	/usr/lib/libTLE.dylib
+0x0000000283e4a000 	/System/Library/PrivateFrameworks/MessageSecurity.framework/Versions/A/MessageSecurity
+0x00000001bb691000 	/System/Library/PrivateFrameworks/SymptomDiagnosticReporter.framework/Versions/A/SymptomDiagnosticReporter
+0x00000001b2131000 	/System/Library/PrivateFrameworks/CrashReporterSupport.framework/Versions/A/CrashReporterSupport
+0x00000001bc995000 	/System/Library/PrivateFrameworks/CoreTime.framework/Versions/A/CoreTime
+0x00000001b021e000 	/System/Library/PrivateFrameworks/AppleFSCompression.framework/Versions/A/AppleFSCompression
+0x00000001afb34000 	/usr/lib/libcoretls.dylib
+0x00000001b1f65000 	/usr/lib/libcoretls_cfhelpers.dylib
+0x00000001b0b45000 	/usr/lib/libpam.2.dylib
+0x00000001b1fd8000 	/usr/lib/libxar.1.dylib
+0x00000001b1f67000 	/System/Library/PrivateFrameworks/APFS.framework/Versions/A/APFS
+0x00000002b8466000 	/System/Library/PrivateFrameworks/SwiftASN1Internal.framework/Versions/A/SwiftASN1Internal
+0x00000001b1fe7000 	/usr/lib/libutil.dylib
+0x00000002cc27a000 	/usr/lib/libswiftPrespecialized.dylib
+0x00000001adf49000 	/System/Library/PrivateFrameworks/AppleSystemInfo.framework/Versions/A/AppleSystemInfo
+0x000000025360a000 	/System/Library/PrivateFrameworks/ConnectedMode.framework/Versions/A/ConnectedMode
+0x000000024363f000 	/System/Library/Frameworks/SwiftData.framework/Versions/A/SwiftData
+0x00000001a5f5f000 	/usr/lib/libboringssl.dylib
+0x00000001a73bd000 	/usr/lib/libdns_services.dylib
+0x00000001cf24d000 	/usr/lib/libquic.dylib
+0x00000001b418e000 	/usr/lib/libusrtcp.dylib
+0x000000024e1d2000 	/System/Library/PrivateFrameworks/AtomicsInternal.framework/Versions/A/AtomicsInternal
+0x00000002cc7a1000 	/usr/lib/swift/libswiftDistributed.dylib
+0x00000001a7cd6000 	/System/Library/Frameworks/CoreData.framework/Versions/A/CoreData
+0x00000001b1f46000 	/usr/lib/liblzma.5.dylib
+0x00000002cc611000 	/usr/lib/swift/libswift_DarwinFoundation2.dylib
+0x00000002cc612000 	/usr/lib/swift/libswift_DarwinFoundation3.dylib
+0x00000002cc615000 	/usr/lib/swift/libswift_RegexParser.dylib
+0x00000001b2377000 	/usr/lib/libheimdal-asn1.dylib
+0x00000001b0a5c000 	/System/Library/PrivateFrameworks/AppleSauce.framework/Versions/A/AppleSauce
+0x000000025eeaa000 	/System/Library/PrivateFrameworks/DeviceRecovery.framework/Versions/A/DeviceRecovery
+0x00000001bc82d000 	/System/Library/PrivateFrameworks/CoreSymbolication.framework/Versions/A/CoreSymbolication
+0x00000001eedbd000 	/System/Library/PrivateFrameworks/Symbolication.framework/Versions/A/Symbolication
+0x00000001bc80c000 	/System/Library/PrivateFrameworks/DebugSymbols.framework/Versions/A/DebugSymbols
+0x00000002ca965000 	/usr/lib/libAppleArchive.dylib
+0x00000001b0229000 	/usr/lib/libbz2.1.0.dylib
+0x00000001d0788000 	/System/Library/PrivateFrameworks/MallocStackLogging.framework/Versions/A/MallocStackLogging
+0x00000001afb27000 	/usr/lib/libCheckFix.dylib
+0x00000001adf4f000 	/System/Library/PrivateFrameworks/CoreNLP.framework/Versions/A/CoreNLP
+0x00000001a9e7e000 	/System/Library/PrivateFrameworks/MetadataUtilities.framework/Versions/A/MetadataUtilities
+0x00000001afb5d000 	/usr/lib/libmecab.dylib
+0x00000001a10f6000 	/usr/lib/libCRFSuite.dylib
+0x00000001afbbe000 	/usr/lib/libgermantok.dylib
+0x00000001b0a54000 	/usr/lib/libThaiTokenizer.dylib
+0x00000001a9f90000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vImage.framework/Versions/A/vImage
+0x00000001b6ecd000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/vecLib
+0x00000001b201d000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvMisc.dylib
+0x00000001a0611000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+0x000000022da1e000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL
+0x000000026acb4000 	/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/libllvm-flatbuffers.dylib
+0x00000002657ed000 	/System/Library/PrivateFrameworks/FramePacing.framework/Versions/A/FramePacing
+0x000000022da11000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreFSCache.dylib
+0x000000026acae000 	/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/libGPUCompilerUtils.dylib
+0x000000022da6e000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLU.dylib
+0x000000022da31000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGFXShared.dylib
+0x000000022dbfd000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
+0x000000022da3a000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLImage.dylib
+0x000000022da2e000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCVMSPluginSupport.dylib
+0x000000022da18000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreVMClient.dylib
+0x00000001af808000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvDSP.dylib
+0x00000001b0c2e000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLAPACK.dylib
+0x00000001afbc1000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLinearAlgebra.dylib
+0x00000001b0a99000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparseBLAS.dylib
+0x00000001b0c29000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libQuadrature.dylib
+0x00000001ae071000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBNNS.dylib
+0x00000001a0ef7000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparse.dylib
+0x0000000284565000 	/System/Library/PrivateFrameworks/MIL.framework/Versions/A/MIL
+0x00000001b08dc000 	/usr/lib/libiconv.2.dylib
+0x00000001b083c000 	/usr/lib/libcharset.1.dylib
+0x00000001aab1f000 	/System/Library/Frameworks/OpenDirectory.framework/Versions/A/Frameworks/CFOpenDirectory.framework/Versions/A/CFOpenDirectory
+0x00000001b25a9000 	/System/Library/PrivateFrameworks/AppServerSupport.framework/Versions/A/AppServerSupport
+0x00000001aabb2000 	/usr/lib/libapp_launch_measurement.dylib
+0x000000027888f000 	/System/Library/PrivateFrameworks/InstalledContentLibrary.framework/Versions/A/InstalledContentLibrary
+0x00000001a4134000 	/System/Library/PrivateFrameworks/CoreServicesStore.framework/Versions/A/CoreServicesStore
+0x000000024c46b000 	/System/Library/PrivateFrameworks/AppleMobileFileIntegrity.framework/Versions/A/AppleMobileFileIntegrity
+0x00000001d07b0000 	/usr/lib/libmis.dylib
+0x00000001e42e6000 	/System/Library/PrivateFrameworks/MobileSystemServices.framework/Versions/A/MobileSystemServices
+0x000000022970c000 	/System/Library/PrivateFrameworks/ConfigProfileHelper.framework/Versions/A/ConfigProfileHelper
+0x00000001b1feb000 	/usr/lib/libxslt.1.dylib
+0x00000001a0de5000 	/System/Library/PrivateFrameworks/Lexicon.framework/Versions/A/Lexicon
+0x00000001ae06b000 	/System/Library/PrivateFrameworks/LinguisticData.framework/Versions/A/LinguisticData
+0x00000001af3af000 	/System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Versions/A/BackgroundTaskManagement
+0x00000001bb6cf000 	/System/Library/Frameworks/DiscRecording.framework/Versions/A/DiscRecording
+0x00000001be5bf000 	/usr/lib/libcurl.4.dylib
+0x00000001bb779000 	/System/Library/PrivateFrameworks/MediaKit.framework/Versions/A/MediaKit
+0x00000001b4878000 	/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox
+0x00000001a297f000 	/System/Library/PrivateFrameworks/AudioToolboxCore.framework/Versions/A/AudioToolboxCore
+0x00000001b4a52000 	/System/Library/PrivateFrameworks/AudioSession.framework/Versions/A/AudioSession
+0x00000001c1626000 	/System/Library/Frameworks/CoreMIDI.framework/Versions/A/CoreMIDI
+0x00000001b4abd000 	/usr/lib/libAudioStatistics.dylib
+0x00000001acbcc000 	/System/Library/PrivateFrameworks/caulk.framework/Versions/A/caulk
+0x00000001a2f69000 	/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio
+0x00000001d6cf8000 	/usr/lib/swift/libswiftCoreMIDI.dylib
+0x00000001b4e28000 	/System/Library/PrivateFrameworks/perfdata.framework/Versions/A/perfdata
+0x00000001cf344000 	/System/Library/PrivateFrameworks/SystemPolicy.framework/Versions/A/SystemPolicy
+0x00000001b235c000 	/usr/lib/libexpat.1.dylib
+0x00000001b4e33000 	/usr/lib/libperfcheck.dylib
+0x000000024e27b000 	/System/Library/PrivateFrameworks/AudioAnalytics.framework/Versions/A/AudioAnalytics
+0x00000001f7195000 	/System/Library/Frameworks/OSLog.framework/Versions/A/OSLog
+0x00000001aadb8000 	/System/Library/PrivateFrameworks/UserManagement.framework/Versions/A/UserManagement
+0x000000023be66000 	/System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/ExtensionFoundation
+0x00000001af38e000 	/System/Library/PrivateFrameworks/MobileKeyBag.framework/Versions/A/MobileKeyBag
+0x00000001adf47000 	/System/Library/PrivateFrameworks/AggregateDictionary.framework/Versions/A/AggregateDictionary
+0x000000028f38a000 	/System/Library/PrivateFrameworks/OSEligibility.framework/Versions/A/OSEligibility
+0x000000023dcc5000 	/System/Library/Frameworks/LightweightCodeRequirements.framework/Versions/A/LightweightCodeRequirements
+0x00000001b2269000 	/System/Library/PrivateFrameworks/PlugInKit.framework/Versions/A/PlugInKit
+0x00000001af3a4000 	/System/Library/PrivateFrameworks/AssertionServices.framework/Versions/A/AssertionServices
+0x00000001b296d000 	/System/Library/PrivateFrameworks/AppleJPEG.framework/Versions/A/AppleJPEG
+0x00000001b308a000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libPng.dylib
+0x00000001b30b5000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libTIFF.dylib
+0x00000001b319b000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libGIF.dylib
+0x00000001b29b3000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJP2.dylib
+0x00000001b2097000 	/usr/lib/libate.dylib
+0x00000001b3143000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJPEG.dylib
+0x00000001b313b000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libRadiance.dylib
+0x00000002cc7ec000 	/usr/lib/swift/libswiftRegexBuilder.dylib
+0x00000001a5a88000 	/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers
+0x00000001ad8ca000 	/System/Library/Frameworks/CoreImage.framework/Versions/A/CoreImage
+0x00000001bf217000 	/System/Library/PrivateFrameworks/ASEProcessing.framework/Versions/A/ASEProcessing
+0x00000002a2ece000 	/System/Library/PrivateFrameworks/PhotosensitivityProcessing.framework/Versions/A/PhotosensitivityProcessing
+0x00000001def6e000 	/System/Library/PrivateFrameworks/TimeSync.framework/Versions/A/TimeSync
+0x000000024c480000 	/System/Library/PrivateFrameworks/AppleMSG.framework/Versions/A/AppleMSG
+0x00000002ab786000 	/System/Library/PrivateFrameworks/SILManager.framework/Versions/A/SILManager
+0x00000001b2559000 	/System/Library/PrivateFrameworks/GraphVisualizer.framework/Versions/A/GraphVisualizer
+0x00000001b4eb2000 	/System/Library/PrivateFrameworks/MobileAsset.framework/Versions/A/MobileAsset
+0x00000002657e9000 	/System/Library/PrivateFrameworks/FontServices.framework/Versions/A/FontServices
+0x00000001b2570000 	/System/Library/PrivateFrameworks/OTSVG.framework/Versions/A/OTSVG
+0x00000001aa846000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Resources/libFontRegistry.dylib
+0x00000001d7daa000 	/System/Library/PrivateFrameworks/SoftwareUpdateCoreSupport.framework/Versions/A/SoftwareUpdateCoreSupport
+0x00000001dff24000 	/System/Library/PrivateFrameworks/SoftwareUpdateCoreConnect.framework/Versions/A/SoftwareUpdateCoreConnect
+0x00000001bef60000 	/System/Library/PrivateFrameworks/StreamingZip.framework/Versions/A/StreamingZip
+0x00000001be511000 	/System/Library/PrivateFrameworks/RemoteServiceDiscovery.framework/Versions/A/RemoteServiceDiscovery
+0x00000001d78ff000 	/System/Library/PrivateFrameworks/MSUDataAccessor.framework/Versions/A/MSUDataAccessor
+0x00000001d25e6000 	/usr/lib/libbootpolicy.dylib
+0x00000001e8882000 	/usr/lib/libpartition2_dynamic.dylib
+0x00000001be527000 	/System/Library/PrivateFrameworks/RemoteXPC.framework/Versions/A/RemoteXPC
+0x00000001deebb000 	/usr/lib/libFDR.dylib
+0x00000001e57ec000 	/usr/lib/libamsupport.dylib
+0x00000002cc117000 	/usr/lib/libReverseProxyDevice.dylib
+0x000000024b102000 	/System/Library/PrivateFrameworks/AppleDeviceQuerySupport.framework/Versions/A/AppleDeviceQuerySupport
+0x00000002cb5fe000 	/usr/lib/libhvf.dylib
+0x00000002a035a000 	/System/Library/PrivateFrameworks/ParsingInternal.framework/Versions/A/ParsingInternal
+0x00000002656da000 	/System/Library/PrivateFrameworks/FontServices.framework/libXTFontStaticRegistryData.dylib
+0x00000001ade89000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSCore.framework/Versions/A/MPSCore
+0x00000001b018f000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSImage.framework/Versions/A/MPSImage
+0x00000001afbd5000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNeuralNetwork.framework/Versions/A/MPSNeuralNetwork
+0x00000001aff8d000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSMatrix.framework/Versions/A/MPSMatrix
+0x00000001afdf2000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSRayIntersector.framework/Versions/A/MPSRayIntersector
+0x00000001affbc000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNDArray.framework/Versions/A/MPSNDArray
+0x000000023ebec000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSFunctions.framework/Versions/A/MPSFunctions
+0x000000023ebda000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSBenchmarkLoop.framework/Versions/A/MPSBenchmarkLoop
+0x000000023ebff000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSHost.framework/Versions/A/MPSHost
+0x00000001a0462000 	/System/Library/PrivateFrameworks/MetalTools.framework/Versions/A/MetalTools
+0x00000002871aa000 	/System/Library/PrivateFrameworks/MTL3On4.framework/Versions/A/MTL3On4
+0x00000001d54e8000 	/System/Library/PrivateFrameworks/IOAccelMemoryInfo.framework/Versions/A/IOAccelMemoryInfo
+0x00000001e41d4000 	/System/Library/PrivateFrameworks/kperf.framework/Versions/A/kperf
+0x00000001d0812000 	/System/Library/PrivateFrameworks/GPURawCounter.framework/Versions/A/GPURawCounter
+0x00000001e1245000 	/System/Library/PrivateFrameworks/IOKitten.framework/Versions/A/IOKitten
+0x00000002bbd0f000 	/System/Library/PrivateFrameworks/Tightbeam.framework/Versions/A/Tightbeam
+0x00000001de08b000 	/usr/lib/swift/libswiftCompression.dylib
+0x00000001e8d37000 	/System/Library/PrivateFrameworks/AFKUser.framework/Versions/A/AFKUser
+0x00000001b2476000 	/System/Library/PrivateFrameworks/MediaExperience.framework/Versions/A/MediaExperience
+0x00000001b4825000 	/System/Library/PrivateFrameworks/AudioSession.framework/libSessionUtility.dylib
+0x00000001b31a1000 	/System/Library/PrivateFrameworks/CMCaptureCore.framework/Versions/A/CMCaptureCore
+0x00000001b25b5000 	/usr/lib/libspindump.dylib
+0x00000001bb69e000 	/System/Library/PrivateFrameworks/PowerLog.framework/Versions/A/PowerLog
+0x00000001bb57b000 	/System/Library/Frameworks/CoreBluetooth.framework/Versions/A/CoreBluetooth
+0x00000001af945000 	/System/Library/PrivateFrameworks/CoreUtils.framework/Versions/A/CoreUtils
+0x00000001c7351000 	/System/Library/PrivateFrameworks/HID.framework/Versions/A/HID
+0x000000025dc90000 	/System/Library/PrivateFrameworks/CoreUtilsExtras.framework/Versions/A/CoreUtilsExtras
+0x000000027e123000 	/System/Library/PrivateFrameworks/IO80211.framework/Versions/A/IO80211
+0x00000001b23d5000 	/System/Library/PrivateFrameworks/IconServices.framework/Versions/A/IconServices
+0x00000001b67c4000 	/System/Library/Frameworks/IOBluetooth.framework/Versions/A/IOBluetooth
+0x00000001d088d000 	/usr/lib/swift/libswiftCoreImage.dylib
+0x00000001ad3ae000 	/System/Library/PrivateFrameworks/DFRFoundation.framework/Versions/A/DFRFoundation
+0x00000001aab15000 	/System/Library/Frameworks/OpenDirectory.framework/Versions/A/OpenDirectory
+0x00000001afa9b000 	/System/Library/Frameworks/SecurityFoundation.framework/Versions/A/SecurityFoundation
+0x00000001b4ff4000 	/System/Library/PrivateFrameworks/CorePhoneNumbers.framework/Versions/A/CorePhoneNumbers
+0x00000001b2381000 	/System/Library/PrivateFrameworks/IconFoundation.framework/Versions/A/IconFoundation
+0x00000002772a0000 	/System/Library/PrivateFrameworks/IconRendering.framework/Versions/A/IconRendering
+0x00000001aa897000 	/System/Library/PrivateFrameworks/CoreUI.framework/Versions/A/CoreUI
+0x00000002ab022000 	/System/Library/PrivateFrameworks/SFSymbols.framework/Versions/A/SFSymbols
+0x000000023bbb2000 	/System/Library/Frameworks/DeveloperToolsSupport.framework/Versions/A/DeveloperToolsSupport
+0x00000001c6cf7000 	/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/RenderBox
+0x00000001ad3c4000 	/System/Library/PrivateFrameworks/CoreSVG.framework/Versions/A/CoreSVG
+0x00000001b321f000 	/System/Library/PrivateFrameworks/TextureIO.framework/Versions/A/TextureIO
+0x00000001b32bc000 	/System/Library/PrivateFrameworks/InternationalSupport.framework/Versions/A/InternationalSupport
+0x00000002c4099000 	/System/Library/PrivateFrameworks/WallpaperServices.framework/Versions/A/WallpaperServices
+0x00000001b316e000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATSUI.framework/Versions/A/ATSUI
+0x00000001b2128000 	/usr/lib/libIOReport.dylib
+0x00000001bc3d3000 	/System/Library/PrivateFrameworks/FrontBoardServices.framework/Versions/A/FrontBoardServices
+0x00000001bc55f000 	/System/Library/PrivateFrameworks/GraphicsServices.framework/Versions/A/GraphicsServices
+0x00000001bef3e000 	/System/Library/Frameworks/AudioUnit.framework/Versions/A/AudioUnit
+0x00000002cb252000 	/usr/lib/libcrypto.46.dylib
+0x00000002cc209000 	/usr/lib/libssl.48.dylib
+0x00000001be2b5000 	/System/Library/Frameworks/LDAP.framework/Versions/A/LDAP
+0x00000001b4e40000 	/System/Library/Frameworks/Kerberos.framework/Versions/A/Kerberos
+0x00000001be2f0000 	/System/Library/PrivateFrameworks/TrustEvaluationAgent.framework/Versions/A/TrustEvaluationAgent
+0x00000001b4b07000 	/usr/lib/libsasl2.2.dylib
+0x00000001b4aeb000 	/usr/lib/libresolv.9.dylib
+0x00000001b25bc000 	/System/Library/PrivateFrameworks/Heimdal.framework/Versions/A/Heimdal
+0x00000001b4e51000 	/System/Library/Frameworks/GSS.framework/Versions/A/GSS
+0x00000001bef3d000 	/System/Library/Frameworks/Kerberos.framework/Versions/A/Libraries/libHeimdalProxy.dylib
+0x00000001b4ea1000 	/System/Library/PrivateFrameworks/CommonAuth.framework/Versions/A/CommonAuth
+0x00000001b4e0d000 	/System/Library/PrivateFrameworks/NetAuth.framework/Versions/A/NetAuth
+0x00000001aad80000 	/System/Library/PrivateFrameworks/login.framework/Versions/A/Frameworks/loginsupport.framework/Versions/A/loginsupport
+0x00000001be8f1000 	/System/Library/PrivateFrameworks/InternationalTextSearch.framework/Versions/A/InternationalTextSearch
+0x00000002a4628000 	/System/Library/PrivateFrameworks/PoirotSQLite.framework/Versions/A/PoirotSQLite
+0x0000000251023000 	/System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/CascadeSets
+0x00000001be645000 	/System/Library/PrivateFrameworks/AppSupport.framework/Versions/A/AppSupport
+0x00000001b3136000 	/System/Library/PrivateFrameworks/GPUWrangler.framework/Versions/A/GPUWrangler
+0x00000001b3117000 	/System/Library/PrivateFrameworks/IOPresentment.framework/Versions/A/IOPresentment
+0x00000001b313e000 	/System/Library/PrivateFrameworks/DSExternalDisplay.framework/Versions/A/DSExternalDisplay
+0x00000002c1e8d000 	/System/Library/PrivateFrameworks/VideoToolboxParavirtualizationSupport.framework/Versions/A/VideoToolboxParavirtualizationSupport
+0x00000001b2312000 	/System/Library/PrivateFrameworks/AppleVA.framework/Versions/A/AppleVA
+0x00000001f736e000 	/System/Library/PrivateFrameworks/HIDDisplay.framework/Versions/A/HIDDisplay
+0x00000001d4210000 	/System/Library/PrivateFrameworks/TextInput.framework/Versions/A/TextInput
+0x00000001b35c3000 	/System/Library/PrivateFrameworks/DataDetectorsCore.framework/Versions/A/DataDetectorsCore
+0x000000023bb78000 	/System/Library/Frameworks/DataDetection.framework/Versions/A/DataDetection
+0x00000001b7137000 	/System/Library/Frameworks/MediaAccessibility.framework/Versions/A/MediaAccessibility
+0x00000001af2a7000 	/System/Library/PrivateFrameworks/CoreEmoji.framework/Versions/A/CoreEmoji
+0x00000001d54ab000 	/usr/lib/libncurses.5.4.dylib
+0x000000023adc8000 	/System/Library/Frameworks/AVFAudio.framework/Versions/A/AVFAudio
+0x000000027e208000 	/System/Library/PrivateFrameworks/IsolatedCoreAudioClient.framework/Versions/A/IsolatedCoreAudioClient
+0x000000025550a000 	/System/Library/PrivateFrameworks/CoreAudioOrchestration.framework/Versions/A/CoreAudioOrchestration
+0x00000001c8c1a000 	/usr/lib/libAccessibility.dylib
+0x00000001b4daf000 	/usr/lib/libcups.2.dylib
+0x00000001c8abd000 	/System/Library/PrivateFrameworks/AXCoreUtilities.framework/Versions/A/AXCoreUtilities
+0x00000001fdf21000 	/usr/lib/libedit.3.dylib
+0x00000001d9a60000 	/System/Library/PrivateFrameworks/AttributeGraph.framework/Versions/A/AttributeGraph
+0x00000002cb0a3000 	/usr/lib/libAXSafeCategoryBundle.dylib
+0x0000000244931000 	/System/Library/Frameworks/TabularData.framework/Versions/A/TabularData
+0x000000024d7c5000 	/System/Library/PrivateFrameworks/ArgumentParserInternal.framework/Versions/A/ArgumentParserInternal
+0x00000001c17d7000 	/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa
+0x00000001a42cf000 	/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit
+0x00000001a5912000 	/System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/UIFoundation
+0x0000000253276000 	/System/Library/PrivateFrameworks/CollectionViewCore.framework/Versions/A/CollectionViewCore
+0x00000001b360d000 	/System/Library/PrivateFrameworks/UserActivity.framework/Versions/A/UserActivity
+0x00000001ad3c0000 	/System/Library/PrivateFrameworks/XCTTargetBootstrap.framework/Versions/A/XCTTargetBootstrap
+0x00000002be4f4000 	/System/Library/PrivateFrameworks/UIIntelligenceSupport.framework/Versions/A/UIIntelligenceSupport
+0x0000000250988000 	/System/Library/PrivateFrameworks/CampoServices.framework/Versions/A/CampoServices
+0x000000026587b000 	/System/Library/PrivateFrameworks/FrontBoard.framework/Versions/A/FrontBoard
+0x00000002437ea000 	/System/Library/Frameworks/SwiftUICore.framework/Versions/A/SwiftUICore
+0x00000002c65ec000 	/System/Library/PrivateFrameworks/WritingTools.framework/Versions/A/WritingTools
+0x00000002c51e1000 	/System/Library/PrivateFrameworks/WindowManagement.framework/Versions/A/WindowManagement
+0x00000002ca4b7000 	/System/Library/SubFrameworks/FocusEngine.framework/Versions/A/FocusEngine
+0x000000025e7dd000 	/System/Library/PrivateFrameworks/DesignLibrary.framework/Versions/A/DesignLibrary
+0x0000000249eb2000 	/System/Library/PrivateFrameworks/AnimationKit.framework/Versions/A/AnimationKit
+0x00000002ca86d000 	/System/Library/SubFrameworks/UIUtilities.framework/Versions/A/UIUtilities
+0x00000002bf1c1000 	/System/Library/PrivateFrameworks/UpdateCycle.framework/Versions/A/UpdateCycle
+0x00000001ad0c9000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/HIToolbox
+0x00000001b6b45000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/SpeechRecognition.framework/Versions/A/SpeechRecognition
+0x00000001aab0d000 	/System/Library/PrivateFrameworks/PerformanceAnalysis.framework/Versions/A/PerformanceAnalysis
+0x00000001b6e73000 	/System/Library/Frameworks/Accessibility.framework/Versions/A/Accessibility
+0x000000023b771000 	/System/Library/Frameworks/CoreTransferable.framework/Versions/A/CoreTransferable
+0x000000024491f000 	/System/Library/Frameworks/Symbols.framework/Versions/A/Symbols
+0x00000002a8536000 	/System/Library/PrivateFrameworks/SceneHosting.framework/Versions/A/SceneHosting
+0x00000002cc8f4000 	/usr/lib/swift/libswiftSpatial.dylib
+0x00000001ccf8a000 	/usr/lib/swift/libswiftCoreGraphics.dylib
+0x00000001b7181000 	/usr/lib/swift/libswiftFoundation.dylib
+0x000000022917f000 	/usr/lib/swift/libswiftSwiftOnoneSupport.dylib
+0x00000002cc983000 	/usr/lib/swift/libswiftsys_time.dylib
+0x00000001eefdb000 	/System/Library/PrivateFrameworks/CoreMaterial.framework/Versions/A/CoreMaterial
+0x00000002cc1ac000 	/usr/lib/libSpatial.dylib
+0x00000001b70f8000 	/System/Library/PrivateFrameworks/PrototypeTools.framework/Versions/A/PrototypeTools
+0x000000019f858000 	/usr/lib/libsharedcache.dylib
+0x00000001af404000 	/usr/lib/objc/libobjcMsgSend1.dylib
+0x00000001b7404000 	/usr/lib/objc/libobjcMsgSend2.dylib
+0x00000001bf404000 	/usr/lib/objc/libobjcMsgSend3.dylib
+0x00000001c7404000 	/usr/lib/objc/libobjcMsgSend4.dylib
+0x00000001cf404000 	/usr/lib/objc/libobjcMsgSend5.dylib
+0x00000001d7404000 	/usr/lib/objc/libobjcMsgSend6.dylib
+0x00000001df404000 	/usr/lib/objc/libobjcMsgSend7.dylib
+0x00000001e7404000 	/usr/lib/objc/libobjcMsgSend8.dylib
+0x00000001ef404000 	/usr/lib/objc/libobjcMsgSend9.dylib
+0x00000001f7404000 	/usr/lib/objc/libobjcMsgSend10.dylib
+0x00000001ff404000 	/usr/lib/objc/libobjcMsgSend11.dylib
+0x0000000227404000 	/usr/lib/objc/libobjcMsgSend12.dylib
+0x000000022f404000 	/usr/lib/objc/libobjcMsgSend13.dylib
+0x0000000237404000 	/usr/lib/objc/libobjcMsgSend14.dylib
+0x000000023f404000 	/usr/lib/objc/libobjcMsgSend15.dylib
+0x0000000247404000 	/usr/lib/objc/libobjcMsgSend16.dylib
+0x000000024f404000 	/usr/lib/objc/libobjcMsgSend17.dylib
+0x0000000257404000 	/usr/lib/objc/libobjcMsgSend18.dylib
+0x000000025f404000 	/usr/lib/objc/libobjcMsgSend19.dylib
+0x0000000267404000 	/usr/lib/objc/libobjcMsgSend20.dylib
+0x000000026f404000 	/usr/lib/objc/libobjcMsgSend21.dylib
+0x0000000277404000 	/usr/lib/objc/libobjcMsgSend22.dylib
+0x000000027f404000 	/usr/lib/objc/libobjcMsgSend23.dylib
+0x0000000287404000 	/usr/lib/objc/libobjcMsgSend24.dylib
+0x000000028f404000 	/usr/lib/objc/libobjcMsgSend25.dylib
+0x00000002a7404000 	/usr/lib/objc/libobjcMsgSend26.dylib
+0x00000002af404000 	/usr/lib/objc/libobjcMsgSend27.dylib
+0x00000002b7404000 	/usr/lib/objc/libobjcMsgSend28.dylib
+0x00000002bf404000 	/usr/lib/objc/libobjcMsgSend29.dylib
+0x00000002c7404000 	/usr/lib/objc/libobjcMsgSend30.dylib
+0x00000002cf404000 	/usr/lib/objc/libobjcMsgSend31.dylib
+0x00000002d7404000 	/usr/lib/objc/libobjcMsgSend32.dylib
+0x00000002df404000 	/usr/lib/objc/libobjcMsgSend33.dylib
+0x00000002e7404000 	/usr/lib/objc/libobjcMsgSend34.dylib
+0x000000010a734000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/server/libjvm.dylib
+0x0000000104c94000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjimage.dylib
+0x0000000109488000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libjava.dylib
+0x00000001098fc000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libnio.dylib
+0x000000010991c000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libnet.dylib
+0x0000000109938000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libzip.dylib
+0x0000000109958000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libmanagement.dylib
+0x000000010996c000 	/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/libmanagement_ext.dylib
+
+JVMTI agents: none
+
+
+VM Arguments:
+jvm_args: -XX:ErrorFile=target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/hs_err.log --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED 
+java_command: clojure.main spike/value-array-semantics/diagnostics.clj target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/allocation.edn target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/result.edn null isAtomicArray
+java_class_path (initial): src:/Users/duncan/.m2/repository/org/clojure/clojure/1.12.6/clojure-1.12.6.jar:/Users/duncan/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/duncan/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     bool AOTAdapterCaching                        = false                                  {diagnostic} {ergonomic}
+     bool AOTInvokeDynamicLinking                  = false                                  {diagnostic} {ergonomic}
+     bool AOTRecordTraining                        = false                                  {diagnostic} {ergonomic}
+     bool AOTReplayTraining                        = false                                  {diagnostic} {ergonomic}
+     bool AOTStubCaching                           = false                                  {diagnostic} {ergonomic}
+     intx CICompilerCount                          = 12                                        {product} {ergonomic}
+     uint ConcGCThreads                            = 4                                         {product} {ergonomic}
+    ccstr ErrorFile                                = target/value-array-semantics/diagnostics-repeat/null-isAtomicArray/hs_err.log            {product} {command line}
+     uint G1ConcRefinementThreads                  = 14                                        {product} {ergonomic}
+     uint G1EagerReclaimRemSetThreshold            = 128                                  {experimental} {ergonomic}
+   size_t G1HeapRegionSize                         = 16777216                                  {product} {ergonomic}
+     uint G1RemSetArrayOfCardsEntries              = 128                                  {experimental} {ergonomic}
+     uint G1RemSetHowlMaxNumBuckets                = 8                                    {experimental} {ergonomic}
+     uint G1RemSetHowlNumBuckets                   = 8                                    {experimental} {ergonomic}
+   size_t InitialHeapSize                          = 16777216                                  {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MarkStackSizeMax                         = 536870912                                 {product} {ergonomic}
+   size_t MaxHeapSize                              = 32178700288                               {product} {ergonomic}
+   size_t MaxNewSize                               = 19293798400                               {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 16777216                                  {product} {ergonomic}
+   size_t MinHeapSize                              = 16777216                                  {product} {ergonomic}
+   size_t NonNMethodCodeHeapSize                   = 7618560                                {pd product} {ergonomic}
+   size_t NonProfiledCodeHeapSize                  = 122028032                              {pd product} {ergonomic}
+   size_t ProfiledCodeHeapSize                     = 122028032                              {pd product} {ergonomic}
+   size_t ReservedCodeCacheSize                    = 251674624                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+   size_t SoftMaxHeapSize                          = 32178700288                            {manageable} {ergonomic}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseCondCardMark                          = true                                      {product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+     bool UseNUMA                                  = false                                     {product} {ergonomic}
+     bool UseNUMAInterleaving                      = false                                     {product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags foldmultilines=false
+ #1: stderr all=off uptime,level,tags foldmultilines=false
+
+Release file:
+IMPLEMENTOR="Oracle Corporation"
+JAVA_RUNTIME_VERSION="27-jep401ea3+1-1"
+JAVA_VERSION="27"
+JAVA_VERSION_DATE="2026-09-15"
+LIBC="default"
+MODULES="java.base java.compiler java.datatransfer java.xml java.prefs java.desktop java.instrument java.logging java.management java.security.sasl java.naming java.rmi java.management.rmi java.net.http java.scripting java.security.jgss java.transaction.xa java.sql java.sql.rowset java.xml.crypto java.se java.smartcardio jdk.accessibility jdk.internal.jvmstat jdk.attach jdk.charsets jdk.internal.opt jdk.zipfs jdk.compiler jdk.crypto.cryptoki jdk.crypto.ec jdk.dynalink jdk.internal.ed jdk.editpad jdk.internal.vm.ci jdk.graal.compiler jdk.graal.compiler.management jdk.hotspot.agent jdk.httpserver jdk.incubator.vector jdk.internal.le jdk.internal.md jdk.jartool jdk.javadoc jdk.jcmd jdk.management jdk.management.agent jdk.jconsole jdk.jdeps jdk.jdwp.agent jdk.jdi jdk.jfr jdk.jlink jdk.jpackage jdk.jshell jdk.jstatd jdk.localedata jdk.management.jfr jdk.naming.dns jdk.naming.rmi jdk.net jdk.nio.mapmode jdk.sctp jdk.security.auth jdk.security.jgss jdk.unsupported jdk.unsupported.desktop jdk.xml.dom"
+OS_ARCH="aarch64"
+OS_NAME="Darwin"
+SOURCE=".:git:f9799f4c1a35"
+
+Environment Variables:
+JAVA_HOME=/Users/duncan/.local/share/mise/installs/java/25.0.2
+PATH=/Users/duncan/.local/bin:/Users/duncan/.cargo/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Applications/Keybase.app/Contents/SharedSupport/bin:/opt/homebrew/bin:/usr/local/sbin:/opt/homebrew/sbin:/Users/duncan/.local/share/mise/installs/aws-vault/7.17.0:/Users/duncan/.local/share/mise/installs/babashka/1.13.226:/Users/duncan/.local/share/mise/installs/clojure/1.12.6.1673/bin:/Users/duncan/.local/share/mise/installs/fd/10.5.0/fd-v10.5.0-aarch64-apple-darwin:/Users/duncan/.local/share/mise/installs/gh/2.102.0/gh_2.102.0_macOS_arm64/bin:/Users/duncan/.local/share/mise/installs/java/25.0.2/bin:/Users/duncan/.local/share/mise/installs/jq/1.8.2:/Users/duncan/.local/share/mise/installs/node/26.12.0/bin:/Users/duncan/.local/share/mise/installs/pipx-gguf/0.19.0/bin:/Users/duncan/.local/share/mise/installs/python/3.15.0/bin:/Users/duncan/.local/share/mise/installs/tmux/3.7c:/Users/duncan/.local/bin:/Applications/Emacs.app/Contents/MacOS/bin-arm64-11:/Applications/Emacs.app/Contents/MacOS/libexec-arm64-11:/Users/duncan/bin
+SHELL=/bin/zsh
+DISPLAY=duncans-MacBook-Pro.local
+LANG=C.UTF-8
+TERM=dumb
+TMPDIR=/var/folders/x5/8r5m3r493jl6t0qdbnvn6h3w0000gn/T/
+
+Active Locale:
+LC_ALL=C.UTF-8
+LC_COLLATE=C.UTF-8
+LC_CTYPE=C.UTF-8
+LC_MESSAGES=C.UTF-8
+LC_MONETARY=C.UTF-8
+LC_NUMERIC=C.UTF-8
+LC_TIME=C.UTF-8
+
+Signal Handlers:
+   SIGSEGV: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_ONSTACK|SA_RESTART|SA_SIGINFO, unblocked
+    SIGBUS: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, unblocked
+    SIGFPE: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, unblocked
+   SIGPIPE: javaSignalHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, blocked
+   SIGXFSZ: javaSignalHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, blocked
+    SIGILL: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, unblocked
+   SIGUSR2: SR_handler in libjvm.dylib, mask=00000000000000000000000000000000, flags=SA_RESTART|SA_SIGINFO, blocked
+    SIGHUP: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, blocked
+    SIGINT: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, blocked
+   SIGTERM: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, blocked
+   SIGQUIT: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, blocked
+   SIGTRAP: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO, unblocked
+
+
+Compilation memory statistics disabled.
+
+Periodic native trim disabled
+
+---------------  S Y S T E M  ---------------
+
+OS:
+uname: Darwin 27.0.0 Darwin Kernel Version 27.0.0: Tue Aug 11 21:06:40 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6050 arm64
+OS uptime: 27 days 20:02 hours
+rlimit (soft/hard): STACK 9792k/65520k , CORE 0k/infinity , NPROC 10666/16000 , NOFILE 1048576/infinity , AS infinity/infinity , CPU infinity/infinity , DATA infinity/infinity , FSIZE infinity/infinity , MEMLOCK infinity/infinity , RSS infinity/infinity
+load average: 3.73 3.22 3.32
+
+CPU: total 18 (initial active 18) 0x61:0x0:0xf76c5b1a:0, fp, asimd, aes, pmull, sha1, sha256, crc32, lse, sha3, sha512, sb
+machdep.cpu.brand_string:Apple M5 Max
+hw.cachelinesize:128
+hw.l1icachesize:131072
+hw.l1dcachesize:65536
+hw.l2cachesize:8388608
+
+Memory: 16k page, physical 134217728k(41452544k free), swap 24117248k(864576k free)
+
+vm_info: OpenJDK 64-Bit Server VM (27-jep401ea3+1-1) for bsd-aarch64 JRE (27-jep401ea3+1-1), built on 2026-03-11T10:26:08Z with clang Apple LLVM 15.0.0 (clang-1500.3.9.4)
+
+END.

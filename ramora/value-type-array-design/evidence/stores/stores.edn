@@ -1,0 +1,711 @@
+{:schema-version 1,
+ :phase :stores,
+ :cases
+ [{:id :store/empty-clojure-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :empty, :access :clojure, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-clojure-1-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :empty, :access :clojure, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-clojure-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :empty, :access :clojure, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-clojure-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :empty, :access :clojure, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-clojure-3-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :empty, :access :clojure, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-clojure-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :empty, :access :clojure, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-java-1-valid,
+   :operation :array-store,
+   :inputs {:fixture :empty, :access :java, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-java-1-null,
+   :operation :array-store,
+   :inputs {:fixture :empty, :access :java, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-java-1-wrong,
+   :operation :array-store,
+   :inputs {:fixture :empty, :access :java, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-java-3-valid,
+   :operation :array-store,
+   :inputs {:fixture :empty, :access :java, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-java-3-null,
+   :operation :array-store,
+   :inputs {:fixture :empty, :access :java, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/empty-java-3-wrong,
+   :operation :array-store,
+   :inputs {:fixture :empty, :access :java, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-clojure-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :long, :access :clojure, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/long-clojure-1-null,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :clojure, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-clojure-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :long, :access :clojure, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-clojure-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :long, :access :clojure, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/long-clojure-3-null,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :clojure, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-clojure-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :long, :access :clojure, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-java-1-valid,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :java, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/long-java-1-null,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :java, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-java-1-wrong,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :java, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-java-3-valid,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :java, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/long-java-3-null,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :java, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/long-java-3-wrong,
+   :operation :array-store,
+   :inputs {:fixture :long, :access :java, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-clojure-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :pair, :access :clojure, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/pair-clojure-1-null,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :clojure, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message
+     "Cannot store to object array because \"xs\" is null or is a null-free array and there's an attempt to store null in it"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-clojure-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :pair, :access :clojure, :length 1, :store :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ArrayStoreException",
+     :message "java.lang.String"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-clojure-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :pair, :access :clojure, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/pair-clojure-3-null,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :clojure, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message
+     "Cannot store to object array because \"xs\" is null or is a null-free array and there's an attempt to store null in it"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-clojure-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :pair, :access :clojure, :length 3, :store :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ArrayStoreException",
+     :message "java.lang.String"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-java-1-valid,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :java, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/pair-java-1-null,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :java, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message
+     "Cannot store to object array because \"<parameter1>\" is null or is a null-free array and there's an attempt to store null in it"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-java-1-wrong,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :java, :length 1, :store :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ArrayStoreException",
+     :message "java.lang.String"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-java-3-valid,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :java, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/pair-java-3-null,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :java, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message
+     "Cannot store to object array because \"<parameter1>\" is null or is a null-free array and there's an attempt to store null in it"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/pair-java-3-wrong,
+   :operation :array-store,
+   :inputs {:fixture :pair, :access :java, :length 3, :store :wrong},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.ArrayStoreException",
+     :message "java.lang.String"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-clojure-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null,
+    :access :clojure,
+    :length 1,
+    :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-null-clojure-1-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null,
+    :access :clojure,
+    :length 1,
+    :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-clojure-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null,
+    :access :clojure,
+    :length 1,
+    :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-clojure-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null,
+    :access :clojure,
+    :length 3,
+    :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-null-clojure-3-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null,
+    :access :clojure,
+    :length 3,
+    :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-clojure-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null,
+    :access :clojure,
+    :length 3,
+    :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-java-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null, :access :java, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-null-java-1-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null, :access :java, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-java-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null, :access :java, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-java-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null, :access :java, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-null-java-3-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null, :access :java, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-null-java-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference-null, :access :java, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-clojure-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :clojure, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-clojure-1-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :clojure, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-clojure-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :clojure, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-clojure-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :clojure, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-clojure-3-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :clojure, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-clojure-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :clojure, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-java-1-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :java, :length 1, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-java-1-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :java, :length 1, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-java-1-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :java, :length 1, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-java-3-valid,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :java, :length 3, :store :valid},
+   :status :pass,
+   :value :stored,
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? true}}
+  {:id :store/reference-java-3-null,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :java, :length 3, :store :null},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.NullPointerException",
+     :message "Cannot store null in a null-restricted array"}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}
+  {:id :store/reference-java-3-wrong,
+   :operation :array-store,
+   :inputs
+   {:fixture :reference, :access :java, :length 3, :store :wrong},
+   :status :rejection,
+   :causes [{:class "java.lang.ArrayStoreException", :message nil}],
+   :checks
+   {:length-matches? true,
+    :initial-slots-match? true,
+    :final-slots-match? true,
+    :payload-changed? false}}]}

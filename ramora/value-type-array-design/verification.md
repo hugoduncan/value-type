@@ -1,6 +1,7 @@
 # Array verification and evolution
 
-Status: proposed verification, except where explicitly marked observed.
+Status: direct-JVM verification complete for the recorded EA3 matrix; public
+API verification remains proposed.
 See the [design](../value-type-array-design.md) and [decisions](decisions.md).
 
 ## Observed qualities
@@ -22,6 +23,20 @@ application speed are not established by this evidence.
 The probe constructs arrays directly. Its allocation numbers do not describe
 the proposed sequence constructor, which adds temporary storage.
 
+## Semantic observations
+
+The [semantic report](semantic-verification.md), [reproduction instructions](../../spike/value-array-semantics/README.md)
+and [retained matrix](evidence/matrix-selected-slots/validation.edn) cover task 012.
+Valid seeds permit lengths 0, 1 and 3 for zero-field, one-long, two-long and
+reference-field value classes. Null and wrong-type seeds reject at all three
+lengths. Native Clojure and Java stores enforce restrictions. Disabling
+flattening preserves the tested semantic outcomes.
+
+Null crashes all three diagnostics; String and primitive long arrays return
+false. These native outcomes do not replace the proposed public input domain.
+Value status, allocation eligibility, null restriction, atomicity and physical
+flattening are separate observations. No new performance measurements were made.
+
 ## Fitness conditions
 
 | Decision | Intended quality | Required verification |
@@ -34,7 +49,7 @@ the proposed sequence constructor, which adds temporary storage.
 
 ## Verification plan
 
-1. Verify the adapter contract on the selected EA build before implementation:
+1. Direct-JVM prerequisite complete on EA3 (task 012); retain as adapter regression coverage:
    allocator signature, access checks, zero-length allocation with a seed,
    eligible value classes and each diagnostic method's domain and meaning.
    Check whether any capability beyond value-class status is required.
@@ -71,10 +86,10 @@ Do not require a speed ratio as API acceptance.
 | ID | Status | Relation and scope | Basis / confidence |
 |---|---|---|---|
 | A1 | observed | Internal restricted allocation permits flat one-long storage on the recorded EA setup. | Probe and retained reports; high within that scope. |
-| A2 | intended | D1 delegates post-return null and type enforcement to native array stores. | JVM array representation; verify in library tests. |
+| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Task 012 Clojure/Java store evidence; public integration remains untested. |
 | A3 | intended | D2 preserves null restriction across supported construction paths. | No fallback decision; not implemented. |
 | A4 | intended | D3 isolates optional JDK dependencies from namespace loading. | Adapter boundary; verify on fallback JVMs. |
-| A5 | assumed | Explicit-seed construction supports length zero without a default constructor. | Allocator shape; direct verification still required. |
+| A5 | observed | Direct explicit-seed allocation supports length zero for tested value classes. | Task 012 allocation evidence; seed validation still applies. |
 | A6 | inferred | Sequence construction can allocate more than the direct probe. | D4 temporary storage; amount unmeasured. |
 
 ## Risks and evolution
@@ -90,5 +105,9 @@ existing JDK constraints; this API does not make them portable.
 A public JDK replacement, wider flattening support or evidence that temporary
 storage is costly can justify later work. Indexed construction, non-atomic
 storage and wrappers require new contracts; they are not implicit extensions
-of this design. Unverified empty-array behavior is a design gate, not grounds
-for silently returning an ordinary array.
+of this design. Verified empty-array behavior supports the explicit-seed
+proposal; it does not permit ordinary-array fallback.
+
+## Implementation gates
+
+See [remaining implementation gates](implementation-gates.md).

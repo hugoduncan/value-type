@@ -1,0 +1,1 @@
+/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/bin/java --enable-preview --add-exports=java.base/jdk.internal.value=ALL-UNNAMED -cp "$(cat target/value-array-semantics/allocation/classpath.txt)" clojure.main spike/value-array-semantics/allocation.clj target/value-array-semantics/allocation/baseline.edn

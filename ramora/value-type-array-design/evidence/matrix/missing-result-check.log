@@ -1,0 +1,89 @@
+----- Error --------------------------------------------------------------------
+Type:     java.lang.AssertionError
+Message:  Assert failed: compare_semantics.clj failed: ----- Error --------------------------------------------------------------------
+Type:     java.io.FileNotFoundException
+Message:  target/value-array-semantics/matrix-negative/semantics/disabled/stores/stores.edn (No such file or directory)
+Location: /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:8:20
+
+----- Context ------------------------------------------------------------------
+ 4: 
+ 5: (defn read-result
+ 6:   "Read one retained semantic result."
+ 7:   [root layout file]
+ 8:   (edn/read-string (slurp (str root "/" layout "/" file))))
+                       ^--- target/value-array-semantics/matrix-negative/semantics/disabled/stores/stores.edn (No such file or directory)
+ 9: 
+10: (defn compare!
+11:   "Require identical semantic outcomes; report layout observations separately."
+12:   [root]
+13:   (doseq [file ["stores/allocation.edn" "stores/stores.edn"
+
+----- Stack trace --------------------------------------------------------------
+clojure.java.io/fn--11655                 - <built-in>
+clojure.java.io/fn--11607/G--11561--11614 - <built-in>
+clojure.java.io/fn--11667                 - <built-in>
+clojure.java.io/fn--11607/G--11561--11614 - <built-in>
+clojure.java.io/fn--11629                 - <built-in>
+... (run with --debug to see elided elements)
+compare-semantics/compare!                - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:16:28
+compare-semantics/compare!                - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:13:3
+compare-semantics/compare!                - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:10:1
+compare-semantics                         - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:28:3
+compare-semantics                         - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:27:1
+
+
+(zero? exit)
+Location: /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_matrix.clj:43:35
+
+----- Context ------------------------------------------------------------------
+39:     {:layout layout :suite suite :phase file :cases cases}))
+40: 
+41: (let [root (first *command-line-args*)
+42:       startup (edn/read-string (validate-process! "validate_startup.clj" (str root "/startup")))
+43:       comparison (edn/read-string (validate-process! "compare_semantics.clj" (str root "/semantics")))
+                                      ^--- Assert failed: compare_semantics.clj failed: ----- Error --------------------------------------------------------------------
+Type:     java.io.FileNotFoundException
+Message:  target/value-array-semantics/matrix-negative/semantics/disabled/stores/stores.edn (No such file or directory)
+Location: /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:8:20
+
+----- Context ------------------------------------------------------------------
+ 4: 
+ 5: (defn read-result
+ 6:   "Read one retained semantic result."
+ 7:   [root layout file]
+ 8:   (edn/read-string (slurp (str root "/" layout "/" file))))
+                       ^--- target/value-array-semantics/matrix-negative/semantics/disabled/stores/stores.edn (No such file or directory)
+ 9: 
+10: (defn compare!
+11:   "Require identical semantic outcomes; report layout observations separately."
+12:   [root]
+13:   (doseq [file ["stores/allocation.edn" "stores/stores.edn"
+
+----- Stack trace --------------------------------------------------------------
+clojure.java.io/fn--11655                 - <built-in>
+clojure.java.io/fn--11607/G--11561--11614 - <built-in>
+clojure.java.io/fn--11667                 - <built-in>
+clojure.java.io/fn--11607/G--11561--11614 - <built-in>
+clojure.java.io/fn--11629                 - <built-in>
+... (run with --debug to see elided elements)
+compare-semantics/compare!                - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:16:28
+compare-semantics/compare!                - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:13:3
+compare-semantics/compare!                - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:10:1
+compare-semantics                         - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:28:3
+compare-semantics                         - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/compare_semantics.clj:27:1
+
+
+(zero? exit)
+44:       semantics (into [] (for [layout ["default" "disabled"]
+45:                                [suite file n] [["stores" "allocation" 59]
+46:                                                ["stores" "stores" 60]
+47:                                                ["diagnostics" "allocation" 59]
+48:                                                ["diagnostics" "diagnostics" 69]]]
+
+----- Stack trace --------------------------------------------------------------
+validate-matrix/validate-process! - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_matrix.clj:9:1
+validate-matrix                   - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_matrix.clj:43:35
+clojure.edn/read-string           - clojure/edn.clj:37:1
+validate-matrix                   - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_matrix.clj:43:18
+validate-matrix                   - /Users/duncan/projects/hugoduncan/value-type/value-type-master/spike/value-array-semantics/validate_matrix.clj:41:1
+

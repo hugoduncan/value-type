@@ -1,0 +1,5 @@
+c7d9bf7725990237e4ea63871417c41474d92a423ee7108ca5cf97207511e26f  /Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home/lib/src.zip
+6a2ce351963fdba614fb0720a2313c49b769fc0d906b74adcbe7b7c4c52a6e98  spike/value-array-semantics/discover.clj
+81181859dc6bb8f166b880a00a3c4168f35b260566c5817854b388ba86cc95ed  spike/value-array-semantics/discover.sh
+1d1a1de821fec46437207e7ef9d566bd7e081e143b2432e7c0f72605aa3e08a3  spike/value-array-semantics/startup.clj
+fd79b980c74f8fc43ee9db0931d91ea6d859e7817415dd3dcf938c6a88d1a7b2  spike/value-array-semantics/startup.sh

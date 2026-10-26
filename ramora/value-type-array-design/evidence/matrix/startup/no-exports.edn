@@ -1,0 +1,31 @@
+{:schema-version 1,
+ :phase :startup,
+ :environment
+ {:properties
+  {"java.home" "/Users/duncan/.local/jdks/jdk-27.jdk/Contents/Home",
+   "java.runtime.version" "27-jep401ea3+1-1",
+   "java.version" "27-jep401ea3",
+   "java.vm.name" "OpenJDK 64-Bit Server VM",
+   "os.arch" "aarch64",
+   "os.name" "Mac OS X",
+   "os.version" "27.0.1"},
+  :clojure-version "1.12.6",
+  :jvm-flags ["--enable-preview" "-Dvalue-type.fallback=error"]},
+ :cases
+ [{:id :startup/value-definition,
+   :operation :define-value-class,
+   :inputs {},
+   :status :pass,
+   :value true}
+  {:id :startup/allocation,
+   :operation :atomic-allocation,
+   :inputs {:length 0, :seed :valid},
+   :status :rejection,
+   :causes
+   [{:class "java.lang.IllegalAccessException",
+     :message
+     "class startup$startup_cases$fn__270 cannot access class jdk.internal.value.ValueClass (in module java.base) because module java.base does not export jdk.internal.value to unnamed module @3ce53f6a"}]}
+  {:id :startup/dependent-semantics,
+   :operation :semantic-suite,
+   :status :unresolved,
+   :reason :allocation-not-established}]}

@@ -1,0 +1,6 @@
+Execution error (AssertionError) at validate-isolated/observation (validate_isolated.clj:26).
+Assert failed: :diagnostic/null-isFlatArray unexpected exit 0
+(= 134 exit)
+
+Full report at:
+/var/folders/x5/8r5m3r493jl6t0qdbnvn6h3w0000gn/T/clojure-8011947057380717688.edn
