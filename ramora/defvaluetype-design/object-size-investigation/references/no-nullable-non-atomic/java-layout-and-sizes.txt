@@ -1,0 +1,224 @@
+Layout of class investigation/SizeControl$Identity0@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 16 bytes
+---
+Layout of class investigation/SizeControl$Value0@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 1/1 ".empty" B (reused as null-marker)
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 16 bytes
+First field offset = 12
+BUFFERED layout: 1/1
+NULL_FREE_NON_ATOMIC_FLAT layout: 1/1
+NULL_FREE_ATOMIC_FLAT layout: 1/1
+NULLABLE_ATOMIC_FLAT layout: 1/1
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Null marker offset = 12
+Non-oop acmp map: 
+oop acmp map: 
+---
+Layout of class investigation/SizeControl$Identity1@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 EMPTY 4/1
+ @16 REGULAR 8/8 "f0" J
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 24 bytes
+---
+Layout of class investigation/SizeControl$Value1@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 8/8 "f0" J
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 24 bytes
+First field offset = 16
+BUFFERED layout: 8/8
+NULL_FREE_NON_ATOMIC_FLAT layout: 8/8
+NULL_FREE_ATOMIC_FLAT layout: 8/8
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Non-oop acmp map: <16,8>, 
+oop acmp map: 
+---
+Layout of class investigation/SizeControl$Identity2@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 EMPTY 4/1
+ @16 REGULAR 8/8 "f0" J
+ @24 REGULAR 8/8 "f1" J
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 32 bytes
+---
+Layout of class investigation/SizeControl$Value2@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 8/8 "f0" J
+ @24 REGULAR 8/8 "f1" J
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 32 bytes
+First field offset = 16
+BUFFERED layout: 16/8
+NULL_FREE_NON_ATOMIC_FLAT layout: -/-
+NULL_FREE_ATOMIC_FLAT layout: -/-
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Non-oop acmp map: <16,16>, 
+oop acmp map: 
+---
+Layout of class investigation/SizeControl$Identity3@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 EMPTY 4/1
+ @16 REGULAR 8/8 "f0" J
+ @24 REGULAR 8/8 "f1" J
+ @32 REGULAR 8/8 "f2" J
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 40 bytes
+---
+Layout of class investigation/SizeControl$Value3@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 8/8 "f0" J
+ @24 REGULAR 8/8 "f1" J
+ @32 REGULAR 8/8 "f2" J
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 40 bytes
+First field offset = 16
+BUFFERED layout: 24/8
+NULL_FREE_NON_ATOMIC_FLAT layout: -/-
+NULL_FREE_ATOMIC_FLAT layout: -/-
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Non-oop acmp map: <16,24>, 
+oop acmp map: 
+---
+Layout of class investigation/SizeControl$IdentityRef1@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 16 bytes
+---
+Layout of class investigation/SizeControl$ValueRef1@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @20 NULL_MARKER 1/1 
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 24 bytes
+First field offset = 16
+BUFFERED layout: 8/8
+NULL_FREE_NON_ATOMIC_FLAT layout: 4/4
+NULL_FREE_ATOMIC_FLAT layout: 4/4
+NULLABLE_ATOMIC_FLAT layout: 8/8
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Null marker offset = 20
+Non-oop acmp map: 
+oop acmp map: 16, 
+---
+Layout of class investigation/SizeControl$IdentityRef2@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @16 REGULAR 4/4 "f1" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 24 bytes
+---
+Layout of class investigation/SizeControl$ValueRef2@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @20 REGULAR 4/4 "f1" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 24 bytes
+First field offset = 16
+BUFFERED layout: 8/8
+NULL_FREE_NON_ATOMIC_FLAT layout: -/-
+NULL_FREE_ATOMIC_FLAT layout: 8/8
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Non-oop acmp map: 
+oop acmp map: 16, 20, 
+---
+Layout of class investigation/SizeControl$IdentityRef3@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @16 REGULAR 4/4 "f1" Ljava/lang/Object;
+ @20 REGULAR 4/4 "f2" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 24 bytes
+---
+Layout of class investigation/SizeControl$ValueRef3@0x7605152580 extends java/lang/Object@0x7605002da0
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @16 REGULAR 4/4 "f1" Ljava/lang/Object;
+ @20 REGULAR 4/4 "f2" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 24 bytes
+First field offset = 12
+BUFFERED layout: 12/4
+NULL_FREE_NON_ATOMIC_FLAT layout: -/-
+NULL_FREE_ATOMIC_FLAT layout: -/-
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: -/-
+Non-oop acmp map: 
+oop acmp map: 12, 16, 20, 
+---
+SIZE Identity0 value=false bytes=16
+SIZE Value0 value=true bytes=16
+SIZE Identity1 value=false bytes=24
+SIZE Value1 value=true bytes=24
+SIZE Identity2 value=false bytes=32
+SIZE Value2 value=true bytes=32
+SIZE Identity3 value=false bytes=40
+SIZE Value3 value=true bytes=40
+SIZE IdentityRef1 value=false bytes=16
+SIZE ValueRef1 value=true bytes=24
+SIZE IdentityRef2 value=false bytes=24
+SIZE ValueRef2 value=true bytes=24
+SIZE IdentityRef3 value=false bytes=24
+SIZE ValueRef3 value=true bytes=24
+SIZE IdentityRef1 value=false bytes=16
+SIZE ValueRef1 value=true bytes=24
+SIZE IdentityRef2 value=false bytes=24
+SIZE ValueRef2 value=true bytes=24
+SIZE IdentityRef3 value=false bytes=24
+SIZE ValueRef3 value=true bytes=24

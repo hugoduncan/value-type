@@ -1,0 +1,140 @@
+{:environment
+ {:recorded-at "2026-10-25T18:30:08.029249Z",
+  :system
+  {"java.runtime.version" "27-jep401ea3+1-1",
+   "java.vendor" "Oracle Corporation",
+   "java.version" "27-jep401ea3",
+   "java.vm.name" "OpenJDK 64-Bit Server VM",
+   "java.vm.version" "27-jep401ea3+1-1",
+   "os.arch" "aarch64",
+   "os.name" "Mac OS X",
+   "os.version" "27.0.1"},
+  :clojure "1.12.6",
+  :criterium "0.5.251-ALPHA",
+  :criterium-resource
+  "jar:file:/Users/duncan/.m2/repository/org/hugoduncan/criterium/0.5.251-ALPHA/criterium-0.5.251-ALPHA.jar!/META-INF/maven/org.hugoduncan/criterium/pom.properties",
+  :jvm-arguments
+  ["-XX:-OmitStackTraceInFastThrow"
+   "--enable-preview"
+   "--enable-preview"
+   "-agentpath:/var/folders/x5/8r5m3r493jl6t0qdbnvn6h3w0000gn/T/criterium-agent-macos-arm64-fbf14546dcbb868c1ab0ca8c61b290bb60bdc2c3d6fe75bd0aa3f7d7b9435897.dylib"
+   "-Dclojure.basis=.cpcache/4149937437.basis"],
+  :agent
+  {:path
+   "/var/folders/x5/8r5m3r493jl6t0qdbnvn6h3w0000gn/T/criterium-agent-macos-arm64-fbf14546dcbb868c1ab0ca8c61b290bb60bdc2c3d6fe75bd0aa3f7d7b9435897.dylib",
+   :sha256
+   "fbf14546dcbb868c1ab0ca8c61b290bb60bdc2c3d6fe75bd0aa3f7d7b9435897"},
+  :vm-options
+  {"ObjectAlignmentInBytes" {:value "8", :origin "DEFAULT"},
+   "UseCompactObjectHeaders" {:value "false", :origin "DEFAULT"},
+   "UseCompressedClassPointers" {:value "true", :origin "DEFAULT"},
+   "UseCompressedOops" {:value "true", :origin "ERGONOMIC"}}},
+ :selection [:exact-class-name :allocating-thread],
+ :cases
+ [{:fields {},
+   :field-count 0,
+   :value? false,
+   :sample-count 10,
+   :thread 3,
+   :values [[] [] [] [] [] [] [] [] [] []],
+   :class "value_type.object_size.Identity0",
+   :kind :deftype,
+   :bytes 16,
+   :target-count 10}
+  {:fields {},
+   :field-count 0,
+   :value? true,
+   :sample-count 10,
+   :thread 3,
+   :values [[] [] [] [] [] [] [] [] [] []],
+   :class "value_type.object_size.Value0",
+   :kind :defvaluetype,
+   :bytes 16,
+   :target-count 10}
+  {:fields {"f0" "long"},
+   :field-count 1,
+   :value? false,
+   :sample-count 10,
+   :thread 3,
+   :values [[0] [1] [2] [3] [4] [5] [6] [7] [8] [9]],
+   :class "value_type.object_size.Identity1",
+   :kind :deftype,
+   :bytes 24,
+   :target-count 10}
+  {:fields {"f0" "long"},
+   :field-count 1,
+   :value? true,
+   :sample-count 10,
+   :thread 3,
+   :values [[0] [1] [2] [3] [4] [5] [6] [7] [8] [9]],
+   :class "value_type.object_size.Value1",
+   :kind :defvaluetype,
+   :bytes 32,
+   :target-count 10}
+  {:fields {"f0" "long", "f1" "long"},
+   :field-count 2,
+   :value? false,
+   :sample-count 10,
+   :thread 3,
+   :values
+   [[0 1] [1 2] [2 3] [3 4] [4 5] [5 6] [6 7] [7 8] [8 9] [9 10]],
+   :class "value_type.object_size.Identity2",
+   :kind :deftype,
+   :bytes 32,
+   :target-count 10}
+  {:fields {"f0" "long", "f1" "long"},
+   :field-count 2,
+   :value? true,
+   :sample-count 10,
+   :thread 3,
+   :values
+   [[0 1] [1 2] [2 3] [3 4] [4 5] [5 6] [6 7] [7 8] [8 9] [9 10]],
+   :class "value_type.object_size.Value2",
+   :kind :defvaluetype,
+   :bytes 40,
+   :target-count 10}
+  {:fields {"f0" "long", "f1" "long", "f2" "long"},
+   :field-count 3,
+   :value? false,
+   :sample-count 10,
+   :thread 3,
+   :values
+   [[0 1 2]
+    [1 2 3]
+    [2 3 4]
+    [3 4 5]
+    [4 5 6]
+    [5 6 7]
+    [6 7 8]
+    [7 8 9]
+    [8 9 10]
+    [9 10 11]],
+   :class "value_type.object_size.Identity3",
+   :kind :deftype,
+   :bytes 40,
+   :target-count 10}
+  {:fields {"f0" "long", "f1" "long", "f2" "long"},
+   :field-count 3,
+   :value? true,
+   :sample-count 10,
+   :thread 3,
+   :values
+   [[0 1 2]
+    [1 2 3]
+    [2 3 4]
+    [3 4 5]
+    [4 5 6]
+    [5 6 7]
+    [6 7 8]
+    [7 8 9]
+    [8 9 10]
+    [9 10 11]],
+   :class "value_type.object_size.Value3",
+   :kind :defvaluetype,
+   :bytes 48,
+   :target-count 10}],
+ :rows
+ [{:deftype 16, :defvaluetype 16, :field-count 0, :difference 0}
+  {:deftype 24, :defvaluetype 32, :field-count 1, :difference 8}
+  {:deftype 32, :defvaluetype 40, :field-count 2, :difference 8}
+  {:deftype 40, :defvaluetype 48, :field-count 3, :difference 8}]}

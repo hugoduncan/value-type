@@ -1,0 +1,2 @@
+Loading criterium agent
+[{:deftype 16, :defvaluetype 16, :field-count 0, :difference 0} {:deftype 24, :defvaluetype 32, :field-count 1, :difference 8} {:deftype 32, :defvaluetype 40, :field-count 2, :difference 8} {:deftype 40, :defvaluetype 48, :field-count 3, :difference 8}]

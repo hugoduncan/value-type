@@ -59,8 +59,20 @@ The macro creates JEP 401 value objects
   fields, shallow sizes are `[16 24 32 40]` bytes for `deftype` and
   `[16 32 40 48]` for `defvaluetype`. Evidence is preserved in
   `ramora/defvaluetype-design/object-size/`. These results apply only
-  to the recorded VM setup; the cause of the +8-byte difference is
-  not established. Implementation and all reviews are complete.
+  to the recorded VM setup. A follow-up investigation identified the cause:
+  a VM-injected 1-byte null marker plus 7 bytes of alignment padding.
+  Disabling `UseNullableNonAtomicValueFlattening` removes the difference
+  for these cases. Agent-free VM layouts, fresh Criterium measurements and
+  plain Java instrumentation controls agree. See
+  `ramora/defvaluetype-design/object-size-cause.md`; reproduction is in
+  `spike/object-size/`. Production code is unchanged.
+  Reference-field follow-up: 1–3 `Object` fields also show +8 bytes with
+  defaults, but one reference retains its atomic nullable layout when only
+  non-atomic nullable flattening is disabled. Disabling both nullable
+  options removes all three differences. Null/non-null fields agree;
+  Clojure and Java controls agree. Details and retained layouts:
+  `ramora/defvaluetype-design/object-size-references.md`.
+  The original task implementation and all reviews are complete.
   Knowledge extraction updated `mementum/knowledge/benchmarking-value-types.md`
   in commit `faeb15b`.
 

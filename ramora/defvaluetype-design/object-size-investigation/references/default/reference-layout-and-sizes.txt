@@ -1,0 +1,104 @@
+Layout of class object_size_references/IdentityRef1@0x7ab20357c0 extends java/lang/Object@0x7ab2c70000
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 16 bytes
+---
+Layout of class object_size_references/ValueRef1@0x7ab209abc0 extends java/lang/Object@0x7ab2c70000
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @20 NULL_MARKER 1/1 
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 24 bytes
+First field offset = 16
+BUFFERED layout: 8/8
+NULL_FREE_NON_ATOMIC_FLAT layout: 4/4
+NULL_FREE_ATOMIC_FLAT layout: 4/4
+NULLABLE_ATOMIC_FLAT layout: 8/8
+NULLABLE_NON_ATOMIC_FLAT layout: 5/4
+Null marker offset = 20
+Non-oop acmp map: 
+oop acmp map: 16, 
+---
+Layout of class object_size_references/IdentityRef2@0x7ab209b980 extends java/lang/Object@0x7ab2c70000
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @16 REGULAR 4/4 "f1" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 24 bytes
+---
+Layout of class object_size_references/ValueRef2@0x7ab209bc00 extends java/lang/Object@0x7ab2c70000
+Instance fields:
+ @0 RESERVED 12/-
+ @12 PADDING 4/1
+ @16 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @20 REGULAR 4/4 "f1" Ljava/lang/Object;
+ @24 NULL_MARKER 1/1 
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 32 bytes
+First field offset = 16
+BUFFERED layout: 9/8
+NULL_FREE_NON_ATOMIC_FLAT layout: -/-
+NULL_FREE_ATOMIC_FLAT layout: 8/8
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: 9/4
+Null marker offset = 24
+Non-oop acmp map: 
+oop acmp map: 16, 20, 
+---
+Layout of class object_size_references/IdentityRef3@0x7ab2037b60 extends java/lang/Object@0x7ab2c70000
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @16 REGULAR 4/4 "f1" Ljava/lang/Object;
+ @20 REGULAR 4/4 "f2" Ljava/lang/Object;
+Static fields:
+ @0 RESERVED 120/-
+Instance size = 24 bytes
+---
+Layout of class object_size_references/ValueRef3@0x7ab2f87ac0 extends java/lang/Object@0x7ab2c70000
+Instance fields:
+ @0 RESERVED 12/-
+ @12 REGULAR 4/4 "f0" Ljava/lang/Object;
+ @16 REGULAR 4/4 "f1" Ljava/lang/Object;
+ @20 REGULAR 4/4 "f2" Ljava/lang/Object;
+ @24 NULL_MARKER 1/1 
+Static fields:
+ @0 RESERVED 120/-
+ @120 REGULAR 4/4 ".null_reset" Ljava/lang/Object;
+ @124 REGULAR 4/4 ".acmp_maps" [I
+Instance size = 32 bytes
+First field offset = 12
+BUFFERED layout: 13/4
+NULL_FREE_NON_ATOMIC_FLAT layout: -/-
+NULL_FREE_ATOMIC_FLAT layout: -/-
+NULLABLE_ATOMIC_FLAT layout: -/-
+NULLABLE_NON_ATOMIC_FLAT layout: 13/4
+Null marker offset = 24
+Non-oop acmp map: 
+oop acmp map: 12, 16, 20, 
+---
+REFERENCE-SIZE {:class "object_size_references.IdentityRef1", :value? false, :nil-fields? false, :bytes 16}
+REFERENCE-SIZE {:class "object_size_references.ValueRef1", :value? true, :nil-fields? false, :bytes 24}
+REFERENCE-SIZE {:class "object_size_references.IdentityRef2", :value? false, :nil-fields? false, :bytes 24}
+REFERENCE-SIZE {:class "object_size_references.ValueRef2", :value? true, :nil-fields? false, :bytes 32}
+REFERENCE-SIZE {:class "object_size_references.IdentityRef3", :value? false, :nil-fields? false, :bytes 24}
+REFERENCE-SIZE {:class "object_size_references.ValueRef3", :value? true, :nil-fields? false, :bytes 32}
+REFERENCE-SIZE {:class "object_size_references.IdentityRef1", :value? false, :nil-fields? true, :bytes 16}
+REFERENCE-SIZE {:class "object_size_references.ValueRef1", :value? true, :nil-fields? true, :bytes 24}
+REFERENCE-SIZE {:class "object_size_references.IdentityRef2", :value? false, :nil-fields? true, :bytes 24}
+REFERENCE-SIZE {:class "object_size_references.ValueRef2", :value? true, :nil-fields? true, :bytes 32}
+REFERENCE-SIZE {:class "object_size_references.IdentityRef3", :value? false, :nil-fields? true, :bytes 24}
+REFERENCE-SIZE {:class "object_size_references.ValueRef3", :value? true, :nil-fields? true, :bytes 32}

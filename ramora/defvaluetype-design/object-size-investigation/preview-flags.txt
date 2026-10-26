@@ -1,0 +1,14 @@
+     bool LoopMultiversioning                      = true                                {C2 diagnostic} {default}
+      int ObjectAlignmentInBytes                   = 8                              {product lp64_product} {default}
+     bool UseArrayFlattening                       = true                                      {product} {default}
+     bool UseAtomicValueFlattening                 = true                                      {product} {default}
+     bool UseCompactObjectHeaders                  = false                          {product lp64_product} {default}
+     bool UseCompressedClassPointers               = true                                      {product} {default}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseFieldFlattening                       = true                                      {product} {default}
+     bool UseNonAtomicValueFlattening              = true                                      {product} {default}
+     bool UseNullableNonAtomicValueFlattening      = true                                      {product} {default}
+     bool UseNullableValueFlattening               = true                                      {product} {default}
+openjdk version "27-jep401ea3" 2026-09-15
+OpenJDK Runtime Environment (build 27-jep401ea3+1-1)
+OpenJDK 64-Bit Server VM (build 27-jep401ea3+1-1, mixed mode, sharing)

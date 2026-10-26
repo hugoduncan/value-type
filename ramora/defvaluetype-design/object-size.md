@@ -66,8 +66,9 @@ Preserved run timestamp: `2026-10-23T23:13:22.658960Z`.
 | `UseCompressedClassPointers` | `true` (default) |
 | `UseCompactObjectHeaders` | `false` (default) |
 
-All four queried VM settings were available. The physical header and
-field offsets were not measured and remain unknown.
+All four queried VM settings were available. This original run did not
+measure header size or field offsets. The [cause investigation](object-size-cause.md)
+now records those layouts on the same build.
 
 The measurement JVM arguments were `-XX:-OmitStackTraceInFastThrow`,
 `--enable-preview`, `-agentpath:<extracted-absolute-path>` and
@@ -109,11 +110,11 @@ byte-level layout specification.
 
 Adding each `long` after the first increases both sizes by 8 bytes.
 The nonempty value objects have an additional 8-byte reported size
-relative to the matching identity objects. This establishes a size
-difference, not its internal cause. The measurements do not identify
-header contents or field offsets, so they cannot assign that difference
-to a particular header field or padding rule. Do not generalize to
-other field types, VM builds or header settings.
+relative to the matching identity objects. These original measurements
+establish the difference but do not identify its cause. The subsequent
+[cause investigation](object-size-cause.md) identifies a 1-byte null marker
+and 7 bytes of end padding, with VM layouts and a controlled flag change.
+Do not generalize to other field types, VM builds or header settings.
 
 ## Preserved evidence
 
