@@ -50,9 +50,9 @@ verification failures, bad probe results and transform defects remain errors.
 Clojure defines `deftype` classes during analysis. A runtime check written
 before `deftype` cannot by itself prevent source class definition.
 
-Apply fallback policy at selection, including discarded macroexpansions.
-Return an outer `do` with a nested guard macro. The `do` prevents both
-`macroexpand` and `macroexpand-1` from removing the receiving compiler's
+For ordinary identity fallback, apply policy at selection, including discarded
+macroexpansions. Return an outer `do` with a nested guard macro. The `do`
+prevents both `macroexpand` and `macroexpand-1` from removing the receiving compiler's
 guard. That guard applies policy during analysis and emits a runtime check.
 Test transfer to fresh receivers, including capable receivers: they must
 apply their own policy to the fixed identity representation.
@@ -108,3 +108,23 @@ warning state, and synchronized workers for shared warn-once checks.
 For source-free AOT tests, delete fixture source, exclude it from the consumer
 classpath and assert resource absence. Keep producer/consumer policy and
 phase assertions visible even when fixture setup and cleanup are shared.
+
+## Native requirements need receiver-local compiler state
+
+Native nil-restricted fields do not use ordinary fallback. Check their separate
+lazy capability at selection and receiving analysis/evaluation under every
+policy. The probe must demonstrate valid construction and native null rejection
+without explicit null checks; cache capability, not declaration eligibility.
+
+Producer loader state cannot cross serialized macroexpansion. Preserve a nested
+receiving macro through both expansion entry points. For native fields, use an
+outer `let`, not top-level `do`: `Compiler.eval` can replace the loader binding
+between top-level forms. The receiving macro resolves exact field Classes and
+installs the receiver's capture loader before emitting the definition. Selection
+still validates and rejects unavailable support, but must not install a redundant
+loader. These rules differ from the ordinary identity-fallback guard above.
+
+Source: task `016-nil-restricted-fields`, capability probe (`568662a`),
+implementation slice 3j, supported transfer fix (`2d2db6d`) and redundant-install
+removal (`54fd484`). Verified with Clojure 1.12.6 and EA3; unsupported controls
+use Java 8 and preview-disabled EA3. No internal-package export is needed.
