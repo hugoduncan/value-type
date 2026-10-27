@@ -46,6 +46,22 @@ on the identity path and equal on the value path. Keep both checks: a
 Valhalla-only consumer cannot reveal eager optional dependencies that break
 baseline loading. This verifies the recorded JVMs, not all baseline versions.
 
+Task `013-value-array-allocation` extended the JAR-only consumer to arrays
+(`6d71bf7`). Check both `value_type/array.clj` and
+`value_type/impl/array.clj` against the exact artifact, not just core.
+Supported allocation needs both preview and
+`--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Java 8 and
+preview-disabled Valhalla must still load the namespaces safely and report
+unavailable allocation. Keep those calls before value fixtures; class
+fallback does not provide ordinary-array fallback.
+
+When a runtime suite gains a startup requirement, check every launcher,
+including release preview/publication gates, not only local instructions.
+Task 013's release command retained the old preview-only configuration and
+failed until the export was added (`df4c37b`). Pass flags explicitly to the
+supported runs; do not add them to controls that test missing prerequisites.
+The corrected command passed locally; this was not hosted Actions evidence.
+
 This tests the packaged dependency contract as well as the library code.
 
 ### Select the build-test JVM itself
