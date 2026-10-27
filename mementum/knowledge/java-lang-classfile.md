@@ -98,3 +98,33 @@ Source: task `003-capture-loader` (`super-before-write-class` in
   elements also have `LineNumber`; no `LocalVariable`.
 - Load slots: `long` and `double` take two slots; `boolean` loads as
   `int` (`TypeKind/asLoadable`).
+
+## Retype strict storage and its writes in one build
+
+When changing an Object field to concrete native storage, compose the field
+change, strict initialization, constructor casts and field-reference rewriting
+before ClassFile generates stack maps. A two-build attempt failed with
+`Unset fields mismatch`: the intermediate strict-field descriptors and writes
+did not agree. Do not suppress verification to permit that intermediate form.
+
+Keep reference constructor parameters as Object. Compute argument slots from
+the original signature, including two-slot long/double arguments, then cast
+selected references before concrete writes. Rewrite matching owner-field
+references in both owner and captured companion classes. Persist the same
+transformed bytes that runtime definition uses.
+
+Source: task `016-nil-restricted-fields`, implementation slice 3d (`da9c81d`)
+and companion integration (`c8408e6`), on Clojure 1.12.6 and EA3.
+
+## Stack-map hierarchy resolution needs the compiler's loader
+
+The default ClassFile hierarchy resolver can fail at a branch merge involving
+a dynamically defined field Class. Supply a `ClassHierarchyResolver` made with
+`ofClassLoading` and the capture loader's delegate. Owner and companion
+transforms must share this configuration; otherwise one path can still fail.
+Keep the configuration helper behind the optional JDK boundary, so public
+namespace loading remains safe on Java 8. A nil loader retains JDK defaults.
+
+Source: task 016's public method fixture exposed the failure (`425010f`);
+`c50f247` consolidated the configuration in `impl.class-file/configured`.
+Runtime methods, captured-receiver reads and source-free AOT verify the paths.
