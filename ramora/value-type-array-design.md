@@ -91,6 +91,23 @@ Atomic element access does not make compound updates atomic, or establish
 a publication or synchronization protocol. Elements themselves retain
 value-class semantics.
 
+## Implementation stages
+
+Each stage includes its public-contract tests, relevant fresh-JVM and packaged
+consumer checks, and documentation. These tasks have designs only; execution
+planning is pending.
+
+1. [013 Allocation](../munera/open/013-value-array-allocation/design.md):
+   explicit-seed construction and the safe capability boundary.
+2. [014 Diagnostics](../munera/open/014-value-array-diagnostics/design.md):
+   actual layout properties and validation before native inspection.
+3. [015 Sequence construction](../munera/open/015-value-array-sequence-construction/design.md):
+   one input traversal, validation and copying with explicit or inferred seeds.
+
+Stages 2 and 3 depend on stage 1. Stage 3 does not depend on stage 2.
+Task 012 supplies the completed direct-JVM evidence; public integration remains
+unverified until these stages are implemented.
+
 ## Design and evidence
 
 - [Decisions and embodiment](value-type-array-design/decisions.md):

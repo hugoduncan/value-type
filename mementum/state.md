@@ -132,6 +132,13 @@ The macro creates JEP 401 value objects
 
 ## Next
 
+- Array implementation is divided into task designs 013 (allocation), 014
+  (diagnostics) and 015 (sequence construction), linked from `munera/plan.md`
+  and `ramora/value-type-array-design.md`. Both 014 and 015 depend on 013;
+  015 does not depend on 014. Plans and execution are pending. Task 012's
+  verification, review follow-ups and knowledge extraction are complete,
+  and it is closed at the user's request. The older slice notes below are historical progress,
+  not the current task status. No public array API is implemented.
 - Proposed array API design is in `ramora/value-type-array-design.md`.
   Closed task `munera/closed/012-verify-value-arrays/` verified direct JVM
   allocation, seeds, stores, diagnostics and startup controls on EA3.
