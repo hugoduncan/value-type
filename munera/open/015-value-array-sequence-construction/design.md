@@ -10,7 +10,7 @@ Preserve input order and avoid repeated input traversal.
 
 Depends on [task 013](../../closed/013-value-array-allocation/design.md), which supplies
 the allocator and capability boundary. The recommended order places
-[task 014](../014-value-array-diagnostics/design.md) first, but diagnostics are
+[task 014](../../closed/014-value-array-diagnostics/design.md) first, but diagnostics are
 not an implementation or acceptance dependency.
 
 Follow the [array contract](../../../ramora/value-type-array-design.md) and

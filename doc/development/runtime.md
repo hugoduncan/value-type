@@ -88,6 +88,52 @@ restricted atomic array is valid. These checks use real JVM allocation and
 stores; they do not establish support for other JDK builds. See the
 [allocation guide](../usage.md#value-array-allocation) for the public contract.
 
+## Verify array diagnostics
+
+Use the explicit executable paths from "Verify array allocation". Run the
+public validation and inspection checks in disposable JVMs first:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+  --namespace value-type.array-info-boundary-test
+```
+
+This namespace checks all six startup configurations, all three fallback
+policies and both require orders. Each child has a 120-second timeout and
+must exit zero with complete EDN results. Independent native observations
+separate API absence from denied invocation access. Invalid public inputs
+(null, non-arrays and primitive arrays) must report `:invalid-array` before
+inspection capability is checked. A valid Object array reports
+`:array-inspection-unavailable` on Java 8 or EA3 without the export.
+
+EA3 with the export can inspect ordinary reference arrays without preview.
+This does not enable value-class creation or allocation. The export-only
+checks verify that inspection works before and after allocation fails.
+The parent command adds neither preview nor exports; child flags are explicit.
+Do not add global flags to make unsupported controls pass.
+
+**Never call native diagnostics with null.** All three native array queries
+crashed the tested EA3 JVM on null. Keep invalid public-input checks in
+children, not a shared REPL. Do not rerun task 012 crash probes as library tests.
+
+After the disposable checks pass, compare valid-array results with direct
+JDK queries and run allocation/layout regressions:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure \
+  -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
+  -J-XX:+UseArrayFlattening -M:test -m scry.cli \
+  --namespace value-type.array-info-test \
+  --namespace value-type.array-test --namespace value-type.array-layout-test
+```
+
+Repeat with `-J-XX:-UseArrayFlattening`. Disabled flattening must not remove
+null restriction or atomic access. These tests compare all five properties,
+including empty arrays and a wider non-flat fixture, and check unchanged
+contents before and after caller stores. Atomic access does not guarantee
+compound updates, safe publication or caller synchronization. See the
+[inspection guide](../usage.md#value-array-diagnostics) for the public contract.
+
 ## Build a local JAR
 
 Run these commands from the repository root with the Clojure CLI and
@@ -146,7 +192,13 @@ This separate suite checks the build contract in temporary projects and
 runs an isolated consumer with only the built JAR and runtime dependency
 JARs. The supported consumer gets preview and the internal-value export.
 Java 8 and preview-disabled EA3 consumers check safe loading and unavailable
-allocation without those flags. Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
+allocation without those flags. They also check that invalid diagnostic inputs
+keep their public error and valid arrays report inspection unavailable. An
+additional export-only EA3 consumer inspects an Object array before value
+creation while allocation remains unavailable. The supported consumer checks
+ordinary and restricted array diagnostics. All consumers load library resources
+from the JAR, with no checkout sources on the class path.
+Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
 the supported consumer uses `JAVA_CMD`. It selects `test-build/`; it does not replace the library test
 command above. Exit status and failure files follow the same Scry rules.
 

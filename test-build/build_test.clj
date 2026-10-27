@@ -308,6 +308,30 @@
                                   (io/file (.toURI (.getJarFileURL (.openConnection resource))))))))
                     (require '[value-type.core :refer [defvaluetype]]
                              '[value-type.array :as va])
+                    (def diagnostic-result
+                      (when-not (Boolean/getBoolean "consumer.arrays")
+                        ;; Inspect before any value creation or allocation attempt.
+                        (doseq [input [nil "not-array" (int-array 0)]]
+                          (assert (= :invalid-array
+                                     (try
+                                       (va/array-info input)
+                                       :unexpected-success
+                                       (catch clojure.lang.ExceptionInfo e
+                                         (:value-type/error (ex-data e)))))))
+                        (dotimes [_ 2]
+                          (if (Boolean/getBoolean "consumer.inspection")
+                            (assert (= {:component-class Object
+                                        :component-value? false
+                                        :null-restricted? false
+                                        :atomic? true :flat? false}
+                                       (va/array-info (object-array 0))))
+                            (assert (= :array-inspection-unavailable
+                                       (try
+                                         (va/array-info (object-array 0))
+                                         :unexpected-success
+                                         (catch clojure.lang.ExceptionInfo e
+                                           (:value-type/error (ex-data e))))))))
+                        :checked))
                     ;; Controls call allocation before defining any fallback fixture.
                     (def array-result
                       (when-not (Boolean/getBoolean "consumer.arrays")
@@ -327,6 +351,7 @@
                             :equal-copy? (= a (->Point 3 7))
                             :factory-class? (= Point (class (->Point 3 7)))
                             :fields [(.-x a) (.-y a) (.-x b) (.-y b)]
+                            :diagnostic-control diagnostic-result
                             :arrays
                             (if (Boolean/getBoolean "consumer.arrays")
                               (let [values (va/make-array Point 3 a)
@@ -340,7 +365,23 @@
                                                   (catch NullPointerException _ :null)
                                                   (catch ArrayStoreException _ :type)))
                                               [nil "wrong"])]
+                                (let [ordinary-info (va/array-info (object-array 0))
+                                      restricted-info (va/array-info values)]
+                                  (assert (= {:component-class Object
+                                              :component-value? false
+                                              :null-restricted? false
+                                              :atomic? true :flat? false}
+                                             ordinary-info))
+                                  (assert (= #{:component-class :component-value?
+                                               :null-restricted? :atomic? :flat?}
+                                             (set (keys restricted-info))))
+                                  (assert (= Point (:component-class restricted-info)))
+                                  (assert (every? true? (mapv restricted-info
+                                                              [:component-value?
+                                                               :null-restricted? :atomic?])))
+                                  (assert (boolean? (:flat? restricted-info))))
                                 {:component? (= Point (.getComponentType (class values)))
+                                 :diagnostics? true
                                  :length (alength values)
                                  :initial? initial?
                                  :stored? (= b (aget values 1)
@@ -359,6 +400,9 @@
                        "-Dconsumer.arrays=true"] true]
                      [(str (System/getProperty "java.home") "/bin/java")
                       [] false]
+                     [(str (System/getProperty "java.home") "/bin/java")
+                      ["--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+                       "-Dconsumer.inspection=true"] false]
                      [(or (System/getenv "VALUE_TYPE_BASELINE_JAVA")
                           "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/bin/java")
                       [] nil]]]
@@ -377,8 +421,9 @@
                     (is (= {:value-class? expected-value?
                             :equal-copy? (boolean expected-value?)
                             :factory-class? true :fields [3 7 11 13]
+                            :diagnostic-control (when-not expected-value? :checked)
                             :arrays (if expected-value?
-                                      {:component? true :length 3 :initial? true
+                                      {:component? true :diagnostics? true :length 3 :initial? true
                                        :stored? true :rejected [:null :type]
                                        :contents? true}
                                       [:array-unavailable :array-unavailable])}

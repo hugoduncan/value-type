@@ -30,10 +30,14 @@ behavior defines the public validation contract.
 - `:flat?`: actual flattened storage status.
 
 Accept ordinary reference arrays as well as arrays from the allocator.
-Reject null, non-arrays and primitive arrays with `:invalid-array` under
-`:value-type/error`, before native inspection. Require available inspection
-capability; use `:array-inspection-unavailable` rather than substitute false
-for unknown facts. Return a complete map or fail, not a partial result.
+Validate the input domain before checking inspection capability. Reject null,
+non-arrays and primitive arrays with `:invalid-array` under `:value-type/error`,
+even when inspection capability is unavailable. This gives invalid inputs the
+same public error on supported and unsupported JVMs, without native inspection.
+For a valid reference array, require available inspection capability; use
+`:array-inspection-unavailable` under `:value-type/error` when support or access
+is missing, rather than substitute false for unknown facts. Return a complete
+map or fail, not a partial result.
 
 No flag is inferred from the array class name or component value status.
 False flattening is valid. Atomic access is not a claim about compound
@@ -67,9 +71,14 @@ failures; do not classify every invocation failure as missing capability.
    assert a normal exception and clean process completion, not merely absence
    of a returned value. Never call native null diagnostics in a shared JVM.
 3. Fresh-JVM tests distinguish API absence, invocation access and preview
-   settings. Object-array inspection works without preview where verified;
-   Java 8 and missing exports fail clearly. Invalid-domain validation remains
-   safe even when optional APIs are unavailable.
+   settings. Object-array inspection works without preview where verified.
+   On Java 8 and on the supported Valhalla JVM without the required export,
+   assert `:invalid-array` under `:value-type/error` for each of null, a
+   non-array and a primitive array. In each environment, also assert
+   `:array-inspection-unavailable` for a valid Object array. These cases must
+   catch normal public exceptions and complete with process exit zero within
+   the timeout. Invalid inputs must also report `:invalid-array` when
+   inspection capability is available.
 4. Flattening-disabled controls still report null restriction and atomicity
    accurately. Ordinary and restricted arrays are not confused. No property
    is fabricated when inspection is unavailable.

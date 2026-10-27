@@ -10,6 +10,7 @@ Regenerate from the repository root with `bb api-docs`. Check without writing wi
 
 # Table of contents
 -  [`value-type.array`](#value-type.array)  - Native null-restricted atomic value arrays (experimental Valhalla API).
+    -  [`array-info`](#value-type.array/array-info) - Return actual properties of a reference array (experimental Valhalla API).
     -  [`make-array`](#value-type.array/make-array) - Allocate a native null-restricted atomic array with every slot set to initial.
 -  [`value-type.core`](#value-type.core)  - Define JEP 401 value classes with [<code>defvaluetype</code>](#value-type.core/defvaluetype), a <code>deftype</code> compatible macro.
     -  [`defvaluetype`](#value-type.core/defvaluetype) - As <code>deftype</code> (see its docstring for syntax, options, specs, the <code>-&gt;name</code> factory and the import).
@@ -22,6 +23,30 @@ Native null-restricted atomic value arrays (experimental Valhalla API).
 
 
 
+
+## <a name="value-type.array/array-info">`array-info`</a>
+``` clojure
+(array-info array)
+```
+Function.
+
+Return actual properties of a reference array (experimental Valhalla API).
+
+   Accepts ordinary and restricted reference arrays, including empty arrays.
+   Returns the runtime Class as :component-class and boolean :component-value?, :null-restricted?,
+   :atomic? and :flat? properties. Null, non-array and primitive-array inputs
+   throw ExceptionInfo with :value-type/error :invalid-array before capability
+   checks. Arrays whose components are arrays are accepted.
+
+   Inspection requires a supported JVM and
+   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`, but ordinary
+   reference-array inspection does not require preview. Missing support or
+   access throws ExceptionInfo with :value-type/error :array-inspection-unavailable.
+   Returns all five properties or fails; unknown facts are not false.
+   Native failures propagate. Inspection does not change or retain the array.
+   Flattening is not guaranteed. Atomic access does not provide safe publication,
+   compound-update safety or caller synchronization.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L42-L68">Source</a></sub></p>
 
 ## <a name="value-type.array/make-array">`make-array`</a>
 ``` clojure

@@ -46,7 +46,8 @@ excluded paths and warning/error handling.
 `doc/API.md` is generated from docstrings in `src/value_type/core.clj` and
 `src/value_type/array.clj`, with configuration and introductory prose from
 `bb/value_type/api_docs.clj`. It documents the `value-type.core/defvaluetype`
-macro and the `value-type.array/make-array` function, not private vars,
+macro and the `value-type.array/make-array` and `value-type.array/array-info`
+functions, not private vars,
 implementation namespaces or the expansion helper `check-value-class`. Run `bb api-docs` to regenerate it, or
 `bb api-docs --check` to detect missing or stale output without writing.
 Change the sources, not the generated file.
@@ -89,17 +90,31 @@ class files require the same JDK feature release used to compile them.
 JAR consumers need runtime dependencies. Value-class creation needs a
 supported JEP 401 Valhalla JDK with `--enable-preview`. Value-array allocation
 also needs `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
-Allocation has no ordinary-array fallback. Fallback class creation and namespace
+Allocation has no ordinary-array fallback. Array inspection needs the same
+export and a supported JVM. Ordinary reference-array inspection does not need
+preview on the tested EA3 build; value-class creation and restricted-array
+allocation still need preview. See the
+[diagnostic guide](../../../doc/usage.md#value-array-diagnostics).
+Fallback class creation and namespace
 loading need only the supported Clojure runtime and ordinary JDK interfaces, subject
 to the class fallback policy. See the usage guide
 [value-array requirements](../../../doc/usage.md#value-array-allocation).
 
-Isolated source-JAR consumers passed on Valhalla 27 EA with preview and exports:
-allocation, initial contents, native reads and writes, and rejected null and
-wrong-type stores. Java 8 and preview-disabled EA consumers passed namespace
-loading and repeated unavailable-allocation checks. All three configurations
-retain the macro checks and verify that the core and both array source resources
-resolve from the exact built JAR, without checkout sources. See the development
+Isolated source-JAR consumers passed in four configurations:
+
+- Valhalla EA3 with preview and exports: allocation, initial contents, native
+  reads and writes, rejected null and wrong-type stores, and complete ordinary
+  and restricted array diagnostics.
+- Java 8 without flags and EA3 without preview or exports: namespace loading,
+  repeated unavailable-allocation checks and unavailable Object-array inspection.
+- EA3 with exports but without preview: Object-array inspection before value
+  creation, while allocation remains unavailable.
+
+All three unsupported-allocation configurations check that null, non-array and
+primitive-array diagnostic inputs report `:invalid-array` before capability
+checks. All four configurations retain the macro checks and verify that the
+core and both array source resources resolve from the exact built JAR, without
+checkout sources. See the development
 [build-test guide](../../../doc/development/runtime.md#run-the-build-tests).
 
 Fallback AOT fixes identity representation and enforces receiving policy where

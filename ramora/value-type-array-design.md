@@ -1,7 +1,10 @@
 # Value-type array design
 
 Status: explicit-seed allocation is implemented in task 013; final acceptance
-passed. Diagnostics and sequence construction remain proposed.
+passed. Diagnostics are implemented in task 014;
+[final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
+passed within the recorded JVM scope. Task 014 remains open for review.
+Sequence construction remains proposed.
 [Task 012](../munera/closed/012-verify-value-arrays/design.md) supplies the
 direct-JVM evidence, separate from public API tests.
 
@@ -35,7 +38,7 @@ startup flags. Maintainers isolate changes to the experimental JDK API.
 The current probe uses Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`,
 macOS aarch64 and
 `jdk.internal.value.ValueClass/newNullRestrictedAtomicArray`.
-Applications need:
+Value-array allocation needs:
 
 ```text
 --enable-preview
@@ -43,7 +46,9 @@ Applications need:
 ```
 
 This is not a Java SE API. Method signatures and layout rules can change.
-Value-class support alone does not establish array API access.
+Value-class support alone does not establish array API access. Ordinary
+reference-array inspection needs the export but does not need preview on
+the tested EA3 build. Inspection and allocation have separate capabilities.
 
 The library currently supports ordinary `deftype` fallback. That policy
 controls class definition, not this new array capability. A fallback class
@@ -64,9 +69,10 @@ changes and guarantees about copying through other APIs. Existing Clojure
 ## Contract and delivery status
 
 The provider is `value-type.array`; names are local to that namespace.
-Only `make-array` is implemented. The `into-array` and `array-info` forms
-below describe pending APIs, not callable library functions. For current use,
-see the [allocation guide](../doc/usage.md#value-array-allocation).
+`make-array` and `array-info` are implemented. The `into-array` forms below
+describe a pending API, not callable library functions. For current use, see
+the [allocation guide](../doc/usage.md#value-array-allocation) and
+[diagnostic guide](../doc/usage.md#value-array-diagnostics).
 
 ```clojure
 (require '[value-type.array :as va])
@@ -82,7 +88,7 @@ see the [allocation guide](../doc/usage.md#value-array-allocation).
 | `make-array [component length initial]` | Allocate and initialize every slot. Require an integer length from zero through `Integer/MAX_VALUE`, and a non-null initial value of the component type. |
 | `into-array [component values]` | Copy a non-empty finite sequence in order. Use its first value as the allocation seed. Reject empty input with guidance to supply an explicit seed. |
 | `into-array [component initial values]` | Copy a finite sequence in order, including empty input. Validate the seed even when the result is empty; it is not an extra element. |
-| `array-info [array]` | For a reference array, return `:component-class`, `:component-value?`, `:null-restricted?`, `:atomic?` and `:flat?`. Reject non-arrays and primitive arrays. Require diagnostic capability rather than report false for unavailable information. |
+| `array-info [array]` | For a reference array, return `:component-class`, `:component-value?`, `:null-restricted?`, `:atomic?` and `:flat?`. Reject null, non-arrays and primitive arrays before capability checks. Require diagnostic capability rather than report false for unavailable information. |
 
 All constructors reject primitive or identity component classes, `nil`
 elements and incompatible elements. They return only complete arrays.
@@ -105,15 +111,20 @@ consumer checks, and documentation.
    Native semantics, the fresh-JVM matrix and packaged consumers pass.
    [Final acceptance](../munera/closed/013-value-array-allocation/acceptance.md)
    passed, including combined regression and quality checks.
-2. [014 Diagnostics](../munera/open/014-value-array-diagnostics/design.md):
-   actual layout properties and validation before native inspection. Design only.
+2. [014 Diagnostics](../munera/closed/014-value-array-diagnostics/design.md):
+   actual layout properties and validation before native inspection are implemented.
+   Direct comparisons, startup controls and packaged consumers pass.
+   [Final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
+   passed, including combined regression and quality checks. The task remains
+   open for review.
 3. [015 Sequence construction](../munera/open/015-value-array-sequence-construction/design.md):
    one input traversal, validation and copying with explicit or inferred seeds.
    Design only.
 
 Stages 2 and 3 depend on stage 1. Stage 3 does not depend on stage 2.
 Task 012 supplies the completed direct-JVM evidence. Task 013 records public
-allocation checks; tasks 014 and 015 still need execution plans.
+allocation checks; task 014 records diagnostic checks. Task 015 still needs
+an execution plan.
 
 ## Design and evidence
 
@@ -130,7 +141,7 @@ allocation checks; tasks 014 and 015 still need execution plans.
 - [Controlled fallback](defvaluetype-design/fallback.md): existing class
   policy, which this design does not change.
 
-The allocation contract is implemented; the other APIs remain proposals.
+Allocation and diagnostics are implemented; sequence construction remains proposed.
 Task 012 verified zero-length
 allocation with valid seeds and diagnostic outcomes on the recorded EA3 build.
 Null diagnostic inputs crash that JVM; public validation must reject them

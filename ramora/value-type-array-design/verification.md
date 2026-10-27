@@ -2,7 +2,10 @@
 
 Status: direct-JVM verification complete for the recorded EA3 matrix; public
 allocation tests pass in task 013, with final acceptance passed. Public
-diagnostics and sequence construction remain unimplemented.
+diagnostics are implemented in task 014;
+[final acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
+passed within the recorded JVM scope. Task 014 remains open for review.
+Sequence construction remains unimplemented.
 See the [design](../value-type-array-design.md) and [decisions](decisions.md).
 
 ## Observed qualities
@@ -54,8 +57,30 @@ record commands and structured Scry summaries for the implemented allocator:
 These checks use Temurin `1.8.0_492-b09` and Valhalla `27-jep401ea3+1-1`,
 Clojure 1.12.6, macOS aarch64. They do not establish broader JDK support.
 [Final combined regression and quality acceptance](../../munera/closed/013-value-array-allocation/acceptance.md)
-passed. The plan below covers the full design; sequence and diagnostic checks
-remain future work.
+passed. The plan below covers the full design; sequence checks remain future
+work. Diagnostic results are recorded separately below.
+
+## Public diagnostic verification
+
+[Task 014 implementation notes](../../munera/closed/014-value-array-diagnostics/implementation.md)
+record commands and retained structured results on the same JVMs and host:
+
+- Direct JDK comparisons and ownership checks, together with allocation/layout
+  regressions: 14 tests in each layout, 1728/1848 assertions.
+- Six startup configurations, three policies and both require orders:
+  36 children distinguish API absence, signatures and invocation access.
+  Export-only checks confirm inspection does not require allocation capability.
+  The diagnostic namespace passes 2 tests, 1455 assertions.
+- Existing fallback/loading controls pass on Java 8 and EA3 preview off/on.
+- JAR-only diagnostic controls and existing consumers pass: 9 build tests,
+  103 assertions.
+
+Invalid public inputs are tested in disposable JVMs with timeouts and clean
+exit requirements. No native null diagnostic is called. Ordinary reference
+arrays work with exports and without preview on EA3. Missing support or access
+produces an error, not false properties.
+[Final combined regression and quality acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
+passed. The task remains open for review.
 
 ## Fitness conditions
 

@@ -7,8 +7,15 @@
   namespace loading on unsupported JVMs. Allocation requires the tested Valhalla
   `27-jep401ea3+1-1` build, `--enable-preview` and
   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. There is no ordinary-array
-  fallback or flattening guarantee. Public diagnostics and sequence construction
-  are not included.
+  fallback or flattening guarantee. Sequence construction is not included.
+
+- Add experimental [`value-type.array/array-info`](doc/usage.md#value-array-diagnostics)
+  for ordinary and restricted reference arrays on the tested Valhalla EA3 build.
+  Report component class, component value status, null restriction, atomicity
+  and actual flattening. Reject invalid input before capability checks; report
+  unavailable inspection rather than unknown properties as false. Inspection
+  requires the internal package export above; ordinary arrays do not require
+  preview. Atomicity does not guarantee compound updates or safe publication.
 
 - Add experimental [value-array JVM probes and validation commands](spike/value-array-semantics/README.md).
   These verify JVM behavior; they do not add a public array API. Reproduction

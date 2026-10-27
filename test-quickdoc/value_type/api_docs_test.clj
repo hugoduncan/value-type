@@ -11,8 +11,9 @@
 (deftest public-reference-test
   ;; Check the rendered contract, not a snapshot of the whole document.
   (let [markdown (docs/generated-markdown)]
-    (testing "only the public macro and allocator are documented"
-      (is (= ["value-type.array/make-array" "value-type.core/defvaluetype"]
+    (testing "only the public macro and array functions are documented"
+      (is (= ["value-type.array/array-info" "value-type.array/make-array"
+              "value-type.core/defvaluetype"]
              (mapv second (re-seq #"## <a name=\"([^\"]+)\"" markdown))))
       (doseq [internal ["check-value-class" "is-value-method" "mutable-fields"
                         "value-type.impl." "checked-length"]]
@@ -34,6 +35,18 @@
                     "caller owns the mutable slots" "Flattening is not guaranteed"
                     "safe publication or compound-update safety"
                     "https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L"]]
+        (is (str/includes? markdown text) text)))
+    (testing "inspection domain, errors and limits remain explicit"
+      (doseq [text ["(array-info array)" "ordinary and restricted reference arrays"
+                    "including empty arrays" "runtime Class as :component-class"
+                    ":component-value?" ":null-restricted?" ":atomic?" ":flat?"
+                    ":value-type/error :invalid-array before capability"
+                    "Arrays whose components are arrays are accepted"
+                    "reference-array inspection does not require preview"
+                    ":value-type/error :array-inspection-unavailable"
+                    "Returns all five properties or fails" "unknown facts are not false"
+                    "Native failures propagate" "does not change or retain the array"
+                    "compound-update safety or caller synchronization"]]
         (is (str/includes? markdown text) text)))
     (testing "generation instructions and navigation are present"
       (doseq [text ["generated from source docstrings" "Do not edit"

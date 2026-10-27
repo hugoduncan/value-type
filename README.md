@@ -95,6 +95,12 @@ arrays with an explicit initial value, see
 an internal-package export in addition to preview; it has no ordinary-array
 fallback.
 
+`value-type.array/array-info` inspects ordinary and restricted reference arrays.
+It needs `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Ordinary-array
+inspection does not need preview on the tested EA3 build. See
+[value-array diagnostics](doc/usage.md#value-array-diagnostics) for properties,
+errors and limits.
+
 ## Performance
 
 Value classes do not guarantee lower memory use or faster execution. In the

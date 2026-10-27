@@ -2,14 +2,13 @@
   (:require [clojure.java.io :as io]
             [clojure.test :refer [deftest is testing]]
             [value-type.array :as array]
-            [value-type.core :refer [defvaluetype]]
+            [value-type.array-test-support :as fixtures]
             [value-type.impl.array :as adapter]
             [value-type.test-support :as support])
   (:import (java.lang.invoke MethodHandles)
            (java.net URL URLClassLoader)
-           (javax.tools ToolProvider)))
-
-(defvaluetype ArrayPoint [^long x])
+           (javax.tools ToolProvider)
+           (value_type.array_test_support ArrayPoint ArrayPair)))
 
 (defn- failure
   [component length initial]
@@ -79,21 +78,9 @@
     (is (thrown? clojure.lang.ExceptionInfo
                  (#'array/checked-length ArrayPoint length)))))
 
-(defvaluetype ArrayEmpty [])
-(defvaluetype ArrayPair [^long x ^long y])
-(defvaluetype ArrayReference [payload])
-
-(defn- fixtures
-  []
-  [[ArrayEmpty (ArrayEmpty.) (ArrayEmpty.)]
-   [ArrayPoint (ArrayPoint. 42) (ArrayPoint. 99)]
-   [ArrayPair (ArrayPair. 1 2) (ArrayPair. 3 4)]
-   [ArrayReference (ArrayReference. nil) (ArrayReference. "replacement")]
-   [ArrayReference (ArrayReference. "seed") (ArrayReference. nil)]])
-
 (deftest fixture-allocation-test
   ;; A null payload is not a null element; every fixture also accepts length zero.
-  (doseq [[component seed] (fixtures)
+  (doseq [[component seed] (fixtures/fixtures)
           length [0 1 3]]
     (testing (str (.getName ^Class component) " length " length " seed " seed)
       (let [result (array/make-array component length seed)]
@@ -103,7 +90,7 @@
 
 (defn- check-selected-stores
   [read-slot write-slot array-length]
-  (doseq [[component seed replacement] (fixtures)
+  (doseq [[component seed replacement] (fixtures/fixtures)
           index (range 3)
           [value error-class] [[replacement nil]
                                [nil NullPointerException]
@@ -181,7 +168,7 @@
   (let [value-class (Class/forName "jdk.internal.value.ValueClass")
         restricted? (static-call value-class "isNullRestrictedArray" [Object])
         atomic? (static-call value-class "isAtomicArray" [Object])]
-    (doseq [[component seed] (fixtures) length [0 1 3]]
+    (doseq [[component seed] (fixtures/fixtures) length [0 1 3]]
       (let [result (array/make-array component length seed)]
         (is (true? (restricted? result)))
         (is (true? (atomic? result)))))))

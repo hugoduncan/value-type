@@ -172,6 +172,54 @@ creation through `defvaluetype`.
 
 Flattening is not guaranteed. A non-flat restricted atomic array is a valid
 result, including with array flattening disabled. Support for other JVM
-builds or untested value classes is not implied. Public array diagnostics
-and sequence construction are not yet implemented. No clone, copy or
+builds or untested value classes is not implied. Sequence construction is not yet implemented. No clone, copy or
 performance guarantee is made.
+
+
+## Value-array diagnostics
+
+`value-type.array/array-info` inspects an existing reference array. It accepts
+ordinary Object/String arrays, typed value arrays and restricted arrays from
+`make-array`. Empty arrays and arrays whose components are arrays are valid.
+It returns a complete map with these keys:
+
+| Key | Value |
+| --- | --- |
+| `:component-class` | The runtime component `Class`. |
+| `:component-value?` | boolean: the component is a value class. |
+| `:null-restricted?` | boolean: the JVM reports null restriction. |
+| `:atomic?` | boolean: the JVM reports atomic element access. |
+| `:flat?` | boolean: the JVM reports flattened storage. |
+
+```clojure
+(va/array-info (object-array 0))
+;=> {:component-class java.lang.Object, :component-value? false,
+;    :null-restricted? false, :atomic? true, :flat? false}
+(va/array-info points) ; Inspect the restricted array from the example above.
+```
+
+The example result is verified on Valhalla `27-jep401ea3+1-1` with Clojure
+1.12.6. Inspection requires the export flag shown above. Ordinary reference
+arrays do not require `--enable-preview` for inspection on that build.
+Creating value classes and allocating restricted arrays still require preview.
+Inspection capability is separate from allocation capability and class fallback.
+It is checked lazily and cached per loaded runtime; set flags before startup.
+
+Validation precedes capability checks, unlike allocation. Null, non-array and
+primitive-array inputs throw `ExceptionInfo` with
+`:value-type/error :invalid-array`, even on unsupported JVMs. For a valid
+reference array, missing API support or access throws `ExceptionInfo` with
+`:value-type/error :array-inspection-unavailable`. Available causes are retained.
+Unexpected failures propagate. The function returns all five properties or
+fails; it does not use false for unknown facts.
+
+Inspection does not change or retain the caller's array. Properties come from
+the JVM, not from a class name or successful allocation. A value component does
+not prove flattening or null restriction. A false `:flat?` is valid, including
+with flattening disabled. Atomic access does not provide compound-update safety,
+safe publication or caller synchronization.
+
+This is an experimental API, not a general object inspector or a layout-size
+estimate. Support for other JVM builds is not implied. Use the public wrapper:
+native diagnostic calls with null can crash the tested JVM. See the
+[runtime guide](development/runtime.md) for verification commands.

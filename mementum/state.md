@@ -138,17 +138,25 @@ The macro creates JEP 401 value objects
   allocator is implemented; capability, component, length and seed checks run
   in that order. Native semantics, fresh-JVM controls, packaged consumers and
   quality checks passed within the recorded EA3/Java 8 scope.
-- Tasks 014 (diagnostics) and 015 (sequence construction) remain design-only
-  and need execution plans. Both depend on completed task 013; 015 does not
-  depend on 014. Task 012 is also closed. Older slice and review notes below
+- Task 014 (value-array diagnostics) is closed at the user's request after
+  implementation, final acceptance, review follow-ups and knowledge extraction.
+  The [acceptance record](../munera/closed/014-value-array-diagnostics/acceptance.md)
+  records the EA3/Java 8 scope. The final fixture refactor passed both layout
+  test runs; full acceptance was not repeated after that refactor. Public
+  diagnostics validate inputs before native inspection and use separate lazy
+  inspection capability. Closure changes records only; runtime tests were
+  not rerun. Earlier slice and review notes below are historical.
+- Task 015 (sequence construction) remains design-only and needs an execution
+  plan. It depends on completed task 013, not task 014.
+  Task 012 is also closed. Older slice and review notes below
   are historical progress, not current task status. Closure changed records
   only; no runtime tests were rerun.
 - Proposed array API design is in `ramora/value-type-array-design.md`.
   Closed task `munera/closed/012-verify-value-arrays/` verified direct JVM
   allocation, seeds, stores, diagnostics and startup controls on EA3.
   Null native diagnostic inputs crash that build; public validation must
-  reject them before invocation. Public allocation is implemented; diagnostics
-  and sequence construction remain unimplemented.
+  reject them before invocation. Public allocation and diagnostics are implemented; sequence construction
+  remains unimplemented.
   Knowledge extraction is in `mementum/knowledge/value-array-jvm-boundaries.md`
   and `mementum/knowledge/validating-retained-jvm-evidence.md`.
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
@@ -458,3 +466,150 @@ configuration follow-up is complete; no checklist items were added. Static
 review covered the allocator, native and fresh-JVM tests, packaged consumers,
 API tooling and related documentation. Whitespace checks passed. Runtime
 tests were not repeated; production code and tests are unchanged.
+
+Task 014 slice 1 is complete. Independent lazy inspection and public array-info
+validation are implemented. Four disposable-JVM configurations passed 136
+assertions; retained Scry results are in the task evidence/slice-1.edn.
+Ordinary Object arrays report atomic true on EA3, including without preview.
+Next: slice 2 direct JDK comparisons and ownership/layout tests. Full startup
+matrix, packaging and documentation acceptance remain open.
+
+- Task 014 slice 2 is complete: direct diagnostic comparisons and ownership
+  checks pass on EA3 with flattening enabled/disabled, alongside allocation
+  and layout regressions (14 tests each). Evidence is in the task directory.
+  Next slice: startup and regression matrix; packaging and docs remain open.
+
+Task 014 slice 3a is complete: all 36 public diagnostic startup combinations
+pass together with allocation boundary/matrix tests (3 tests, 2008 assertions).
+Structured evidence is in `evidence/slice-3a.edn` in the task directory.
+Remaining slice 3 work: independent native observations, explicit export-only
+allocation comparison, ownership review and fallback/loading suite runs.
+Packaging and documentation remain open. No production behavior changed.
+
+Task 014 slice 3b completes static ownership review and fallback/loading
+regressions: Java 8 and EA3 preview off pass 15 tests/166 assertions each;
+EA3 preview on passes 15/141. CLI and retained structured runs passed.
+No code changed. Independent native observations and the explicit export-only
+allocation comparison remain in slice 3; packaging and docs remain open.
+
+Task 014 slice 3c adds the explicit export-only capability comparison. All
+three policies pass (1 test, 15 assertions): inspection works before and after
+allocation rejects disabled preview. Evidence: task `evidence/slice-3c.edn`.
+Independent native startup observations remain next; packaging and docs are open.
+
+Task 014 slice 3d completes the independent native startup observations.
+All 36 rows distinguish API absence, signatures and invocation access without
+unsafe inputs or adapter reuse. Diagnostic tests pass (2 tests/1455 assertions),
+with structured evidence in task `evidence/slice-3d.edn`. Slice 3 is complete;
+packaged-consumer coverage is next. Production code and design are unchanged.
+
+Task 014 slice 4a completes supported JAR-only diagnostic coverage. Focused
+consumer checks pass (1 test/9 parent assertions); evidence is in the task.
+Packaged diagnostic controls and full build-suite verification remain next.
+Production code and design are unchanged.
+
+Task 014 slice 4b completes packaged diagnostic controls and the full build
+suite (9 tests/103 assertions). Java 8, EA3 without exports and export-only
+EA3 pass JAR-only checks before value creation. Evidence: task
+`evidence/slice-4b.edn`. Slice 4 is complete; documentation and final acceptance
+remain in slice 5. Production code and design are unchanged.
+
+Task 014 slice 5a completes usage/API documentation and diagnostic API contract
+checks. Quickdoc CLI passed 11 tests/199 assertions; focused structured evidence
+is in task evidence/slice-5a.edn. Quality checks passed. Runtime guidance,
+architecture status, release notes and final acceptance remain. No runtime
+behavior or design change.
+
+Task 014 slice 5b completes runtime diagnostic safety, matrix, layout and
+packaged-consumer guidance. Vale, API freshness and whitespace checks passed.
+No runtime tests were repeated; code and design are unchanged. Architecture
+status, release notes and final acceptance remain next.
+
+Task 014 slice 5c completes architecture status and release notes. Maintained
+architecture now separates delivered diagnostics from pending sequence work
+and records the diagnostic boundary and verification scope. Vale, API freshness,
+local link targets and whitespace checks passed. No runtime tests were repeated.
+Final combined verification and acceptance.md remain; design is unchanged.
+
+Task 014 slice 5d completes final quality verification: formatting, lint, Vale,
+API freshness and Quickdoc tests pass (11 tests/199 assertions). Structured
+results are in task evidence/slice-5d.edn. Documentation link paths and whitespace
+checks pass. Combined runtime verification and acceptance.md remain. No code,
+test, dependency or design change was needed.
+
+Task 014 slice 5e completes final supported-library and layout verification.
+Full library: 78 tests/2060 assertions; disabled-layout array checks: 14/1848.
+Structured and CLI runs pass; evidence is in the task directory. Final process
+matrices, fallback/loading controls, packaging and acceptance.md remain.
+No production, test or design change was needed.
+
+Task 014 slice 5f completes final diagnostic/allocation process matrices:
+4 tests/2095 assertions. Structured and CLI runs pass; evidence is retained
+in the task directory. Final fallback/loading controls, packaging and
+acceptance.md remain. No code, test, dependency or design change was needed.
+
+Task 014 implementation is complete and remains open for review. Final fallback
+controls pass on Java 8 and EA3 preview off/on; packaging passes 9 tests/103
+assertions. All implementation checklist items are complete. Current acceptance
+and evidence are in `munera/closed/014-value-array-diagnostics/acceptance.md`.
+This supersedes the earlier pending implementation and verification notes.
+
+Task 014 implementation review added one status-reconciliation follow-up; see
+its steps.md. No runtime defect was found. Diagnostic boundary checks passed
+(2 tests/1455 assertions), followed by diagnostic/allocation/layout checks
+(14 tests/1728 assertions). Both CLI runs exited zero with no Scry failure
+files. Packaging and documentation were reviewed statically; full acceptance
+was not repeated. The task remains open.
+
+Task 014 implementation re-review found no new actionable issues. The status
+follow-up is complete; no checklist items were added. Static review covered
+public validation, independent lazy discovery, ownership, native invocation,
+semantic/process tests, packaged consumers and diagnostic documentation.
+Diagnostic boundary tests passed (2 tests/1455 assertions), then array diagnostic,
+allocation and layout tests passed (14/1728). Both CLI runs exited zero with
+no Scry failure files. Full acceptance, disabled layout and packaging were not
+rerun. Production code and tests are unchanged; the task remains open.
+
+Task 014 test review and re-review found no new actionable issues; no checklist
+items were added. The re-review repeated the three CLI checks below; the existing
+task review note was left unchanged to avoid duplication.
+Reviewed diagnostic contracts, direct JDK comparisons, ownership checks,
+startup controls, packaged consumers and API documentation tests. Diagnostic
+boundary tests passed (2 tests/1455 assertions). Diagnostic/allocation/layout
+tests passed with default flattening (14/1728) and disabled flattening
+(14/1848). All three CLI runs exited zero with no Scry failure files. Packaging,
+Quickdoc and the full fallback suite were not rerun. Production code and tests
+are unchanged; the task remains open.
+
+Task 014 documentation review added three follow-ups; see its steps.md.
+Static review compared README, usage/API and runtime guides, changelog and
+array/packaging architecture with source and tests. Runtime tests were not
+repeated; production code and user documentation are unchanged.
+
+Task 014 documentation re-review found no new actionable issues. All three
+prior documentation follow-ups are complete; no checklist items were added.
+Static review compared diagnostic guides, examples, API reference, changelog
+and architecture with source, semantic/process tests and packaged consumers.
+API freshness and whitespace checks passed. Runtime tests were not repeated.
+
+Task 014 code-shape review added one follow-up for shared test fixtures; see
+its steps.md. Static review covered public validation, lazy discovery, semantic
+and startup tests, packaged consumers, API tooling and related documentation.
+No runtime tests were repeated. Production code and tests are unchanged.
+
+
+Task 014 code-shape review follow-up is complete. Shared value types and fixture
+triples now live in `value-type.array-test-support`; diagnostics no longer load
+allocation tests. The independent direct JDK oracle is unchanged. Diagnostic,
+allocation and layout tests pass with default flattening (14/1728) and disabled
+flattening (14/1848), with zero CLI exits and no Scry failure files. A fresh-JVM
+require confirmed namespace independence. Formatting, lint and whitespace checks
+pass. No review item remains unchecked; the task remains open. Production code
+and design are unchanged; full acceptance was not repeated.
+
+Task 014 code-shape re-review found no new actionable issues. The shared-fixture
+follow-up is complete; no checklist items were added. Static review covered
+public validation, independent lazy discovery, shared fixtures, semantic and
+startup tests, packaged consumers, API tooling and related documentation.
+Whitespace checks passed. Runtime tests were not repeated; production code and
+tests are unchanged. The task remains open for review.

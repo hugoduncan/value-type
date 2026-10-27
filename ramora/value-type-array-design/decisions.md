@@ -1,7 +1,10 @@
 # Array decisions and embodiment
 
 Status: allocation decisions are implemented in task 013; final acceptance
-passed. Sequence construction and public inspection remain proposed.
+passed. Public inspection is implemented in task 014;
+[final acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
+passed within the recorded JVM scope. Task 014 remains open for review.
+Sequence construction remains proposed.
 See [verification](verification.md) and the [contract](../value-type-array-design.md).
 
 ## D1. Native arrays, not a collection abstraction
@@ -84,11 +87,15 @@ caller → value-type.array → value-type.impl.array → JDK ValueClass
 caller → Clojure/Java array operations → returned native array
 ```
 
-The public namespace currently supplies `make-array [component length initial]`.
+The public namespace supplies `make-array [component length initial]` and
+`array-info [array]`.
 The adapter lazily resolves the allocator and value predicate, checks access
 with a method handle, and invokes through reflection. It caches capability,
 not arrays or seeds. Diagnostics are not allocation prerequisites.
-Sequence construction and inspection in the diagram remain planned.
+Inspection has its own lazy discovery and access checks, independent of the
+class capability detector. It reads the component value predicate and all three
+JDK array properties directly. It does not change or retain the caller array.
+Only sequence construction in the diagram remains planned.
 Neither changes `value-type.core`, the transformer, loader or fallback policy.
 No element registry or shared array cache is needed.
 
@@ -109,13 +116,18 @@ Use `ex-info` with `:value-type/error` for library-detected failures:
 
 Allocation checks capability, component, length, then seed, stopping at the
 first failure. It uses `:array-unavailable`, `:invalid-array-component`,
-`:invalid-array-length` and `:invalid-array-element`. The other keys above
-belong to pending APIs. Initial-value errors have no slot index, even for
+`:invalid-array-length` and `:invalid-array-element`. Initial-value errors have no slot index, even for
 length zero. Reflective invocation causes are unwrapped; native allocation
 rejection is not cached as capability absence.
 
+Inspection first rejects null, non-arrays and primitive arrays with
+`:invalid-array`, on every JVM. For valid reference arrays, missing APIs or
+denied access produce `:array-inspection-unavailable`. Return all five properties
+or throw; never replace unknown facts with false. Only `:empty-array-input`
+remains reserved for the pending sequence API.
+
 Include relevant component, length, element index or capability reason.
-Do not retain an entire input sequence in exception data. Messages identify
+Do not retain an input array or entire input sequence in exception data. Messages identify
 required JVM flags when applicable. Preserve underlying causes.
 
 Errors from input realization propagate. Unexpected adapter, linkage and
