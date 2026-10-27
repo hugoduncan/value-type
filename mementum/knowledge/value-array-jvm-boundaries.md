@@ -15,12 +15,14 @@ diagnostics `6eb7555`, layout comparison `b7c1fdb`, startup `77d967b`, report
 `3f78aaf` and selected-slot checks `44f6592`. Task
 `013-value-array-allocation` adds the public adapter (`73686bb`), native
 semantics (`40099e9`), fresh-JVM matrix (`6db5106`) and native-failure
-regression (`3408e0b`).
+regression (`3408e0b`). Task `014-value-array-diagnostics` adds safe inspection
+(`1800f1c`), export-only separation (`5f148a8`) and independent native
+observations (`f4179ec`).
 
 These observations apply to Valhalla `27-jep401ea3+1-1`, Clojure 1.12.6,
 macOS aarch64 and the tested fixtures. Recheck on another EA build. Public
-allocation is implemented; public diagnostics remain separate work. Neither
-the probes nor the public tests establish a universal JDK contract.
+allocation and diagnostics are implemented. Neither the probes nor the public
+tests establish a universal JDK contract.
 
 ## Diagnostic access is not allocation capability
 
@@ -43,7 +45,8 @@ Do not infer an array capability from the class fallback detector alone.
 
 Requiring `value-type.array` must not resolve optional JDK APIs or require
 preview or exports. The adapter caches allocation prerequisites and methods
-per loaded library runtime, never caller arrays or seeds. Allocation must
+per loaded library runtime, never caller arrays or seeds. Inspection has a
+separate delay; it must not use the preview-gated class detector. Allocation must
 not depend on diagnostic methods or the class-fallback warning policy.
 There is no ordinary-array fallback.
 
@@ -53,7 +56,7 @@ export to unnamed modules; `publicLookup` does not provide that access.
 Catch only identified discovery/access failures as capability absence.
 Native eligibility rejection and unexpected failures must remain visible.
 
-Public validation runs in this order: capability, component, length, seed.
+Allocation validation runs in this order: capability, component, length, seed.
 This lets unsupported-JVM controls call with ordinary placeholders without
 loading value fixtures. On a capable JVM, compare integer bounds before
 conversion to `int`; test the maximum through validation rather than a
@@ -90,17 +93,28 @@ Value status alone is not component eligibility; check primitives separately.
 
 **All three diagnostics crash this EA3 build on null with SIGSEGV.**
 There is no returned false value or Java exception. The crash persists with
-array flattening disabled. A public adapter must reject null before invocation.
-Tests of this native failure must use separate JVMs, never the shared test JVM.
-The native cause remains unresolved.
+array flattening disabled. The native cause remains unresolved. Keep historical
+crash evidence; do not repeat native null queries as library tests. First test
+invalid public inputs in disposable JVMs with timeouts: require the expected
+exception, complete results and exit zero. A timeout or crash fails the check.
+Only then run valid-array tests in a shared JVM.
 
 A String and a primitive long array return false for all three queries.
-False is not proof that an input belongs to a proposed public diagnostic
-domain. Keep public validation separate from these observed native outcomes.
+False does not establish the public input domain. `array-info` validates with
+baseline Java APIs before capability discovery, unlike allocation. Null,
+non-arrays and primitive arrays yield `:invalid-array` even without support.
+Check the immediate component: arrays of primitive arrays are reference arrays.
+
+Valid inputs require inspection capability; missing support or access yields
+`:array-inspection-unavailable`, not false flags. Return all five properties
+or fail. Use an independent JDK oracle on valid arrays, not the production
+adapter, to test results and distinguish missing APIs from denied access.
 
 ## Eligibility, layout and atomic access are different properties
 
-The restricted two-long fixture is eligible and atomic but not flat.
+Ordinary Object arrays report atomic true on EA3, including without preview;
+atomic does not imply null restriction. The restricted two-long fixture is
+eligible and atomic but not flat.
 Disabling array flattening preserves contents, null restriction, atomic
 diagnostics and store exception classes. It changes layout and some exception
 messages. Retain messages for diagnosis; do not require message equality for
