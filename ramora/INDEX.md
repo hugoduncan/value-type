@@ -2,6 +2,16 @@
 
 Read this file first. Read the other files only when you need them.
 
+## Documentation rules
+
+Design documents describe the design, not the history of the project.
+Keep implementation status and gaps between the design and its implementation
+only in embodiment sections or their linked detail files. Other sections state
+contracts, decisions, rationale, constraints and required verification without
+completion reports. Keep task progress, acceptance records and change history
+in Munera and Git. Experiment reports retain methods, observations and evidence
+limits; they do not report feature delivery status.
+
 ## Documents
 
 - [defvaluetype design](defvaluetype-design.md): architecture of the
@@ -9,19 +19,14 @@ Read this file first. Read the other files only when you need them.
   qualities, risks, assertions.
 
 - [Value-type array design](value-type-array-design.md): native,
-  null-restricted atomic allocation is implemented; final acceptance passed.
-  Diagnostics are implemented;
-  [final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
-  passed within the recorded JVM scope. Task 014 is closed.
-  Sequence construction is implemented in closed task 015;
-[final acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
+  null-restricted atomic allocation, sequence construction and diagnostics.
   [Semantic report](value-type-array-design/semantic-verification.md),
   [runnable instructions](../spike/value-array-semantics/README.md) and
-  [retained evidence](value-type-array-design/evidence/matrix-selected-slots/) cover EA3.
+  [retained evidence](value-type-array-design/evidence/matrix-selected-slots/)
+  describe the JVM boundary.
 
-- [Controlled fallback](defvaluetype-design/fallback.md): implemented policy,
+- [Controlled fallback](defvaluetype-design/fallback.md): policy,
   capability boundary, warning and Error behaviour, AOT limits and tests.
-  Verified on Java 8 and Valhalla 27 EA; see the scoped evidence.
 
 - [Library packaging](defvaluetype-design/embodiment.md#library-packaging):
   source-only JAR, build artifacts, consumer requirements and development commands.

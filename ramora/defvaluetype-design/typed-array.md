@@ -54,17 +54,17 @@ from unchanged source; only the successful replacements are published.
 
 The recorded flat case called the experimental internal API
 `jdk.internal.value.ValueClass/newNullRestrictedAtomicArray` directly.
-The current probe uses the public `value-type.array/make-array` allocator,
+The runnable probe uses the public `value-type.array/make-array` allocator,
 which calls that JVM API after validation. It requires preview and
 `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED` and rejects null
 array elements. The underlying API is not supported by Java SE. The ordinary
 arrays use Clojure `make-array` with the generated class as the component type.
 
-The results above predate this migration. They are not measurements of the
-public allocator. New reports identify it with `:restricted-allocator`.
-The allocation measurement now includes public validation and call overhead;
-the traversal loops are unchanged. Construction time and `into-array` remain
-unmeasured.
+The retained results measure direct JVM allocation, not the public allocator.
+Reports from the runnable probe identify the allocator with
+`:restricted-allocator` and include public validation and call overhead in
+allocation measurements. The traversal method is the same in both probes.
+These results do not measure construction time or `into-array`.
 
 Actual flattening is checked with `ValueClass/isFlatArray`, not inferred
 from an array class name. Null restriction, atomicity and component value
@@ -75,7 +75,7 @@ storage and allocation rise from about 8 to 36 bytes per element.
 A separate eligibility check found that the existing two-long value class
 did not flatten in either the ordinary or the internal restricted array
 forms. Thus the one-long result does not establish that wider classes get
-the same benefit. The macro was not changed to enable other layouts.
+the same benefit. Layout selection belongs to the JVM, not the macro.
 
 ## Measurement method
 

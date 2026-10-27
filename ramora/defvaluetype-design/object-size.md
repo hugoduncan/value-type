@@ -18,7 +18,7 @@ All ten target records in each of the eight cases had the same size.
 None was marked freed. These results apply only to materialized,
 standalone objects with this field layout and VM setup. They do not
 measure flattened arrays, retained heap size, allocation rate or
-method-call time. The [historical timing report](benchmark.md) remains
+method-call time. The [timing report](benchmark.md) remains
 separate and uses a different Criterium release.
 
 ## Reproduce
@@ -66,9 +66,9 @@ Preserved run timestamp: `2026-10-23T23:13:22.658960Z`.
 | `UseCompressedClassPointers` | `true` (default) |
 | `UseCompactObjectHeaders` | `false` (default) |
 
-All four queried VM settings were available. This original run did not
-measure header size or field offsets. The [cause investigation](object-size-cause.md)
-now records those layouts on the same build.
+All four queried VM settings were available. This measurement does not
+include header size or field offsets. The [cause investigation](object-size-cause.md)
+records those layouts on the same build.
 
 The measurement JVM arguments were `-XX:-OmitStackTraceInFastThrow`,
 `--enable-preview`, `-agentpath:<extracted-absolute-path>` and
@@ -125,7 +125,7 @@ Do not generalize to other field types, VM builds or header settings.
 - [Standard output](object-size/stdout.log).
 - [Standard error](object-size/stderr.log).
 
-These files are from the implementation run, not the planning probe.
+These files contain the measured results and their runtime metadata.
 Pure validation tests and real-class layout tests run without an
 attached native agent:
 

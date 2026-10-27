@@ -17,13 +17,8 @@ environment in [Purpose](purpose.md).
 | Portability | Fallback adds no JDK requirement beyond Clojure. | D12 | Isolated source JAR consumer loads and defines fallback types without preview or optional APIs. |
 | Diagnostic stability | One warning, persistent strict rejection. | D13 | Concurrent attempts produce at most one warning per library runtime. Caught errors do not permit later fallback. |
 
-Fallback is implemented. Production tests verify policy, diagnostics,
-identity semantics, AOT guards and source-JAR use on the recorded Java 8 /
-Valhalla 27 matrix; see [fallback verification](fallback.md#verification).
-This coverage does not establish support for every supported Clojure JVM
-or future EA format. The general constraint remains: fallback adds no JDK
-requirement beyond the supported Clojure runtime. Benchmarks cover only
-the value-class path. There is no per-instance fallback check.
+Fallback adds no JDK requirement beyond the supported Clojure runtime.
+There is no per-instance fallback check.
 
 ## Trade-offs
 

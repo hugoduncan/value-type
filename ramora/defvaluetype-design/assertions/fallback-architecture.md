@@ -1,9 +1,8 @@
 ## Fallback architecture
 
 Scope: Clojure 1.12.6, Temurin 1.8.0_492-b09 and Valhalla
-27-jep401ea3+1-1 with preview off/on. Task 009 implementation.md records
-commands and results. A-33 remains a design constraint, not exhaustive JVM
-coverage. Unknown future formats remain unverified.
+27-jep401ea3+1-1 with preview off/on. A-33 is a design constraint, not a claim
+of exhaustive JVM coverage.
 
 | id | status | subject | predicate | object | basis | confidence |
 |---|---|---|---|---|---|---|
@@ -15,7 +14,7 @@ coverage. Unknown future formats remain unverified.
 | A-34 | observed | capability/policy responsibility | owns | cached capability, initialized policy and atomic warning flag | D13 | high |
 | A-35 | observed | fallback selection | forbids | treating transformation or loader defects as capability absence | D12 | high |
 | A-36 | observed | AOT fallback form-evaluation guard | enforces | application policy during initialization for top-level forms and on invocation for forms inside functions, without changing compiled representation | D13 | medium |
-| A-37 | observed | D10 configuration | chooses | value-type.fallback JVM property; silent default | D10; user approval 2026-10-23 | high |
+| A-37 | observed | D10 configuration | chooses | value-type.fallback JVM property; silent default | D10 | high |
 
 Evidence for A-29–A-37: `value-type.runtime-test` verifies initialization,
 capability, source semantics and strict cause chains; `value-type.transfer-test`

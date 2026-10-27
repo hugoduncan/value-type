@@ -7,6 +7,19 @@ one responsibility and a data interface.
 The runtime and artifact sections describe the current implementation,
 including capability detection and guarded fallback. Their contract is in [Controlled fallback](fallback.md).
 
+## Implementation and verification scope
+
+The macro, capture loader, byte transform and controlled fallback are
+implemented. Production tests cover source policy, transferred expansions,
+warning scope and source-free AOT guards, including runtime-only calls and
+strict retries.
+
+Fallback coverage uses Clojure 1.12.6, Temurin `1.8.0_492-b09` and Valhalla
+`27-jep401ea3+1-1` with preview disabled and enabled. Value-class verification
+uses the same Valhalla build. This coverage does not establish support for
+every Clojure JVM or future EA class formats. The broad performance target
+is not a general guarantee; see the [interface-call evidence](interface-call.md).
+
 ## Sections
 
 - [Runtime embodiment](embodiment/runtime.md): components, implemented

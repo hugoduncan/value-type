@@ -2,10 +2,7 @@
 
 Each decision is d = ⟨subject, choice, rejected, rationale, qualities,
 assumptions, commitment⟩. Commitment: `firm` or `provisional`
-(change after the spike if necessary).
-
-The value-class and fallback paths are implemented. D10 configuration is
-user-approved. Evidence is scoped to the matrix in [fallback](fallback.md).
+(change when evidence requires it).
 
 ## D1. Expand to `clojure.core/deftype` (abstraction, interface)
 

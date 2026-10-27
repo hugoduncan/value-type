@@ -104,5 +104,5 @@ The original per-sample Criterium distributions were not exported.
 
 The justified conclusion is **no stable slowdown detected in this experiment**,
 not a general performance guarantee. There is no evidence here for a
-library fix or an inherent JEP 401 interface-call cost. The historical 1.14
-result remains evidence of an individual run, not an established regression.
+library fix or an inherent JEP 401 interface-call cost. The 1.14
+result is evidence of an individual run, not an established regression.

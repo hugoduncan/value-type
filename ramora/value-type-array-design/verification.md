@@ -1,14 +1,5 @@
 # Array verification and evolution
 
-Status: direct-JVM verification complete for the recorded EA3 matrix; public
-allocation tests pass in task 013, with final acceptance passed. Public
-diagnostics are implemented in task 014;
-[final acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 is closed.
-Sequence construction is implemented in task 015;
-[final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
-See the [design](../value-type-array-design.md) and [decisions](decisions.md).
-
 ## Observed qualities
 
 Evidence: [typed-array investigation](../defvaluetype-design/typed-array.md),
@@ -31,81 +22,18 @@ the sequence constructor, which adds temporary storage.
 ## Semantic observations
 
 The [semantic report](semantic-verification.md), [reproduction instructions](../../spike/value-array-semantics/README.md)
-and [retained matrix](evidence/matrix-selected-slots/validation.edn) cover task 012.
+and [retained matrix](evidence/matrix-selected-slots/validation.edn) describe the
+native JVM boundary.
 Valid seeds permit lengths 0, 1 and 3 for zero-field, one-long, two-long and
 reference-field value classes. Null and wrong-type seeds reject at all three
 lengths. Native Clojure and Java stores enforce restrictions. Disabling
 flattening preserves the tested semantic outcomes.
 
 Null crashes all three diagnostics; String and primitive long arrays return
-false. These native outcomes do not replace the proposed public input domain.
+false. These native outcomes do not replace the public input domain.
 Value status, allocation eligibility, null restriction, atomicity and physical
-flattening are separate observations. No new performance measurements were made.
-
-## Public allocation verification
-
-[Task 013 implementation notes](../../munera/closed/013-value-array-allocation/implementation.md)
-record commands and structured Scry summaries for the implemented allocator:
-
-- Native fixtures at lengths 0, 1 and 3, selected-slot Clojure and Java stores,
-  and an independent Java value class: 10 tests, 399 assertions per layout.
-- Six startup configurations, three fallback policies and both namespace
-  require orders: 36 child JVMs, 612 assertions.
-- Existing fallback suites on Java 8 and EA3 preview off/on: 17 tests each.
-- JAR-only supported allocation and unsupported loading: 9 build tests,
-  101 assertions, including the existing macro checks.
-
-These checks use Temurin `1.8.0_492-b09` and Valhalla `27-jep401ea3+1-1`,
-Clojure 1.12.6, macOS aarch64. They do not establish broader JDK support.
-[Final combined regression and quality acceptance](../../munera/closed/013-value-array-allocation/acceptance.md)
-passed. The plan below covers the full design. Diagnostic and sequence
-results are recorded separately below.
-
-## Public diagnostic verification
-
-[Task 014 implementation notes](../../munera/closed/014-value-array-diagnostics/implementation.md)
-record commands and retained structured results on the same JVMs and host:
-
-- Direct JDK comparisons and ownership checks, together with allocation/layout
-  regressions: 14 tests in each layout, 1728/1848 assertions.
-- Six startup configurations, three policies and both require orders:
-  36 children distinguish API absence, signatures and invocation access.
-  Export-only checks confirm inspection does not require allocation capability.
-  The diagnostic namespace passes 2 tests, 1455 assertions.
-- Existing fallback/loading controls pass on Java 8 and EA3 preview off/on.
-- JAR-only diagnostic controls and existing consumers pass: 9 build tests,
-  103 assertions.
-
-Invalid public inputs are tested in disposable JVMs with timeouts and clean
-exit requirements. No native null diagnostic is called. Ordinary reference
-arrays work with exports and without preview on EA3. Missing support or access
-produces an error, not false properties.
-[Final combined regression and quality acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed. The task is closed.
-
-## Public sequence verification
-
-[Task 015 implementation notes](../../munera/closed/015-value-array-sequence-construction/implementation.md)
-record retained structured results on the same JVMs and host:
-
-- Both arities preserve component, length, order and contents for all shared
-  fixture shapes. Empty/nil, seed, component and indexed-element checks pass.
-  A focused arithmetic check rejects length 2147483648 without large allocation.
-- Non-caching input verifies one traversal. Realization exceptions retain their
-  identity; early validation consumes no input. Later failure can leave input
-  effects but returns no partial array.
-- Sequence/allocation/layout checks pass with flattening enabled and disabled:
-  22 tests, 1350 assertions per layout. Sequence tests need no diagnostics or
-  flat-layout result. Selected-slot stores preserve unaffected contents.
-- Six startup configurations, three policies and both require orders pass:
-  36 child JVMs, 1116 assertions. Unsupported calls leave input untouched.
-- JAR-only consumers exercise both arities and unsupported calls. The full build
-  suite passes 9 tests, 103 assertions. Full fallback/loading suites pass on
-  Java 8 and EA3 preview off/on: 20 tests per run.
-
-[Final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md)
-records passing combined library, fallback, packaging and quality verification. Temporary storage costs
-O(n) references; its allocation amount and speed have not been measured.
+flattening are separate observations. This matrix measures semantics, not
+performance.
 
 ## Fitness conditions
 
@@ -119,7 +47,7 @@ O(n) references; its allocation amount and speed have not been measured.
 
 ## Verification plan
 
-1. Direct-JVM prerequisite complete on EA3 (task 012); retain as adapter regression coverage:
+1. Verify the direct-JVM boundary as adapter regression coverage:
    allocator signature, access checks, zero-length allocation with a seed,
    eligible value classes and each diagnostic method's domain and meaning.
    Check whether any capability beyond value-class status is required.
@@ -156,10 +84,10 @@ Do not require a speed ratio as API acceptance.
 | ID | Status | Relation and scope | Basis / confidence |
 |---|---|---|---|
 | A1 | observed | Internal restricted allocation permits flat one-long storage on the recorded EA setup. | Probe and retained reports; high within that scope. |
-| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Task 012 evidence and task 013 selected-slot public API tests. |
-| A3 | observed | D2 preserves null restriction for explicit-seed allocation. | Task 013 allocation and task 015 sequence policy matrices. |
-| A4 | observed | D3 isolates optional JDK dependencies from namespace loading. | Task 013 Java 8 and preview-disabled EA3 loading controls. |
-| A5 | observed | Direct explicit-seed allocation supports length zero for tested value classes. | Task 012 allocation evidence; seed validation still applies. |
+| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Direct-JVM evidence and selected-slot public API tests. |
+| A3 | observed | D2 preserves null restriction for explicit-seed allocation. | Allocation and sequence policy matrices. |
+| A4 | observed | D3 isolates optional JDK dependencies from namespace loading. | Java 8 and preview-disabled EA3 loading controls. |
+| A5 | observed | Direct explicit-seed allocation supports length zero for tested value classes. | Direct-JVM allocation evidence; seed validation still applies. |
 | A6 | inferred | Sequence construction can allocate more than the direct probe. | D4 temporary storage; amount unmeasured. |
 
 ## Risks and evolution
@@ -176,8 +104,8 @@ A public JDK replacement, wider flattening support or evidence that temporary
 storage is costly can justify later work. Indexed construction, non-atomic
 storage and wrappers require new contracts; they are not implicit extensions
 of this design. Verified empty-array behavior supports the explicit-seed
-proposal; it does not permit ordinary-array fallback.
+contract; it does not permit ordinary-array fallback.
 
-## Implementation gates
+## Safety constraints
 
-See [remaining implementation gates](implementation-gates.md).
+See [array safety constraints](implementation-gates.md).

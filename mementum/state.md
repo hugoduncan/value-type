@@ -48,6 +48,8 @@ Its API is not stable.
 - `doc/development.md`: setup, quality checks, builds and benchmarks.
 - `doc/development/runtime.md`: JVM selection and test commands.
 - `doc/development/release.md`: release operations.
-- `ramora/INDEX.md`: architecture and retained experiment evidence.
+- `ramora/INDEX.md`: architecture and retained experiment evidence. Design
+  documents contain no project history. Implementation status and gaps belong
+  only in embodiment sections; task and acceptance records belong in Munera.
 - `mementum/knowledge/`: reusable lessons on JVM boundaries, testing,
   benchmarking and release behavior.

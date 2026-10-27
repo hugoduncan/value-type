@@ -15,6 +15,6 @@ guard changes representation or performs per-instance checks.
 
 Only the available branch in core resolves loader/install! lazily. There is
 no dependency cycle. The detector never loads the loader or transformer.
-See the task 009 plan for exact absence classification and implementation.md
-for production evidence. Guards do not intercept direct class loads or promise
+See the [capability boundary](../../fallback.md#d12-capability-boundary)
+for absence classification. Guards do not intercept direct class loads or promise
 that no AOT class has loaded before namespace rejection.

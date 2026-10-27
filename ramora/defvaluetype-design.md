@@ -17,10 +17,6 @@ when support is available. Otherwise application
 policy selects silent fallback, one warning with fallback, or an `Error`
 on every attempt. Fallback uses ordinary `deftype` semantics.
 
-The value-class path and controlled fallback are implemented and tested.
-The configuration contract is user-approved. Verification is limited to
-the JVM configurations recorded below.
-
 ```text
 defvaluetype → validate fields → capability and application policy
   supported → install capture loader → deftype → transform bytes
@@ -46,7 +42,7 @@ the guard. No instance-use checks are added.
 - [Decisions](defvaluetype-design/decisions.md): the architectural
   decisions, with alternatives and rationale.
 - [Controlled fallback](defvaluetype-design/fallback.md): policy authority,
-  capability boundary, state, AOT limits and verification evidence (D10 D12 D13).
+  capability boundary, state, AOT limits and verification requirements (D10 D12 D13).
 - [Embodiment](defvaluetype-design/embodiment.md): namespaces,
   interfaces, data flow, invariants, tests.
 - [Qualities](defvaluetype-design/qualities.md): target qualities,
@@ -62,31 +58,3 @@ the guard. No instance-use checks are added.
 
 - [Object size](defvaluetype-design/object-size.md): shallow size of
   standalone objects with 0–3 primitive `long` fields.
-
-## Status
-
-Value-class path, verified by a spike on `openjdk-27-jep401ea3+1-1`. The spike
-code is in `spike/valhalla/`. The transform (D5 D6,
-`value-type.impl.transform`) is implemented and tested. The loader
-(D3 D4 D7, D9 define errors, `value-type.impl.loader`) is implemented
-and tested. The macro (D1 D8 D9, `value-type.core`) is implemented
-and tested. The method-call benchmark (`value-type.bench`) gives an
-interface ratio of 1.14 (slower) and a protocol ratio of 1.00 (equal)
-on `27-jep401ea3+1-1`. A later
-[interface-call investigation](defvaluetype-design/interface-call.md) found
-no stable slowdown in repeated fresh JVMs and matching paired C2 loop
-instructions. A-21 remains `contested`: the broad performance target is
-not a general guarantee. See [Benchmark](defvaluetype-design/benchmark.md)
-for the historical run.
-
-Controlled fallback (D10 D12 D13) is implemented and verified by production
-tests with Clojure 1.12.6 on Temurin `1.8.0_492-b09` and Valhalla
-`27-jep401ea3+1-1` with preview disabled and enabled. Tests cover source
-policy, transferred expansions, warning scope and source-free AOT guards,
-including runtime-only calls and strict retries. See
-[fallback verification](defvaluetype-design/fallback.md#verification) and
-[task 009 evidence](../munera/closed/009-controlled-deftype-fallback/implementation.md).
-
-Fallback adds no minimum JDK beyond the supported Clojure runtime. The
-recorded matrix does not establish support for every supported Clojure JVM
-or future EA formats.

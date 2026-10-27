@@ -1,14 +1,5 @@
 # Value-type array design
 
-Status: explicit-seed allocation is implemented in task 013; final acceptance
-passed. Diagnostics are implemented in task 014;
-[final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 is closed.
-Sequence construction is implemented in closed task 015;
-[final acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
-[Task 012](../munera/closed/012-verify-value-arrays/design.md) supplies the
-direct-JVM evidence, separate from public API tests.
-
 This design uses the architecture model in
 `~/projects/hugoduncan/architecture/ramora/INDEX.md`:
 
@@ -36,9 +27,10 @@ Flattening and faster application execution are not guarantees.
 Library users construct arrays; application operators select the JDK and
 startup flags. Maintainers isolate changes to the experimental JDK API.
 
-The current probe uses Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`,
-macOS aarch64 and
-`jdk.internal.value.ValueClass/newNullRestrictedAtomicArray`.
+The JVM interface is
+`jdk.internal.value.ValueClass/newNullRestrictedAtomicArray` on Valhalla.
+The [semantic report](value-type-array-design/semantic-verification.md) records
+the exact JVM, Clojure version and host used to test this boundary.
 Value-array allocation needs:
 
 ```text
@@ -51,9 +43,8 @@ Value-class support alone does not establish array API access. Ordinary
 reference-array inspection needs the export but does not need preview on
 the tested EA3 build. Inspection and allocation have separate capabilities.
 
-The library currently supports ordinary `deftype` fallback. That policy
-controls class definition, not this new array capability. A fallback class
-is an identity class and is not an accepted array component here.
+Ordinary `deftype` fallback controls class definition, not array capability.
+A fallback class is an identity class and is not an accepted array component.
 
 ## Scope
 
@@ -67,11 +58,10 @@ multidimensional builders, indexed generators, non-atomic arrays, class-layout
 changes and guarantees about copying through other APIs. Existing Clojure
 `make-array` and `into-array` remain the portable nullable alternatives.
 
-## Contract and delivery status
+## Contract
 
 The provider is `value-type.array`; names are local to that namespace.
-`make-array`, both `into-array` arities and `array-info` are implemented.
-For current use, see the [allocation guide](../doc/usage.md#value-array-allocation),
+For use, see the [allocation guide](../doc/usage.md#value-array-allocation),
 [sequence guide](../doc/usage.md#value-array-sequence-construction) and
 [diagnostic guide](../doc/usage.md#value-array-diagnostics).
 
@@ -102,36 +92,12 @@ Atomic element access does not make compound updates atomic, or establish
 a publication or synchronization protocol. Elements themselves retain
 value-class semantics.
 
-## Implementation stages
-
-Each stage includes its public-contract tests, relevant fresh-JVM and packaged
-consumer checks, and documentation.
-
-1. [013 Allocation](../munera/closed/013-value-array-allocation/design.md):
-   explicit-seed construction and the safe capability boundary are implemented.
-   Native semantics, the fresh-JVM matrix and packaged consumers pass.
-   [Final acceptance](../munera/closed/013-value-array-allocation/acceptance.md)
-   passed, including combined regression and quality checks.
-2. [014 Diagnostics](../munera/closed/014-value-array-diagnostics/design.md):
-   actual layout properties and validation before native inspection are implemented.
-   Direct comparisons, startup controls and packaged consumers pass.
-   [Final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
-   passed, including combined regression and quality checks. The task is closed.
-3. [015 Sequence construction](../munera/closed/015-value-array-sequence-construction/design.md):
-   one input traversal, validation and copying with explicit or inferred seeds.
-   Construction, input effects, native stores, startup controls and packaged
-   consumers pass. [Final acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md)
-   passed, including combined regression and quality checks. The task is closed.
-
-Stages 2 and 3 depend on stage 1. Stage 3 does not depend on stage 2.
-Task 012 supplies the completed direct-JVM evidence. Task 013 records public
-allocation checks; task 014 records diagnostic checks. Task 015 records
-sequence checks in its [implementation notes](../munera/closed/015-value-array-sequence-construction/implementation.md).
-
 ## Design and evidence
 
-- [Decisions and embodiment](value-type-array-design/decisions.md):
-  alternatives, boundaries, state, construction flow and failures.
+- [Decisions](value-type-array-design/decisions.md): alternatives, boundaries
+  and failures.
+- [Embodiment](value-type-array-design/embodiment.md): implementation, state,
+  construction flow and verification limits.
 - [Verification and evolution](value-type-array-design/verification.md):
   scoped observations, intended qualities, tests and unresolved assumptions.
 - [Semantic verification](value-type-array-design/semantic-verification.md):
@@ -143,11 +109,8 @@ sequence checks in its [implementation notes](../munera/closed/015-value-array-s
 - [Controlled fallback](defvaluetype-design/fallback.md): existing class
   policy, which this design does not change.
 
-Allocation, diagnostics and sequence construction are implemented.
-[Final sequence acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
-Task 012 verified zero-length
-allocation with valid seeds and diagnostic outcomes on the recorded EA3 build.
-Null diagnostic inputs crash that JVM; public validation must reject them
-before native invocation. See the remaining [implementation gates](value-type-array-design/verification.md#implementation-gates).
+Valid seeds support zero-length allocation. Null diagnostic inputs crash the
+recorded EA3 JVM; public validation must reject them before native invocation.
+See the [safety constraints](value-type-array-design/implementation-gates.md).
 The explicit-seed overload avoids inventing a default value or adding a
 no-argument constructor requirement.

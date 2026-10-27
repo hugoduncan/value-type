@@ -4,7 +4,8 @@
 
 `build.clj` owns source-only packaging, credential validation and deployment.
 The tooling-only `:deploy` alias selects stock deps-deploy 0.2.2. Runtime sources,
-dependencies, EPL-2.0 metadata and consumer requirements remain unchanged.
+dependencies, EPL-2.0 metadata and consumer requirements are separate from
+release tooling.
 `jar` and `deploy` return `:version`, `:jar-file` and `:pom-file`; deployment can
 append these fields to a GitHub output file after success.
 
@@ -45,15 +46,17 @@ Release with returned asset paths. Notes stay outside target/. Secrets are
 step-scoped; Git authentication is command-scoped. Failure stops later writes.
 No outer retries, rollback, automatic resume or remote-absence protocol exists.
 
-## Verification limits
+## Embodiment
+
+### Verification limits
 
 Pure tests cover notes; isolated real Git/process tests cover preparation,
 selection, output preservation and partial failures. Credential tests reject
 missing or blank values before effects and validate good values without uploads.
 Artifact tests retain POM-derived classpaths and exact-JAR resource checks.
 
-Linux archive pins and capability evidence are recorded in
-[task 011](../munera/closed/011-release-workflow/linux-jvms.md). Local emulation and
-actionlint do not prove native hosted execution, permissions or publication.
-No remote writes are part of acceptance. Command success does not independently
-verify remote files. See task implementation notes for per-slice evidence.
+Hosted execution, permissions and live publication remain unverified.
+Local emulation and actionlint do not prove these properties. Tests perform
+no remote writes. Command success does not independently verify remote files.
+Linux archive pins and capability evidence are in the
+[JVM verification record](../munera/closed/011-release-workflow/linux-jvms.md).

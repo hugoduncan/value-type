@@ -1,9 +1,8 @@
 # Value-array semantic verification
 
-Task 012 observed Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`, macOS
+The semantic probes use Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`, macOS
 aarch64. Java `1.8.0_492-b09` is an unsupported-runtime control. These results
 apply to the recorded build and fixtures, not all value classes or future JDKs.
-No production API is implemented.
 
 [Reproduction instructions](../../spike/value-array-semantics/README.md) describe
 the bounded matrix. The [aggregate result](evidence/matrix-selected-slots/validation.edn)
@@ -50,7 +49,7 @@ An empty array has no indexed access case.
 
 The installed signatures and [bundled source](evidence/matrix-selected-slots/startup/ValueClass.java)
 contain no seed-free overload of the selected restricted atomic allocator.
-This supports the proposed explicit-seed empty constructor. It does not prove
+This supports the explicit-seed empty constructor. It does not prove
 that no other JDK allocation route exists. No maximum-length or exhaustion
 allocation was attempted.
 
@@ -108,7 +107,7 @@ proof that String is a valid public diagnostic input.
 link the process evidence, including fatal logs. Each query runs in a separate
 JVM. There is no returned false value or Java exception for these cases.
 The native crash mechanism is unresolved. Public input validation must not
-send null to these methods. The proposed rejection of primitive arrays and
+send null to these methods. The rejection of primitive arrays and
 non-arrays remains a library contract, not the observed native behavior.
 
 ## 6. Flattening and atomic access
@@ -127,7 +126,7 @@ refer to mutable state. Atomic element access does not make a read-modify-write
 sequence atomic and does not establish safe publication or a synchronization
 protocol. Callers must coordinate shared access.
 
-The [historical one-long measurements](../defvaluetype-design/typed-array.md)
+The [one-long measurements](../defvaluetype-design/typed-array.md)
 apply only to their recorded payload, lengths, flags and benchmark setup.
 This semantic matrix measures no storage or speed benefit for wider, empty or
 reference-field layouts. Flat status alone is not such a measurement.

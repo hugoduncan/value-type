@@ -48,7 +48,7 @@ or types of fields, uncompressed references, or another JDK build.
 
 ## Verification and reproduction
 
-`bash spike/object-size/run.sh` now runs all three configurations. It
+`bash spike/object-size/run.sh` runs all three configurations. It
 measures Clojure `deftype`/`defvaluetype` pairs and plain Java identity/value
 pairs through the locally built instrumentation agent. VM layout reports
 agree with `Instrumentation.getObjectSize` in each case. Each reference

@@ -68,7 +68,7 @@ Scope: the value-class path unless stated otherwise.
   effect, for example in `(eval (macroexpand form))`. D9 detects this
   too.
 - Improves: locality, no JVM flags. Degrades: depends on compiler
-  evaluation order (verified by the spike and by tests).
+  evaluation order; verify this with spike and integration tests.
 - Commitment: firm.
 
 ## D4. Capture loader shape (technology)
@@ -81,7 +81,7 @@ Scope: the value-class path unless stated otherwise.
 - Rationale: one delegate defines all classes of the form. So the
   deftype class and its inner function classes have the same defining
   loader. The static class cache lets the compiler find them.
-- Commitment: firm (verified by the spike).
+- Commitment: firm.
 
 ## D5. Transformation with `java.lang.classfile` (technology)
 
@@ -96,7 +96,7 @@ Scope: the value-class path unless stated otherwise.
   (old fork, no Valhalla flags).
 - Rationale: the JDK API moves with the JDK. Existing stack map frames
   stay valid at a higher version.
-- Commitment: firm. Verified on JDK 27 jep401ea3.
+- Commitment: firm.
 
 ## D6. Make a new constructor from the field list (data model)
 
@@ -120,6 +120,6 @@ Scope: the value-class path unless stated otherwise.
 - Rationale: the compiler writes the file before it defines the class.
 - Fallback AOT keeps the compiler identity-class bytes. Representation
   is fixed at compilation. The fallback load guard is specified in D13.
-- Commitment: firm. Production source-free AOT tests verify both
-  representations and fallback receiving-policy guards on the recorded matrix.
+- Commitment: firm. Source-free AOT tests must verify both representations
+  and fallback receiving-policy guards.
 

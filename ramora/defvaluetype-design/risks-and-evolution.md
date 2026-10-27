@@ -42,13 +42,9 @@ it and update this document.
 | A dependency was AOT-compiled as an identity class. | Strict application can load a namespace containing fallback inside a function. | D13 guard enforces policy at form evaluation: during initialization for top-level forms, on invocation for forms inside functions. Direct class access that bypasses the form remains unguarded. |
 | Compiler wraps the strict Error. | Callers see a different outer exception type. | Source compilation wraps plain Error in CompilerException. Failed AOT retries can throw NoClassDefFoundError. |
 
-## Fallback evidence and remaining assumptions
+## Fallback constraints
 
-Production tests verify D10–D13 on Clojure 1.12.6, Java 8 and Valhalla
-27-jep401ea3+1-1 with preview enabled and disabled. See
-[fallback verification](fallback.md#verification) and task 009 implementation.md.
-No additional minimum JDK is imposed. Other JVMs and future EA formats are
-not established by this matrix. API presence alone is insufficient; the
+API presence alone is insufficient; the
 strict-field probe must succeed. Unknown API, verification and invariant
 failures remain errors. The AOT policy guard runs where the form is evaluated.
 Top-level forms enforce policy during namespace initialization. Forms inside

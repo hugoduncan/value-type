@@ -1,17 +1,9 @@
-# Array decisions and embodiment
-
-Status: allocation decisions are implemented in task 013; final acceptance
-passed. Public inspection is implemented in task 014;
-[final acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 is closed.
-Sequence construction is implemented in task 015;
-[final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
-See [verification](verification.md) and the [contract](../value-type-array-design.md).
+# Array decisions
 
 ## D1. Native arrays, not a collection abstraction
 
 - Choice: return native null-restricted atomic reference arrays.
-- Rationale: the spike already uses Clojure array operations. The JVM can
+- Rationale: native arrays support Clojure array operations. The JVM can
   enforce stores without a library call on every read or write.
 - Alternatives: ordinary typed arrays do not preserve null restriction;
   wrappers require a new access API and cannot supply native-array interop.
@@ -65,7 +57,7 @@ See [verification](verification.md) and the [contract](../value-type-array-desig
 - Qualities: predictable order and errors, but O(n) temporary references and
   added allocation. The API is not a zero-allocation builder.
 - Scope: inputs must be finite; memory exhaustion remains possible below the
-  integer limit. A later indexed builder needs separate evidence and design.
+  integer limit. Indexed builders need separate design.
 
 ## D5. Expose observed layout, not a flattening promise
 
@@ -77,35 +69,7 @@ See [verification](verification.md) and the [contract](../value-type-array-desig
   rejecting non-flat storage would turn a valid semantic result into failure.
 - Qualities: inspectable performance behavior without an unstable guarantee.
 - Assumption: the adapter can distinguish absence of inspection support from
-  a valid false result for each reported property.
-
-## Embodiment and interactions
-
-```text
-caller → value-type.array → value-type.impl.array → JDK ValueClass
-           validation         capability/access       allocation
-           input realization  layout inspection       store invariants
-caller → Clojure/Java array operations → returned native array
-```
-
-The public namespace supplies `make-array [component length initial]` and
-both `into-array` arities and `array-info [array]`.
-The adapter lazily resolves the allocator and value predicate, checks access
-with a method handle, and invokes through reflection. It caches capability,
-not arrays or seeds. Diagnostics are not allocation prerequisites.
-Inspection has its own lazy discovery and access checks, independent of the
-class capability detector. It reads the component value predicate and all three
-JDK array properties directly. It does not change or retain the caller array.
-Sequence construction validates one input traversal into a call-local transient
-vector, then uses the allocator and copies the buffered values in order.
-None of these operations changes `value-type.core`, the transformer, loader or fallback policy.
-No element registry or shared array cache is needed.
-
-Construction owns the unfinished array and temporary input storage. On
-success, the caller receives the array; library state retains neither.
-Java GC owns reclamation. The JVM enforces later store invariants; the
-library validates inputs before return. Neither layer enforces caller
-synchronization.
+  a valid false result.
 
 ## Failure behavior
 
@@ -145,10 +109,10 @@ allocation failures remain visible; do not classify all exceptions as
 capability absence. JVM errors, including memory exhaustion, propagate.
 Later `aset` failures use native JVM exceptions, not library error wrapping.
 
-## Evidence constraints from task 012
+## JVM evidence constraints
 
-The [semantic report](semantic-verification.md) resolves the direct-JVM gates,
-not approval or implementation of these public contracts.
+The [semantic report](semantic-verification.md) describes the direct-JVM
+boundary, separate from the public contracts.
 
 - D1: all four tested value classes support native restricted atomic arrays.
   Two-long arrays remain non-flat. Clojure and Java stores enforce null and
@@ -160,8 +124,8 @@ not approval or implementation of these public contracts.
   then. Primitive long reports value status but allocation rejects its boxed
   seed; public validation must check primitive status separately.
 - D5: native queries return false for primitive long arrays and String, but
-  crash on null. Validate the proposed reference-array domain before calling
-  native diagnostics. This does not change the proposed public error keys.
+  crash on null. Validate the reference-array domain before calling
+  native diagnostics.
 
 These findings do not establish arbitrary-class eligibility, a native crash
-mechanism or concurrent behavior. See [implementation gates](verification.md#implementation-gates).
+mechanism or concurrent behavior. See [safety constraints](implementation-gates.md).

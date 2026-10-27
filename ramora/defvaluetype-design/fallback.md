@@ -1,10 +1,5 @@
 # Controlled fallback
 
-Status: implemented and tested on Java 8 and Java 27 EA. Task 009 implementation
-acceptance mapping and final review are complete. D10 replaces
-its former no-fallback choice. Existing value-class evidence remains
-scoped to the tested Valhalla build.
-
 ## D10. Controlled fallback
 
 - Subject: unavailable value-class support and policy authority.
@@ -25,13 +20,12 @@ scoped to the tested Valhalla build.
 - Authority: applications control policy before dependent namespaces
   load. Libraries use `defvaluetype` without weakening application
   policy. There are no per-type overrides in this design.
-- Approved configuration: JVM property `value-type.fallback`, with
+- Configuration: JVM property `value-type.fallback`, with
   values `silent`, `warn`, `error`; default `silent`. Read and validate
   it once per loaded library runtime. Invalid values fail clearly.
   Changing it after initialization is not supported. This gives source
   libraries silent fallback by default and lets applications set policy
-  before dependency loading. The user approved the property, default
-  and initialization contract on 2026-10-23.
+  before dependency loading.
 - Semantics: fallback is ordinary `deftype`, not value-semantics
   emulation. Identity, default equality, hashing and identity-sensitive
   operations can differ. Libraries that permit fallback must tolerate
@@ -101,12 +95,12 @@ scoped to the tested Valhalla build.
   not be bypassed by dependencies compiled under another policy.
 - Qualities: bounded diagnostics and predictable deployment; AOT adds a
   guard at form evaluation, not per-instance overhead.
-- Commitment: firm. Production transfer, concurrent-warning and source-free
-  AOT tests verify the do barrier, analysis macro and runtime guard.
+- Commitment: firm. Transfer, concurrent-warning and source-free AOT tests
+  must verify the do barrier, analysis macro and runtime guard.
 
 ## Verification
 
-D11 now includes isolated JVM tests:
+D11 requires isolated JVM tests:
 
 - Public namespace and packaged source JAR load without optional APIs.
 - All policies on a non-value JVM and Valhalla with preview disabled.
@@ -118,14 +112,6 @@ D11 now includes isolated JVM tests:
 - Fallback protocols, factories, type hints and ordinary identity semantics.
 - AOT compilation and fresh-JVM namespace loading under different policies
   and capabilities, including strict rejection of fallback artifacts.
-
-Recorded matrix: Clojure 1.12.6, Temurin 1.8.0_492-b09, and Valhalla
-27-jep401ea3+1-1 with preview off/on. The full fallback suite passed
-18 tests with 148/148/129 assertions respectively. Value-path regressions
-passed 64 tests / 332 assertions; build tests passed 6 / 63. Commands and
-phase-specific results are in task 009 implementation.md. These results
-do not establish support for future EA formats or every supported Clojure JVM.
-
 
 ## Selected detector
 
