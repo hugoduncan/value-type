@@ -5,6 +5,11 @@ Clojure's `deftype` creates objects with identity. value-type provides
 with familiar `deftype` syntax. It uses value classes on a supported
 Valhalla JVM and ordinary `deftype` classes otherwise.
 
+For collections of value objects, `value-type.array` creates native arrays
+that reject null elements and provide atomic element access. The JVM can
+store values directly in the array instead of through separate object
+references. This storage layout is called flattening; it is not guaranteed.
+
 ## Project status
 
 The project is experimental and has no published release. Use it to
@@ -64,6 +69,54 @@ To try ordinary-JVM fallback, start with `clojure -M` instead. Construction
 still works, but the two instances are not identical, and `Class.isValue`
 can be absent.
 
+### Value arrays
+
+Array construction needs a supported Valhalla JVM, preview and access to an
+internal JVM package. With `JAVA_CMD` set as above, start a new REPL:
+
+```sh
+clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:dev
+```
+
+Evaluate the `Point` definition above, then create and use arrays:
+
+```clojure
+(require '[value-type.array :as va])
+
+;; Allocate three slots, each with the supplied initial value.
+(def points (va/make-array Point 3 (->Point 0 0)))
+(alength points)                         ;=> 3
+(aset points 1 (->Point 4 5))
+(str (aget points 1))                    ;=> "(4,5)"
+
+;; Build an array from finite input, in input order.
+(def path (va/into-array Point [(->Point 1 2) (->Point 3 4)]))
+(mapv str path)                          ;=> ["(1,2)" "(3,4)"]
+
+;; Empty input needs an explicit non-null seed; the seed adds no slot.
+(alength (va/into-array Point (->Point 0 0) [])) ;=> 0
+
+;; Inspect actual JVM properties, including whether storage is flat.
+(select-keys (va/array-info points) [:null-restricted? :atomic?])
+;=> {:null-restricted? true, :atomic? true}
+(:flat? (va/array-info points))           ;=> true or false, depending on layout
+```
+
+These are mutable arrays of immutable value objects. Use ordinary array
+operations such as `aget`, `aset` and `alength`. Stores of null or incompatible
+values fail. Atomic element access does not make compound updates atomic or
+remove the need for thread coordination.
+
+Unlike `defvaluetype`, array construction has **no ordinary-JVM fallback**.
+`into-array` buffers the input before allocation; it is not a streaming
+constructor. `array-info` also accepts ordinary reference arrays. It needs
+the export flag, but ordinary-array inspection does not need preview on the
+tested EA3 build.
+
+See the [API reference](doc/API.md) for all three functions and the
+[usage guide](doc/usage.md#value-array-allocation) for validation and error
+handling.
+
 ## Important behavior and limitations
 
 - Value objects have no identity. Equality depends on their fields;
@@ -89,22 +142,7 @@ clojure -J-Dvalue-type.fallback=error -M:dev
 ```
 
 See the [usage guide](doc/usage.md) for field comparison rules, fallback
-policy, AOT limits and error handling. For native null-restricted atomic
-arrays with an explicit initial value, see
-[value-array allocation](doc/usage.md#value-array-allocation). Allocation needs
-an internal-package export in addition to preview; it has no ordinary-array
-fallback.
-
-`value-type.array/into-array` constructs these arrays from finite sequence input,
-with an inferred or explicit seed. It has the same allocation requirements.
-See [value-array sequence construction](doc/usage.md#value-array-sequence-construction)
-for examples and limits.
-
-`value-type.array/array-info` inspects ordinary and restricted reference arrays.
-It needs `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Ordinary-array
-inspection does not need preview on the tested EA3 build. See
-[value-array diagnostics](doc/usage.md#value-array-diagnostics) for properties,
-errors and limits.
+policy, AOT limits and error handling.
 
 ## Performance
 
@@ -120,9 +158,16 @@ and [object-size comparison](ramora/defvaluetype-design/object-size.md) for
 methods, results and limits. Measure your own workload before choosing a
 representation for performance.
 
+Separate [typed-array measurements](ramora/defvaluetype-design/typed-array.md)
+found storage and traversal benefits for flattened arrays of single-`long`
+values on the tested JVM. These are workload-specific results, not a promise
+for other value types or layouts. The [array benchmark](bench/typed-array/README.md)
+uses the public allocator; the retained measurements used the internal JVM
+allocator directly and do not measure `into-array` construction.
+
 ## Documentation
 
-- [API reference](doc/API.md): macro syntax and contract.
+- [API reference](doc/API.md): macro syntax and array function contracts.
 - [Usage guide](doc/usage.md): detailed behavior and limitations.
 - [Development guide](doc/development.md): tools, quality checks, tests,
   builds and benchmarks.

@@ -43,7 +43,8 @@ Its API is not stable.
 
 ## Orientation
 
-- `README.md`: project overview and quick start.
+- `README.md`: project overview, value-class and value-array quick starts,
+  JVM flags and performance limits.
 - `doc/usage.md` and `doc/API.md`: public contracts and limits.
 - `doc/development.md`: setup, quality checks, builds and benchmarks.
 - `doc/development/runtime.md`: JVM selection and test commands.

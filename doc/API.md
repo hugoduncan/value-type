@@ -22,6 +22,8 @@ Regenerate from the repository root with `bb api-docs`. Check without writing wi
 
 Native null-restricted atomic value arrays (experimental Valhalla API).
 
+   Allocation has no ordinary-array fallback. Use ordinary Clojure array operations.
+
 
 
 
@@ -47,7 +49,7 @@ Return actual properties of a reference array (experimental Valhalla API).
    Native failures propagate. Inspection does not change or retain the array.
    Flattening is not guaranteed. Atomic access does not provide safe publication,
    compound-update safety or caller synchronization.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L113-L139">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L115-L141">Source</a></sub></p>
 
 ## <a name="value-type.array/into-array">`into-array`</a>
 ``` clojure
@@ -73,7 +75,7 @@ Build a native null-restricted atomic array from finite seqable input.
    a complete array. Non-seqable input uses ordinary Clojure input errors.
    Failure does not promise full input consumption. The caller owns mutable
    slots; flattening is not guaranteed.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L79-L111">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L81-L113">Source</a></sub></p>
 
 ## <a name="value-type.array/make-array">`make-array`</a>
 ``` clojure
@@ -92,7 +94,7 @@ Allocate a native null-restricted atomic array with every slot set to initial.
 
    The caller owns the mutable slots. Flattening is not guaranteed. Atomic
    element access does not provide safe publication or compound-update safety.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L36-L53">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L38-L55">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>

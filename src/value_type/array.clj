@@ -1,5 +1,7 @@
 (ns value-type.array
-  "Native null-restricted atomic value arrays (experimental Valhalla API)."
+  "Native null-restricted atomic value arrays (experimental Valhalla API).
+
+   Allocation has no ordinary-array fallback. Use ordinary Clojure array operations."
   (:refer-clojure :exclude [make-array into-array])
   (:require [value-type.impl.array :as adapter]))
 
