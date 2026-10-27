@@ -13,8 +13,8 @@
   (assert (= #{:identity :value :restricted} (set (map :kind results))))
   (assert (= 3 (count results)))
   (doseq [{:keys [kind flat? component-value? null-restricted? atomic?
-                 array-bytes storage-bytes allocated-bytes-per-build sum
-                 ns-per-element]} results]
+                  array-bytes storage-bytes allocated-bytes-per-build sum
+                  ns-per-element]} results]
     (let [flat-expected? (and (= kind :restricted) (= configuration "default"))
           payload (case kind :identity 24 :value 32 :restricted (if flat-expected? 8 32))
           expected-array (+ 16 (* n (if flat-expected? 8 4)))

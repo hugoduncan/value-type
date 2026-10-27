@@ -256,6 +256,20 @@ range). Available memory can impose a lower limit. Invalid input is
 rejected before measurement. The results are in
 `ramora/defvaluetype-design/benchmark.md`.
 
+## Compare array storage and traversal
+
+The [typed-array benchmark](../../bench/typed-array/README.md) compares standard
+identity and value arrays with arrays from `value-type.array/make-array`.
+It measures retained storage, allocated bytes and sequential traversal time.
+It does not measure construction time.
+
+```sh
+bash bench/typed-array/run.sh
+```
+
+The runner selects the Valhalla JDK and required JVM flags. See its instructions
+for JDK overrides, run length, output paths and result validation.
+
 ## Compare standalone object size
 
 Use a Valhalla JDK with JEP 401 support (see "Select the JDK"). Run

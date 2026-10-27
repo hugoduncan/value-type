@@ -163,6 +163,23 @@ The macro creates JEP 401 value objects
   final sequence acceptance has passed within the recorded JVM scope.
   Knowledge extraction is in `mementum/knowledge/value-array-jvm-boundaries.md`
   and `mementum/knowledge/validating-retained-jvm-evidence.md`.
+- Typed-array benchmark migration (2026-10-27): `bench/typed-array/run.clj`
+  now allocates the restricted case through `value-type.array/make-array`.
+  Standard-array cases, traversal loops and independent native diagnostics
+  are unchanged. Reports record `:restricted-allocator`; the report and probe
+  instructions distinguish historical direct-JVM results from the public API.
+  Six 6-second screening runs at 1,048,576 elements passed the existing
+  validator (three rotations, default/disabled flattening). Local output:
+  `target/typed-array-public-api/` (not retained in Git). Warmup/sample warnings
+  prevent a new timing claim. Formatting, focused lint and whitespace checks
+  passed; the only post-run code change was indentation. Extended timing and
+  the full library suite were not rerun.
+  The benchmark runner, Java helper, summarizer and instructions now live in
+  `bench/typed-array/`; only the eligibility experiment remains in
+  `spike/typed-array/`. Six screening runs from the new path passed validation
+  (`target/typed-array-moved/`, not retained in Git). The documented eligibility
+  command also passed. Shell syntax, focused formatting and lint passed.
+  Historical evidence and closed-task records are unchanged.
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
   arrays are not flat on EA3. Internal null-restricted atomic arrays are
   flat: at 1,048,576 elements, storage is 8 MiB versus 28 MiB for identity
@@ -173,7 +190,7 @@ The macro creates JEP 401 value objects
   22% less time flat versus identity). Short screening runs had warnings;
   the extended runs did not. One interrupted trial was excluded and rerun.
   Report:
-  `ramora/defvaluetype-design/typed-array.md`; probe: `spike/typed-array/`.
+  `ramora/defvaluetype-design/typed-array.md`; probe: `bench/typed-array/`.
   This does not establish a benefit for ordinary Clojure collection storage
   or wider value classes. Production code is unchanged.
 - Interface-call slowdown investigated (2026-10-24 UTC): no stable penalty

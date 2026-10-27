@@ -5,7 +5,7 @@ JDK=${JDK:-$HOME/.local/jdks/jdk-27.jdk/Contents/Home}
 out=${1:-target/typed-array}
 mkdir -p "$out/classes" "$out/results"
 "$JDK/bin/javac" --add-exports java.base/jdk.internal.value=ALL-UNNAMED \
-  -d "$out/classes" spike/typed-array/Probe.java
+  -d "$out/classes" bench/typed-array/Probe.java
 printf 'Premain-Class: investigation.Probe\n\n' > "$out/manifest.mf"
 "$JDK/bin/jar" --create --file "$out/probe.jar" --manifest "$out/manifest.mf" -C "$out/classes" .
 JAVA_CMD="$JDK/bin/java" clojure -Spath -M:bench > "$out/classpath.txt"
@@ -25,7 +25,7 @@ for n in ${SIZES:-65536 1048576}; do
         --add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
         -javaagent:"$out/probe.jar" -XX:+UnlockExperimentalVMOptions \
         '-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume' \
-        -cp "$cp" clojure.main spike/typed-array/run.clj "$n" "$trial" "$mode" \
+        -cp "$cp" clojure.main bench/typed-array/run.clj "$n" "$trial" "$mode" \
         "$out/results/$name.edn" > "$out/results/$name.log" 2>&1
       echo "DONE $name $(date -u +%FT%TZ)"
     done

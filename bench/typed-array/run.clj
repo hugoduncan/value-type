@@ -4,6 +4,7 @@
   (:require [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [criterium.bench :as bench]
+            [value-type.array :as array]
             [value-type.core :refer [defvaluetype]])
   (:import [investigation Probe]
            [jdk.internal.value ValueClass]
@@ -28,7 +29,7 @@
 
 (defn restricted-array
   [^long n]
-  (let [a (ValueClass/newNullRestrictedAtomicArray ValueLong (int n) (ValueLong. -1))]
+  (let [a (array/make-array ValueLong n (ValueLong. -1))]
     (dotimes [i n] (aset ^objects a i (ValueLong. (long i))))
     a))
 
@@ -89,6 +90,7 @@
              [:restricted restricted-array restricted-sum]]
       ordered (mapv #(nth cases (mod (+ shift %) 3)) (range 3))
       report {:n n :rotation shift :configuration configuration
+              :restricted-allocator 'value-type.array/make-array
               :java (System/getProperty "java.runtime.version")
               :os (System/getProperty "os.version")
               :arch (System/getProperty "os.arch")
@@ -96,7 +98,7 @@
               :criterium "0.5.245-ALPHA"
               :benchmark-limit-s (parse-long (or (System/getenv "BENCH_SECONDS") "60"))
               :jvm-arguments (vec (.getInputArguments
-                                  (java.lang.management.ManagementFactory/getRuntimeMXBean)))
+                                   (java.lang.management.ManagementFactory/getRuntimeMXBean)))
               :results (mapv #(measure n %) ordered)}]
   (with-open [writer (io/writer output)]
     (pprint/pprint report writer))
