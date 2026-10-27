@@ -295,100 +295,9 @@
                                           :aliases []})
                 runtime-paths (:classpath-roots basis)
                 classpath (into [(.getCanonicalPath artifact)] runtime-paths)
-                expression
-                (pr-str
-                 '(do
-                    (require '[clojure.java.io :as io])
-                    (doseq [path ["value_type/core.clj" "value_type/array.clj"
-                                  "value_type/impl/array.clj"]
-                            :let [resource (io/resource path)]]
-                      (assert (= "jar" (.getProtocol resource)))
-                      (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
-                                 (.getCanonicalFile
-                                  (io/file (.toURI (.getJarFileURL (.openConnection resource))))))))
-                    (require '[value-type.core :refer [defvaluetype]]
-                             '[value-type.array :as va])
-                    (def diagnostic-result
-                      (when-not (Boolean/getBoolean "consumer.arrays")
-                        ;; Inspect before any value creation or allocation attempt.
-                        (doseq [input [nil "not-array" (int-array 0)]]
-                          (assert (= :invalid-array
-                                     (try
-                                       (va/array-info input)
-                                       :unexpected-success
-                                       (catch clojure.lang.ExceptionInfo e
-                                         (:value-type/error (ex-data e)))))))
-                        (dotimes [_ 2]
-                          (if (Boolean/getBoolean "consumer.inspection")
-                            (assert (= {:component-class Object
-                                        :component-value? false
-                                        :null-restricted? false
-                                        :atomic? true :flat? false}
-                                       (va/array-info (object-array 0))))
-                            (assert (= :array-inspection-unavailable
-                                       (try
-                                         (va/array-info (object-array 0))
-                                         :unexpected-success
-                                         (catch clojure.lang.ExceptionInfo e
-                                           (:value-type/error (ex-data e))))))))
-                        :checked))
-                    ;; Controls call allocation before defining any fallback fixture.
-                    (def array-result
-                      (when-not (Boolean/getBoolean "consumer.arrays")
-                        (mapv (fn [_]
-                                (try
-                                  (va/make-array nil -1 nil)
-                                  :unexpected-success
-                                  (catch clojure.lang.ExceptionInfo e
-                                    (:value-type/error (ex-data e)))))
-                              (range 2))))
-                    (defvaluetype Point [^long x ^long y])
-                    (let [a (Point. 3 7)
-                          b (Point. 11 13)]
-                      (prn {:value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
-                                                                               (.getMethods Class)))]
-                                            (.invoke predicate (class a) (object-array 0)))
-                            :equal-copy? (= a (->Point 3 7))
-                            :factory-class? (= Point (class (->Point 3 7)))
-                            :fields [(.-x a) (.-y a) (.-x b) (.-y b)]
-                            :diagnostic-control diagnostic-result
-                            :arrays
-                            (if (Boolean/getBoolean "consumer.arrays")
-                              (let [values (va/make-array Point 3 a)
-                                    initial? (= [a a a] (vec values))
-                                    _ (aset values 1 b)
-                                    rejected (mapv
-                                              (fn [value]
-                                                (try
-                                                  (aset values 0 value)
-                                                  :unexpected-success
-                                                  (catch NullPointerException _ :null)
-                                                  (catch ArrayStoreException _ :type)))
-                                              [nil "wrong"])]
-                                (let [ordinary-info (va/array-info (object-array 0))
-                                      restricted-info (va/array-info values)]
-                                  (assert (= {:component-class Object
-                                              :component-value? false
-                                              :null-restricted? false
-                                              :atomic? true :flat? false}
-                                             ordinary-info))
-                                  (assert (= #{:component-class :component-value?
-                                               :null-restricted? :atomic? :flat?}
-                                             (set (keys restricted-info))))
-                                  (assert (= Point (:component-class restricted-info)))
-                                  (assert (every? true? (mapv restricted-info
-                                                              [:component-value?
-                                                               :null-restricted? :atomic?])))
-                                  (assert (boolean? (:flat? restricted-info))))
-                                {:component? (= Point (.getComponentType (class values)))
-                                 :diagnostics? true
-                                 :length (alength values)
-                                 :initial? initial?
-                                 :stored? (= b (aget values 1)
-                                             (java.lang.reflect.Array/get values 1))
-                                 :rejected rejected
-                                 :contents? (= [a b a] (vec values))})
-                              array-result)}))))]
+                consumer (io/file directory "isolated-consumer.clj")
+                _ (io/copy (io/file "test-resources/build/isolated-consumer.clj")
+                           consumer)]
             (testing "the consumer classpath contains only artifact and runtime JARs"
               (is (seq runtime-paths))
               (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
@@ -414,7 +323,7 @@
                                             ["-Dvalue-type.fallback=silent"
                                              (str "-Dconsumer.jar=" (.getCanonicalPath artifact))
                                              "-cp" (str/join java.io.File/pathSeparator classpath)
-                                             "clojure.main" "-e" expression]))
+                                             "clojure.main" (.getAbsolutePath consumer)]))
                               {})]
                   (is (= 0 (:exit result)) result)
                   (when (zero? (:exit result))
@@ -422,6 +331,15 @@
                             :equal-copy? (boolean expected-value?)
                             :factory-class? true :fields [3 7 11 13]
                             :diagnostic-control (when-not expected-value? :checked)
+                            :sequence-control (when-not expected-value?
+                                                [[{:error :array-unavailable :effects []}
+                                                  {:error :array-unavailable :effects []}]
+                                                 [{:error :array-unavailable :effects []}
+                                                  {:error :array-unavailable :effects []}]])
+                            :sequences (when expected-value?
+                                         [{:component? true :length 3 :contents? true}
+                                          {:component? true :length 3 :contents? true}
+                                          {:component? true :length 0 :contents? true}])
                             :arrays (if expected-value?
                                       {:component? true :diagnostics? true :length 3 :initial? true
                                        :stored? true :rejected [:null :type]

@@ -88,6 +88,42 @@ restricted atomic array is valid. These checks use real JVM allocation and
 stores; they do not establish support for other JDK builds. See the
 [allocation guide](../usage.md#value-array-allocation) for the public contract.
 
+## Verify sequence construction
+
+Use the explicit executable paths from "Verify array allocation":
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+  --namespace value-type.array-sequence-boundary-test
+```
+
+This matrix uses the same six configurations, three fallback policies and
+both require orders as allocation. Each child has a 120-second timeout and
+must exit zero with complete EDN results and no fallback warning. Unsupported
+configurations reject both forms repeatedly before input effects. Supported
+configurations check component type, length and ordered contents for both
+forms, plus explicit-seed nil input. Export-only EA3 does not enable sequence
+construction. Child flags are explicit; the parent needs neither preview nor
+exports. The full fallback suite includes this matrix.
+
+Run construction, allocation and layout checks together:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure \
+  -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
+  -J-XX:+UseArrayFlattening -M:test -m scry.cli \
+  --namespace value-type.array-sequence-test \
+  --namespace value-type.array-test --namespace value-type.array-layout-test
+```
+
+Repeat with `-J-XX:-UseArrayFlattening`. Sequence checks use real arrays and
+stores without diagnostics or a flat-layout requirement. They cover finite
+input, seed and indexed-element errors, one input traversal, input exceptions
+and later slot stores. The length boundary check uses internal arithmetic,
+not a large allocation. These checks do not establish streaming behavior or
+performance. See the [sequence guide](../usage.md#value-array-sequence-construction)
+for temporary storage and failure-side-effect limits.
+
 ## Verify array diagnostics
 
 Use the explicit executable paths from "Verify array allocation". Run the
@@ -196,7 +232,10 @@ allocation without those flags. They also check that invalid diagnostic inputs
 keep their public error and valid arrays report inspection unavailable. An
 additional export-only EA3 consumer inspects an Object array before value
 creation while allocation remains unavailable. The supported consumer checks
-ordinary and restricted array diagnostics. All consumers load library resources
+ordinary and restricted array diagnostics. It also checks both sequence
+forms, ordered contents and explicit-seed empty input. Unsupported consumers,
+including export-only EA3, reject both sequence forms repeatedly before value
+creation and without input effects. All consumers load library resources
 from the JAR, with no checkout sources on the class path.
 Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
 the supported consumer uses `JAVA_CMD`. It selects `test-build/`; it does not replace the library test

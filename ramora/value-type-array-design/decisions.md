@@ -3,8 +3,9 @@
 Status: allocation decisions are implemented in task 013; final acceptance
 passed. Public inspection is implemented in task 014;
 [final acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 remains open for review.
-Sequence construction remains proposed.
+passed within the recorded JVM scope. Task 014 is closed.
+Sequence construction is implemented in task 015;
+[final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
 See [verification](verification.md) and the [contract](../value-type-array-design.md).
 
 ## D1. Native arrays, not a collection abstraction
@@ -88,15 +89,16 @@ caller → Clojure/Java array operations → returned native array
 ```
 
 The public namespace supplies `make-array [component length initial]` and
-`array-info [array]`.
+both `into-array` arities and `array-info [array]`.
 The adapter lazily resolves the allocator and value predicate, checks access
 with a method handle, and invokes through reflection. It caches capability,
 not arrays or seeds. Diagnostics are not allocation prerequisites.
 Inspection has its own lazy discovery and access checks, independent of the
 class capability detector. It reads the component value predicate and all three
 JDK array properties directly. It does not change or retain the caller array.
-Only sequence construction in the diagram remains planned.
-Neither changes `value-type.core`, the transformer, loader or fallback policy.
+Sequence construction validates one input traversal into a call-local transient
+vector, then uses the allocator and copies the buffered values in order.
+None of these operations changes `value-type.core`, the transformer, loader or fallback policy.
 No element registry or shared array cache is needed.
 
 Construction owns the unfinished array and temporary input storage. On
@@ -123,8 +125,16 @@ rejection is not cached as capability absence.
 Inspection first rejects null, non-arrays and primitive arrays with
 `:invalid-array`, on every JVM. For valid reference arrays, missing APIs or
 denied access produce `:array-inspection-unavailable`. Return all five properties
-or throw; never replace unknown facts with false. Only `:empty-array-input`
-remains reserved for the pending sequence API.
+or throw; never replace unknown facts with false.
+
+Sequence construction checks allocation capability and component before input
+consumption. The explicit seed is also checked before input consumption, even
+for empty or nil input. Inferred empty input fails with `:empty-array-input`.
+Invalid entries use `:invalid-array-element` with a zero-based `:index` and
+`:reason`; explicit-seed errors have no index. Length is checked before each
+buffer append without integer narrowing. Non-seqable input uses ordinary
+Clojure errors. Chunked input can realize ahead; failure does not promise full
+consumption or undo input effects.
 
 Include relevant component, length, element index or capability reason.
 Do not retain an input array or entire input sequence in exception data. Messages identify

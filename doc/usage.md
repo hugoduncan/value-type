@@ -172,9 +172,58 @@ creation through `defvaluetype`.
 
 Flattening is not guaranteed. A non-flat restricted atomic array is a valid
 result, including with array flattening disabled. Support for other JVM
-builds or untested value classes is not implied. Sequence construction is not yet implemented. No clone, copy or
+builds or untested value classes is not implied. No clone, copy or
 performance guarantee is made.
 
+
+## Value-array sequence construction
+
+`value-type.array/into-array` builds the same native null-restricted atomic
+arrays from finite seqable input. Use the JVM flags and `ArrayPoint` definition
+above. Both forms preserve input order and exact length:
+
+```clojure
+(def inferred (va/into-array ArrayPoint [(ArrayPoint. 2) (ArrayPoint. 5)]))
+(mapv #(.-x %) inferred)                 ;=> [2 5]
+(def explicit (va/into-array ArrayPoint (ArrayPoint. 99)
+                             (list (ArrayPoint. 2) (ArrayPoint. 5))))
+(mapv #(.-x %) explicit)                 ;=> [2 5]
+(alength (va/into-array ArrayPoint (ArrayPoint. 0) []))  ;=> 0
+(alength (va/into-array ArrayPoint (ArrayPoint. 0) nil)) ;=> 0
+```
+
+The two-argument form uses the first element as its allocation seed. Empty
+or nil input throws `:empty-array-input`; use the explicit-seed form instead.
+The three-argument form requires a compatible non-null seed even for empty
+input. The seed adds no output slot and need not equal the first input value.
+A null field inside a valid value object is not a null array element.
+
+Validation checks allocation capability, then the component, then the explicit
+seed (if supplied), before consuming input. These checks use the allocation
+errors above. Explicit-seed errors have reason `:null-initial` or
+`:incompatible-initial`, with no element index or invented length. Unsupported
+calls report `:array-unavailable` without consuming input; there is no fallback.
+
+During traversal, each proposed length is checked before the element is
+validated and stored. Null or incompatible entries throw `ex-info` with
+`:value-type/error :invalid-array-element`, `:component`, a zero-based `:index`
+and reason `:null-element` or `:incompatible-element`. This includes the first
+entry in the inferred-seed form. Error data does not retain the input or the
+rejected element. Non-seqable input uses ordinary Clojure input errors.
+
+The constructor traverses the original input once into temporary storage,
+then allocates and copies the buffered values. This costs O(n) temporary
+references in addition to the result array; it is not streaming or zero-copy.
+Infinite input is unsupported. Length cannot exceed `Integer/MAX_VALUE`;
+memory can run out before that limit. No speed or allocation benefit is claimed.
+
+Input realization failures propagate unchanged. Failure does not undo input
+side effects and does not promise to consume the rest of the input. Chunked
+lazy producers can realize ahead; one traversal does not mean exactly one
+callback per requested element. Only a complete array is returned. Temporary
+storage and unfinished arrays are not retained in library state. Returned
+arrays have the ownership, later-store and concurrency limits described above;
+flattening is not required or guaranteed.
 
 ## Value-array diagnostics
 

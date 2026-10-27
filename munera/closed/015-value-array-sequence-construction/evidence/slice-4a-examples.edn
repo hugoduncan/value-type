@@ -1,0 +1,1 @@
+{:pass? true, :java-version "27-jep401ea3+1-1", :expected {:inferred [2 5], :explicit [2 5], :empty 0, :nil 0}, :actual {:inferred [2 5], :explicit [2 5], :empty 0, :nil 0}}

@@ -46,8 +46,8 @@ excluded paths and warning/error handling.
 `doc/API.md` is generated from docstrings in `src/value_type/core.clj` and
 `src/value_type/array.clj`, with configuration and introductory prose from
 `bb/value_type/api_docs.clj`. It documents the `value-type.core/defvaluetype`
-macro and the `value-type.array/make-array` and `value-type.array/array-info`
-functions, not private vars,
+macro and the `value-type.array/make-array`, `value-type.array/into-array` and
+`value-type.array/array-info` functions, not private vars,
 implementation namespaces or the expansion helper `check-value-class`. Run `bb api-docs` to regenerate it, or
 `bb api-docs --check` to detect missing or stale output without writing.
 Change the sources, not the generated file.
@@ -104,15 +104,17 @@ Isolated source-JAR consumers passed in four configurations:
 
 - Valhalla EA3 with preview and exports: allocation, initial contents, native
   reads and writes, rejected null and wrong-type stores, and complete ordinary
-  and restricted array diagnostics.
+  and restricted array diagnostics. Sequence construction covers both arities,
+  ordered contents and explicit-seed empty input.
 - Java 8 without flags and EA3 without preview or exports: namespace loading,
   repeated unavailable-allocation checks and unavailable Object-array inspection.
 - EA3 with exports but without preview: Object-array inspection before value
   creation, while allocation remains unavailable.
 
-All three unsupported-allocation configurations check that null, non-array and
-primitive-array diagnostic inputs report `:invalid-array` before capability
-checks. All four configurations retain the macro checks and verify that the
+All three unsupported-allocation configurations, including export-only EA3,
+reject both sequence arities repeatedly before value creation and without input
+effects. They also check that null, non-array and primitive-array diagnostic
+inputs report `:invalid-array` before capability checks. All four configurations retain the macro checks and verify that the
 core and both array source resources resolve from the exact built JAR, without
 checkout sources. See the development
 [build-test guide](../../../doc/development/runtime.md#run-the-build-tests).

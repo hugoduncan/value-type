@@ -3,8 +3,9 @@
 Status: explicit-seed allocation is implemented in task 013; final acceptance
 passed. Diagnostics are implemented in task 014;
 [final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 remains open for review.
-Sequence construction remains proposed.
+passed within the recorded JVM scope. Task 014 is closed.
+Sequence construction is implemented in closed task 015;
+[final acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
 [Task 012](../munera/closed/012-verify-value-arrays/design.md) supplies the
 direct-JVM evidence, separate from public API tests.
 
@@ -69,9 +70,9 @@ changes and guarantees about copying through other APIs. Existing Clojure
 ## Contract and delivery status
 
 The provider is `value-type.array`; names are local to that namespace.
-`make-array` and `array-info` are implemented. The `into-array` forms below
-describe a pending API, not callable library functions. For current use, see
-the [allocation guide](../doc/usage.md#value-array-allocation) and
+`make-array`, both `into-array` arities and `array-info` are implemented.
+For current use, see the [allocation guide](../doc/usage.md#value-array-allocation),
+[sequence guide](../doc/usage.md#value-array-sequence-construction) and
 [diagnostic guide](../doc/usage.md#value-array-diagnostics).
 
 ```clojure
@@ -115,16 +116,17 @@ consumer checks, and documentation.
    actual layout properties and validation before native inspection are implemented.
    Direct comparisons, startup controls and packaged consumers pass.
    [Final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
-   passed, including combined regression and quality checks. The task remains
-   open for review.
-3. [015 Sequence construction](../munera/open/015-value-array-sequence-construction/design.md):
+   passed, including combined regression and quality checks. The task is closed.
+3. [015 Sequence construction](../munera/closed/015-value-array-sequence-construction/design.md):
    one input traversal, validation and copying with explicit or inferred seeds.
-   Design only.
+   Construction, input effects, native stores, startup controls and packaged
+   consumers pass. [Final acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md)
+   passed, including combined regression and quality checks. The task is closed.
 
 Stages 2 and 3 depend on stage 1. Stage 3 does not depend on stage 2.
 Task 012 supplies the completed direct-JVM evidence. Task 013 records public
-allocation checks; task 014 records diagnostic checks. Task 015 still needs
-an execution plan.
+allocation checks; task 014 records diagnostic checks. Task 015 records
+sequence checks in its [implementation notes](../munera/closed/015-value-array-sequence-construction/implementation.md).
 
 ## Design and evidence
 
@@ -141,7 +143,8 @@ an execution plan.
 - [Controlled fallback](defvaluetype-design/fallback.md): existing class
   policy, which this design does not change.
 
-Allocation and diagnostics are implemented; sequence construction remains proposed.
+Allocation, diagnostics and sequence construction are implemented.
+[Final sequence acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
 Task 012 verified zero-length
 allocation with valid seeds and diagnostic outcomes on the recorded EA3 build.
 Null diagnostic inputs crash that JVM; public validation must reject them

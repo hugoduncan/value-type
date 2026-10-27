@@ -1,6 +1,6 @@
 (ns value-type.array
   "Native null-restricted atomic value arrays (experimental Valhalla API)."
-  (:refer-clojure :exclude [make-array])
+  (:refer-clojure :exclude [make-array into-array])
   (:require [value-type.impl.array :as adapter]))
 
 (defn- checked-length
@@ -10,6 +10,28 @@
                     {:value-type/error :invalid-array-length
                      :component component :length length :reason :out-of-range-or-non-integer})))
   (int length))
+
+(defn- checked-next-length
+  [component length]
+  (checked-length component (inc' length)))
+
+(defn- validate-component
+  [methods component]
+  (when-not (and (instance? Class component)
+                 (not (.isPrimitive ^Class component))
+                 (adapter/value-class? methods component))
+    (throw (ex-info "Array component must be a non-primitive value class"
+                    {:value-type/error :invalid-array-component
+                     :component component :reason :not-reference-value-class}))))
+
+(defn- validate-initial
+  [component initial context]
+  (when-not (and (some? initial) (.isInstance ^Class component initial))
+    (throw (ex-info "Array initial value must be non-null and compatible with the component"
+                    (merge context
+                           {:value-type/error :invalid-array-element
+                            :component component
+                            :reason (if (nil? initial) :null-initial :incompatible-initial)})))))
 
 (defn make-array
   "Allocate a native null-restricted atomic array with every slot set to initial.
@@ -25,19 +47,68 @@
    element access does not provide safe publication or compound-update safety."
   [component length initial]
   (let [methods (adapter/require-allocation)]
-    (when-not (and (instance? Class component)
-                   (not (.isPrimitive ^Class component))
-                   (adapter/value-class? methods component))
-      (throw (ex-info "Array component must be a non-primitive value class"
-                      {:value-type/error :invalid-array-component
-                       :component component :reason :not-reference-value-class})))
+    (validate-component methods component)
     (let [size (checked-length component length)]
-      (when-not (and (some? initial) (.isInstance ^Class component initial))
-        (throw (ex-info "Array initial value must be non-null and compatible with the component"
-                        {:value-type/error :invalid-array-element
-                         :component component :length length
-                         :reason (if (nil? initial) :null-initial :incompatible-initial)})))
+      (validate-initial component initial {:length length})
       (adapter/allocate methods component size initial))))
+
+(defn- buffer-input
+  [component entries]
+  (loop [remaining entries
+         length 0
+         buffer (transient [])]
+    (if remaining
+      (let [next-length (checked-next-length component length)
+            element (first remaining)]
+        (when-not (and (some? element) (.isInstance ^Class component element))
+          (throw (ex-info "Array element must be non-null and compatible with the component"
+                          {:value-type/error :invalid-array-element
+                           :component component :index length
+                           :reason (if (nil? element) :null-element :incompatible-element)})))
+        (recur (next remaining) next-length (conj! buffer element)))
+      (persistent! buffer))))
+
+(defn- copy-buffer
+  [component initial buffer]
+  (let [size (count buffer)
+        result (make-array component size initial)]
+    (dotimes [index size]
+      (aset ^objects result index (nth buffer index)))
+    result))
+
+(defn into-array
+  "Build a native null-restricted atomic array from finite seqable input.
+
+   Requires the allocation capability and component accepted by make-array.
+   Checks these before input realization; the explicit seed is also checked
+   before realization, even for empty input. With two arguments, the first
+   element is the seed; empty or nil input throws :empty-array-input. With
+   three arguments, empty or nil input is accepted and initial adds no slot.
+   The seed must be compatible and non-null. Use this arity for empty input.
+
+   Traverses input once into O(n) temporary references, then allocates and copies
+   in order. Null or incompatible entries throw :invalid-array-element with a
+   zero-based :index. Length cannot exceed Integer/MAX_VALUE; memory can run out
+   sooner. Infinite input is unsupported. Input failures propagate unchanged;
+   effects are not undone and chunked producers can realize ahead. Returns only
+   a complete array. Non-seqable input uses ordinary Clojure input errors.
+   Failure does not promise full input consumption. The caller owns mutable
+   slots; flattening is not guaranteed."
+  ([component values]
+   (let [methods (adapter/require-allocation)]
+     (validate-component methods component)
+     (let [entries (seq values)]
+       (when-not entries
+         (throw (ex-info "Empty array input requires the explicit-seed arity: (into-array component initial values)"
+                         {:value-type/error :empty-array-input
+                          :component component})))
+       (let [buffer (buffer-input component entries)]
+         (copy-buffer component (nth buffer 0) buffer)))))
+  ([component initial values]
+   (let [methods (adapter/require-allocation)]
+     (validate-component methods component)
+     (validate-initial component initial {})
+     (copy-buffer component initial (buffer-input component (seq values))))))
 
 (defn array-info
   "Return actual properties of a reference array (experimental Valhalla API).

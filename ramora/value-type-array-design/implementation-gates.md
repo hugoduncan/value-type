@@ -4,8 +4,9 @@ No unanswered JVM question blocks the proposed API on the tested EA3 scope.
 Explicit-seed allocation is implemented in task 013, with final acceptance
 passed. Diagnostics are implemented in task 014;
 [final combined acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 remains open for review.
-Sequence construction remains pending. Preserve these boundaries:
+passed within the recorded JVM scope. Task 014 is closed.
+Sequence construction is implemented in task 015;
+[final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope. Preserve these boundaries:
 
 - Reject null before native diagnostics. Primitive and non-array rejection is
   public validation, not native behavior. Test the wrapper without crashing
@@ -20,8 +21,10 @@ Sequence construction remains pending. Preserve these boundaries:
   Task 013 tests cover allocation loading, errors, lengths, policy independence
   and packaged consumers. Task 014 adds input-first validation, independent
   inspection access checks, direct property comparisons, both layout controls
-  and JAR-only diagnostics. Sequence realization remains unimplemented. Direct
-  probes alone do not verify public library paths.
+  and JAR-only diagnostics. Task 015 adds both sequence arities, observable
+  input traversal and failure effects, checked length accounting, native stores,
+  startup controls and JAR-only sequence consumers. Its [final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md)
+  passed within the recorded JVM scope. Direct probes alone do not verify public library paths.
 
 Native layout selection and the null-crash mechanism remain unresolved. They
 are not needed to preserve the proposed contract. Explaining either mechanism

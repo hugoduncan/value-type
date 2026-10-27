@@ -7,7 +7,16 @@
   namespace loading on unsupported JVMs. Allocation requires the tested Valhalla
   `27-jep401ea3+1-1` build, `--enable-preview` and
   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. There is no ordinary-array
-  fallback or flattening guarantee. Sequence construction is not included.
+  fallback or flattening guarantee.
+
+- Add experimental [`value-type.array/into-array`](doc/usage.md#value-array-sequence-construction)
+  with inferred or explicit seeds and the same allocation requirements above.
+  Copy finite seqable input once in order using O(n) temporary references.
+  Empty or nil input needs a valid explicit seed; the seed adds no output slot.
+  Reject null or incompatible entries with indexed errors. Input failures remain
+  visible and do not undo input effects. Infinite input is unsupported; memory
+  can run out before the integer length limit. No speed or allocation gain is
+  promised for sequence construction.
 
 - Add experimental [`value-type.array/array-info`](doc/usage.md#value-array-diagnostics)
   for ordinary and restricted reference arrays on the tested Valhalla EA3 build.

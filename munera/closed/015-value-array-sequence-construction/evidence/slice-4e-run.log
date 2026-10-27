@@ -1,0 +1,37 @@
+Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+{:test 89, :pass 2963, :fail 0, :error 0, :duration-ms 1345.060875, :var-count 89, :fail-var-count 0}
+...............................Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+.Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+.........................................................Assertions: 2963 passed, 0 failed, 0 errored
+Tests: 89 passed, 0 failed, 0 errored
+library: structured and CLI exit zero; no failure EDN files
+Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+{:test 22, :pass 1350, :fail 0, :error 0, :duration-ms 303.027708, :var-count 22, :fail-var-count 0}
+.................Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+.Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+....Assertions: 1350 passed, 0 failed, 0 errored
+Tests: 22 passed, 0 failed, 0 errored
+enabled: structured and CLI exit zero; no failure EDN files
+Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+{:test 22, :pass 1350, :fail 0, :error 0, :duration-ms 304.934375, :var-count 22, :fail-var-count 0}
+.................Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+.Note: test-resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+....Assertions: 1350 passed, 0 failed, 0 errored
+Tests: 22 passed, 0 failed, 0 errored
+disabled: structured and CLI exit zero; no failure EDN files
+COMPLETE

@@ -146,17 +146,21 @@ The macro creates JEP 401 value objects
   diagnostics validate inputs before native inspection and use separate lazy
   inspection capability. Closure changes records only; runtime tests were
   not rerun. Earlier slice and review notes below are historical.
-- Task 015 (sequence construction) remains design-only and needs an execution
-  plan. It depends on completed task 013, not task 014.
-  Task 012 is also closed. Older slice and review notes below
-  are historical progress, not current task status. Closure changed records
-  only; no runtime tests were rerun.
+- Task 015 (sequence construction) is closed at the user's request after
+  implementation, final acceptance, review follow-ups and knowledge extraction.
+  All checklist items and seven acceptance criteria are complete within the
+  recorded JVM scope. Evidence and reproduction commands are linked from
+  `munera/closed/015-value-array-sequence-construction/acceptance.md`.
+  Focused sequence tests passed in both layout modes after the test review;
+  the full build suite passed after the consumer extraction. Full acceptance
+  was not repeated after these follow-ups. Closure changes records only;
+  runtime tests were not rerun. Earlier slice and review notes are historical.
 - Proposed array API design is in `ramora/value-type-array-design.md`.
   Closed task `munera/closed/012-verify-value-arrays/` verified direct JVM
   allocation, seeds, stores, diagnostics and startup controls on EA3.
   Null native diagnostic inputs crash that build; public validation must
-  reject them before invocation. Public allocation and diagnostics are implemented; sequence construction
-  remains unimplemented.
+  reject them before invocation. Public allocation, diagnostics and sequence construction are implemented;
+  final sequence acceptance has passed within the recorded JVM scope.
   Knowledge extraction is in `mementum/knowledge/value-array-jvm-boundaries.md`
   and `mementum/knowledge/validating-retained-jvm-evidence.md`.
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
@@ -613,3 +617,181 @@ public validation, independent lazy discovery, shared fixtures, semantic and
 startup tests, packaged consumers, API tooling and related documentation.
 Whitespace checks passed. Runtime tests were not repeated; production code and
 tests are unchanged. The task remains open for review.
+
+Task 015 slice 1a is complete. Shared allocator validators preserve existing
+behavior; checked-next-length rejects 2147483648 without narrowing. Allocation
+and arithmetic tests pass on EA3 (11 tests/449 assertions), with structured
+results in task evidence/slice-1a.edn and CLI exit zero/no failure files.
+Next: both public constructors and remaining slice 1 cases. Design unchanged.
+
+Task 015 slice 1b adds both sequence constructors and success coverage for all
+shared fixture shapes and finite input forms. Allocation/sequence checks pass
+(12 tests/629 assertions); structured evidence is in task evidence/slice-1b.edn.
+CLI, formatting and lint pass. API reference regenerated. Next: slice 1 empty
+and invalid-input tests, then input-effect and native-semantic checks.
+Design and adapter are unchanged.
+
+Task 015 slice 1c completes construction and validation coverage. Sequence and
+allocation tests pass on EA3: 16 tests/791 assertions, structured evidence in
+task evidence/slice-1c.edn, CLI exit zero and no failure files. Formatting and
+lint pass. No production or design change. Next: slice 2 observable traversal,
+input failures and native stores; startup, packaging and documentation remain.
+
+Task 015 slice 2a completes observable input-effect tests for both arities.
+Sequence/allocation checks pass on EA3 (20 tests/839 assertions); structured
+results are in task evidence/slice-2a.edn. CLI exit zero, no failure files;
+formatting and lint pass. Design and production code are unchanged. Next:
+selected-slot stores, state review and enabled/disabled layout controls.
+
+Task 015 slice 2b completes slice 2. Selected-slot stores and construction-state
+review pass; no production or design change. Sequence/allocation/layout checks
+pass with flattening explicitly enabled and disabled (22 tests/1350 assertions
+each), with structured evidence in the task directory. Both CLI exits are zero
+with no failure files; formatting and lint pass. Next: slice 3 startup matrix
+and packaged consumers. Full acceptance remains open.
+
+Task 015 slice 3a completes the sequence startup matrix. All 36 fresh-JVM
+combinations pass (1 test/1116 assertions), with structured evidence in task
+`evidence/slice-3a.edn`. CLI exit zero and no failure files; formatting and lint
+pass. No production or design change. Next: JAR-only sequence consumers and full
+build/fallback regressions; documentation and final acceptance remain open.
+
+Task 015 slice 3b completes supported JAR-only sequence consumer coverage.
+Focused structured and CLI checks pass (1 test/11 assertions); evidence is in
+`evidence/slice-3b.edn` in the task directory. Formatting and lint pass.
+No production or design change. Next: unsupported packaged sequence consumers,
+full build and fallback/loading suites; documentation and acceptance remain open.
+
+Task 015 slice 3c completes unsupported JAR-only sequence controls and the
+full build suite (9 tests/103 assertions). Both arities reject repeatedly
+without input effects on Java 8 and unsupported EA3, including export-only.
+Structured evidence is in task `evidence/slice-3c.edn`; CLI exit zero, no
+failure files, formatting and lint pass. Design and production are unchanged.
+Next: full fallback/loading regressions, then documentation and acceptance.
+
+Task 015 slice 3d completes slice 3. Full fallback/loading structured and CLI
+runs pass on Java 8 and EA3 preview off/on: 20 tests each, with 3377/3377/3352
+assertions respectively. All CLI exits are zero with no failure files; evidence
+and commands are in task `evidence/slice-3d-*`. No production or design change.
+Next: slice 4 documentation, API contract tests and final acceptance.
+
+Task 015 slice 4a completes usage/docstring examples and generated API contract
+checks. Examples pass on EA3; Quickdoc structured and CLI runs pass (11 tests,
+217 assertions), with evidence in the task directory. Formatting, lint, Vale
+and API freshness pass. No runtime or design change. Next: runtime guidance,
+release/architecture status and final acceptance.
+
+Task 015 slice 4b completes runtime sequence commands and packaged-consumer
+coverage. Namespace/flag checks, Vale, API freshness, runtime links/anchors and
+whitespace checks pass. No runtime tests were repeated; production code, tests
+and design are unchanged. Next: architecture/release status and final acceptance.
+
+Task 015 slice 4c completes architecture and release status. Maintained pages
+mark task 014 closed and distinguish delivered sequence construction from
+pending final acceptance. Vale, API freshness, changed-page links/anchors and
+whitespace checks pass. No runtime tests were repeated; design is unchanged.
+Next: final quality, runtime and build verification, then acceptance.md.
+
+Task 015 slice 4d completes final quality verification. Formatting, lint, Vale,
+API freshness and Quickdoc pass (11 tests/217 assertions); structured evidence
+is in task evidence/slice-4d-quickdoc.edn. CLI exit zero, no failure files;
+local Markdown link paths and whitespace checks pass. No code or design change.
+Final runtime/layout, fallback/loading, build checks and acceptance.md remain.
+
+Task 015 slice 4e completes final library/layout verification. Full library:
+89 tests/2963 assertions; enabled and disabled sequence/allocation/layout:
+22 tests/1350 assertions each. Structured and CLI runs pass; all CLI exits zero
+with no failure files. Evidence and commands: task `evidence/slice-4e-*`.
+No code or design change. Final fallback/loading, build and acceptance remain.
+
+Task 015 slice 4f completes final fallback/loading verification on Java 8 and
+EA3 preview off/on: 20 tests each, 3377/3377/3352 assertions. Structured and
+CLI runs pass; all exits zero, no failure files. Evidence and commands are in
+task `evidence/slice-4f-*`. No code or design change. Final build verification
+and acceptance.md remain next.
+
+Task 015 slice 4g completes final full build verification: 9 tests/103 assertions.
+Structured and CLI runs pass; CLI exit zero, no failure files. Evidence and
+commands are in task `evidence/slice-4g-*`. No code or design change. Only
+acceptance.md and final architecture acceptance status remain unchecked.
+
+Task 015 implementation review found no new actionable issues. Reviewed both
+constructors, shared validation, adapter boundaries, input effects, native stores,
+startup controls, packaged consumers and related documentation against the design.
+Sequence/allocation/layout tests passed (22 tests/1350 assertions), and the
+36-child sequence matrix passed (1 test/1116 assertions). Both CLI runs exited
+zero with no Scry failure files. Full acceptance, disabled layout, packaging
+and quality suites were not repeated. Production code and tests are unchanged;
+the task remains open for review.
+
+Task 015 test review added one open follow-up; see its steps.md.
+Sequence/allocation/layout checks passed with default and disabled flattening
+(22 tests/1350 assertions each). The 36-child sequence matrix passed
+(1 test/1116 assertions). All three CLI runs exited zero with no Scry failure
+files. Packaging and API tests were reviewed statically; full acceptance was
+not repeated. Production code and tests are unchanged.
+
+Task 015 test-review follow-up is complete. The failure-effects assertion now
+checks the valid prefix and rejected entry without excluding later effects.
+Indexed-error and no-partial-result checks remain. Focused sequence tests pass
+with flattening enabled and disabled (11 tests/903 assertions each), with zero
+CLI exits and no Scry failure files. Formatting, lint and whitespace checks pass.
+No review item remains unchecked. Production code and design are unchanged;
+full acceptance was not repeated. The task remains open for review.
+
+Task 015 test re-review found no new actionable issues. The completed
+failure-consumption follow-up remains covered; no checklist items were added.
+Reviewed sequence contracts, arithmetic, input effects, native stores, startup
+controls, packaged consumers and API tests against source and documentation.
+Focused sequence tests passed with flattening enabled and disabled: 11 tests,
+903 assertions each, zero CLI exits and no Scry failure files. Startup,
+packaging and full acceptance suites were not repeated. Production code and
+tests are unchanged; the task remains open for review.
+
+Task 015 documentation review added three open follow-ups; see its steps.md.
+Static review compared README, usage/API and runtime guides, changelog and
+array/packaging architecture with source, sequence tests, startup controls and
+packaged consumers. Runtime tests were not repeated. Production code and tests
+are unchanged; the task remains open for review.
+
+Task 015 README documentation follow-up is complete. Sequence overview and
+usage-guide anchor are checked; project Vale passes. Two artifact documentation
+follow-ups remain. No runtime tests were repeated.
+
+Task 015 API inventory follow-up is complete. Artifact documentation lists all
+four public API entries; API freshness passes. Consumer coverage documentation
+remains. No runtime tests were repeated.
+
+Task 015 documentation review follow-ups are complete. Artifact coverage now
+records both sequence arities, ordered contents, explicit empty input and
+repeated rejection without input effects in all three unsupported JVM controls.
+Description matches build tests and runtime guidance; link and whitespace checks
+pass. No review items remain unchecked. Code, tests and design are unchanged;
+runtime tests were not repeated. The task remains open for review.
+
+Task 015 documentation re-review found no new actionable issues. All three
+prior documentation follow-ups are complete; no checklist items were added.
+Static review compared README, usage/API and runtime guides, changelog and
+array/packaging architecture with source, sequence tests, startup controls and
+packaged consumers. API freshness and whitespace checks passed. Runtime tests
+were not repeated; production code and tests are unchanged.
+
+Task 015 code-shape review added one open follow-up; see its steps.md.
+Static review covered sequence construction, validation, input effects, shared
+fixtures, JVM controls, packaged consumers, API tooling and related guides.
+Runtime tests were not repeated. Production code and tests are unchanged.
+
+Task 015 code-shape review follow-up is complete. The isolated consumer now
+runs a copied test-resource script with local check functions. JAR-only classpath,
+all four JVM configurations, unsupported-check order and exact assertions remain
+unchanged. Full build CLI passed (9 tests/103 assertions), exit zero and no Scry
+failure files. Formatting, project/resource lint and whitespace checks passed.
+No review items remain unchecked. Production code and design are unchanged;
+full acceptance was not repeated. The task remains open for review.
+
+Task 015 code-shape re-review found no new actionable issues. The extracted
+consumer keeps its JAR-only classpath, check order and exact outcomes. Static
+review covered construction, validation, shared fixtures, input effects, startup
+controls, packaged consumers, API tooling and related guides. No checklist items
+were added. Whitespace checks passed; runtime tests were not repeated.
+Production code and tests are unchanged; the task remains open for review.

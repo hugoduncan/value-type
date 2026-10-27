@@ -4,8 +4,9 @@ Status: direct-JVM verification complete for the recorded EA3 matrix; public
 allocation tests pass in task 013, with final acceptance passed. Public
 diagnostics are implemented in task 014;
 [final acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed within the recorded JVM scope. Task 014 remains open for review.
-Sequence construction remains unimplemented.
+passed within the recorded JVM scope. Task 014 is closed.
+Sequence construction is implemented in task 015;
+[final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
 See the [design](../value-type-array-design.md) and [decisions](decisions.md).
 
 ## Observed qualities
@@ -25,7 +26,7 @@ did not flatten. Reference payloads, random access, concurrency and general
 application speed are not established by this evidence.
 
 The probe constructs arrays directly. Its allocation numbers do not describe
-the proposed sequence constructor, which adds temporary storage.
+the sequence constructor, which adds temporary storage.
 
 ## Semantic observations
 
@@ -57,8 +58,8 @@ record commands and structured Scry summaries for the implemented allocator:
 These checks use Temurin `1.8.0_492-b09` and Valhalla `27-jep401ea3+1-1`,
 Clojure 1.12.6, macOS aarch64. They do not establish broader JDK support.
 [Final combined regression and quality acceptance](../../munera/closed/013-value-array-allocation/acceptance.md)
-passed. The plan below covers the full design; sequence checks remain future
-work. Diagnostic results are recorded separately below.
+passed. The plan below covers the full design. Diagnostic and sequence
+results are recorded separately below.
 
 ## Public diagnostic verification
 
@@ -80,7 +81,31 @@ exit requirements. No native null diagnostic is called. Ordinary reference
 arrays work with exports and without preview on EA3. Missing support or access
 produces an error, not false properties.
 [Final combined regression and quality acceptance](../../munera/closed/014-value-array-diagnostics/acceptance.md)
-passed. The task remains open for review.
+passed. The task is closed.
+
+## Public sequence verification
+
+[Task 015 implementation notes](../../munera/closed/015-value-array-sequence-construction/implementation.md)
+record retained structured results on the same JVMs and host:
+
+- Both arities preserve component, length, order and contents for all shared
+  fixture shapes. Empty/nil, seed, component and indexed-element checks pass.
+  A focused arithmetic check rejects length 2147483648 without large allocation.
+- Non-caching input verifies one traversal. Realization exceptions retain their
+  identity; early validation consumes no input. Later failure can leave input
+  effects but returns no partial array.
+- Sequence/allocation/layout checks pass with flattening enabled and disabled:
+  22 tests, 1350 assertions per layout. Sequence tests need no diagnostics or
+  flat-layout result. Selected-slot stores preserve unaffected contents.
+- Six startup configurations, three policies and both require orders pass:
+  36 child JVMs, 1116 assertions. Unsupported calls leave input untouched.
+- JAR-only consumers exercise both arities and unsupported calls. The full build
+  suite passes 9 tests, 103 assertions. Full fallback/loading suites pass on
+  Java 8 and EA3 preview off/on: 20 tests per run.
+
+[Final acceptance](../../munera/closed/015-value-array-sequence-construction/acceptance.md)
+records passing combined library, fallback, packaging and quality verification. Temporary storage costs
+O(n) references; its allocation amount and speed have not been measured.
 
 ## Fitness conditions
 
@@ -132,7 +157,7 @@ Do not require a speed ratio as API acceptance.
 |---|---|---|---|
 | A1 | observed | Internal restricted allocation permits flat one-long storage on the recorded EA setup. | Probe and retained reports; high within that scope. |
 | A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Task 012 evidence and task 013 selected-slot public API tests. |
-| A3 | observed | D2 preserves null restriction for explicit-seed allocation. | Task 013 policy matrix; sequence construction remains pending. |
+| A3 | observed | D2 preserves null restriction for explicit-seed allocation. | Task 013 allocation and task 015 sequence policy matrices. |
 | A4 | observed | D3 isolates optional JDK dependencies from namespace loading. | Task 013 Java 8 and preview-disabled EA3 loading controls. |
 | A5 | observed | Direct explicit-seed allocation supports length zero for tested value classes. | Task 012 allocation evidence; seed validation still applies. |
 | A6 | inferred | Sequence construction can allocate more than the direct probe. | D4 temporary storage; amount unmeasured. |

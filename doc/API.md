@@ -11,6 +11,7 @@ Regenerate from the repository root with `bb api-docs`. Check without writing wi
 # Table of contents
 -  [`value-type.array`](#value-type.array)  - Native null-restricted atomic value arrays (experimental Valhalla API).
     -  [`array-info`](#value-type.array/array-info) - Return actual properties of a reference array (experimental Valhalla API).
+    -  [`into-array`](#value-type.array/into-array) - Build a native null-restricted atomic array from finite seqable input.
     -  [`make-array`](#value-type.array/make-array) - Allocate a native null-restricted atomic array with every slot set to initial.
 -  [`value-type.core`](#value-type.core)  - Define JEP 401 value classes with [<code>defvaluetype</code>](#value-type.core/defvaluetype), a <code>deftype</code> compatible macro.
     -  [`defvaluetype`](#value-type.core/defvaluetype) - As <code>deftype</code> (see its docstring for syntax, options, specs, the <code>-&gt;name</code> factory and the import).
@@ -46,7 +47,33 @@ Return actual properties of a reference array (experimental Valhalla API).
    Native failures propagate. Inspection does not change or retain the array.
    Flattening is not guaranteed. Atomic access does not provide safe publication,
    compound-update safety or caller synchronization.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L42-L68">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L113-L139">Source</a></sub></p>
+
+## <a name="value-type.array/into-array">`into-array`</a>
+``` clojure
+(into-array component values)
+(into-array component initial values)
+```
+Function.
+
+Build a native null-restricted atomic array from finite seqable input.
+
+   Requires the allocation capability and component accepted by make-array.
+   Checks these before input realization; the explicit seed is also checked
+   before realization, even for empty input. With two arguments, the first
+   element is the seed; empty or nil input throws :empty-array-input. With
+   three arguments, empty or nil input is accepted and initial adds no slot.
+   The seed must be compatible and non-null. Use this arity for empty input.
+
+   Traverses input once into O(n) temporary references, then allocates and copies
+   in order. Null or incompatible entries throw :invalid-array-element with a
+   zero-based :index. Length cannot exceed Integer/MAX_VALUE; memory can run out
+   sooner. Infinite input is unsupported. Input failures propagate unchanged;
+   effects are not undone and chunked producers can realize ahead. Returns only
+   a complete array. Non-seqable input uses ordinary Clojure input errors.
+   Failure does not promise full input consumption. The caller owns mutable
+   slots; flattening is not guaranteed.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L79-L111">Source</a></sub></p>
 
 ## <a name="value-type.array/make-array">`make-array`</a>
 ``` clojure
@@ -65,7 +92,7 @@ Allocate a native null-restricted atomic array with every slot set to initial.
 
    The caller owns the mutable slots. Flattening is not guaranteed. Atomic
    element access does not provide safe publication or compound-update safety.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L14-L40">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L36-L53">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>

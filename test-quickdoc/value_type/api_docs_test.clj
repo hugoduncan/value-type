@@ -12,7 +12,8 @@
   ;; Check the rendered contract, not a snapshot of the whole document.
   (let [markdown (docs/generated-markdown)]
     (testing "only the public macro and array functions are documented"
-      (is (= ["value-type.array/array-info" "value-type.array/make-array"
+      (is (= ["value-type.array/array-info" "value-type.array/into-array"
+              "value-type.array/make-array"
               "value-type.core/defvaluetype"]
              (mapv second (re-seq #"## <a name=\"([^\"]+)\"" markdown))))
       (doseq [internal ["check-value-class" "is-value-method" "mutable-fields"
@@ -35,6 +36,18 @@
                     "caller owns the mutable slots" "Flattening is not guaranteed"
                     "safe publication or compound-update safety"
                     "https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L"]]
+        (is (str/includes? markdown text) text)))
+    (testing "sequence arguments, input effects and storage limits remain explicit"
+      (doseq [text ["(into-array component values)"
+                    "(into-array component initial values)"
+                    "finite seqable input" "before input realization"
+                    ":empty-array-input" "initial adds no slot"
+                    "compatible and non-null" "O(n) temporary references"
+                    ":invalid-array-element" "zero-based :index"
+                    "Integer/MAX_VALUE" "Infinite input is unsupported"
+                    "Input failures propagate unchanged" "effects are not undone"
+                    "chunked producers can realize ahead" "a complete array"
+                    "ordinary Clojure input errors" "full input consumption"]]
         (is (str/includes? markdown text) text)))
     (testing "inspection domain, errors and limits remain explicit"
       (doseq [text ["(array-info array)" "ordinary and restricted reference arrays"

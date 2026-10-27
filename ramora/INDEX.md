@@ -12,8 +12,9 @@ Read this file first. Read the other files only when you need them.
   null-restricted atomic allocation is implemented; final acceptance passed.
   Diagnostics are implemented;
   [final acceptance](../munera/closed/014-value-array-diagnostics/acceptance.md)
-  passed within the recorded JVM scope. Task 014 remains open for review.
-  Sequence construction remains proposed.
+  passed within the recorded JVM scope. Task 014 is closed.
+  Sequence construction is implemented in closed task 015;
+[final acceptance](../munera/closed/015-value-array-sequence-construction/acceptance.md) passed within the recorded JVM scope.
   [Semantic report](value-type-array-design/semantic-verification.md),
   [runnable instructions](../spike/value-array-semantics/README.md) and
   [retained evidence](value-type-array-design/evidence/matrix-selected-slots/) cover EA3.

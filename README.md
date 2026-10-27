@@ -95,6 +95,11 @@ arrays with an explicit initial value, see
 an internal-package export in addition to preview; it has no ordinary-array
 fallback.
 
+`value-type.array/into-array` constructs these arrays from finite sequence input,
+with an inferred or explicit seed. It has the same allocation requirements.
+See [value-array sequence construction](doc/usage.md#value-array-sequence-construction)
+for examples and limits.
+
 `value-type.array/array-info` inspects ordinary and restricted reference arrays.
 It needs `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Ordinary-array
 inspection does not need preview on the tested EA3 build. See
