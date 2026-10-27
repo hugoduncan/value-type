@@ -14,15 +14,15 @@
 - `build.clj`: source-only JAR assembly, target cleanup and credential-checked deployment. See
   [Library packaging](#library-packaging).
 - `LICENSE`: full EPL-2.0 text, also included at the JAR root.
-- `test-build/build_test.clj`: build contract, real CLI, input
+- `test/build/build_test.clj`: build contract, real CLI, input
   preservation and isolated JAR consumer checks. See the development guide
   [build-test command](../../../doc/development/runtime.md#run-the-build-tests).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,
   `src/value_type/impl/transform.clj`.
 - `src/value_type/impl/capability.clj`, `src/value_type/impl/runtime.clj`:
   baseline-safe capability and policy implementation.
-- `test/value_type/...`: unit, integration and AOT tests (D11).
-- `test-fallback/value_type/...`: explicit fresh-JVM policy, transfer and AOT
+- `test/runtime/value_type/...`: unit, integration and AOT tests (D11).
+- `test/compatibility/value_type/...`: explicit fresh-JVM policy, transfer and AOT
   tests. Alias `:fallback-test` adds no preview flags or value-only tests.
 - `bench/value_type/bench.clj`: the method-call benchmark
   (`value-type.bench`, D11).
@@ -33,13 +33,13 @@
 
 Development tools do not change runtime dependencies, the library JDK
 minimum or source-only packaging. `mise.toml` pins the tools and a Java 21
-JVM without preview. The `deps.edn` aliases `:quickdoc` and `:quickdoc-test`
+JVM without preview. The `deps.edn` aliases `:quickdoc` and `:tooling-test`
 add Quickdoc and focused Scry tests only for development. See the development guide
 [tool setup](../../../doc/development/quality-checks.md#install-development-tools).
 
 `bb.edn` exposes formatting, dependency-config import, clj-kondo lint,
 Vale and API generation tasks. Their implementation is in `bb/value_type/`;
-focused tests are in `test-quickdoc/`. See the development guide
+focused tests are in `test/tooling/`. See the development guide
 [commands and check scopes](../../../doc/development/quality-checks.md#quality-checks), including
 excluded paths and warning/error handling.
 

@@ -95,7 +95,7 @@ Require exact expected outcomes and complete result maps. Unknown matrix
 configurations must fail clearly, not silently skip checks.
 
 Use the baseline-safe `value-type.jvm-config` and `value-type.jvm-runner`
-support under `test-fallback`. Supply the executable, options, policy and
+support under `test/compatibility`. Supply the executable, options, policy and
 classpath explicitly. The value-only helper eagerly loads optional code
 and adds preview; it cannot verify the unavailable path unchanged.
 

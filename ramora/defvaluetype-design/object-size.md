@@ -131,5 +131,5 @@ attached native agent:
 
 ```sh
 JAVA_CMD=$HOME/.local/jdks/jdk-27.jdk/Contents/Home/bin/java \
-  clojure -M:test:object-size -m scry.cli --namespace value-type.object-size-test
+  clojure -M:test:object-size -m scry.cli --dir test/runtime --namespace value-type.object-size-test
 ```

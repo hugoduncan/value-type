@@ -70,8 +70,8 @@ Compare index trees and working-file bytes, not only command exits. For CI
 checks, compare against the prepared fixture after each injected defect,
 including failure paths. Keep probe logs outside the tracked fixture.
 
-Reusable checks are `test-tooling/hooks.sh`, `test-tooling/ci-failures.sh`
-and the real-process tests under `test-quickdoc/`.
+Reusable checks are `test/tooling/hooks.sh`, `test/tooling/ci-failures.sh`
+and the real-process tests under `test/tooling/`.
 
 ## Keep tooling setup separate from runtime evidence
 

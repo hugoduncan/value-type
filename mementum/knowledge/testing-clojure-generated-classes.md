@@ -10,10 +10,10 @@ depends-on: []
 # Test classes that Clojure generates
 
 Source: task `002-value-class-transform`
-(`test/value_type/impl/transform_test.clj`: `compile-fixture`,
+(`test/runtime/value_type/impl/transform_test.clj`: `compile-fixture`,
 `round-trip-loader`) and task `003-capture-loader`
-(`test/value_type/impl/loader_test.clj`: compile paths, AOT) and task
-`004-defvaluetype-macro` (`test/value_type/core_test.clj`, errors and
+(`test/runtime/value_type/impl/loader_test.clj`: compile paths, AOT) and task
+`004-defvaluetype-macro` (`test/runtime/value_type/core_test.clj`, errors and
 AOT in a new JVM) and task `005-deftype-compat-tests`
 (`value-type.test-support/run-in-new-jvm`, the copied Clojure corpus).
 Verified on Clojure 1.12.6, JDK 25 and JDK

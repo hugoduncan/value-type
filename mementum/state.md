@@ -22,7 +22,7 @@ The macro creates JEP 401 value objects
 - The project scaffold is done (`munera/closed/001-scaffold-project`): `deps.edn`
   (aliases `:test`, `:nrepl`), environment test `value-type.environment-test`, README
   "Development" section. Select the JDK with `JAVA_CMD`.
-- Tests: `clojure -M:test -m scry.cli`. REPL: `clojure -M:test:nrepl`.
+- Tests: `clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli --dir test/runtime`. REPL: `clojure -M:test:nrepl`.
 - The transform is done (`munera/closed/002-value-class-transform`):
   `value-type.impl.transform/->value-class` (bytes → bytes, with the
   D6 constructor check), tests in `value-type.impl.transform-test`.
@@ -131,6 +131,21 @@ The macro creates JEP 401 value objects
   unverified; no project push, dispatch, secret setup or publication occurred.
 
 ## Next
+
+- Test layout (2026-10-27): all maintained tests now share `test/`, with
+  separate `runtime`, `compatibility`, `build`, `release`, `tooling` and
+  `resources` directories. Classpath roots and JVM settings stay separate.
+  The tooling alias is `:tooling-test` (replaces `:quickdoc-test`). Runtime
+  Scry commands must use `--dir test/runtime`; default discovery of `test/`
+  would mix suites. See `doc/development/runtime.md#test-layout`.
+  Closed-task records and retained evidence keep their historical paths.
+  Verification passed: runtime 89 tests/2963 assertions; fallback Java 8
+  and EA3 preview off 20/3377 each, preview on 20/3352; build 9/103;
+  tooling 11/217; release 12/123. All CLI exits were zero with no Scry
+  failure files. Formatting, lint, Vale, API freshness, actionlint, classpath
+  separation and maintained-page links passed. Hook and CI failure probes
+  passed in a disposable snapshot of the changed tree. Static review found
+  no issues. Hosted CI and benchmark measurements were not run.
 
 - Task 013 (value-array allocation) is closed at the user's request after
   implementation, final acceptance, review follow-ups and knowledge extraction.

@@ -12,7 +12,7 @@ depends-on: []
 Source: task `015-value-array-sequence-construction`, its design, plan,
 steps and implementation notes. Construction: `b4e0ba0`; observable-input
 tests: `2587ce4`; failure-consumption review fix: `d137ba8`.
-Reusable examples: `test/value_type/array_sequence_test.clj`.
+Reusable examples: `test/runtime/value_type/array_sequence_test.clj`.
 
 ## Traversal is not realization
 

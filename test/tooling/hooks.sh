@@ -33,52 +33,52 @@ run_hook --all-files || { cat "$tmp/hook.log"; exit 1; }
 git diff --exit-code
 
 # Formatter edits block the commit without changing the staged version.
-printf '(ns hook-probe)\n(defn probe []\n(+ 1 2))\n' > test/hook_probe.clj
-git add test/hook_probe.clj
+printf '(ns hook-probe)\n(defn probe []\n(+ 1 2))\n' > test/runtime/hook_probe.clj
+git add test/runtime/hook_probe.clj
 before=$(index_tree)
 expect_failure cljfmt-fix
 test "$before" = "$(index_tree)"
-git diff --quiet -- test/hook_probe.clj && exit 1
-mise exec -- bb clj-fmt check test/hook_probe.clj
+git diff --quiet -- test/runtime/hook_probe.clj && exit 1
+mise exec -- bb clj-fmt check test/runtime/hook_probe.clj
 
 # A clean staged file and a separate unstaged hunk survive stash/restore.
-git add test/hook_probe.clj
-printf '\n;; unstaged note\n' >> test/hook_probe.clj
+git add test/runtime/hook_probe.clj
+printf '\n;; unstaged note\n' >> test/runtime/hook_probe.clj
 printf '\nUnrelated local edit.\n' >> README.md
-cp test/hook_probe.clj "$tmp/probe.expected"
+cp test/runtime/hook_probe.clj "$tmp/probe.expected"
 cp README.md "$tmp/readme.expected"
 before=$(index_tree)
 run_hook cljfmt-fix || { cat "$tmp/hook.log"; exit 1; }
 test "$before" = "$(index_tree)"
-cmp test/hook_probe.clj "$tmp/probe.expected"
+cmp test/runtime/hook_probe.clj "$tmp/probe.expected"
 cmp README.md "$tmp/readme.expected"
 
 # Conflicting unstaged edits must also survive a formatter failure.
-printf '(ns hook-probe)\n(defn probe []\n(+ 1 2))\n' > test/hook_probe.clj
-git add test/hook_probe.clj
-printf '(ns hook-probe)\n(defn probe []\n(+ 1 3))\n' > test/hook_probe.clj
-cp test/hook_probe.clj "$tmp/probe.expected"
+printf '(ns hook-probe)\n(defn probe []\n(+ 1 2))\n' > test/runtime/hook_probe.clj
+git add test/runtime/hook_probe.clj
+printf '(ns hook-probe)\n(defn probe []\n(+ 1 3))\n' > test/runtime/hook_probe.clj
+cp test/runtime/hook_probe.clj "$tmp/probe.expected"
 before=$(index_tree)
 expect_failure cljfmt-fix
 test "$before" = "$(index_tree)"
-cmp test/hook_probe.clj "$tmp/probe.expected"
+cmp test/runtime/hook_probe.clj "$tmp/probe.expected"
 cmp README.md "$tmp/readme.expected"
 
 # Real lint errors fail without modifying staged or working content.
-printf '(ns hook-probe)\n(missing-hook-symbol)\n' > test/hook_probe.clj
-git add test/hook_probe.clj
-cp test/hook_probe.clj "$tmp/probe.expected"
+printf '(ns hook-probe)\n(missing-hook-symbol)\n' > test/runtime/hook_probe.clj
+git add test/runtime/hook_probe.clj
+cp test/runtime/hook_probe.clj "$tmp/probe.expected"
 before=$(index_tree)
 expect_failure clj-kondo-lint
 grep -q 'missing-hook-symbol' "$tmp/hook.log"
 test "$before" = "$(index_tree)"
-cmp test/hook_probe.clj "$tmp/probe.expected"
+cmp test/runtime/hook_probe.clj "$tmp/probe.expected"
 cmp README.md "$tmp/readme.expected"
 
-# Both release trees are maintained; repairs and lint never stage edits.
-rm test/hook_probe.clj
-git add -u test/hook_probe.clj
-for dir in dev/release test-release; do
+# All test roots and release sources are maintained; edits are never staged.
+rm test/runtime/hook_probe.clj
+git add -u test/runtime/hook_probe.clj
+for dir in dev/release test/runtime test/compatibility test/build test/release test/tooling test/resources; do
   path="$dir/release_hook_probe.clj"
   printf '(ns release-hook-probe)\n(defn probe []\n(+ 1 2))\n' > "$path"
   git add "$path"
@@ -97,8 +97,8 @@ for dir in dev/release test-release; do
   rm "$path"
   git add -u "$path"
 done
-printf '(ns hook-probe)\n(missing-hook-symbol)\n' > test/hook_probe.clj
-git add test/hook_probe.clj
+printf '(ns hook-probe)\n(missing-hook-symbol)\n' > test/runtime/hook_probe.clj
+git add test/runtime/hook_probe.clj
 
 # Historical and generated paths do not trigger either hook.
 for path in spike/excluded.clj target/excluded.clj .clj-kondo/imports/excluded.clj; do
@@ -109,18 +109,18 @@ done
 expect_failure clj-kondo-lint --files .clj-kondo/config.edn
 grep -q 'missing-hook-symbol' "$tmp/hook.log"
 # A warning alone must block the lint hook without staging or rewriting files.
-printf '(ns hook-probe)\n(defn probe [unused] 1)\n' > test/hook_probe.clj
-git add test/hook_probe.clj
-cp test/hook_probe.clj "$tmp/probe.expected"
+printf '(ns hook-probe)\n(defn probe [unused] 1)\n' > test/runtime/hook_probe.clj
+git add test/runtime/hook_probe.clj
+cp test/runtime/hook_probe.clj "$tmp/probe.expected"
 before=$(index_tree)
 mise exec -- clj-kondo --repro --config-dir .clj-kondo --fail-level error \
-  --config '{:output {:format :edn}}' --lint test/hook_probe.clj > "$tmp/lint.edn"
+  --config '{:output {:format :edn}}' --lint test/runtime/hook_probe.clj > "$tmp/lint.edn"
 mise exec -- bb -e '(let [result (read-string (slurp "lint.edn"))]
   (assert (zero? (get-in result [:summary :error])))
   (assert (pos? (get-in result [:summary :warning]))))'
 expect_failure clj-kondo-lint
 grep -q 'warning:.*unused' "$tmp/hook.log"
 test "$before" = "$(index_tree)"
-cmp test/hook_probe.clj "$tmp/probe.expected"
+cmp test/runtime/hook_probe.clj "$tmp/probe.expected"
 cmp README.md "$tmp/readme.expected"
 echo 'Hook integration checks passed.'

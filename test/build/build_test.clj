@@ -126,9 +126,9 @@
       (when-not (zero? (:exit result))
         (throw (ex-info "Cannot prepare Git fixture" result)))))
   (doseq [path ["target/stale.txt" "target/classes/stale.class"
-                "test/development.clj" "bench/development.clj"
-                "test-resources/value_type/ArrayAccess.java"
-                "dev/release/excluded.clj" "test-release/excluded_test.clj"]]
+                "test/runtime/development.clj" "bench/development.clj"
+                "test/resources/value-array/ArrayAccess.java"
+                "dev/release/excluded.clj" "test/release/excluded_test.clj"]]
     (let [file (io/file directory path)]
       (io/make-parents file)
       (spit file "must not be packaged"))))
@@ -296,7 +296,7 @@
                 runtime-paths (:classpath-roots basis)
                 classpath (into [(.getCanonicalPath artifact)] runtime-paths)
                 consumer (io/file directory "isolated-consumer.clj")
-                _ (io/copy (io/file "test-resources/build/isolated-consumer.clj")
+                _ (io/copy (io/file "test/resources/build/isolated-consumer.clj")
                            consumer)]
             (testing "the consumer classpath contains only artifact and runtime JARs"
               (is (seq runtime-paths))

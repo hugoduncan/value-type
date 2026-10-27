@@ -26,7 +26,7 @@ fi
 bash bench/object-size.sh
 [[ -s target/object-size/results.edn && -s target/object-size/raw.edn ]]
 OBJECT_SIZE_EVIDENCE_DIR="$work/target/object-size" \
-  clojure -M:test:object-size -m scry.cli \
+  clojure -M:test:object-size -m scry.cli --dir test/runtime \
   --namespace value-type.object-size-evidence-test
 [[ -z $(find .scry-results -name '*.edn' -print) ]]
 [[ $(cat target/object-size/keep.txt) == keep ]]

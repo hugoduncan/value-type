@@ -39,11 +39,11 @@ mise exec -- bb clj-fmt:check
 mise exec -- bb clj-kondo:lint
 mise exec -- bb vale
 mise exec -- bb api-docs --check
-mise exec -- clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+mise exec -- clojure -Srepro -M:quickdoc:tooling-test -m scry.cli --dir test/tooling
 git diff --exit-code HEAD --
 
 # Required directories and files must not silently disappear from project scope.
-for path in test-build build.clj dev/release test-release; do
+for path in test/runtime test/compatibility test/build test/release test/tooling test/resources build.clj dev/release; do
   rm -rf "$path"
   for task in clj-fmt:check clj-fmt:fix clj-kondo:lint; do
     expect_failure "missing-scope-$path-$task" bb "$task"
@@ -55,21 +55,21 @@ for path in test-build build.clj dev/release test-release; do
   reset_probe
 done
 
-printf '(ns ci-probe)\n(defn probe []\n(+ 1 2))\n' > test/ci_probe.clj
+printf '(ns ci-probe)\n(defn probe []\n(+ 1 2))\n' > test/runtime/ci_probe.clj
 expect_failure formatting bb clj-fmt:check
-mise exec -- bb clj-fmt fix test/ci_probe.clj
-mise exec -- bb clj-fmt check test/ci_probe.clj
+mise exec -- bb clj-fmt fix test/runtime/ci_probe.clj
+mise exec -- bb clj-fmt check test/runtime/ci_probe.clj
 reset_probe
 
-printf '(ns ci-probe)\n(missing-ci-symbol)\n' > test/ci_probe.clj
+printf '(ns ci-probe)\n(missing-ci-symbol)\n' > test/runtime/ci_probe.clj
 expect_failure lint bb clj-kondo:lint
 grep -q missing-ci-symbol "$tmp/probe.log"
 reset_probe
 
 # Valid code with only an unused-binding warning must still block CI.
-printf '(ns ci-probe)\n(defn probe [unused] 1)\n' > test/ci_probe.clj
+printf '(ns ci-probe)\n(defn probe [unused] 1)\n' > test/runtime/ci_probe.clj
 mise exec -- clj-kondo --repro --config-dir .clj-kondo --fail-level error \
-  --config '{:output {:format :edn}}' --lint test/ci_probe.clj > "$tmp/lint.edn"
+  --config '{:output {:format :edn}}' --lint test/runtime/ci_probe.clj > "$tmp/lint.edn"
 mise exec -- bb -e '(let [result (read-string (slurp "lint.edn"))]
   (assert (zero? (get-in result [:summary :error])))
   (assert (pos? (get-in result [:summary :warning]))))'
@@ -97,7 +97,7 @@ mise exec -- bb -e '(require (quote [clojure.string :as str]))
         defective (str/replace original "Do not edit" "Edit")]
     (assert (not= original defective))
     (spit path defective))'
-expect_failure focused-tests clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+expect_failure focused-tests clojure -Srepro -M:quickdoc:tooling-test -m scry.cli --dir test/tooling
 # Inspect assertion data, not a runner-specific artifact filename.
 mise exec -- bb -e '(require (quote [babashka.fs :as fs]))
   (assert (some #(clojure.string/includes? (slurp (str %)) "Do not edit")

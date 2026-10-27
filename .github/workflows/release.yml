@@ -87,7 +87,7 @@ jobs:
         run: bb api-docs --check
       - name: Test tooling
         id: tooling
-        run: clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+        run: clojure -Srepro -M:quickdoc:tooling-test -m scry.cli --dir test/tooling
       - name: Preserve tooling failures
         id: preserve-tooling-failures
         if: ${{ failure() && steps.tooling.outcome == 'failure' }}
@@ -99,7 +99,7 @@ jobs:
           if-no-files-found: warn
       - name: Test runtime
         id: runtime
-        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli --dir test/runtime
       - name: Preserve runtime failures
         id: preserve-runtime-failures
         if: ${{ failure() && steps.runtime.outcome == 'failure' }}
@@ -147,7 +147,7 @@ jobs:
           if-no-files-found: warn
       - name: Test build
         id: build
-        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:build-test -m scry.cli --dir test-build
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:build-test -m scry.cli --dir test/build
       - name: Preserve build failures
         id: preserve-build-failures
         if: ${{ failure() && steps.build.outcome == 'failure' }}
@@ -159,7 +159,7 @@ jobs:
           if-no-files-found: warn
       - name: Test release
         id: release
-        run: clojure -M:release:release-test -m scry.cli --dir test-release
+        run: clojure -M:release:release-test -m scry.cli --dir test/release
       - name: Preserve release failures
         id: preserve-release-failures
         if: ${{ failure() && steps.release.outcome == 'failure' }}

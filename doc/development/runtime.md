@@ -25,10 +25,29 @@ export JAVA_CMD=<valhalla-jdk-home>/bin/java
 `JAVA_HOME` alone is not sufficient: the `clojure` script uses `java`
 on `PATH` before `JAVA_HOME`.
 
+## Test layout
+
+Tests share one parent directory, but use separate class path roots:
+
+| Directory | Purpose |
+| --- | --- |
+| `test/runtime/` | Library tests on Valhalla with preview enabled. |
+| `test/compatibility/` | Fallback, AOT and fresh-JVM startup checks. |
+| `test/build/` | Build contracts and isolated JAR consumers. |
+| `test/release/` | Release tooling contracts. |
+| `test/tooling/` | API, lint, prose, Git-hook and CI checks. |
+| `test/resources/` | Java fixtures and the isolated consumer script. |
+
+Do not add the parent `test/` directory to the class path or use it for test
+discovery. Select a suite with `--dir`, as shown below. Compatibility tests
+must not load the value-only runtime helpers or inherit preview flags.
+Resources are copied or compiled explicitly; they are not a class path root.
+The tooling test alias is `:tooling-test`; API generation uses `:quickdoc`.
+
 ## Run the tests
 
 ```sh
-clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli
+clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli --dir test/runtime
 ```
 
 The command exits 0 only when at least one test runs and all tests
@@ -79,7 +98,7 @@ Run native semantics and layout checks with flattening disabled:
 ```sh
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure \
   -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
-  -J-XX:-UseArrayFlattening -M:test -m scry.cli \
+  -J-XX:-UseArrayFlattening -M:test -m scry.cli --dir test/runtime \
   --namespace value-type.array-test --namespace value-type.array-layout-test
 ```
 
@@ -111,7 +130,7 @@ Run construction, allocation and layout checks together:
 ```sh
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure \
   -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
-  -J-XX:+UseArrayFlattening -M:test -m scry.cli \
+  -J-XX:+UseArrayFlattening -M:test -m scry.cli --dir test/runtime \
   --namespace value-type.array-sequence-test \
   --namespace value-type.array-test --namespace value-type.array-layout-test
 ```
@@ -158,7 +177,7 @@ JDK queries and run allocation/layout regressions:
 ```sh
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure \
   -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
-  -J-XX:+UseArrayFlattening -M:test -m scry.cli \
+  -J-XX:+UseArrayFlattening -M:test -m scry.cli --dir test/runtime \
   --namespace value-type.array-info-test \
   --namespace value-type.array-test --namespace value-type.array-layout-test
 ```
@@ -221,7 +240,7 @@ Select the supported Valhalla JDK with `JAVA_CMD` as above. These checks
 also need Git, the Clojure CLI and access to uncached dependencies.
 
 ```sh
-clojure -M:build-test -m scry.cli --dir test-build
+clojure -M:build-test -m scry.cli --dir test/build
 ```
 
 This separate suite checks the build contract in temporary projects and
@@ -238,7 +257,7 @@ including export-only EA3, reject both sequence forms repeatedly before value
 creation and without input effects. All consumers load library resources
 from the JAR, with no checkout sources on the class path.
 Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
-the supported consumer uses `JAVA_CMD`. It selects `test-build/`; it does not replace the library test
+the supported consumer uses `JAVA_CMD`. It selects `test/build/`; it does not replace the library test
 command above. Exit status and failure files follow the same Scry rules.
 
 ## Run the benchmark

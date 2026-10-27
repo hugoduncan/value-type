@@ -121,8 +121,8 @@
                        (into-array String
                                    ["--enable-preview" "--release" "27"
                                     "-d" (str dir)
-                                    (str (io/file "test-resources/value-array/ArrayAccess.java"))
-                                    (str (io/file "test-resources/value-array/IndependentValue.java"))]))]
+                                    (str (io/file "test/resources/value-array/ArrayAccess.java"))
+                                    (str (io/file "test/resources/value-array/IndependentValue.java"))]))]
       (is (zero? status) "Java fixtures compile with the current EA3 JDK")
       (when (zero? status)
         (with-open [loader (URLClassLoader.

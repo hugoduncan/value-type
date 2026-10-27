@@ -41,7 +41,7 @@ bb clj-fmt:check
 bb clj-kondo:lint
 bb vale
 bb api-docs --check
-clojure -Srepro -M:quickdoc:quickdoc-test -m scry.cli --dir test-quickdoc
+clojure -Srepro -M:quickdoc:tooling-test -m scry.cli --dir test/tooling
 ```
 
 Lint also prepares dependency configuration automatically. Each alias basis
@@ -61,9 +61,9 @@ checkout is needed. Downloads and imports are ignored by Git.
 | `bb api-docs` | Regenerate the committed `doc/API.md`. |
 | `bb api-docs --check` | Fail on missing or stale API output without writing it. |
 
-Formatting and code lint cover `src/`, `test/`, `test-build/`,
-`test-fallback/`, `bench/`, `dev/release/`, `test-release/`, `bb/`,
-`test-quickdoc/`, `.clj-kondo/hooks/`,
+Formatting and code lint cover `src/`, all six test directories listed in the
+[test layout](runtime.md#test-layout), `bench/`, `dev/release/`, `bb/`,
+`.clj-kondo/hooks/`,
 `build.clj`, `bb.edn` and `deps.edn`. They exclude historical `spike/`
 code, generated output, caches and dependency imports.
 
@@ -79,7 +79,7 @@ in `.scry-results/` and a nonzero exit.
 
 GitHub Actions runs the quality checks and focused tooling tests above on
 pull requests and pushes to `master`. It also runs the focused release suite:
-`clojure -M:release:release-test -m scry.cli --dir test-release`.
+`clojure -M:release:release-test -m scry.cli --dir test/release`.
 It prepares dependencies from the pinned setup and checks that tracked files
 remain unchanged. It does not repair files or run the runtime-test matrix.
 Setup and tool errors fail the checks.
@@ -104,8 +104,8 @@ merged into the index. Vale and API checks run separately, not in these hooks.
 Real-process integration probes run in disposable Git checkouts:
 
 ```sh
-bash test-tooling/hooks.sh
-bash test-tooling/ci-failures.sh
+bash test/tooling/hooks.sh
+bash test/tooling/ci-failures.sh
 ```
 
 These check controlled failures and file/index safety with real tools, not

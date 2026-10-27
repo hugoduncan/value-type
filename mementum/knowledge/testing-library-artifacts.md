@@ -13,7 +13,7 @@ Source: task `008-jar-build`, its design, plan, steps and implementation
 notes. Evidence: consumer check `9ffcd42`, CLI review fix `a8750a9`,
 and input-preservation review fix `68cd858`. These checks passed on
 Valhalla JDK `27-jep401ea3+1-1`. Reusable examples are in
-`test-build/build_test.clj`.
+`test/build/build_test.clj`.
 
 ## A new JVM does not ensure an isolated consumer
 
@@ -66,7 +66,7 @@ This tests the packaged dependency contract as well as the library code.
 
 ### Select the build-test JVM itself
 
-The value-path consumer in `test-build/build_test.clj` uses the test JVM's
+The value-path consumer in `test/build/build_test.clj` uses the test JVM's
 `java.home`, not `VALUE_TYPE_VALHALLA_JAVA`. Run the build suite itself with
 `JAVA_CMD=<Valhalla>/bin/java`; setting the cross-JVM variables alone does not
 select that consumer. Set `VALUE_TYPE_BASELINE_JAVA` for its baseline consumer.
@@ -93,8 +93,8 @@ across the supported and unsupported JVM configurations.
 
 Source: task `015-value-array-sequence-construction` code-shape review and
 follow-up `1032e9c`. The script is
-`test-resources/build/isolated-consumer.clj`; the parent remains in
-`test-build/build_test.clj`. The full build suite passed after extraction.
+`test/resources/build/isolated-consumer.clj`; the parent remains in
+`test/build/build_test.clj`. The full build suite passed after extraction.
 
 ## Direct function calls do not verify the CLI contract
 

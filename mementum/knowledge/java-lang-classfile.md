@@ -78,7 +78,7 @@ preview version (`latestMajorVersion`, `PREVIEW_MINOR_VERSION`).
   define.
 
 Source: task `003-capture-loader` (`super-before-write-class` in
-`test/value_type/impl/loader_test.clj`). Verified on JDK
+`test/runtime/value_type/impl/loader_test.clj`). Verified on JDK
 `27-jep401ea3`.
 
 ## Clojure 1.12 `deftype` class file
