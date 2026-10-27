@@ -1,0 +1,123 @@
+(ns value-type.restricted-fields-test
+  (:require [clojure.test :refer [deftest is testing]]
+            [value-type.core :refer [defvaluetype]])
+  (:import (java.lang.reflect InvocationTargetException)))
+
+(defvaluetype Leaf [nullable])
+(defvaluetype Pair [^Leaf ^:nil-restricted left
+                    ^{:tag Leaf :nil-restricted true} right])
+
+(deftest public-construction-test
+  ;; All entry points retain Object parameters and native enforcement.
+  (let [leaf (->Leaf nil)
+        constructor (.getConstructor Pair (into-array Class [Object Object]))
+        reflective (fn [left right]
+                     (try
+                       (.newInstance constructor (object-array [left right]))
+                       (catch InvocationTargetException e (throw (.getCause e)))))]
+    (doseq [construct [(fn [left right] (Pair. left right)) ->Pair reflective]]
+      (testing "both metadata forms accept values with nullable contents"
+        (let [^Pair pair (construct leaf leaf)]
+          (is (= leaf (.-left pair)))
+          (is (= leaf (.-right pair)))
+          (is (= leaf (.get (.getField Pair "left") pair)))))
+      (doseq [position [0 1]]
+        (testing (str "native enforcement at position " position)
+          (is (thrown? NullPointerException
+                       (apply construct (assoc [leaf leaf] position nil))))
+          (is (thrown? ClassCastException
+                       (apply construct (assoc [leaf leaf] position "wrong")))))))
+    (is (= [Leaf Leaf] (mapv #(.getType ^java.lang.reflect.Field %)
+                             [(.getField Pair "left") (.getField Pair "right")])))))
+
+(defvaluetype MixedFields
+  [^Leaf ^:nil-restricted first-leaf
+   ^long count-value
+   ^String nullable
+   ^double weight
+   ^{:tag Leaf :nil-restricted true} last-leaf])
+
+(deftest mixed-field-construction-test
+  ;; Concrete reference storage must not shift two-slot primitive arguments.
+  (let [first-value (->Leaf nil)
+        last-value (->Leaf :last)
+        arguments [first-value 42 nil 2.5 last-value]
+        parameter-types [Object Long/TYPE Object Double/TYPE Object]
+        constructor (.getConstructor MixedFields (into-array Class parameter-types))
+        reflective (fn [& values]
+                     (try
+                       (.newInstance constructor (object-array values))
+                       (catch InvocationTargetException e (throw (.getCause e)))))]
+    (is (= parameter-types (vec (.getParameterTypes constructor))))
+    (is (= [Leaf Long/TYPE Object Double/TYPE Leaf]
+           (mapv #(.getType (.getField MixedFields %))
+                 ["first_leaf" "count_value" "nullable" "weight" "last_leaf"])))
+    (doseq [construct [(fn [first-leaf count-value nullable weight last-leaf]
+                         (MixedFields. first-leaf count-value nullable weight last-leaf))
+                       ->MixedFields reflective]]
+      (testing "mixed arguments retain their order and nullable controls"
+        (let [^MixedFields value (apply construct arguments)]
+          (is (= arguments
+                 [(.-first-leaf value) (.-count-value value) (.-nullable value)
+                  (.-weight value) (.-last-leaf value)]))
+          (is (= arguments
+                 (mapv #(.get (.getField MixedFields %) value)
+                       ["first_leaf" "count_value" "nullable" "weight" "last_leaf"])))
+          (is (nil? (.-nullable ^Leaf (.-first-leaf value)))))
+        (is (= "optional"
+               (.-nullable ^MixedFields
+                (apply construct (assoc arguments 2 "optional"))))))
+      (doseq [position [0 4]]
+        (testing (str "restricted mixed argument at position " position)
+          (is (thrown? NullPointerException
+                       (apply construct (assoc arguments position nil))))
+          (is (thrown? ClassCastException
+                       (apply construct (assoc arguments position "wrong")))))))))
+
+(defprotocol FieldBehavior
+  (selected-field [this choose-required?])
+  (field-reader [this]))
+
+(defvaluetype BehavioralFields [^Leaf ^:nil-restricted required optional]
+  FieldBehavior
+  (selected-field [_ choose-required?]
+                  (if choose-required? required optional))
+  (field-reader [this]
+                (fn [choose-required?]
+                  (letfn [(read-field [fallback]
+                            (let [required-value (.-required this)
+                                  optional-value (.-optional this)]
+                              (if choose-required?
+                                (if (nil? (.-nullable required-value))
+                                  required-value optional-value)
+                                (if (nil? optional-value) fallback optional-value))))]
+                    (fn [fallback] (read-field fallback)))))
+  java.util.function.Supplier
+  (get [_] required)
+  Object
+  (toString [_] (str "required=" (.-nullable required) ";optional=" optional)))
+
+(deftest public-method-behavior-test
+  ;; Public macro expansion must preserve owner references in all method kinds.
+  (let [leaf (->Leaf :payload)
+        value (->BehavioralFields leaf :optional)]
+    (testing "protocol and Java interface reads use concrete storage"
+      (is (= leaf (selected-field value true)))
+      (is (= :optional (selected-field value false)))
+      (is (= leaf (.get ^java.util.function.Supplier value))))
+    (testing "Object overrides can read nested restricted contents"
+      (is (= "required=:payload;optional=:optional" (str value))))))
+
+(deftest public-companion-behavior-test
+  ;; Escaping nested functions must link rewritten owner field references.
+  (doseq [payload [nil :payload]
+          optional [nil :optional]
+          choose-required? [false true]]
+    (let [leaf (->Leaf payload)
+          value (->BehavioralFields leaf optional)
+          reader ((field-reader value) choose-required?)
+          expected (if choose-required?
+                     (if (nil? payload) leaf optional)
+                     (if (nil? optional) :fallback optional))]
+      (testing (str "nested branch " [payload optional choose-required?])
+        (is (= expected (reader :fallback)))))))

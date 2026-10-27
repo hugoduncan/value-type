@@ -24,7 +24,8 @@
    :github/repo "https://github.com/hugoduncan/value-type"
    :git/branch "master"
    :source-paths ["src/value_type/core.clj" "src/value_type/array.clj"]
-   :overrides {'value-type.core {'check-value-class {:no-doc true}}}})
+   :overrides {'value-type.core {'check-value-class {:no-doc true}
+                                 'native-field-deftype {:no-doc true}}}})
 
 (defn generated-markdown
   "Return the public API reference as deterministic Markdown."

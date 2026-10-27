@@ -14,7 +14,7 @@ can then use JEP 401 value objects without Java source.
 
 - User outcome: a programmer changes `deftype` to `defvaluetype` and
   gets a value class when supported, or an ordinary `deftype` under
-  the application fallback policy. Libraries that permit fallback must
+  the application fallback policy when no nil-restricted fields are enabled. Libraries that permit fallback must
   work with both identity and value semantics.
 - Technical outcome: the class has the same bytecode quality as a
   value class that `javac` makes. No runtime overhead is added.
@@ -34,7 +34,8 @@ The macro must:
 6. Support AOT compilation. The `.class` file must keep the selected
    representation. Loading it does not select a new representation.
 7. Reject forms that a value class cannot express. Give a clear error.
-8. When value classes are unavailable, support silent fallback, one
+8. Without enabled field restrictions, when value classes are unavailable,
+   support silent fallback, one
    warning followed by fallback, or an `Error` on every attempt.
 9. Let applications control fallback without changes to dependencies.
 
@@ -45,7 +46,10 @@ Included:
 - Concrete value classes that extend `Object`.
 - All field type hints that `deftype` accepts.
 - The `:load-ns` option.
-- Controlled fallback to ordinary `deftype` semantics.
+- Controlled fallback to ordinary `deftype` semantics without enabled restrictions.
+- [Native nil-restricted fields](../nil-restricted-field-design.md) with explicit
+  tags naming eligible, already defined concrete value classes. These require
+  native field support under every fallback policy.
 
 Excluded:
 
@@ -53,7 +57,7 @@ Excluded:
 - A record form (`defrecord` semantics). Records use mutable hash
   cache fields.
 - Abstract value classes.
-- Null-restricted field types. This is a separate JEP.
+- General non-null references, including identity-class and unresolved field types.
 - Anonymous value objects (a `reify` form).
 - Emulation of value semantics on identity classes.
 - Conversion of AOT classes between representations at load time.
@@ -74,7 +78,9 @@ Verified JDK versions must be stated separately from this design target.
   per loaded library runtime. A capture loader exists for one top-level
   form only, on the value-class path.
 - Rules: the value-class rules in [Context](context.md).
-- Failure: unavailable support under strict policy throws an `Error`
+- Failure: enabled restrictions reject unavailable native field support with
+  `:field-capability-unavailable` under every policy. For ordinary definitions,
+  unavailable support under strict policy throws an `Error`
   on every attempt. Other failures with an error key of `value-type` give an
   `ex-info` with `:value-type/error` and the cause. A `deftype` syntax
   error gives the `deftype` error.
@@ -125,5 +131,5 @@ A library. It is experimental while JEP 401 is a preview feature.
 ## Evolution expectations
 
 - JEP 401 class file details can change in each early-access build.
-- Null-restricted types and abstract value classes can come later.
+- General non-null references and abstract value classes need separate designs.
 - When Clojure supports value classes, this library can retire.

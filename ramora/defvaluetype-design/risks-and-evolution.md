@@ -31,7 +31,7 @@ it and update this document.
 |---|---|---|
 | JEP 401 class file changes in a new build. | The JVM rejects the class. | Review both `transform` and the capability probe. Unknown probe failures propagate; D9 wraps user-class definition errors. |
 | Clojure changes `deftype` output or the `LOADER` order. | Install or transform fails. | D6 shape check. D9 runtime check. Pin Clojure 1.12.6 (`deps.edn`). The `deftype` compatibility corpus (`value-type.deftype-compat-test`); when the Clojure version changes, copy the corpus again from the new tag. |
-| `macroexpand` from tooling installs a loader. | A loader stays in the tooling binding frame. | The loader changes only the target name. Harmless. |
+| `macroexpand` from tooling installs a loader. | A loader stays in the tooling binding frame. | Ordinary selection changes only the target name. Restricted selection defers installation to receiving analysis; its loader also rewrites selected owner-field references in captured companions. Verify both expansion forms in fresh receivers. |
 | Users depend on identity. | `IdentityException` or changed equality. | README section on semantic differences. |
 | Value-class AOT output is tied to one JDK release. | The class does not load on a different JDK. | Document. Rebuild per JDK release; no load-time conversion. |
 | Optional APIs load before capability detection. | Public namespace fails before fallback. | D12 dependency boundary; isolated consumer tests without those APIs. |
@@ -54,9 +54,11 @@ this guard. Failed initializer retries do not re-enter it.
 
 ## Expected evolution
 
-- Null-restricted fields, when the JEP is available. This needs field
-  metadata and the `LoadableDescriptors` attribute. Change: `core`
-  validation and `transform`.
+- Native nil-restricted fields: see the
+  [field design](../nil-restricted-field-design.md). Use `:nil-restricted`
+  metadata with an explicit concrete value-class type. This requires field
+  validation, loader transport, descriptor changes and native enforcement.
+  Add `LoadableDescriptors` only if a loading requirement demonstrates a need.
 - Abstract value classes. `deftype` cannot express them. This needs a
   new macro.
 - A record form (`defvaluerecord`). Records keep mutable hash caches.

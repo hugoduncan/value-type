@@ -10,15 +10,23 @@ environment in [Purpose](purpose.md).
 | Correctness | Obey policy; no unintended identity class. | D8 D9 D10 D12 | Value-path results are value classes. Fallback follows policy. Every strict attempt throws an `Error`; defects do not trigger fallback. |
 | Compatibility | `deftype` syntax and non-identity semantics. | D1 D2 | The `deftype` test forms without mutable fields pass (`value-type.deftype-compat-test`). |
 | Simplicity | Small components and one pure transform. | D1 D2 D5 D12 | Capability and policy remain separate from byte transformation. Each state item has one owner. |
-| Performance | No added runtime cost. | D2 | Method bytecode is the same as `deftype`. Method call time is equal to `deftype` ([Benchmark](benchmark.md)). |
+| Performance | No added method-call cost for ordinary definitions; measure restricted-field costs separately. | D2 | Without enabled restrictions, non-constructor method bytecode is unchanged from `deftype`; the [benchmark](benchmark.md) records ordinary method-call measurements, not a general equal-time guarantee. Restricted definitions preserve method behavior while changing selected field-reference descriptors in owner and companion methods. |
 | Changeability | Local format and capability knowledge. | D5 D12 | Format changes affect the transformer and, when needed, capability detection; not fallback semantics. |
 | Testability | The transform is testable without a Valhalla JVM. | D5 | Unit tests run on bytes. |
 | Error clarity | The error names the cause and the fix. | D8 D9 D10 | Strict `Error` and one-time warning identify unavailable support or an AOT fallback artifact. Existing implementation errors retain their causes. Compiler wrapping is documented. |
 | Portability | Fallback adds no JDK requirement beyond Clojure. | D12 | Isolated source JAR consumer loads and defines fallback types without preview or optional APIs. |
 | Diagnostic stability | One warning, persistent strict rejection. | D13 | Concurrent attempts produce at most one warning per library runtime. Caught errors do not permit later fallback. |
 
-Fallback adds no JDK requirement beyond the supported Clojure runtime.
+Fallback applies only without enabled field restrictions and adds no JDK
+requirement beyond the supported Clojure runtime.
+[Native nil-restricted fields](../nil-restricted-field-design.md) require eligible
+nested value types and native support under every policy.
 There is no per-instance fallback check.
+
+The restricted-field semantic matrix verifies correctness, not equal call time or
+zero added cost. It does not extend the ordinary method-call benchmark to
+restricted definitions. See the [native field evidence limits](../nil-restricted-field-design/verification.md#layout-and-performance-evidence);
+layout and performance require separate measurements.
 
 ## Trade-offs
 
@@ -27,11 +35,13 @@ There is no per-instance fallback check.
   the compiler evaluation order and constructor shape. The tests and
   the D6 shape check make a break visible, not silent.
 - Semantic stability versus portability. D10 lets applications choose.
-  Strict policy requires value classes; silent and warn policies permit
+  For definitions without enabled restrictions, strict policy requires value
+  classes; silent and warn policies permit
   ordinary identity semantics. Libraries must work with both if they
   permit fallback. The library does not emulate value semantics.
 - Minimality versus features. Records, abstract value classes and
-  null-restricted fields are out of scope. The design does not block
+  general non-null references are out of scope. Eligible nested value fields
+  follow the native field contract linked above. The design does not block
   them (see [Risks and evolution](risks-and-evolution.md)).
 
 ## Semantic differences from `deftype`

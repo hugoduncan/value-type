@@ -7,7 +7,9 @@ See the [README](../README.md) for installation and a quick start, and the
 
 Fallback adds no minimum JDK beyond the supported Clojure runtime. On a
 JVM without supported value-class capability, `defvaluetype` uses ordinary
-identity `deftype`. It does not emulate value equality or identity. Libraries
+identity `deftype` only for definitions without enabled nil-restricted fields.
+Enabled fields require native support under every policy; see the
+[field contract](#native-nil-restricted-fields). Fallback does not emulate value equality or identity. Libraries
 that allow fallback must work with both representations.
 
 Set the JVM property before dependencies load, not in `-main`:
@@ -79,11 +81,11 @@ Other differences:
 - Field and value-path errors are `ex-info` with the key `:value-type/error` and
   `:class-name`:
   - `:mutable-field`: a field is mutable (at macroexpansion).
-  - `:not-installed`: the form was macroexpanded outside compilation.
+  - `:not-installed`: an ordinary definition was macroexpanded outside compilation.
     Evaluate the `defvaluetype` form directly.
   - `:not-value-class`: the class is an identity class. The causes
     and fixes:
-    - The form was not compiled directly (for example
+    - An ordinary definition without enabled restrictions was not compiled directly (for example
       `(eval (macroexpand form))`). Evaluate the `defvaluetype` form
       directly.
     - A `defvaluetype` is inside a method body of another
@@ -107,6 +109,13 @@ Other differences:
   with the preview minor version. It loads only on the same JDK feature
   release with preview enabled. Ordinary fallback output has neither of
   these value-class requirements.
+
+For enabled nil-restricted fields, both `macroexpand` and `macroexpand-1`
+retain a receiving boundary that installs a receiver-local loader. Unlike ordinary
+value definitions, their expansions support separate `eval` (including
+`(eval (macroexpand form))`), metadata-preserving source loading and function
+analysis followed by invocation on a capable receiver. Unsupported receivers
+reject under every policy. Preserve field metadata when serializing expansions.
 
 ## Value-array allocation
 
@@ -167,8 +176,8 @@ preview or exports. Allocation capability is checked lazily and cached per
 loaded library runtime; startup configuration is fixed. Unsupported calls
 report `:array-unavailable`, even if their inputs are also invalid.
 There is no ordinary-array fallback or warning policy. Array allocation is
-independent of `value-type.fallback`; that property still controls class
-creation through `defvaluetype`.
+independent of `value-type.fallback`; that property controls ordinary fallback
+through `defvaluetype`, not enabled nil-restricted fields.
 
 Flattening is not guaranteed. A non-flat restricted atomic array is a valid
 result, including with array flattening disabled. Support for other JVM
@@ -272,3 +281,49 @@ This is an experimental API, not a general object inspector or a layout-size
 estimate. Support for other JVM builds is not implied. Use the public wrapper:
 native diagnostic calls with null can crash the tested JVM. See the
 [runtime guide](development/runtime.md) for verification commands.
+
+## Native nil-restricted fields
+
+Verified on Valhalla `27-jep401ea3+1-1` with Clojure 1.12.6. Start with
+`--enable-preview`; no internal-package export is required. Use an explicit value-class tag and
+`:nil-restricted` metadata:
+
+```clojure
+(defvaluetype Point [^long x ^long y])
+(defvaluetype Segment [^Point ^:nil-restricted start
+                       ^{:tag Point :nil-restricted true} end])
+```
+
+Only `true` enables restriction. Absent, false and nil metadata retain ordinary
+field behavior; other values are definition errors. The tag must name an already
+defined concrete value class. Primitive, identity, interface, abstract, array,
+forward and enclosing types are not eligible. Eligible classes can come from
+other libraries. Mutable fields remain unsupported. Unmarked fields and disabled
+restrictions keep existing type-hint and primitive-field behavior.
+
+Factories, direct constructors and reflective constructors reject nil with
+`NullPointerException` and wrong types with `ClassCastException`. Reflection can
+wrap these exceptions in `InvocationTargetException`. Restricted fields have the
+declared concrete type, but reference constructor parameters remain Object.
+Constructor order and arity do not change. Nested
+values can contain ordinary fields that permit nil.
+
+Enabled declarations reject unavailable native support under every fallback
+policy; there is no constructor-check fallback. Requiring the public namespace
+is safe on Java 8 and preview-disabled EA3. Capability is checked lazily.
+Selection and receiving compilation/evaluation checks also apply to discarded
+and transferred macro expansions.
+
+Definition errors are `ExceptionInfo` with `:value-type/error`, `:class-name`
+and `:reason`. Invalid fields use `:invalid-field` and include `:field`;
+unavailable native support uses `:field-capability-unavailable`. Compiler
+operations can wrap these errors in `CompilerException`. Mutable-field validation
+comes first, then restriction metadata, native capability and type eligibility.
+Unexpected implementation failures remain errors, not fallback.
+
+AOT fixes representation. Saved fields and generated companions work without
+producer source, including separately compiled Clojure and Java callers. Value
+artifacts require the same JDK feature release with preview enabled; Java 8 and
+preview-disabled EA3 reject them, regardless of fallback policy. There is no
+load-time identity conversion. Support for other JVM builds is not implied.
+Field restriction does not guarantee flattening or better performance.

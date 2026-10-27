@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+- Add experimental [native nil-restricted fields](doc/usage.md#native-nil-restricted-fields)
+  through opt-in `:nil-restricted` metadata and an explicit concrete value-class
+  tag. Constructors reject nil with `NullPointerException` and wrong types with
+  `ClassCastException`. Enabled fields reject unavailable native support under
+  every fallback policy. Verified on Valhalla `27-jep401ea3+1-1` with preview
+  enabled and no internal-package export. Future JVM support, flattening and
+  performance gains are not guaranteed.
+
 - Add experimental [`value-type.array/make-array`](doc/usage.md#value-array-allocation)
   with an explicit non-null seed, native null-restricted atomic arrays and safe
   namespace loading on unsupported JVMs. Allocation requires the tested Valhalla
@@ -31,7 +39,8 @@
   deliberately crashes isolated JVMs for null diagnostic inputs.
 
 - Add `defvaluetype` with value classes on supported Valhalla JVMs and
-  ordinary `deftype` fallback on other JVMs.
+  ordinary `deftype` fallback on other JVMs for definitions without enabled
+  nil-restricted fields.
 - Add source-only JAR packaging and isolated consumer checks on Java 8
   and Valhalla.
 - Add development quality checks and generated API documentation.

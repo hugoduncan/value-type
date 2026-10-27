@@ -1,6 +1,7 @@
 (ns value-type.impl.runtime
   "Per-library-runtime fallback policy, capability cache and warning state."
-  (:require [value-type.impl.capability :as detector]))
+  (:require [value-type.impl.capability :as detector]
+            [value-type.impl.field-capability :as fields]))
 
 (def ^:private policy
   (let [configured (System/getProperty "value-type.fallback" "silent")]
@@ -38,3 +39,25 @@
   `(do
      (enforce-fallback! "fixed fallback representation")
      (deftype ~name ~fields ~@opts+specs)))
+
+(def ^:private detected-field-capability (delay (fields/detect)))
+
+(defn field-capability
+  "Return cached native field capability without applying fallback policy."
+  []
+  @detected-field-capability)
+
+(defn require-field-capability!
+  "Require native field enforcement independently of ordinary fallback policy.
+   Return nil on support; otherwise throw a structured definition error. Probe
+   defects propagate unchanged. This guard is safe to call again in receivers."
+  [class-name]
+  (let [{:keys [available? reason detail]} (field-capability)]
+    (when-not available?
+      (throw
+       (ex-info
+        (str "Cannot define " class-name
+             ": native nil-restricted fields are unavailable. " detail)
+        {:value-type/error :field-capability-unavailable
+         :class-name class-name
+         :reason reason})))))

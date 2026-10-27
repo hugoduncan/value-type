@@ -3,7 +3,8 @@
 Clojure's `deftype` creates objects with identity. value-type provides
 `defvaluetype` to define [JEP 401 value objects](https://openjdk.org/jeps/401)
 with familiar `deftype` syntax. It uses value classes on a supported
-Valhalla JVM and ordinary `deftype` classes otherwise.
+Valhalla JVM and ordinary `deftype` classes otherwise, unless native
+nil-restricted fields are enabled. Enabled restrictions have no fallback.
 
 For collections of value objects, `value-type.array` creates native arrays
 that reject null elements and provide atomic element access. The JVM can
@@ -69,6 +70,24 @@ To try ordinary-JVM fallback, start with `clojure -M` instead. Construction
 still works, but the two instances are not identical, and `Class.isValue`
 can be absent.
 
+### Nil-restricted fields
+
+Use an explicit value-class tag and `:nil-restricted` metadata to require a
+non-null nested value:
+
+```clojure
+(defvaluetype Segment [^Point ^:nil-restricted start
+                       ^Point ^:nil-restricted end])
+(def segment (->Segment (->Point 1 2) (->Point 3 4)))
+(.-x (.-start segment))                  ;=> 1
+```
+
+Enabled fields require native support under every fallback policy. On the
+tested Valhalla JVM, they need `--enable-preview` but no internal-package
+export. Constructors reject nil and wrong types. Field restriction does not
+guarantee flattening. See the [field contract](doc/usage.md#native-nil-restricted-fields)
+for eligible tags, errors and deployment limits.
+
 ### Value arrays
 
 Array construction needs a supported Valhalla JVM, preview and access to an
@@ -107,7 +126,7 @@ operations such as `aget`, `aset` and `alength`. Stores of null or incompatible
 values fail. Atomic element access does not make compound updates atomic or
 remove the need for thread coordination.
 
-Unlike `defvaluetype`, array construction has **no ordinary-JVM fallback**.
+Like enabled nil-restricted fields, array construction has **no ordinary-JVM fallback**.
 `into-array` buffers the input before allocation; it is not a streaming
 constructor. `array-info` also accepts ordinary reference arrays. It needs
 the export flag, but ordinary-array inspection does not need preview on the
@@ -127,7 +146,9 @@ handling.
 - Ahead-of-time compilation fixes the representation. Value-class output
   requires a compatible preview-enabled JVM; it does not convert to fallback.
 
-The startup property `value-type.fallback` controls unsupported JVMs:
+The startup property `value-type.fallback` controls definitions without enabled
+nil-restricted fields on unsupported JVMs. Enabled fields reject unavailable
+native support under every policy:
 
 | Value | Behavior when fallback is needed |
 |---|---|

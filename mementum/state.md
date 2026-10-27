@@ -20,6 +20,30 @@ Its API is not stable.
   `array-info` inspects reference-array properties. Allocation has no fallback.
 - Source-only JAR builds, quality checks, API generation and release tooling
   are available. Hosted Actions and live publication remain unverified.
+- Native null-restricted fields are available through opt-in `:nil-restricted`
+  metadata and an explicit value-class type hint on EA3. A separate lazy probe
+  verifies native enforcement without exports. Unsupported JVMs reject enabled
+  definitions under every fallback policy.
+- Field specifications retain exact Class identity. The capture loader transforms
+  concrete storage, constructor casts and owner/companion references together.
+  Owner and companion transforms share optional-loader ClassFile configuration
+  behind the optional JDK boundary. Constructor reference parameters remain Object. Mixed primitive slots, nullable
+  controls, methods, closures and same-name/different-loader cases are verified.
+- Transferred expansions install receiver-local loaders. Source-free AOT works
+  with separately compiled Clojure and direct Java consumers. Java 8 and
+  preview-disabled EA3 reject saved restricted-field classes under all policies.
+  Semantic tests pass with flattening on/off and normal/interpreter execution;
+  they do not establish layout or performance guarantees.
+- See the [field design](../ramora/nil-restricted-field-design.md) and
+  [task evidence](../munera/closed/016-nil-restricted-fields/implementation.md).
+  Public usage, API contracts, runtime verification guidance and Ramora embodiment
+  describe native field limits. Detailed compiler decisions distinguish ordinary
+  selection-time installation from restricted receiving installation and companion
+  rewriting. Separate full runtime, compatibility, build and tooling suites pass.
+  External Java value classes are verified through public restricted-field
+  construction, including exact field Class identity and native rejection.
+  Public declaration tests verify structured compiler errors for invalid metadata
+  and ineligible tags, including enclosing-Class redefinition and validation order.
 
 ## Runtime and verification limits
 
@@ -43,9 +67,10 @@ Its API is not stable.
 
 ## Orientation
 
-- `README.md`: project overview, value-class and value-array quick starts,
+- `README.md`: project overview, value-class, nil-restricted field and value-array quick starts,
   JVM flags and performance limits.
-- `doc/usage.md` and `doc/API.md`: public contracts and limits.
+- `doc/usage.md` and `doc/API.md`: public contracts and limits, including
+  ordinary fallback versus native field requirements and expansion transfer.
 - `doc/development.md`: setup, quality checks, builds and benchmarks.
 - `doc/development/runtime.md`: JVM selection and test commands.
 - `doc/development/release.md`: release operations.

@@ -1,5 +1,10 @@
 # Controlled fallback
 
+This document describes definitions without enabled nil-restricted fields.
+Enabled restrictions require native field capability under every policy and
+never select ordinary fallback. Their selection and receiving guards use a
+separate lazy capability probe; see the [field design](../nil-restricted-field-design.md).
+
 ## D10. Controlled fallback
 
 - Subject: unavailable value-class support and policy authority.

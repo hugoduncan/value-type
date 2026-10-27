@@ -5,19 +5,19 @@
 | Namespace | Responsibility | Decisions |
 |---|---|---|
 | `value-type.core` | Public macro `defvaluetype` and runtime check `check-value-class`. Validate, select representation, lazily install the value loader, expand and check. | D1 D8 D9 D10 D12 |
-| `value-type.impl.runtime` | Initialized policy, cached capability, warning flag and fallback guards. | D10 D13 |
+| `value-type.impl.runtime` | Initialized policy, cached class/field capabilities, warning flag, fallback and native-field guards. | D10 D13 |
 | `value-type.impl.capability` | Baseline-safe API checks and isolated format probe. | D12 |
-| `value-type.impl.loader` | Capture loader. Catch the target bytes, transform, write for AOT, define, link, wrap define errors. | D3 D4 D7, D9 define errors |
-| `value-type.impl.transform` | Pure function: identity-class bytes → value-class bytes. | D5 D6 |
+| `value-type.impl.loader` | Capture loader. Transform target storage and companion references, check exact field Classes, write for AOT, define and link. | D3 D4 D7, D9 define errors |
+| `value-type.impl.transform` | Transform identity-class bytes with selected field descriptors and an optional hierarchy loader. | D5 D6 |
 
 Dependency direction: `core → runtime → capability`; only the available
-branch resolves `core → loader → transform`. `transform` depends
-only on JDK classes: `java.lang.classfile`, `java.lang.constant` and
-`java.util.function`. `transform` has no Clojure compiler dependency.
+branch resolves `core → loader → transform`. `transform` composes field-storage and field-access helpers using the JDK
+class-file API. An optional class loader resolves dynamic types for stack maps. `transform` has no Clojure compiler dependency.
 
 ## Fallback boundary
 
-Before loader installation, a capability/policy responsibility selects
+For definitions without enabled restrictions, before loader installation,
+a capability/policy responsibility selects
 the value-class path, ordinary `deftype`, or strict failure (D10 D12).
 `value-type.impl.runtime` owns the state in D13: initialized policy, a
 delayed result from baseline-safe `impl.capability/detect`, and an atomic
@@ -36,7 +36,8 @@ that dependency boundary.
 
 - Syntax and options: the same as `clojure.core/deftype`.
 - Result: the class `Name`, the factory `->Name`. The fallback
-  path has the same syntax and returns an ordinary identity class.
+  path, only for definitions without enabled restrictions, returns an ordinary
+  identity class. Enabled fields require an explicit concrete value-class tag.
 - Strict failure: an `Error` on every attempted fallback.
   Direct rejection uses plain java.lang.Error. Source compiler operations
   wrap it in CompilerException; failed AOT initializer retries can throw
@@ -57,7 +58,10 @@ that dependency boundary.
 
 ```clojure
 ;; value-type.impl.transform
-(->value-class ^bytes identity-class-bytes) ;=> ^bytes
+(->value-class identity-class-bytes) ;=> bytes
+(->value-class identity-class-bytes storage-types)
+(->value-class identity-class-bytes storage-types class-loader)
+;; storage-types maps emitted field names to ClassDesc values.
 ;; throws ex-info {:value-type/error :unexpected-constructor
 ;;                  :class-name "binary.Name"}
 ;; when D6 does not match. Check steps, in order: count of
@@ -65,17 +69,20 @@ that dependency boundary.
 
 ;; value-type.impl.loader
 (install! class-name) ;=> true when installed, false when LOADER is not thread-bound
+(install! class-name specifications)
+;; Ordered specifications retain :field, exact :type Class and :descriptor.
 ;; The capture loader throws ex-info {:value-type/error :jvm-rejected
 ;; :class-name} with the LinkageError as cause when the JVM rejects
 ;; the define or the link. Errors of ->value-class pass through.
 ```
 
-`->value-class` does not depend on the class name or a class loader.
-So unit tests can call it on bytes from any `deftype`.
+The one-argument transform uses empty storage selections and the default
+hierarchy resolver. The loader passes its delegate to the three-argument arity
+so stack-map generation can resolve dynamically defined field types.
 
 ## Data flow
 
-Representation selection, before the existing value-class flow:
+Representation selection for definitions without enabled restrictions:
 
 ```text
 validate fields → determine capability and application policy
@@ -119,6 +126,26 @@ runtime
                                           or :not-value-class
 ```
 
+### Enabled nil-restricted fields
+
+`defvaluetype` validates mutable fields and restriction metadata, requires native
+field capability and resolves eligible field specifications. It returns an outer
+`let` containing `core/native-field-deftype`; selection does not install a loader.
+Both public macroexpansion forms retain this receiving boundary.
+
+Receiving analysis checks capability again, resolves exact Classes in the receiver
+and installs the capture loader with ordered specifications. The emitted form
+checks capability at evaluation, defines the type and checks its value-class kind.
+Unsupported receivers reject under every policy, including repeated attempts.
+
+Before target definition, the loader checks each selected Class through its delegate.
+A different Class gives `:invalid-field` with `:reason :field-class-mismatch`.
+The target transform composes concrete storage, native annotations, constructor
+casts and owner accesses. Other captured classes have matching target-field
+references rewritten but keep their class kind. Both paths write transformed
+bytes during AOT. See the [field design](../../nil-restricted-field-design.md)
+for validation order, error contracts and deployment evidence.
+
 ## State
 
 - The capture loader is transient. The thread binding of
@@ -153,7 +180,7 @@ runtime
 
 | Invariant | Enforcement point |
 |---|---|
-| The capture loader changes only the target class. | `loader`: name check |
+| Only the target changes class kind; captured companions can change field references. | `loader`: target transform and companion rewrite |
 | Each target on the value-class path is a value class. | `core`: runtime check (D9) |
 | Fallback follows application policy; strict retries always fail. | `runtime/enforce-fallback!` at selection, analysis and evaluation |
 | Warning occurs at most once per loaded library runtime. | `runtime`: compare-and-set warning flag |
@@ -162,7 +189,7 @@ runtime
 | The AOT file equals the defined bytes. | `loader`: write after transform |
 | Instance fields are final. | `core`: validation (D8); JVM verifier |
 | A rejected form does not change `LOADER`. | `core`: validate before install |
-| The transform changes only version, class flags, field flags, constructor. | `transform` unit tests |
+| Selected storage, constructors and owner/companion accesses agree on concrete descriptors. | Composed transform, companion rewrite and runtime tests |
 
 
 

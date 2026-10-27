@@ -114,10 +114,12 @@ Macro.
 
 As `deftype` (see its docstring for syntax, options, specs, the
   `->name` factory and the import). Define a final JEP 401 value class
-  when supported, or an ordinary identity class under fallback policy.
+  when supported, or an ordinary identity class under fallback policy when
+  no nil-restricted fields are enabled.
 
   Uses value classes on a supported JEP 401 JDK with `--enable-preview`.
-  Otherwise uses ordinary identity `deftype`. Set JVM property
+  Otherwise uses ordinary identity `deftype` only without enabled restrictions.
+  Enabled fields require native support under every policy. Set JVM property
   `value-type.fallback` before loading: silent (default), warn (once per
   library runtime), or error (reject with Java Error). Compiler operations
   wrap that Error in CompilerException. Configuration is read and validated
@@ -141,6 +143,29 @@ As `deftype` (see its docstring for syntax, options, specs, the
   Fallback adds no minimum JDK beyond the supported Clojure runtime; see
   README for tested JVM versions and verification commands.
 
+  Native fields: ^Point ^:nil-restricted field requires an explicit tag
+  naming an already defined concrete value class, including eligible external
+  classes. The explicit form is ^{:tag Point :nil-restricted true} field.
+  Only true enables restriction; absent, false and nil retain ordinary behavior.
+  Other metadata values are definition errors. Missing/unresolved tags,
+  primitives, identity classes, interfaces, abstract classes, arrays, forward
+  types and the enclosing type are not eligible. Native construction rejects nil with
+  NullPointerException and other types with ClassCastException, including direct
+  and reflective constructors. Reflection can wrap these exceptions. Enabled
+  fields reject unavailable native support under every fallback policy. No
+  internal-package exports are needed; flattened storage is not guaranteed.
+  Restricted storage has the declared concrete type; reference constructor
+  parameters remain Object, with unchanged order and arity. Nested values may
+  contain fields that permit nil. Invalid fields report :invalid-field with :field and
+  :reason; unavailable support reports :field-capability-unavailable with :reason.
+  Both include :class-name and :value-type/error; compiler wrapping still applies.
+  Receiving checks also apply to transferred expansions. Both `macroexpand` forms
+  retain receiver-local loader installation for enabled fields, supporting separate
+  `eval`, metadata-preserving source loading and function analysis then invocation.
+  Ordinary value definitions do not support separate expansion/evaluation this way.
+  AOT artifacts require
+  the same JDK feature release with preview enabled and have no identity fallback.
+
   Restriction: no mutable fields (`:volatile-mutable` or
   `:unsynchronized-mutable`).
 
@@ -161,8 +186,8 @@ As `deftype` (see its docstring for syntax, options, specs, the
 
   Errors (`ex-info` with `:value-type/error` and `:class-name`):
   - `:mutable-field` (macroexpansion; data `:fields`): a mutable field.
-  - `:not-installed` (run time): macroexpanded with no compilation
-    loader binding, then evaluated.
+  - `:not-installed` (run time): an ordinary definition macroexpanded with no
+    compilation loader binding, then evaluated.
   - `:not-value-class` (run time): the class is not a value class.
   - `:jvm-rejected`, `:unexpected-constructor`: from the loader.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L84-L153">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L99-L199">Source</a></sub></p>

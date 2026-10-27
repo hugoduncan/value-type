@@ -249,3 +249,107 @@
       (is (= {:value-type/error :jvm-rejected :class-name cname}
              (select-keys (ex-data e) [:value-type/error :class-name])))
       (is (instance? VerifyError (ex-cause e))))))
+
+(defmacro restricted-type
+  "Internal transport fixture; public metadata integration remains separate."
+  [type-name fields nested & body]
+  (let [cname (binary-name *ns* type-name)
+        cls (resolve nested)]
+    (loader/install! cname [{:field (first fields) :type cls
+                             :descriptor (str "L" (.replace (.getName ^Class cls) \. \/) ";")}])
+    `(let [] (deftype ~type-name ~fields ~@body) ~(symbol cname))))
+
+(deftest specification-transport-test
+  ;; Exercise the real compiler loader, including a munged field name.
+  (testing "ordered specifications produce native storage without changing parameters"
+    (let [nested-name (gensym "Nested")
+          nested (eval-here (point-form nested-name))
+          value (Reflector/invokeConstructor nested (object-array [3 nil]))
+          holder (eval-here `(restricted-type ~(gensym "Holder")
+                                              [~'required-value ~'nullable]
+                                              ~nested-name))
+          ctor (.getConstructor ^Class holder (into-array Class [Object Object]))
+          instance (.newInstance ctor (object-array [value nil]))]
+      (is (= nested (.getType (.getField ^Class holder "required_value"))))
+      (is (= Object (.getType (.getField ^Class holder "nullable"))))
+      (is (= value (Reflector/getInstanceField instance "required_value")))
+      (doseq [[argument expected] [[nil NullPointerException] [:wrong ClassCastException]]]
+        (is (instance? expected
+                       (try (.newInstance ctor (object-array [argument nil]))
+                            nil
+                            (catch java.lang.reflect.InvocationTargetException error
+                              (.getCause error)))))))))
+
+(deftest restricted-companion-test
+  ;; Execute generated closures, not only their field-reference byte models.
+  (testing "companions read concrete and nullable owner fields"
+    (let [nested-name (gensym "Nested")
+          nested (eval-here (point-form nested-name))
+          value (Reflector/invokeConstructor nested (object-array [7 nil]))
+          holder (eval-here
+                  `(restricted-type ~(gensym "ClosureHolder")
+                                    [~'required-value ~'nullable] ~nested-name
+                                    Probe
+                                    (probe [~'this]
+                                           (fn [~'choose]
+                                             (if ~'choose
+                                               (fn [] [~'required-value ~'nullable])
+                                               (fn [] ~'nullable))))))
+          instance (Reflector/invokeConstructor holder (object-array [value :control]))
+          closure (probe instance)]
+      (is (= [value :control] ((closure true))))
+      (is (= :control ((closure false))))
+      (is (not (value? (class closure))))
+      (is (identical? (.getClassLoader ^Class holder)
+                      (.getClassLoader (class closure)))))))
+
+(deftest restricted-redefinition-test
+  ;; Equal binary names must not make old and new nested values interchangeable.
+  (testing "each holder retains the nested Class selected at its definition"
+    (let [nested-name (gensym "RedefinedNested")
+          original (eval-here (point-form nested-name))
+          old-holder (eval-here `(restricted-type ~(gensym "OldHolder")
+                                                  [~'required] ~nested-name))
+          replacement (eval-here (point-form nested-name))
+          new-holder (eval-here `(restricted-type ~(gensym "NewHolder")
+                                                  [~'required] ~nested-name))
+          old-value (Reflector/invokeConstructor original (object-array [1 nil]))
+          new-value (Reflector/invokeConstructor replacement (object-array [1 nil]))]
+      (is (= (.getName ^Class original) (.getName ^Class replacement)))
+      (is (not (identical? original replacement)))
+      (is (not (identical? (.getClassLoader ^Class original)
+                           (.getClassLoader ^Class replacement))))
+      (doseq [[^Class holder intended accepted rejected]
+              [[old-holder original old-value new-value]
+               [new-holder replacement new-value old-value]]]
+        (let [field (.getField holder "required")
+              constructor (.getConstructor holder (into-array Class [Object]))]
+          (is (identical? intended (.getType field)))
+          (is (= accepted (.get field (.newInstance constructor (object-array [accepted])))))
+          (is (instance? ClassCastException
+                         (try (.newInstance constructor (object-array [rejected]))
+                              nil
+                              (catch java.lang.reflect.InvocationTargetException error
+                                (.getCause error))))))))))
+
+(deftest restricted-class-mismatch-test
+  ;; Resolve a real replacement Class through its loader, not a mocked lookup.
+  (testing "a stale specification fails before target transformation"
+    (let [nested-name (gensym "ReplacedNested")
+          original (eval-here (point-form nested-name))
+          replacement (eval-here (point-form nested-name))
+          target (binary-name test-ns (gensym "MismatchHolder"))
+          capture (#'loader/capture-loader
+                   target (.getClassLoader ^Class replacement)
+                   [{:field 'required :type original
+                     :descriptor (.descriptorString ^Class original)}])
+          error (try
+                  (.defineClass ^DynamicClassLoader capture target (byte-array 0) nil)
+                  nil
+                  (catch ExceptionInfo error error))]
+      (is (identical? replacement
+                      (Class/forName (.getName ^Class original) false
+                                     (.getClassLoader ^Class replacement))))
+      (is (= {:value-type/error :invalid-field :class-name target
+              :field 'required :reason :field-class-mismatch}
+             (ex-data error))))))

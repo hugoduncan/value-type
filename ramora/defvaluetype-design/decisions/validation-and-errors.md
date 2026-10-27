@@ -24,18 +24,26 @@
   symbol and the `install!` result. It throws `ex-info` when the class
   is not a value class:
   - `:not-installed`: `install!` returned `false`. The form was
-    macroexpanded with no `LOADER` binding, then evaluated. Fix:
+    macroexpanded with no `LOADER` binding, then evaluated on the ordinary
+    path (no enabled restrictions). Fix:
     evaluate the `defvaluetype` form directly.
   - `:not-value-class`: `install!` returned `true`, but the class is
     an identity class. Causes and fixes:
-    - The expansion was evaluated apart from its macroexpansion
+    - An ordinary expansion was evaluated apart from its macroexpansion
       (`(eval (macroexpand form))`). Fix: evaluate the `defvaluetype`
       form directly.
     - A nested `defvaluetype`. Fix: move the inner form out of the
       method body to the top level.
-  - Unavailable capability selects controlled fallback before loader
+  - For ordinary definitions, unavailable capability selects fallback before loader
     installation (D10 D12), not through this result check.
-- `value-type.impl.capability` checks the optional ClassFile API and
+- Restricted expansions retain `native-field-deftype`, which installs a
+  receiver-local loader during analysis. Both expansion forms support separate
+  eval, metadata-preserving source loading and function analysis then invocation.
+  Native capability checks at selection, receiving analysis and evaluation
+  reject unavailable support under every policy with
+  `:field-capability-unavailable`; they never select fallback. See the
+  [field contract](../../nil-restricted-field-design.md).
+- For ordinary definitions, `value-type.impl.capability` checks the optional ClassFile API and
   `Class.isValue`, then defines and instantiates an isolated strict-field
   probe. Only missing required APIs or an unsupported probe class version
   select fallback. Other failures propagate. `value-type.impl.runtime`
@@ -53,7 +61,7 @@
   links the class (`getDeclaredMethods`) after the define, because
   `DynamicClassLoader.defineClass` does not verify. So `VerifyError`
   comes at define time.
-- Rationale: some paths skip D3, for example
+- Rationale: some ordinary-definition paths skip D3, for example
   `(eval (macroexpand form))`. On the value-class path, never accept
   an identity class. These failures do not permit fallback.
 - Commitment: firm.

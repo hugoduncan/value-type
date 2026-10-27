@@ -3,6 +3,10 @@
   JEP 401 value class. Uses only JDK classes: `java.lang.classfile`,
   `java.lang.constant` and `java.util.function`. No Clojure compiler
   classes."
+  (:require
+   [value-type.impl.class-file :as class-file]
+   [value-type.impl.field-access :as field-access]
+   [value-type.impl.field-storage :as field-storage])
   (:import
    (java.lang.classfile AccessFlags ClassBuilder ClassElement ClassFile
                         ClassFileVersion ClassModel ClassTransform CodeBuilder
@@ -130,24 +134,32 @@
 
 ;;; Transform
 
-(defn- constructor-code ^Consumer [^ClassDesc this fields]
+(defn- constructor-code
+  "Emit writes using original argument slots and optional concrete storage types.
+   `storage-types` maps emitted field names to ClassDesc values. Casts enforce
+   type compatibility; the native field annotation must enforce null rejection."
+  ^Consumer [^ClassDesc this fields storage-types]
   (reify Consumer
     (accept [_ cb]
       (let [^CodeBuilder cb cb]
         (doseq [[^FieldModel f slot] (map vector fields (field-slots fields))]
-          (.aload cb 0)
-          (.loadLocal cb (field-type-kind f) (int slot))
-          (.putfield cb this (.stringValue (.fieldName f)) (.fieldTypeSymbol f)))
+          (let [field-name (.stringValue (.fieldName f))
+                ^ClassDesc storage-type (get storage-types field-name)]
+            (.aload cb 0)
+            (.loadLocal cb (field-type-kind f) (int slot))
+            (when storage-type
+              (.checkcast cb storage-type))
+            (.putfield cb this field-name (or storage-type (.fieldTypeSymbol f)))))
         (.aload cb 0)
         (.invokespecial cb ConstantDescs/CD_Object "<init>" ConstantDescs/MTD_void)
         (.return_ cb)))))
 
-(defn- constructor-transform ^MethodTransform [this fields]
+(defn- constructor-transform ^MethodTransform [this fields storage-types]
   (reify MethodTransform
     (accept [_ mb e]
       (let [^MethodBuilder mb mb]
         (if (instance? CodeModel e)
-          (.withCode mb (constructor-code this fields))
+          (.withCode mb (constructor-code this fields storage-types))
           (.with mb ^MethodElement e))))))
 
 (def ^:private strict-init-transform
@@ -159,7 +171,7 @@
                                       (long ACC_STRICT_INIT))))
           (.with fb ^FieldElement e))))))
 
-(defn- value-class-transform ^ClassTransform [this fields]
+(defn- value-class-transform ^ClassTransform [this fields storage-types]
   (reify ClassTransform
     (accept [_ b e]
       (let [^ClassBuilder b b]
@@ -176,20 +188,35 @@
           (.transformField b ^FieldModel e strict-init-transform)
 
           (and (instance? MethodModel e) (constructor? e))
-          (.transformMethod b ^MethodModel e (constructor-transform this fields))
+          (.transformMethod b ^MethodModel e (constructor-transform this fields storage-types))
 
           :else (.with b ^ClassElement e))))))
+
+(defn- storage-transform
+  ^ClassTransform [storage-types]
+  (reify ClassTransform
+    (accept [_ builder element]
+      (let [^ClassBuilder builder builder
+            ^ClassDesc storage-type
+            (when (instance? FieldModel element)
+              (get storage-types (.stringValue (.fieldName ^FieldModel element))))]
+        (if storage-type
+          (field-storage/emit! builder element (.descriptorString storage-type))
+          (.with builder ^ClassElement element))))))
 
 (defn ->value-class
   "Change the bytes of a Clojure `deftype` class into the bytes of a
   JEP 401 value class.
 
-  Input: the class file bytes of a `deftype` class.
+  Input: the class file bytes of a `deftype` class. Optional storage-types
+  maps emitted field names to concrete ClassDesc values for native restriction.
+  Optional class-loader resolves dynamic types during stack-map generation.
   Output: new class file bytes. The version is the latest version of
   the running JDK with the preview minor version. The class has no
   `ACC_IDENTITY` flag. Each instance field has `ACC_STRICT_INIT`. The
-  constructor writes the fields, then calls `Object.<init>`. All other
-  parts are the same as the input.
+  constructor writes the fields, then calls `Object.<init>`. Selected fields
+  use concrete storage, native restriction and constructor casts; owner field
+  accesses use the concrete descriptors. Other parts retain their behavior.
 
   Errors: when the constructor is not the `deftype` shape, throws
   `ex-info` with `:value-type/error :unexpected-constructor` and
@@ -199,12 +226,22 @@
   the `deftype` constructor shape that value-type supports) and the
   fix (use `Clojure 1.12`). Bytes that are not a class file give the
   exceptions of `java.lang.classfile`."
-  ^bytes [^bytes bs]
-  (let [cf (ClassFile/of)
-        cm (.parse cf bs)
-        entry (.thisClass cm)
-        this (.asSymbol entry)
-        fields (filterv instance-field? (.fields cm))]
-    (when-let [part (constructor-difference cm fields)]
-      (unexpected-constructor! (.replace (.asInternalName entry) \/ \.) part))
-    (.transformClass cf cm (value-class-transform this fields))))
+  (^bytes [^bytes bs]
+   (->value-class bs {}))
+  (^bytes [^bytes bs storage-types]
+   (->value-class bs storage-types nil))
+  (^bytes [^bytes bs storage-types class-loader]
+   (let [cf (class-file/configured class-loader)
+         cm (.parse cf bs)
+         entry (.thisClass cm)
+         this (.asSymbol entry)
+         fields (filterv instance-field? (.fields cm))]
+     (when-let [part (constructor-difference cm fields)]
+       (unexpected-constructor! (.replace (.asInternalName entry) \/ \.) part))
+     (.transformClass
+      cf cm
+      (.andThen
+       (.andThen (value-class-transform this fields storage-types)
+                 (storage-transform storage-types))
+       (ClassTransform/transformingMethodBodies
+        (field-access/rewrite this storage-types)))))))

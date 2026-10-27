@@ -74,6 +74,53 @@ not at the local defaults recorded in the task 009 plan. Build tests use
 both JVMs for isolated JAR consumers. Fallback tests use real processes,
 including source-free AOT consumers, and the same Scry exit/failure rules.
 
+## Verify nil-restricted fields
+
+Set `VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA` to the Java 8
+and EA3 executable paths. The following checks need no internal-package exports:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+  --namespace value-type.field-capability-test \
+  --namespace value-type.fields-test \
+  --namespace value-type.field-transfer-test \
+  --namespace value-type.field-aot-test
+```
+
+The parent needs neither preview nor exports. Children select their flags
+explicitly. These checks cover native capability, declaration errors, repeated
+policy rejection, transferred expansions and source-free AOT consumers. The AOT
+suite deletes and excludes producer sources, compiles separate Clojure and Java
+consumers, and checks incompatible receivers. Java compilation uses the compiler
+in the selected EA3 JDK; a Java runtime alone is not sufficient.
+
+Run the field semantic matrix in Bash:
+
+```bash
+export JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA"
+for flatten in + -; do
+  for mode in normal interpreter; do
+    flags=()
+    if [ "$mode" = interpreter ]; then flags+=(-J-Xint); fi
+    clojure "-J-XX:${flatten}UseFieldFlattening" "${flags[@]}" \
+      -M:test -m scry.cli \
+      --namespace value-type.restricted-fields-test \
+      --namespace value-type.impl.loader-test \
+      --namespace value-type.impl.transform-test \
+      --namespace value-type.impl.field-access-test \
+      --namespace value-type.impl.field-storage-test || exit 1
+    test -z "$(find .scry-results -type f -print)" || exit 1
+  done
+done
+```
+
+The alias supplies preview, not exports. Keep this control separate from the
+full runtime suite, which needs exports for arrays. All four runs must pass;
+stop on failure before another run replaces the failure files. These checks
+verify construction, reads, mixed primitive slots, methods and companions.
+They do not assert flat storage or establish performance. The tested builds
+are those in the fallback matrix above, not future JVM formats.
+
 ## Verify array allocation
 
 Set both cross-JVM executable paths explicitly:
@@ -231,7 +278,11 @@ classes, bundled dependencies, tests, benchmarks or build code. Packaging
 does not load or AOT-compile the library. Consumers still need the declared
 runtime dependencies. Value classes also need a supported JEP 401 Valhalla
 JDK with `--enable-preview`; other supported Clojure JVMs use the fallback
-policy. Array allocation also needs
+policy only for definitions without enabled field restrictions. Enabled
+`:nil-restricted` fields reject unavailable native support under every policy;
+they need no internal-package export. See the
+[native field contract](../usage.md#native-nil-restricted-fields).
+Array allocation also needs
 `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`; it has no fallback.
 
 ## Run the build tests

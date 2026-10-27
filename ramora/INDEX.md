@@ -18,6 +18,10 @@ limits; they do not report feature delivery status.
   `defvaluetype` macro. Purpose, context, decisions, embodiment,
   qualities, risks, assertions.
 
+- [Nil-restricted field design](nil-restricted-field-design.md): opt-in
+  `:nil-restricted` metadata, concrete value-class fields, native enforcement,
+  unsupported-JVM rejection and verification requirements.
+
 - [Value-type array design](value-type-array-design.md): native,
   null-restricted atomic allocation, sequence construction and diagnostics.
   [Semantic report](value-type-array-design/semantic-verification.md),

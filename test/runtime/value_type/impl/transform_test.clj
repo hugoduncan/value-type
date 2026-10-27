@@ -4,16 +4,19 @@
   (:require
    [clojure.java.io :as io]
    [clojure.test :refer [deftest is testing]]
+   [value-type.annotation-support :as annotation-support]
    [value-type.impl.transform :as transform]
    [value-type.test-support :refer [value?]])
   (:import
    (clojure.lang DynamicClassLoader ExceptionInfo Reflector)
    (java.io File)
    (java.lang.classfile AccessFlags Attribute AttributedElement ClassBuilder
-                        ClassFile ClassModel CodeBuilder CodeModel FieldModel
+                        ClassFile ClassModel ClassTransform CodeBuilder CodeModel FieldBuilder
+                        FieldElement FieldModel FieldTransform Annotation AnnotationElement
                         Label MethodModel Opcode Signature TypeKind)
    (java.lang.classfile.attribute CodeAttribute SourceDebugExtensionAttribute
-                                  SourceFileAttribute)
+                                  SourceFileAttribute RuntimeVisibleAnnotationsAttribute
+                                  RuntimeInvisibleAnnotationsAttribute)
    (java.lang.classfile.constantpool ClassEntry MemberRefEntry)
    (java.lang.classfile.instruction FieldInstruction InvokeInstruction
                                     LineNumber LoadInstruction LocalVariable
@@ -21,6 +24,7 @@
    (java.lang.constant ClassDesc ConstantDescs MethodTypeDesc)
    (java.nio.file Files)
    (java.nio.file.attribute FileAttribute)
+   (java.util List)
    (java.util.function Consumer)))
 
 (set! *warn-on-reflection* true)
@@ -497,15 +501,60 @@
                   (is (not (contains-fixture? rd vc dc)))
                   (is (= rd rv))))))))))
 
+(deftest integrated-storage-attributes-test
+  ;; Verify preservation through the composed transform, not only the emitter.
+  (testing "restricted storage retains annotations and unmarked descriptors"
+    (let [cf (ClassFile/of)
+          original (parse (:bytes (fixture :five-fields)))
+          annotated (.transformClass
+                     cf original
+                     (ClassTransform/transformingFields
+                      (reify FieldTransform
+                        (accept [_ builder element]
+                          (.with ^FieldBuilder builder
+                                 ^FieldElement element))
+                        (atEnd [_ builder]
+                          (.with ^FieldBuilder builder
+                                 (RuntimeVisibleAnnotationsAttribute/of
+                                  (List/of
+                                   (Annotation/of
+                                    (ClassDesc/of "java.lang.Deprecated")
+                                    (List/of (AnnotationElement/ofString "since" "field-review")
+                                             (AnnotationElement/ofBoolean "forRemoval" true))))))
+                          (.with ^FieldBuilder builder
+                                 (RuntimeInvisibleAnnotationsAttribute/of
+                                  (List/of
+                                   (Annotation/of
+                                    (ClassDesc/of "storage.Marker")
+                                    (List/of (AnnotationElement/ofString "value" "retained")
+                                             (AnnotationElement/ofInt "revision" 17))))))))))
+          result (parse (transform/->value-class annotated {"e" (ClassDesc/of "storage.Value")}))]
+      (is (= ["I" "J" "D" "Z" "Lstorage/Value;"]
+             (mapv #(.stringValue (.fieldType ^FieldModel %))
+                   (filterv (complement static?) (.fields result)))))
+      (doseq [^FieldModel field (filterv (complement static?) (.fields result))]
+        (is (= (cond-> {["Ljava/lang/Deprecated;"
+                         {"since" "field-review" "forRemoval" true}] 1}
+                 (= "e" (.stringValue (.fieldName field)))
+                 (assoc ["Ljdk/internal/vm/annotation/NullRestricted;" {}] 1))
+               (annotation-support/annotation-contents field RuntimeVisibleAnnotationsAttribute)))
+        (is (= {["Lstorage/Marker;" {"value" "retained" "revision" 17}] 1}
+               (annotation-support/annotation-contents field RuntimeInvisibleAnnotationsAttribute)))))))
+
 ;;; Verification 3: errors
 
 (defn- thrown-data
   "Return `[message data]` of the ex-info that `->value-class` throws
   for `bs`."
   [bs]
-  (try (transform/->value-class bs)
-       nil
-       (catch ExceptionInfo e [(ex-message e) (ex-data e)])))
+  (let [failures (mapv (fn [storage-types]
+                         (try (transform/->value-class bs storage-types)
+                              nil
+                              (catch ExceptionInfo e [(ex-message e) (ex-data e)])))
+                       [{} {"v" (ClassDesc/of "storage.Value")}])]
+    (is (= (first failures) (second failures))
+        "storage selection must not bypass original constructor validation")
+    (first failures)))
 
 (defn- check-error [bs class-name part]
   (let [[msg data] (thrown-data bs)]
@@ -607,3 +656,65 @@
         (is (bytes? out))
         (when out
           (is (= (value-ctor-code in) (ctor-code-view (parse out)))))))))
+
+(deftest restricted-constructor-code-test
+  ;; Check the emitted contract; native-storage-round-trip checks argument values
+  ;; and nil/type rejection without requiring a particular instruction sequence.
+  (testing "concrete writes retain the original constructor signature"
+    (let [original (parse (:bytes (fixture :five-fields)))
+          fields (filterv (complement static?) (.fields original))
+          this (.asSymbol (.thisClass original))
+          storage-type (ClassDesc/of "storage.Value")
+          result (parse
+                  (.build
+                   (ClassFile/of) this
+                   (reify Consumer
+                     (accept [_ output]
+                       (.withMethodBody
+                        ^ClassBuilder output "<init>"
+                        (.methodTypeSymbol (ctor original)) ClassFile/ACC_PUBLIC
+                        ^Consumer (#'transform/constructor-code this fields {"e" storage-type}))))))
+          elements (ctor-elements result)
+          writes (into {}
+                       (comp (filter #(and (instance? FieldInstruction %)
+                                           (= Opcode/PUTFIELD (.opcode ^FieldInstruction %))))
+                             (map (fn [^FieldInstruction instruction]
+                                    [(.stringValue (.name instruction))
+                                     (.stringValue (.type instruction))])))
+                       elements)]
+      (is (= (method-view (ctor original)) (method-view (ctor result))))
+      (is (= {"a" "I" "b" "J" "c" "D" "d" "Z" "e" "Lstorage/Value;"}
+             writes))))
+  (testing "empty storage types retain the original constructor signature"
+    (let [original (parse (:bytes (fixture :five-fields)))
+          result (parse (transform/->value-class (:bytes (fixture :five-fields))))]
+      (is (= (method-view (ctor original)) (method-view (ctor result)))))))
+
+(deftest native-storage-round-trip
+  ;; Load real transformed classes to verify casts, native rejection and reads.
+  (testing "restricted storage retains the original constructor and method behavior"
+    (let [loader (DynamicClassLoader. (.getContextClassLoader (Thread/currentThread)))
+          nested-name (str "nativefields.Nested" (gensym))
+          nested-bytes (build-class nested-name "(J)V"
+                                    (fn [this ^CodeBuilder code]
+                                      (super-call! code)
+                                      (write-v! this code)
+                                      (.return_ code)))
+          nested (.defineClass loader nested-name (transform/->value-class nested-bytes) nil)
+          value (.newInstance (.getConstructor nested (into-array Class [Long/TYPE]))
+                              (object-array [7]))
+          {:keys [bytes class]} (fixture :five-fields)
+          transformed (transform/->value-class bytes {"e" (ClassDesc/of nested-name)})
+          holder (.defineClass loader (.getName ^Class class) transformed nil)
+          ctor (.getConstructor holder (into-array Class [Integer/TYPE Long/TYPE Double/TYPE Boolean/TYPE Object]))
+          instance (.newInstance ctor (object-array [(int 7) 8 2.5 true value]))]
+      (is (= nested (.getType (.getField holder "e"))))
+      (is (= value (.get (.getField holder "e") instance)))
+      (is (= [7 8 2.5 true value 3] (probe instance 3)))
+      (doseq [[argument expected] [[nil NullPointerException] [(Object.) ClassCastException]]]
+        (let [failure (try
+                        (.newInstance ctor (object-array [(int 7) 8 2.5 true argument]))
+                        nil
+                        (catch java.lang.reflect.InvocationTargetException error
+                          (.getCause error)))]
+          (is (instance? expected failure)))))))
