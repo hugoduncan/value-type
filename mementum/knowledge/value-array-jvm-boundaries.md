@@ -12,11 +12,15 @@ depends-on: []
 Source: task `012-verify-value-arrays`, its design, plan, steps and
 implementation notes. Key commits: discovery `860286f`, allocation `8f722fb`,
 diagnostics `6eb7555`, layout comparison `b7c1fdb`, startup `77d967b`, report
-`3f78aaf` and selected-slot checks `44f6592`.
+`3f78aaf` and selected-slot checks `44f6592`. Task
+`013-value-array-allocation` adds the public adapter (`73686bb`), native
+semantics (`40099e9`), fresh-JVM matrix (`6db5106`) and native-failure
+regression (`3408e0b`).
 
 These observations apply to Valhalla `27-jep401ea3+1-1`, Clojure 1.12.6,
-macOS aarch64 and the tested fixtures. Recheck on another EA build. This is
-JVM evidence, not an implemented public array API or a universal JDK contract.
+macOS aarch64 and the tested fixtures. Recheck on another EA build. Public
+allocation is implemented; public diagnostics remain separate work. Neither
+the probes nor the public tests establish a universal JDK contract.
 
 ## Diagnostic access is not allocation capability
 
@@ -34,6 +38,40 @@ allocation is unresolved, not an observed native allocator rejection.
 
 Keep API presence, access, value creation and allocation as separate checks.
 Do not infer an array capability from the class fallback detector alone.
+
+## Keep optional access lazy and operation-specific
+
+Requiring `value-type.array` must not resolve optional JDK APIs or require
+preview or exports. The adapter caches allocation prerequisites and methods
+per loaded library runtime, never caller arrays or seeds. Allocation must
+not depend on diagnostic methods or the class-fallback warning policy.
+There is no ordinary-array fallback.
+
+Use `MethodHandles.lookup().unreflect` to check allocator access without
+allocating a probe array or changing module access. Caller lookup uses the
+export to unnamed modules; `publicLookup` does not provide that access.
+Catch only identified discovery/access failures as capability absence.
+Native eligibility rejection and unexpected failures must remain visible.
+
+Public validation runs in this order: capability, component, length, seed.
+This lets unsupported-JVM controls call with ordinary placeholders without
+loading value fixtures. On a capable JVM, compare integer bounds before
+conversion to `int`; test the maximum through validation rather than a
+near-heap-limit allocation. A zero-length call still checks the seed.
+
+## Test native failures below public validation
+
+Successful allocation and invalid public inputs do not test reflective
+exception propagation. Invoke the real adapter with a valid value component
+and seed but an `int` length of -1. EA3 throws `IllegalArgumentException`.
+Assert that the original exception escapes, not `InvocationTargetException`
+or an unavailable-capability error. Then allocate successfully through the
+public API in the same runtime to check that rejection did not poison the
+capability cache.
+
+The task 013 regression failed when cause unwrapping was removed and passed
+when restored. This gives bounded coverage without mocks or forced memory
+exhaustion. It does not directly test out-of-memory behavior.
 
 ## Empty allocation still validates the seed
 
