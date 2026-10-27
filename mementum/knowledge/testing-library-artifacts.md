@@ -76,6 +76,26 @@ Valhalla override. Check each suite's launcher contract when changing CI.
 Source: task `011-release-workflow` plan-review handoff (`1c72284`), artifact
 tests in `0acef33`, and explicit build-suite selection in workflow `0589c16`.
 
+## Extract consumer programs without expanding the classpath
+
+Keep a growing consumer program in a dedicated test-resource script rather
+than a large quoted form inside process setup. Copy that script into the
+isolated temporary directory and pass its absolute path to `clojure.main`.
+Do not add checkout source, test or resource directories to the child
+classpath just to load the script. Keep the JAR-only classpath assertions
+and exact resource-origin checks.
+
+Separate consumer-local checks from the parent runner's configuration and
+expected results. Preserve execution order: unsupported-operation controls
+must run before value-type creation, so fixtures cannot hide eager optional
+dependencies or alter the state under test. Preserve exact result assertions
+across the supported and unsupported JVM configurations.
+
+Source: task `015-value-array-sequence-construction` code-shape review and
+follow-up `1032e9c`. The script is
+`test-resources/build/isolated-consumer.clj`; the parent remains in
+`test-build/build_test.clj`. The full build suite passed after extraction.
+
 ## Direct function calls do not verify the CLI contract
 
 Calling `build/jar` through `clojure.main` on the build-test classpath
