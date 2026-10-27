@@ -89,7 +89,11 @@ clojure -J-Dvalue-type.fallback=error -M:dev
 ```
 
 See the [usage guide](doc/usage.md) for field comparison rules, fallback
-policy, AOT limits and error handling.
+policy, AOT limits and error handling. For native null-restricted atomic
+arrays with an explicit initial value, see
+[value-array allocation](doc/usage.md#value-array-allocation). Allocation needs
+an internal-package export in addition to preview; it has no ordinary-array
+fallback.
 
 ## Performance
 

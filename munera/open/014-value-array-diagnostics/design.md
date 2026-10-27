@@ -8,7 +8,7 @@ must fail safely before any unsafe native call.
 
 ## Context and dependencies
 
-Depends on [task 013](../013-value-array-allocation/design.md) for the public
+Depends on [task 013](../../closed/013-value-array-allocation/design.md) for the public
 namespace, JDK adapter boundary and allocation fixtures. Sequence construction
 is not required.
 

@@ -1,7 +1,7 @@
 # Value-type behavior and limitations
 
 See the [README](../README.md) for installation and a quick start, and the
-[API reference](API.md) for the macro contract.
+[API reference](API.md) for public API contracts.
 
 ## Fallback policy
 
@@ -107,3 +107,71 @@ Other differences:
   with the preview minor version. It loads only on the same JDK feature
   release with preview enabled. Ordinary fallback output has neither of
   these value-class requirements.
+
+## Value-array allocation
+
+`value-type.array/make-array` allocates a one-dimensional native,
+null-restricted atomic array. This experimental API is verified on Valhalla
+`27-jep401ea3+1-1` with Clojure 1.12.6. Select that JVM and start with both
+flags:
+
+```sh
+export JAVA_CMD=<valhalla-jdk-home>/bin/java
+clojure -J--enable-preview \
+  -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M
+```
+
+```clojure
+(require '[value-type.core :refer [defvaluetype]]
+         '[value-type.array :as va])
+
+(defvaluetype ArrayPoint [^long x])
+(def points (va/make-array ArrayPoint 3 (ArrayPoint. 0)))
+(alength points)                         ;=> 3
+(.-x (aget points 2))                    ;=> 0
+(aset points 1 (ArrayPoint. 7))
+(.-x (aget points 1))                    ;=> 7
+```
+
+Every slot starts with the supplied initial value. The component must be a
+non-primitive runtime value class, not an identity class. It need not come
+from `defvaluetype`, but the JVM makes the final allocation decision.
+Length must be an integer from zero through `Integer/MAX_VALUE`. A valid
+length does not guarantee sufficient memory. The initial value must be
+non-null and compatible with the component, even when length is zero.
+
+The result works with ordinary Clojure and Java array operations. Later
+null stores throw `NullPointerException`; incompatible stores throw
+`ArrayStoreException`. These are native exceptions, not library validation
+errors. The caller owns the mutable slots after return; the library retains
+no array. Atomic element access does not provide safe publication,
+synchronization or atomic compound updates.
+
+Validation stops at the first error in this order. Each library validation
+error is `ex-info` with a `:value-type/error` key:
+
+| Order | Key | Meaning |
+| --- | --- | --- |
+| 1 | `:array-unavailable` | Required JVM capability, API or access is absent. |
+| 2 | `:invalid-array-component` | The component is not a non-primitive value class. |
+| 3 | `:invalid-array-length` | The length is not an integer in the accepted range. |
+| 4 | `:invalid-array-element` | The initial value is null or incompatible. |
+
+Error data includes `:reason` and relevant `:component` and `:length`
+context. Available underlying causes are retained. Native allocation
+rejection, unexpected failures and JVM errors propagate; they do not mean
+that capability is absent.
+
+Requiring `value-type.array` is safe on Java 8 and on Valhalla without
+preview or exports. Allocation capability is checked lazily and cached per
+loaded library runtime; startup configuration is fixed. Unsupported calls
+report `:array-unavailable`, even if their inputs are also invalid.
+There is no ordinary-array fallback or warning policy. Array allocation is
+independent of `value-type.fallback`; that property still controls class
+creation through `defvaluetype`.
+
+Flattening is not guaranteed. A non-flat restricted atomic array is a valid
+result, including with array flattening disabled. Support for other JVM
+builds or untested value classes is not implied. Public array diagnostics
+and sequence construction are not yet implemented. No clone, copy or
+performance guarantee is made.

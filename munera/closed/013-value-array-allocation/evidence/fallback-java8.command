@@ -1,0 +1,1 @@
+clojure -M:fallback-test 

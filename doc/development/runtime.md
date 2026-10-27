@@ -7,7 +7,8 @@ Run commands from the repository root.
 ## JDK requirement
 
 The value-path tests need a JDK with JEP 401 value classes: the Valhalla
-early-access build. Download it from https://jdk.java.net/valhalla/.
+early-access build `27-jep401ea3+1-1`. Array tests also need its `javac`
+and the internal-package export shown below. Download it from https://jdk.java.net/valhalla/.
 Other JDKs do not have value classes. On another JDK, the environment
 test fails and names the cause.
 
@@ -27,11 +28,13 @@ on `PATH` before `JAVA_HOME`.
 ## Run the tests
 
 ```sh
-clojure -M:test -m scry.cli
+clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli
 ```
 
 The command exits 0 only when at least one test runs and all tests
-pass. Failure details go to `.scry-results/`.
+pass. Failure details go to `.scry-results/`. Each run replaces that directory;
+retain results before the next run. The `:test` alias enables preview, but
+does not add the export. Do not use it for preview-free controls.
 
 ## Verified fallback matrix
 
@@ -51,6 +54,39 @@ and `VALUE_TYPE_VALHALLA_JAVA` to their full executable paths when they are
 not at the local defaults recorded in the task 009 plan. Build tests use
 both JVMs for isolated JAR consumers. Fallback tests use real processes,
 including source-free AOT consumers, and the same Scry exit/failure rules.
+
+## Verify array allocation
+
+Set both cross-JVM executable paths explicitly:
+
+```sh
+export VALUE_TYPE_BASELINE_JAVA=<java8-home>/bin/java
+export VALUE_TYPE_VALHALLA_JAVA=<valhalla-jdk-home>/bin/java
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test --namespace value-type.array-matrix-test
+```
+
+This test starts fresh JVMs for six configurations: Java 8; EA3 without
+preview, with and without exports; EA3 with preview but no exports; EA3
+with preview and exports; and the supported configuration with array
+flattening disabled. Each configuration tests all three class-fallback
+policies and both public namespace require orders. Child flags are explicit;
+the parent does not need preview or exports. Unsupported configurations
+check safe loading and repeated capability errors, not value allocation.
+The full fallback commands above also include this matrix.
+
+Run native semantics and layout checks with flattening disabled:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure \
+  -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
+  -J-XX:-UseArrayFlattening -M:test -m scry.cli \
+  --namespace value-type.array-test --namespace value-type.array-layout-test
+```
+
+Repeat with `-J-XX:+UseArrayFlattening` for the enabled control. A non-flat
+restricted atomic array is valid. These checks use real JVM allocation and
+stores; they do not establish support for other JDK builds. See the
+[allocation guide](../usage.md#value-array-allocation) for the public contract.
 
 ## Build a local JAR
 
@@ -94,7 +130,8 @@ classes, bundled dependencies, tests, benchmarks or build code. Packaging
 does not load or AOT-compile the library. Consumers still need the declared
 runtime dependencies. Value classes also need a supported JEP 401 Valhalla
 JDK with `--enable-preview`; other supported Clojure JVMs use the fallback
-policy.
+policy. Array allocation also needs
+`--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`; it has no fallback.
 
 ## Run the build tests
 
@@ -107,7 +144,10 @@ clojure -M:build-test -m scry.cli --dir test-build
 
 This separate suite checks the build contract in temporary projects and
 runs an isolated consumer with only the built JAR and runtime dependency
-JARs. It selects `test-build/`; it does not replace the library test
+JARs. The supported consumer gets preview and the internal-value export.
+Java 8 and preview-disabled EA3 consumers check safe loading and unavailable
+allocation without those flags. Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
+the supported consumer uses `JAVA_CMD`. It selects `test-build/`; it does not replace the library test
 command above. Exit status and failure files follow the same Scry rules.
 
 ## Run the benchmark
@@ -149,10 +189,10 @@ measurement, not a performance gate.
 ## Start a REPL
 
 ```sh
-clojure -M:test:nrepl
+clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test:nrepl
 ```
 
-The REPL has `--enable-preview` and the test path. Run the tests in
+The REPL has preview, the internal-value export and the test path. Run the tests in
 the REPL with:
 
 ```clojure

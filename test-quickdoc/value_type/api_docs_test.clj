@@ -11,11 +11,11 @@
 (deftest public-reference-test
   ;; Check the rendered contract, not a snapshot of the whole document.
   (let [markdown (docs/generated-markdown)]
-    (testing "only the user-facing macro is documented"
-      (is (= ["value-type.core/defvaluetype"]
+    (testing "only the public macro and allocator are documented"
+      (is (= ["value-type.array/make-array" "value-type.core/defvaluetype"]
              (mapv second (re-seq #"## <a name=\"([^\"]+)\"" markdown))))
       (doseq [internal ["check-value-class" "is-value-method" "mutable-fields"
-                        "value-type.impl."]]
+                        "value-type.impl." "checked-length"]]
         (is (not (str/includes? markdown internal)) internal)))
     (testing "arguments and representation boundaries remain explicit"
       (doseq [text ["(defvaluetype name [& fields] & opts+specs)"
@@ -25,6 +25,15 @@
                     "policy on invocation" "direct class access"
                     "Value artifacts do not convert" "no mutable fields"
                     "`:volatile-mutable`" "`:unsynchronized-mutable`"]]
+        (is (str/includes? markdown text) text)))
+    (testing "allocation arguments and experimental limits remain explicit"
+      (doseq [text ["(make-array component length initial)"
+                    "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+                    "component, length and initial value in that order"
+                    "even at length zero" "Native allocation failures propagate"
+                    "caller owns the mutable slots" "Flattening is not guaranteed"
+                    "safe publication or compound-update safety"
+                    "https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L"]]
         (is (str/includes? markdown text) text)))
     (testing "generation instructions and navigation are present"
       (doseq [text ["generated from source docstrings" "Do not edit"
@@ -67,7 +76,8 @@
         bytes #(vec (Files/readAllBytes (.toPath output)))]
     (try
       (doseq [path ["deps.edn" "bb.edn" "bb/value_type/quality.clj"
-                    "bb/value_type/api_docs.clj" "src/value_type/core.clj"]]
+                    "bb/value_type/api_docs.clj" "src/value_type/core.clj"
+                    "src/value_type/array.clj"]]
         (let [destination (io/file dir path)]
           (io/make-parents destination)
           (io/copy (io/file path) destination)))

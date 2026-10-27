@@ -1,7 +1,8 @@
 # Array verification and evolution
 
 Status: direct-JVM verification complete for the recorded EA3 matrix; public
-API verification remains proposed.
+allocation tests pass in task 013, with final acceptance passed. Public
+diagnostics and sequence construction remain unimplemented.
 See the [design](../value-type-array-design.md) and [decisions](decisions.md).
 
 ## Observed qualities
@@ -36,6 +37,25 @@ Null crashes all three diagnostics; String and primitive long arrays return
 false. These native outcomes do not replace the proposed public input domain.
 Value status, allocation eligibility, null restriction, atomicity and physical
 flattening are separate observations. No new performance measurements were made.
+
+## Public allocation verification
+
+[Task 013 implementation notes](../../munera/closed/013-value-array-allocation/implementation.md)
+record commands and structured Scry summaries for the implemented allocator:
+
+- Native fixtures at lengths 0, 1 and 3, selected-slot Clojure and Java stores,
+  and an independent Java value class: 10 tests, 399 assertions per layout.
+- Six startup configurations, three fallback policies and both namespace
+  require orders: 36 child JVMs, 612 assertions.
+- Existing fallback suites on Java 8 and EA3 preview off/on: 17 tests each.
+- JAR-only supported allocation and unsupported loading: 9 build tests,
+  101 assertions, including the existing macro checks.
+
+These checks use Temurin `1.8.0_492-b09` and Valhalla `27-jep401ea3+1-1`,
+Clojure 1.12.6, macOS aarch64. They do not establish broader JDK support.
+[Final combined regression and quality acceptance](../../munera/closed/013-value-array-allocation/acceptance.md)
+passed. The plan below covers the full design; sequence and diagnostic checks
+remain future work.
 
 ## Fitness conditions
 
@@ -86,9 +106,9 @@ Do not require a speed ratio as API acceptance.
 | ID | Status | Relation and scope | Basis / confidence |
 |---|---|---|---|
 | A1 | observed | Internal restricted allocation permits flat one-long storage on the recorded EA setup. | Probe and retained reports; high within that scope. |
-| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Task 012 Clojure/Java store evidence; public integration remains untested. |
-| A3 | intended | D2 preserves null restriction across supported construction paths. | No fallback decision; not implemented. |
-| A4 | intended | D3 isolates optional JDK dependencies from namespace loading. | Adapter boundary; verify on fallback JVMs. |
+| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Task 012 evidence and task 013 selected-slot public API tests. |
+| A3 | observed | D2 preserves null restriction for explicit-seed allocation. | Task 013 policy matrix; sequence construction remains pending. |
+| A4 | observed | D3 isolates optional JDK dependencies from namespace loading. | Task 013 Java 8 and preview-disabled EA3 loading controls. |
 | A5 | observed | Direct explicit-seed allocation supports length zero for tested value classes. | Task 012 allocation evidence; seed validation still applies. |
 | A6 | inferred | Sequence construction can allocate more than the direct probe. | D4 temporary storage; amount unmeasured. |
 

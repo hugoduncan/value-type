@@ -8,7 +8,7 @@ Preserve input order and avoid repeated input traversal.
 
 ## Context and dependencies
 
-Depends on [task 013](../013-value-array-allocation/design.md), which supplies
+Depends on [task 013](../../closed/013-value-array-allocation/design.md), which supplies
 the allocator and capability boundary. The recommended order places
 [task 014](../014-value-array-diagnostics/design.md) first, but diagnostics are
 not an implementation or acceptance dependency.

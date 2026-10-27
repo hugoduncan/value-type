@@ -1,8 +1,9 @@
 # Value-type array design
 
-Status: proposed; not implemented. The existing spike supplies evidence, not
-an implemented library API. [Task 012](../munera/closed/012-verify-value-arrays/design.md)
-covers verification and explanation before API implementation.
+Status: explicit-seed allocation is implemented in task 013; final acceptance
+passed. Diagnostics and sequence construction remain proposed.
+[Task 012](../munera/closed/012-verify-value-arrays/design.md) supplies the
+direct-JVM evidence, separate from public API tests.
 
 This design uses the architecture model in
 `~/projects/hugoduncan/architecture/ramora/INDEX.md`:
@@ -60,9 +61,12 @@ multidimensional builders, indexed generators, non-atomic arrays, class-layout
 changes and guarantees about copying through other APIs. Existing Clojure
 `make-array` and `into-array` remain the portable nullable alternatives.
 
-## Proposed contract
+## Contract and delivery status
 
 The provider is `value-type.array`; names are local to that namespace.
+Only `make-array` is implemented. The `into-array` and `array-info` forms
+below describe pending APIs, not callable library functions. For current use,
+see the [allocation guide](../doc/usage.md#value-array-allocation).
 
 ```clojure
 (require '[value-type.array :as va])
@@ -94,19 +98,22 @@ value-class semantics.
 ## Implementation stages
 
 Each stage includes its public-contract tests, relevant fresh-JVM and packaged
-consumer checks, and documentation. These tasks have designs only; execution
-planning is pending.
+consumer checks, and documentation.
 
-1. [013 Allocation](../munera/open/013-value-array-allocation/design.md):
-   explicit-seed construction and the safe capability boundary.
+1. [013 Allocation](../munera/closed/013-value-array-allocation/design.md):
+   explicit-seed construction and the safe capability boundary are implemented.
+   Native semantics, the fresh-JVM matrix and packaged consumers pass.
+   [Final acceptance](../munera/closed/013-value-array-allocation/acceptance.md)
+   passed, including combined regression and quality checks.
 2. [014 Diagnostics](../munera/open/014-value-array-diagnostics/design.md):
-   actual layout properties and validation before native inspection.
+   actual layout properties and validation before native inspection. Design only.
 3. [015 Sequence construction](../munera/open/015-value-array-sequence-construction/design.md):
    one input traversal, validation and copying with explicit or inferred seeds.
+   Design only.
 
 Stages 2 and 3 depend on stage 1. Stage 3 does not depend on stage 2.
-Task 012 supplies the completed direct-JVM evidence; public integration remains
-unverified until these stages are implemented.
+Task 012 supplies the completed direct-JVM evidence. Task 013 records public
+allocation checks; tasks 014 and 015 still need execution plans.
 
 ## Design and evidence
 
@@ -123,7 +130,8 @@ unverified until these stages are implemented.
 - [Controlled fallback](defvaluetype-design/fallback.md): existing class
   policy, which this design does not change.
 
-The contract and decisions remain proposals. Task 012 verified zero-length
+The allocation contract is implemented; the other APIs remain proposals.
+Task 012 verified zero-length
 allocation with valid seeds and diagnostic outcomes on the recorded EA3 build.
 Null diagnostic inputs crash that JVM; public validation must reject them
 before native invocation. See the remaining [implementation gates](value-type-array-design/verification.md#implementation-gates).

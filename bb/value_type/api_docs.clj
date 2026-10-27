@@ -23,7 +23,7 @@
   {:outfile false
    :github/repo "https://github.com/hugoduncan/value-type"
    :git/branch "master"
-   :source-paths ["src/value_type/core.clj"]
+   :source-paths ["src/value_type/core.clj" "src/value_type/array.clj"]
    :overrides {'value-type.core {'check-value-class {:no-doc true}}}})
 
 (defn generated-markdown

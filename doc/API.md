@@ -9,8 +9,38 @@ See the [usage guide](usage.md) for detailed behavior and error handling.
 Regenerate from the repository root with `bb api-docs`. Check without writing with `bb api-docs --check`.
 
 # Table of contents
+-  [`value-type.array`](#value-type.array)  - Native null-restricted atomic value arrays (experimental Valhalla API).
+    -  [`make-array`](#value-type.array/make-array) - Allocate a native null-restricted atomic array with every slot set to initial.
 -  [`value-type.core`](#value-type.core)  - Define JEP 401 value classes with [<code>defvaluetype</code>](#value-type.core/defvaluetype), a <code>deftype</code> compatible macro.
     -  [`defvaluetype`](#value-type.core/defvaluetype) - As <code>deftype</code> (see its docstring for syntax, options, specs, the <code>-&gt;name</code> factory and the import).
+
+-----
+# <a name="value-type.array">value-type.array</a>
+
+
+Native null-restricted atomic value arrays (experimental Valhalla API).
+
+
+
+
+## <a name="value-type.array/make-array">`make-array`</a>
+``` clojure
+(make-array component length initial)
+```
+Function.
+
+Allocate a native null-restricted atomic array with every slot set to initial.
+
+   Requires a supported Valhalla JVM, `--enable-preview` and
+   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Checks capability,
+   component, length and initial value in that order. The component must be a
+   non-primitive runtime value class. Length must be an integer from zero
+   through Integer/MAX_VALUE. A compatible non-null initial value is required
+   even at length zero. Native allocation failures propagate.
+
+   The caller owns the mutable slots. Flattening is not guaranteed. Atomic
+   element access does not provide safe publication or compound-update safety.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L14-L40">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>

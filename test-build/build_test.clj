@@ -127,6 +127,7 @@
         (throw (ex-info "Cannot prepare Git fixture" result)))))
   (doseq [path ["target/stale.txt" "target/classes/stale.class"
                 "test/development.clj" "bench/development.clj"
+                "test-resources/value_type/ArrayAccess.java"
                 "dev/release/excluded.clj" "test-release/excluded_test.clj"]]
     (let [file (io/file directory path)]
       (io/make-parents file)
@@ -254,7 +255,9 @@
                                            (map #(.getName %)))
                                  (enumeration-seq (.entries archive)))]
                 (testing "the archive contains only sources, license and metadata"
-                  (is (= expected actual)))
+                  (is (= expected actual))
+                  (is (every? actual ["value_type/array.clj"
+                                      "value_type/impl/array.clj"])))
                 (testing "all source and license bytes are preserved"
                   (doseq [[path file] payload]
                     (when-let [entry (.getJarEntry archive path)]
@@ -296,12 +299,25 @@
                 (pr-str
                  '(do
                     (require '[clojure.java.io :as io])
-                    (let [resource (io/resource "value_type/core.clj")]
+                    (doseq [path ["value_type/core.clj" "value_type/array.clj"
+                                  "value_type/impl/array.clj"]
+                            :let [resource (io/resource path)]]
                       (assert (= "jar" (.getProtocol resource)))
                       (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
                                  (.getCanonicalFile
                                   (io/file (.toURI (.getJarFileURL (.openConnection resource))))))))
-                    (require '[value-type.core :refer [defvaluetype]])
+                    (require '[value-type.core :refer [defvaluetype]]
+                             '[value-type.array :as va])
+                    ;; Controls call allocation before defining any fallback fixture.
+                    (def array-result
+                      (when-not (Boolean/getBoolean "consumer.arrays")
+                        (mapv (fn [_]
+                                (try
+                                  (va/make-array nil -1 nil)
+                                  :unexpected-success
+                                  (catch clojure.lang.ExceptionInfo e
+                                    (:value-type/error (ex-data e)))))
+                              (range 2))))
                     (defvaluetype Point [^long x ^long y])
                     (let [a (Point. 3 7)
                           b (Point. 11 13)]
@@ -310,14 +326,39 @@
                                             (.invoke predicate (class a) (object-array 0)))
                             :equal-copy? (= a (->Point 3 7))
                             :factory-class? (= Point (class (->Point 3 7)))
-                            :fields [(.-x a) (.-y a) (.-x b) (.-y b)]}))))]
+                            :fields [(.-x a) (.-y a) (.-x b) (.-y b)]
+                            :arrays
+                            (if (Boolean/getBoolean "consumer.arrays")
+                              (let [values (va/make-array Point 3 a)
+                                    initial? (= [a a a] (vec values))
+                                    _ (aset values 1 b)
+                                    rejected (mapv
+                                              (fn [value]
+                                                (try
+                                                  (aset values 0 value)
+                                                  :unexpected-success
+                                                  (catch NullPointerException _ :null)
+                                                  (catch ArrayStoreException _ :type)))
+                                              [nil "wrong"])]
+                                {:component? (= Point (.getComponentType (class values)))
+                                 :length (alength values)
+                                 :initial? initial?
+                                 :stored? (= b (aget values 1)
+                                             (java.lang.reflect.Array/get values 1))
+                                 :rejected rejected
+                                 :contents? (= [a b a] (vec values))})
+                              array-result)}))))]
             (testing "the consumer classpath contains only artifact and runtime JARs"
               (is (seq runtime-paths))
               (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
                           classpath)))
             (doseq [[java options expected-value?]
                     [[(str (System/getProperty "java.home") "/bin/java")
-                      ["--enable-preview"] true]
+                      ["--enable-preview"
+                       "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
+                       "-Dconsumer.arrays=true"] true]
+                     [(str (System/getProperty "java.home") "/bin/java")
+                      [] false]
                      [(or (System/getenv "VALUE_TYPE_BASELINE_JAVA")
                           "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/bin/java")
                       [] nil]]]
@@ -335,7 +376,12 @@
                   (when (zero? (:exit result))
                     (is (= {:value-class? expected-value?
                             :equal-copy? (boolean expected-value?)
-                            :factory-class? true :fields [3 7 11 13]}
+                            :factory-class? true :fields [3 7 11 13]
+                            :arrays (if expected-value?
+                                      {:component? true :length 3 :initial? true
+                                       :stored? true :rejected [:null :type]
+                                       :contents? true}
+                                      [:array-unavailable :array-unavailable])}
                            (edn/read-string (last (str/split-lines (:out result)))))
                         result)))))))))))
 

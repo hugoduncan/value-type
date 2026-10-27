@@ -43,10 +43,11 @@ focused tests are in `test-quickdoc/`. See the development guide
 [commands and check scopes](../../../doc/development/quality-checks.md#quality-checks), including
 excluded paths and warning/error handling.
 
-`doc/API.md` is generated from `src/value_type/core.clj` docstrings and
-`bb/value_type/api_docs.clj` configuration and introductory prose. It documents
-`defvaluetype`, not private vars, implementation namespaces or the expansion
-helper `check-value-class`. Run `bb api-docs` to regenerate it, or
+`doc/API.md` is generated from docstrings in `src/value_type/core.clj` and
+`src/value_type/array.clj`, with configuration and introductory prose from
+`bb/value_type/api_docs.clj`. It documents the `value-type.core/defvaluetype`
+macro and the `value-type.array/make-array` function, not private vars,
+implementation namespaces or the expansion helper `check-value-class`. Run `bb api-docs` to regenerate it, or
 `bb api-docs --check` to detect missing or stale output without writing.
 Change the sources, not the generated file.
 
@@ -85,10 +86,22 @@ Source-only library packaging is distinct from
 [D7 consumer AOT output](../decisions.md#d7-aot-output-deployment).
 Consumers can still compile their value types ahead of time; those
 class files require the same JDK feature release used to compile them.
-JAR consumers need runtime dependencies. Value-class consumers need a
-supported JEP 401 Valhalla JDK with `--enable-preview`. Fallback consumers
-need only the supported Clojure runtime and ordinary JDK APIs. Isolated
-source-JAR consumers passed on Java 8 and preview-enabled Valhalla 27 EA.
+JAR consumers need runtime dependencies. Value-class creation needs a
+supported JEP 401 Valhalla JDK with `--enable-preview`. Value-array allocation
+also needs `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
+Allocation has no ordinary-array fallback. Fallback class creation and namespace
+loading need only the supported Clojure runtime and ordinary JDK interfaces, subject
+to the class fallback policy. See the usage guide
+[value-array requirements](../../../doc/usage.md#value-array-allocation).
+
+Isolated source-JAR consumers passed on Valhalla 27 EA with preview and exports:
+allocation, initial contents, native reads and writes, and rejected null and
+wrong-type stores. Java 8 and preview-disabled EA consumers passed namespace
+loading and repeated unavailable-allocation checks. All three configurations
+retain the macro checks and verify that the core and both array source resources
+resolve from the exact built JAR, without checkout sources. See the development
+[build-test guide](../../../doc/development/runtime.md#run-the-build-tests).
+
 Fallback AOT fixes identity representation and enforces receiving policy where
 the form is evaluated, including on capable JVMs. Top-level forms enforce
 policy during namespace initialization. Forms inside functions allow namespace

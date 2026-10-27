@@ -97,3 +97,11 @@ Public diagnostics (task 014), sequence construction (task 015), indexed
 builders, non-atomic arrays, collection wrappers, concurrency stress, clone
 or copy guarantees, wider-layout optimization and new performance studies.
 Direct JDK inspection may verify tests without adding a public diagnostic API.
+
+## Implementation status
+
+The allocator, native semantic tests and fresh-JVM matrix are implemented
+(slices 1–3). JAR-only consumers also pass (slice 4). The contract is unchanged.
+The usage guide, README allocation link, generated API and runtime guidance
+are complete. Architecture status and release notes now distinguish allocation from the
+pending APIs. Final acceptance passed; see [acceptance.md](acceptance.md).

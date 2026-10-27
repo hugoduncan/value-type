@@ -132,18 +132,23 @@ The macro creates JEP 401 value objects
 
 ## Next
 
-- Array implementation is divided into task designs 013 (allocation), 014
-  (diagnostics) and 015 (sequence construction), linked from `munera/plan.md`
-  and `ramora/value-type-array-design.md`. Both 014 and 015 depend on 013;
-  015 does not depend on 014. Plans and execution are pending. Task 012's
-  verification, review follow-ups and knowledge extraction are complete,
-  and it is closed at the user's request. The older slice notes below are historical progress,
-  not the current task status. No public array API is implemented.
+- Task 013 (value-array allocation) is closed at the user's request after
+  implementation, final acceptance, review follow-ups and knowledge extraction.
+  Artifacts: `munera/closed/013-value-array-allocation/`. The public explicit-seed
+  allocator is implemented; capability, component, length and seed checks run
+  in that order. Native semantics, fresh-JVM controls, packaged consumers and
+  quality checks passed within the recorded EA3/Java 8 scope.
+- Tasks 014 (diagnostics) and 015 (sequence construction) remain design-only
+  and need execution plans. Both depend on completed task 013; 015 does not
+  depend on 014. Task 012 is also closed. Older slice and review notes below
+  are historical progress, not current task status. Closure changed records
+  only; no runtime tests were rerun.
 - Proposed array API design is in `ramora/value-type-array-design.md`.
   Closed task `munera/closed/012-verify-value-arrays/` verified direct JVM
   allocation, seeds, stores, diagnostics and startup controls on EA3.
   Null native diagnostic inputs crash that build; public validation must
-  reject them before invocation. Public API integration remains unimplemented.
+  reject them before invocation. Public allocation is implemented; diagnostics
+  and sequence construction remain unimplemented.
   Knowledge extraction is in `mementum/knowledge/value-array-jvm-boundaries.md`
   and `mementum/knowledge/validating-retained-jvm-evidence.md`.
 - Typed-array investigation (2026-10-26): ordinary one-long typed value
@@ -359,3 +364,97 @@ helpers load without probe execution or file writes. Explicit entry-point calls
 preserve allocation-first checks and independent Java 8-safe discovery. Six
 helper-loading JVMs, standalone discovery, the full matrix and 117 evidence
 regression checks passed. Historical evidence and production code are unchanged.
+
+
+Task 013 final acceptance passed. Implementation is complete; task remains open
+for review. The task-local acceptance record and evidence retain the full EA3,
+Java 8, fallback, packaging and tooling results. No production code changed in
+this pass. Diagnostics and sequence construction remain tasks 014 and 015.
+
+Task 013 implementation review found two open follow-ups: the release runtime
+command lacks the required array export, and two architecture sections retain
+pending acceptance claims. See the task checklist. Focused array/layout tests
+passed with exports (10 tests, 399 assertions); the no-export reproduction
+failed as expected. Full acceptance and hosted Actions were not rerun.
+
+Task 013 release-command review follow-up is complete. The runtime command now
+exports the internal value API; unsupported controls are unchanged. Local EA3
+library tests passed (74 tests, 731 assertions, exit 0, no Scry failure files),
+as did actionlint 1.7.12. Architecture status reconciliation remains open.
+Hosted Actions and publication were not run.
+
+Task 013 architecture-status review follow-up is complete. Both stale acceptance
+claims now link the completed acceptance record. Diagnostics and sequence
+construction remain pending. Maintained architecture status, changed-page link
+targets, Vale and whitespace checks passed. Both implementation-review steps
+are complete; task 013 remains open.
+
+Task 013 implementation re-review found no new actionable issues. Both prior
+follow-ups are complete; no checklist items were added. Focused array/layout
+checks passed (10 tests, 399 assertions), as did the 36-process startup matrix
+(1 test, 612 assertions). Both CLI runs exited 0 with no Scry failure files.
+Packaging and documentation were reviewed statically; full acceptance and
+hosted Actions were not rerun. Task 013 remains open.
+
+Task 013 test review added two open follow-ups; see the task checklist.
+Focused array/layout tests passed (10 tests, 399 assertions), and the
+36-process matrix passed (1 test, 612 assertions). Both CLI runs exited 0
+with no Scry failure files. Packaging and API-generation coverage were
+reviewed statically; full acceptance was not rerun. Production code and
+tests are unchanged.
+
+Task 013 native-failure test review follow-up is complete. The real EA3
+allocator rejects negative lengths with IllegalArgumentException. The test
+passes (1 test, 3 assertions) and fails when cause unwrapping is removed.
+Production code is unchanged. Validation-context coverage remains open.
+
+Task 013 validation-context test review follow-up is complete. Both test-review
+steps are done. Array/layout tests passed on EA3 with preview and exports:
+11 tests, 447 assertions, exit 0, no Scry failure files. Formatting and lint
+passed. Production code is unchanged; full acceptance was not repeated.
+
+Task 013 test re-review found no new actionable issues. Both test-review
+follow-ups are covered; no checklist items were added. Focused array/layout
+checks passed (11 tests, 447 assertions), and the 36-process startup matrix
+passed (1 test, 612 assertions). Both CLI runs exited 0 with no Scry failure
+files. Packaging and API-generation coverage were reviewed statically;
+full acceptance was not repeated. Production code and tests are unchanged.
+
+Task 013 documentation review added two open follow-ups for the artifact
+architecture page. See the task checklist. Static review checked the usage,
+API, runtime, release and array architecture documents against source and tests.
+No runtime tests were run; production code and user documentation are unchanged.
+
+Task 013 API-source documentation follow-up is complete. API freshness passed.
+Direct artifact-page Vale found four existing errors outside the changed text.
+The packaging-requirements documentation follow-up remains open.
+
+Task 013 documentation review follow-ups are complete. Artifact architecture
+now records both API sources, array startup requirements and packaged-consumer
+coverage. API freshness, page links/anchors, changed-text and project Vale, and
+whitespace checks passed. Three unrelated existing page-level Vale errors remain.
+No runtime tests were repeated; production code and tests are unchanged.
+
+Task 013 documentation re-review found no new actionable issues. Both prior
+follow-ups are complete; no checklist items were added. Static checks compared
+allocation guides, API, runtime/release instructions and architecture with code
+and tests. API freshness and whitespace checks passed. Runtime tests were not
+repeated.
+
+Task 013 code-shape review added one open follow-up for shared JVM configuration
+in the boundary test; see the task checklist. Static review covered allocation,
+native and fresh-JVM tests, packaged consumers, API tooling and related guides.
+Runtime tests were not repeated. Production code and tests are unchanged.
+
+Task 013 code-shape review follow-up is complete. The boundary test uses the
+shared JVM configuration and retains its local expectations. Boundary and
+36-process matrix tests passed with explicit executable overrides: 2 tests,
+640 assertions, exit 0, no Scry failure files. Focused formatting, project lint
+and whitespace checks passed. Production code is unchanged; full acceptance
+was not repeated. No review follow-up remains unchecked; task 013 stays open.
+
+Task 013 code-shape re-review found no new actionable issues. The shared JVM
+configuration follow-up is complete; no checklist items were added. Static
+review covered the allocator, native and fresh-JVM tests, packaged consumers,
+API tooling and related documentation. Whitespace checks passed. Runtime
+tests were not repeated; production code and tests are unchanged.

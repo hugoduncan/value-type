@@ -99,7 +99,7 @@ jobs:
           if-no-files-found: warn
       - name: Test runtime
         id: runtime
-        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:test -m scry.cli
+        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli
       - name: Preserve runtime failures
         id: preserve-runtime-failures
         if: ${{ failure() && steps.runtime.outcome == 'failure' }}

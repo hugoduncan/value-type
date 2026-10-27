@@ -1,8 +1,8 @@
 # Array decisions and embodiment
 
-Status: proposed. All decisions apply to the first array API release;
-commitments remain provisional until design approval and the verification
-checks in [verification](verification.md). See the [contract](../value-type-array-design.md).
+Status: allocation decisions are implemented in task 013; final acceptance
+passed. Sequence construction and public inspection remain proposed.
+See [verification](verification.md) and the [contract](../value-type-array-design.md).
 
 ## D1. Native arrays, not a collection abstraction
 
@@ -84,8 +84,11 @@ caller → value-type.array → value-type.impl.array → JDK ValueClass
 caller → Clojure/Java array operations → returned native array
 ```
 
-The public namespace supplies the four documented function arities and
-`array-info`. The adapter supplies allocation and inspection internally.
+The public namespace currently supplies `make-array [component length initial]`.
+The adapter lazily resolves the allocator and value predicate, checks access
+with a method handle, and invokes through reflection. It caches capability,
+not arrays or seeds. Diagnostics are not allocation prerequisites.
+Sequence construction and inspection in the diagram remain planned.
 Neither changes `value-type.core`, the transformer, loader or fallback policy.
 No element registry or shared array cache is needed.
 
@@ -103,6 +106,13 @@ Use `ex-info` with `:value-type/error` for library-detected failures:
 - `:array-inspection-unavailable`: missing inspection support or access.
 - `:invalid-array-component`, `:invalid-array-length`,
   `:invalid-array-element`, `:empty-array-input`, `:invalid-array`.
+
+Allocation checks capability, component, length, then seed, stopping at the
+first failure. It uses `:array-unavailable`, `:invalid-array-component`,
+`:invalid-array-length` and `:invalid-array-element`. The other keys above
+belong to pending APIs. Initial-value errors have no slot index, even for
+length zero. Reflective invocation causes are unwrapped; native allocation
+rejection is not cached as capability absence.
 
 Include relevant component, length, element index or capability reason.
 Do not retain an entire input sequence in exception data. Messages identify

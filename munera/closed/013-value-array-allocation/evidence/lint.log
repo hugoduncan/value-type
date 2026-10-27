@@ -1,0 +1,5 @@
+Configs copied:
+- .clj-kondo/imports/babashka/fs
+- .clj-kondo/imports/babashka/sci
+- .clj-kondo/imports/org.hugoduncan/criterium
+linting took 180ms, errors: 0, warnings: 0
