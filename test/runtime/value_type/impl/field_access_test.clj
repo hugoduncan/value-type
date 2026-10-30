@@ -58,7 +58,8 @@
       (let [cf (ClassFile/of)
             bytes (fixture caller)
             model (.parse cf bytes)
-            output (access/rewrite-class bytes "access.Owner" {"required" concrete})]
+            output (access/rewrite-class bytes "access.Owner"
+                                         {"required" {:storage-type concrete}} nil)]
         (is (= [[Opcode/GETFIELD "access/Owner" "required" "Laccess/Value;"]
                 [Opcode/GETFIELD "access/Owner" "nullable" "Ljava/lang/Object;"]
                 [Opcode/GETFIELD "access/Other" "required" "Ljava/lang/Object;"]

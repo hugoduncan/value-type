@@ -74,7 +74,7 @@ not at the local defaults recorded in the task 009 plan. Build tests use
 both JVMs for isolated JAR consumers. Fallback tests use real processes,
 including source-free AOT consumers, and the same Scry exit/failure rules.
 
-## Verify nil-restricted fields
+## Verify portable non-nil fields
 
 Set `VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA` to the Java 8
 and EA3 executable paths. The following checks need no internal-package exports:
@@ -84,7 +84,10 @@ JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
   --namespace value-type.field-capability-test \
   --namespace value-type.fields-test \
   --namespace value-type.field-transfer-test \
-  --namespace value-type.field-aot-test
+  --namespace value-type.field-aot-test \
+  --namespace value-type.public-field-aot-test \
+  --namespace value-type.public-native-field-aot-test \
+  --namespace value-type.public-mixed-field-aot-test
 ```
 
 The parent needs neither preview nor exports. Children select their flags
@@ -94,7 +97,55 @@ suite deletes and excludes producer sources, compiles separate Clojure and Java
 consumers, and checks incompatible receivers. Java compilation uses the compiler
 in the selected EA3 JDK; a Java runtime alone is not sufficient.
 
-Run the field semantic matrix in Bash:
+Representation and enforcement are separate. On Java 8 and preview-disabled
+EA3, `silent` and `warn` permit identity output with generated constructor
+checks; `error` rejects identity fallback. On preview-enabled EA3, native-eligible
+fields use native enforcement. Other concrete class tags use generated checks
+without a fallback warning under all three policies. Both paths retain concrete
+final storage and reject nil and wrong-type constructor arguments.
+
+The public transfer and AOT tests cover fixed identity-generated, value-generated,
+native and mixed modes. Incompatible receivers reject fixed value output rather
+than select identity output. Direct Java class access does not evaluate Clojure
+namespace policy guards; constructor checks still apply. These tests use real
+child JVMs. Changing parent flags does not add child configurations.
+
+Run focused receiving checks in normal and interpreter execution:
+
+```bash
+for mode in normal interpreter; do
+  flags=()
+  if [ "$mode" = interpreter ]; then flags+=(-J-Xint); fi
+  for java in "$VALUE_TYPE_BASELINE_JAVA" "$VALUE_TYPE_VALHALLA_JAVA"; do
+    JAVA_CMD="$java" clojure "${flags[@]}" -M:fallback-test \
+      --namespace value-type.identity-receiving-test || exit 1
+  done
+  JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure "${flags[@]}" \
+    -M:test -m scry.cli \
+    --namespace value-type.value-receiving-test || exit 1
+done
+```
+
+These local controls cover constructor checks, receiving analysis and Class
+identity after redefinition. They do not replace the separate policy, transfer
+or AOT tests.
+
+Run the controlled-capability check separately:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+  --namespace value-type.controlled-field-capability-test \
+  --namespace value-type.function-redefinition-test
+```
+
+This check replaces only the native capability result in child JVMs. It is
+controlled-capability evidence, not a supported JVM configuration. Keep it
+separate from real-JVM capability results.
+
+Accepted evidence limits: packaging checks cover the `silent` policy only, and
+the explicit child-JVM matrix is the evidence scope.
+
+Run the native field semantic matrix in Bash:
 
 ```bash
 export JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA"
@@ -104,7 +155,7 @@ for flatten in + -; do
     if [ "$mode" = interpreter ]; then flags+=(-J-Xint); fi
     clojure "-J-XX:${flatten}UseFieldFlattening" "${flags[@]}" \
       -M:test -m scry.cli \
-      --namespace value-type.restricted-fields-test \
+      --namespace value-type.non-nil-fields-test \
       --namespace value-type.impl.loader-test \
       --namespace value-type.impl.transform-test \
       --namespace value-type.impl.field-access-test \
@@ -278,10 +329,12 @@ classes, bundled dependencies, tests, benchmarks or build code. Packaging
 does not load or AOT-compile the library. Consumers still need the declared
 runtime dependencies. Value classes also need a supported JEP 401 Valhalla
 JDK with `--enable-preview`; other supported Clojure JVMs use the fallback
-policy only for definitions without enabled field restrictions. Enabled
-`:nil-restricted` fields reject unavailable native support under every policy;
-they need no internal-package export. See the
-[native field contract](../usage.md#native-nil-restricted-fields).
+policy for both ordinary definitions and enabled `:non-nil` fields. Permitted
+identity output retains concrete storage and generated constructor checks.
+Missing native field support alone does not require identity fallback or cause
+strict policy rejection. Fields need no internal-package export. The removed
+`:nil-restricted` key is rejected. See the
+[portable field contract](../usage.md#portable-non-nil-fields).
 Array allocation also needs
 `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`; it has no fallback.
 
@@ -306,7 +359,10 @@ ordinary and restricted array diagnostics. It also checks both sequence
 forms, ordered contents and explicit-seed empty input. Unsupported consumers,
 including export-only EA3, reject both sequence forms repeatedly before value
 creation and without input effects. All consumers load library resources
-from the JAR, with no checkout sources on the class path.
+from the JAR, with no checkout sources on the class path. Nested Point/String
+non-nil fields also retain concrete storage and direct/factory constructor checks
+on Java 8 and EA3 preview off/on under `silent`. These packaging checks do not
+establish all-policy field coverage.
 Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
 the supported consumer uses `JAVA_CMD`. It selects `test/build/`; it does not replace the library test
 command above. Exit status and failure files follow the same Scry rules.

@@ -1,6 +1,7 @@
 (ns value-type.runtime-test
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
+            [value-type.consumer-aot-checks :as checks]
             [value-type.jvm-config :as config]
             [value-type.jvm-runner :as runner]))
 
@@ -124,6 +125,7 @@
             (is (= :value-mode observed) result)
             (is (= "" (:err result)) result))
           (do
+            (is (= {:unbound false :bound true} (:loader-bound? observed)) result)
             (doseq [mode [:bound :unbound]]
               (is (= (vec (repeat 2 (vec (repeat 2 (if strict? rejected
                                                        {:returned? true :absent? true})))))
@@ -153,8 +155,63 @@
         (if available?
           (is (= :value-mode observed) result)
           (do
+            (is (= bound? (:loader-bound? observed)) result)
             (is (= {:returned? true :absent? true} (:expanded observed)) result)
             (is (= 1 (count (re-seq #"value-type: identity deftype fallback:"
                                     (or (:after-expansion observed) "")))) result)
             (is (= {:returned? true :absent? false} (:evaluated observed)) result)
             (is (= (:after-expansion observed) (:after-evaluation observed)) result)))))))
+
+(deftest constrained-discarded-expansion-test
+  ;; Discarding a constrained form must not defer policy or install its owner.
+  (doseq [entry-point [:full :one]
+          bound? [false true]
+          policy ["silent" "warn" "error"]]
+    (testing (str entry-point " " policy " loader-bound=" bound?)
+      (let [result (run policy
+                        (str "(require '[value-type.expansion-checks :as checks]) "
+                             "(prn (checks/constrained-discarded-with-loader "
+                             entry-point " " bound? "))"))
+            {:keys [available?]} (config/configuration)
+            rejected? (and (not available?) (= "error" policy))
+            warning? (and (not available?) (= "warn" policy))
+            {:keys [detail loader-bound? attempts]} (:result result)]
+        (is (= 0 (:exit result)) result)
+        (is (= bound? loader-bound?) result)
+        (is (= (vec (repeat 2 {:outcome (if rejected? (checks/policy-rejection detail) :returned)
+                               :owner-absent? true :factory-absent? true}))
+               attempts) result)
+        (is (= (if warning? 1 0)
+               (count (re-seq #"value-type: identity deftype fallback:" (:err result))))
+            result)
+        (when-not warning?
+          (is (= "" (:err result)) result))))))
+
+(deftest constrained-validation-before-policy-test
+  ;; Invalid discarded declarations neither warn nor become strict-policy errors.
+  (doseq [entry-point [:full :one]
+          policy ["silent" "warn" "error"]]
+    (testing (str entry-point " " policy)
+      (let [result (run policy
+                        (str "(require '[value-type.expansion-checks :as checks]) "
+                             "(prn {:invalid (checks/invalid-constrained-discarded "
+                             entry-point ") :valid (checks/constrained-discarded "
+                             entry-point ")})"))
+            {:keys [available?]} (config/configuration)
+            {:keys [detail attempts]} (get-in result [:result :valid])]
+        (is (= 0 (:exit result)) result)
+        (is (= (mapv (fn [reason]
+                       {:outcome {:value-type/error :invalid-field
+                                  :reason reason :field 'text}
+                        :diagnostics ""
+                        :owner-absent? true :factory-absent? true})
+                     [:invalid-non-nil :removed-nil-restricted :missing-tag
+                      :unresolved-tag :interface-type])
+               (get-in result [:result :invalid])) result)
+        (is (= (vec (repeat 2 {:outcome (if (and (not available?) (= "error" policy))
+                                          (checks/policy-rejection detail) :returned)
+                               :owner-absent? true :factory-absent? true}))
+               attempts) result)
+        (if (and (not available?) (= "warn" policy))
+          (is (= 1 (count (re-seq #"value-type: identity deftype fallback:" (:err result)))) result)
+          (is (= "" (:err result)) result))))))

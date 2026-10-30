@@ -1,7 +1,7 @@
 (ns value-type.annotation-support
   "Runtime-only ClassFile annotation comparisons."
   (:import
-   (java.lang.classfile Annotation AnnotationElement AnnotationValue$OfConstant FieldModel)
+   (java.lang.classfile Annotation AnnotationElement AnnotationValue$OfConstant AttributedElement)
    (java.lang.classfile.attribute RuntimeInvisibleAnnotationsAttribute
                                   RuntimeVisibleAnnotationsAttribute)))
 
@@ -9,7 +9,7 @@
 
 (defn annotation-contents
   "Count annotations by type and named constant values, independent of order."
-  [^FieldModel field attribute-class]
+  [^AttributedElement target attribute-class]
   (frequencies
    (into []
          (comp (filter #(instance? attribute-class %))
@@ -24,4 +24,4 @@
                                     [(.stringValue (.name element))
                                      (.resolvedValue ^AnnotationValue$OfConstant (.value element))]))
                              (.elements annotation))])))
-         (.elementList field))))
+         (.attributes target))))

@@ -69,7 +69,8 @@ Status: observed in the Clojure 1.12.1 source and with `javap` on a
 
 ### JVMs without usable value-class support
 
-The fallback path uses ordinary `deftype`. It must load without JEP 401,
+Fallback uses ordinary identity semantics. Enabled non-nil fields require a
+baseline-safe transform for typed storage and constructor enforcement. It must load without JEP 401,
 preview flags or the `java.lang.classfile` API. A Valhalla JVM with preview
 disabled also needs an unavailable-capability result. API presence alone
 is not sufficient evidence that this library can define a value class.
@@ -88,8 +89,8 @@ is not sufficient evidence that this library can define a value class.
 - Compatibility: `deftype` syntax and the semantics that a value class
   can keep.
 - Time: JEP 401 is a preview. The class file details can change.
-- Quality: application policy controls fallback. No added per-instance
-  or method-call cost. Capability and policy checks occur at definition
+- Quality: application policy controls fallback. No added method-call cost for ordinary definitions. Generated field checks
+  can add constructor cost. Capability and policy checks occur at definition
   or namespace-load boundaries, not during instance use.
 - Organization: one maintainer. Small code base.
 - Irreversibility: preview class files are tied to one JDK feature

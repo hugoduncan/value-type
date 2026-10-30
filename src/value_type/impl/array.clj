@@ -13,7 +13,7 @@
         (let [allocator (.getMethod (Class/forName "jdk.internal.value.ValueClass")
                                     "newNullRestrictedAtomicArray"
                                     (into-array Class [Class Integer/TYPE Object]))
-              predicate (.getMethod Class "isValue" (make-array Class 0))]
+              predicate @capability/value-predicate]
           ;; Check access without invoking allocation or changing module access.
           (.unreflect (MethodHandles/lookup) allocator)
           {:available? true :allocator allocator :predicate predicate})

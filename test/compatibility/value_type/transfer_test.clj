@@ -1,5 +1,6 @@
 (ns value-type.transfer-test
   (:require [clojure.test :refer [deftest is testing]]
+            [value-type.consumer-aot-checks :as checks]
             [value-type.jvm-config :as config]
             [value-type.jvm-runner :as runner]))
 
@@ -51,3 +52,62 @@
                    (:result consumer)) consumer)
             (is (= "value-type: identity deftype fallback: fixed fallback representation\n"
                    (:err consumer)) consumer)))))))
+
+(deftest constrained-concurrent-warning-scope-test
+  ;; Concurrent fixed fields stay silent or share one warning per receiving runtime.
+  (let [{:keys [baseline selected]} (config/configuration)
+        producer (run baseline "silent"
+                      (str "(require 'value-type.core) "
+                           "(binding [*print-meta* true] "
+                           "(prn (mapv (fn [expand] "
+                           "(pr-str (expand '(value-type.core/defvaluetype "
+                           "Transferred [^Long ^:non-nil x])))) "
+                           "[macroexpand macroexpand-1])))"))]
+    (is (= 0 (:exit producer)) producer)
+    (is (= "" (:err producer)) producer)
+    (when (= 0 (:exit producer))
+      (doseq [serialized (:result producer)
+              execution-options [[] ["-Xint"]]
+              runtime-index (range 2)
+              policy ["silent" "warn"]]
+        (testing (str policy " execution " execution-options " runtime " runtime-index)
+          (let [consumer (run (update selected :jvm-opts into execution-options)
+                              policy
+                              (str "(require '[value-type.warning-checks :as c]) "
+                                   "(prn (c/concurrent-definitions "
+                                   (pr-str serialized) "))"))]
+            (is (= 0 (:exit consumer)) consumer)
+            (is (= (vec (repeat 8 (vec (repeat 2 {:field 42 :identity? true :factory? true}))))
+                   (:result consumer)) consumer)
+            (is (= (if (= "warn" policy)
+                     "value-type: identity deftype fallback: fixed fallback representation\n"
+                     "")
+                   (:err consumer)) consumer)))))))
+
+(deftest constrained-concurrent-strict-test
+  ;; Strict concurrent analysis repeatedly rejects without installing definitions.
+  (let [{:keys [baseline selected]} (config/configuration)
+        producer (run baseline "silent"
+                      (str "(require 'value-type.core) "
+                           "(binding [*print-meta* true] "
+                           "(prn (mapv (fn [expand] "
+                           "(pr-str (expand '(value-type.core/defvaluetype "
+                           "Transferred [^Long ^:non-nil x])))) "
+                           "[macroexpand macroexpand-1])))"))]
+    (is (= 0 (:exit producer)) producer)
+    (is (= "" (:err producer)) producer)
+    (when (= 0 (:exit producer))
+      (doseq [serialized (:result producer)
+              execution-options [[] ["-Xint"]]]
+        (testing (str "strict concurrent receiving " execution-options)
+          (let [consumer (run (update selected :jvm-opts into execution-options)
+                              "error"
+                              (str "(require '[value-type.warning-checks :as c]) "
+                                   "(try (prn (c/concurrent-rejections "
+                                   (pr-str serialized) ")) (finally (shutdown-agents)))"))]
+            (is (= 0 (:exit consumer)) consumer)
+            (is (= (vec (repeat 8 (vec (repeat 2 {:outcome checks/fallback-rejection
+                                                  :factory-absent? true
+                                                  :owner-absent? true}))))
+                   (:result consumer)) consumer)
+            (is (= "" (:err consumer)) consumer)))))))

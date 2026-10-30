@@ -13,10 +13,10 @@ Read this index first. Then read only the sections that you need.
 ## Summary
 
 `defvaluetype` has the same syntax as `deftype`. It selects a value class
-when support is available. For definitions without enabled nil restrictions,
-application
+when support is available. Application
 policy selects silent fallback, one warning with fallback, or an `Error`
-on every attempt when support is unavailable. Fallback uses ordinary `deftype` semantics.
+on every attempt when support is unavailable. Fallback uses ordinary identity semantics, with generated enforcement for enabled
+non-nil field constraints.
 
 ```text
 defvaluetype → validate fields → capability and application policy
@@ -34,11 +34,13 @@ loading and enforce policy on invocation. Direct class access that bypasses
 the guarded form is not protected. Failed initializer retries do not re-enter
 the guard. No instance-use checks are added.
 
-Enabled nil-restricted fields instead require native field capability under
-every policy. Selection validates the declaration; receiving analysis installs
-a local capture loader and evaluation checks capability again. See the
-[field design](nil-restricted-field-design.md). The fallback flow above applies
-only to definitions without enabled restrictions.
+Enabled non-nil fields retain their type and nil constraint in either representation.
+Native support selects enforcement, not whether the constraint applies. For
+non-nil fields, receiving analysis installs a local capture loader for the
+selected backend. See the
+[field design](non-nil-field-design.md) for the non-nil contract and its
+accepted evidence limits. The flow above selects representation; enabled fields also
+require storage, constructor and companion transformation on either path.
 
 ## Sections
 
@@ -48,8 +50,8 @@ only to definitions without enabled restrictions.
   systems (JVM, Clojure compiler), constraints.
 - [Decisions](defvaluetype-design/decisions.md): the architectural
   decisions, with alternatives and rationale.
-- [Nil-restricted fields](nil-restricted-field-design.md): opt-in native field
-  restriction, concrete field types, failure semantics and implementation boundary.
+- [Non-nil fields](non-nil-field-design.md): portable typed field constraints,
+  enforcement choices, failure semantics and implementation boundary.
 - [Controlled fallback](defvaluetype-design/fallback.md): policy authority,
   capability boundary, state, AOT limits and verification requirements (D10 D12 D13).
 - [Embodiment](defvaluetype-design/embodiment.md): namespaces,

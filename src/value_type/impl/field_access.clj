@@ -10,10 +10,10 @@
 
 (defn rewrite
   "Return a code transform for Object instance-field references to `owner`.
-   `storage-types` maps emitted field names to concrete ClassDesc values.
+   `storage` maps emitted field names to `{:storage-type ClassDesc ...}`.
    Preserve references to other owners, unselected fields and other descriptors.
    Constructor emission owns casts before writes; this transform adds no casts."
-  ^CodeTransform [^ClassDesc owner storage-types]
+  ^CodeTransform [^ClassDesc owner storage]
   (reify CodeTransform
     (accept [_ builder element]
       (let [^CodeBuilder builder builder
@@ -24,20 +24,20 @@
                        (#{Opcode/GETFIELD Opcode/PUTFIELD} (.opcode instruction))
                        (= owner (.asSymbol (.owner instruction)))
                        (= ConstantDescs/CD_Object (.typeSymbol instruction)))
-              (get storage-types (.stringValue (.name instruction))))]
+              (:storage-type (get storage (.stringValue (.name instruction)))))]
         (if storage-type
           (.fieldAccess builder (.opcode instruction) owner
                         (.stringValue (.name instruction)) storage-type)
           (.with builder ^CodeElement element))))))
 
 (defn rewrite-class
-  "Rewrite references to restricted fields of `owner-name` in captured bytes.
-   Keep the caller's class kind, fields and method signatures unchanged.
-   Optional class-loader resolves dynamic types during stack-map generation."
-  (^bytes [^bytes bytes ^String owner-name storage-types]
-   (rewrite-class bytes owner-name storage-types nil))
-  (^bytes [^bytes bytes ^String owner-name storage-types class-loader]
-   (let [cf (class-file/configured class-loader)]
-     (.transformClass cf (.parse cf bytes)
-                      (ClassTransform/transformingMethodBodies
-                       (rewrite (ClassDesc/of owner-name) storage-types))))))
+  "Rewrite references to non-nil fields of `owner-name` in captured bytes.
+   `storage` is as for `rewrite`. Keep the caller's class kind, fields and
+   method signatures unchanged.
+   `class-loader`, when not nil, resolves dynamic types during stack-map
+   generation."
+  ^bytes [^bytes bytes ^String owner-name storage class-loader]
+  (let [cf (class-file/configured class-loader)]
+    (.transformClass cf (.parse cf bytes)
+                     (ClassTransform/transformingMethodBodies
+                      (rewrite (ClassDesc/of owner-name) storage)))))

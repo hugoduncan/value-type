@@ -1,11 +1,12 @@
-(ns value-type.restricted-fields-test
+(ns value-type.non-nil-fields-test
   (:require [clojure.test :refer [deftest is testing]]
-            [value-type.core :refer [defvaluetype]])
+            [value-type.core :refer [defvaluetype]]
+            [value-type.test-support :as support :refer [with-temp-dir]])
   (:import (java.lang.reflect InvocationTargetException)))
 
 (defvaluetype Leaf [nullable])
-(defvaluetype Pair [^Leaf ^:nil-restricted left
-                    ^{:tag Leaf :nil-restricted true} right])
+(defvaluetype Pair [^Leaf ^:non-nil left
+                    ^{:tag Leaf :non-nil true} right])
 
 (deftest public-construction-test
   ;; All entry points retain Object parameters and native enforcement.
@@ -31,11 +32,11 @@
                              [(.getField Pair "left") (.getField Pair "right")])))))
 
 (defvaluetype MixedFields
-  [^Leaf ^:nil-restricted first-leaf
+  [^Leaf ^:non-nil first-leaf
    ^long count-value
    ^String nullable
    ^double weight
-   ^{:tag Leaf :nil-restricted true} last-leaf])
+   ^{:tag Leaf :non-nil true} last-leaf])
 
 (deftest mixed-field-construction-test
   ;; Concrete reference storage must not shift two-slot primitive arguments.
@@ -78,7 +79,7 @@
   (selected-field [this choose-required?])
   (field-reader [this]))
 
-(defvaluetype BehavioralFields [^Leaf ^:nil-restricted required optional]
+(defvaluetype BehavioralFields [^Leaf ^:non-nil required optional]
   FieldBehavior
   (selected-field [_ choose-required?]
                   (if choose-required? required optional))
@@ -121,3 +122,30 @@
                      (if (nil? optional) :fallback optional))]
       (testing (str "nested branch " [payload optional choose-required?])
         (is (= expected (reader :fallback)))))))
+
+(deftest native-probe-scope-test
+  ;; A fresh JVM shows when the cached native field probe is realized.
+  (with-temp-dir [dir]
+    (let [form (str "(require 'value-type.core)"
+                    "(let [probe @#'value-type.impl.runtime/detected-field-capability"
+                    "      error (fn [form]"
+                    "              (try (eval form) nil"
+                    "                (catch Throwable e"
+                    "                  (:value-type/error (ex-data (or (ex-cause e) e))))))"
+                    "      _ (eval '(value-type.core/defvaluetype Leaf [x]))"
+                    "      invalid (error '(value-type.core/defvaluetype Invalid"
+                    "                        [^Leaf ^{:non-nil :yes} leaf]))"
+                    "      after-invalid (realized? probe)"
+                    "      _ (eval '(value-type.core/defvaluetype Label"
+                    "                 [^String ^:non-nil text]))"
+                    "      label-check (class (try ((resolve 'user/->Label) nil)"
+                    "                           (catch Throwable e e)))"
+                    "      after-identity (realized? probe)"
+                    "      _ (eval '(value-type.core/defvaluetype Pair [^Leaf ^:non-nil leaf]))]"
+                    "  (prn [invalid after-invalid (symbol (.getName label-check))"
+                    "        after-identity (realized? probe)]))")
+          {:keys [exit result err]} (support/run-in-new-jvm dir form)]
+      (is (= 0 exit) (str "stderr: " err))
+      (is (= [:invalid-field false 'java.lang.NullPointerException false true]
+             result)
+          (str "stderr: " err)))))

@@ -25,7 +25,7 @@
   is not a value class:
   - `:not-installed`: `install!` returned `false`. The form was
     macroexpanded with no `LOADER` binding, then evaluated on the ordinary
-    path (no enabled restrictions). Fix:
+    path (no enabled non-nil fields). Fix:
     evaluate the `defvaluetype` form directly.
   - `:not-value-class`: `install!` returned `true`, but the class is
     an identity class. Causes and fixes:
@@ -36,13 +36,13 @@
       method body to the top level.
   - For ordinary definitions, unavailable capability selects fallback before loader
     installation (D10 D12), not through this result check.
-- Restricted expansions retain `native-field-deftype`, which installs a
-  receiver-local loader during analysis. Both expansion forms support separate
-  eval, metadata-preserving source loading and function analysis then invocation.
-  Native capability checks at selection, receiving analysis and evaluation
-  reject unavailable support under every policy with
-  `:field-capability-unavailable`; they never select fallback. See the
-  [field contract](../../nil-restricted-field-design.md).
+- Expansions with enabled non-nil fields use a receiving macro (`value-field-deftype` or
+  `identity-field-deftype`), which installs a receiver-local loader during analysis. Both expansion forms support separate eval,
+  metadata-preserving source loading and function analysis then invocation.
+  Receiving checks preserve selected representation and enforcement; native absence
+  alone does not reject a generated-check definition. Result checks must apply to
+  the selected representation, not require a value class for identity fallback.
+  See the [field contract](../../non-nil-field-design.md).
 - For ordinary definitions, `value-type.impl.capability` checks the optional ClassFile API and
   `Class.isValue`, then defines and instantiates an isolated strict-field
   probe. Only missing required APIs or an unsupported probe class version
@@ -50,8 +50,13 @@
   caches the result; `core` selects the representation before loading the
   optional loader. Both the detector and the value-path result check use
   the value-class predicate.
-- Rejected: throw `:not-installed` at macroexpansion. Tools call
-  `macroexpand` with no `LOADER` binding only to show the expansion.
+- Ordinary definitions: throwing `:not-installed` at macroexpansion is
+  rejected. Tools call `macroexpand` with no `LOADER` binding only to show
+  the expansion; the run-time check throws instead.
+- Enabled non-nil fields: the receiving macro throws `:not-installed` at
+  macroexpansion when no compiler `LOADER` is bound, for example under
+  `clojure.walk/macroexpand-all`. One-step `macroexpand` of the public form
+  stops at the receiving macro and does not throw.
 - Define errors: the capture loader (`value-type.impl.loader`) wraps
   each `LinkageError` of the define (`UnsupportedClassVersionError`,
   `ClassFormatError`, `VerifyError`) in `ex-info` with

@@ -1,7 +1,9 @@
 (ns value-type.impl.runtime
   "Per-library-runtime fallback policy, capability cache and warning state."
-  (:require [value-type.impl.capability :as detector]
-            [value-type.impl.field-capability :as fields]))
+  (:require [value-type.impl.capability :as capability]
+            [value-type.impl.field-capability :as field-capability]))
+
+(set! *warn-on-reflection* true)
 
 (def ^:private policy
   (let [configured (System/getProperty "value-type.fallback" "silent")]
@@ -11,7 +13,7 @@
                    "; expected silent, warn or error"))))
     configured))
 
-(def ^:private detected-capability (delay (detector/detect)))
+(def ^:private detected-capability (delay (capability/detect)))
 (def ^:private warned? (atom false))
 
 (defn capability
@@ -31,16 +33,22 @@
                (binding [*out* *err*] (println message)))
       "error" (throw (Error. message)))))
 
+(defn enforce-fixed-fallback!
+  "Apply initialized policy to a fixed identity representation in an
+   expansion. Call during both analysis and evaluation."
+  []
+  (enforce-fallback! "fixed fallback representation"))
+
 (defmacro guarded-deftype
   "Internal expansion guard. Enforce fixed fallback policy during analysis
    and evaluation, including AOT namespace initialization."
   [name fields & opts+specs]
-  (enforce-fallback! "fixed fallback representation")
+  (enforce-fixed-fallback!)
   `(do
-     (enforce-fallback! "fixed fallback representation")
+     (enforce-fixed-fallback!)
      (deftype ~name ~fields ~@opts+specs)))
 
-(def ^:private detected-field-capability (delay (fields/detect)))
+(def ^:private detected-field-capability (delay (field-capability/detect)))
 
 (defn field-capability
   "Return cached native field capability without applying fallback policy."
@@ -57,7 +65,7 @@
       (throw
        (ex-info
         (str "Cannot define " class-name
-             ": native nil-restricted fields are unavailable. " detail)
+             ": native non-nil field enforcement is unavailable. " detail)
         {:value-type/error :field-capability-unavailable
          :class-name class-name
          :reason reason})))))

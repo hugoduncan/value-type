@@ -37,29 +37,49 @@
          (.withField output "nullable" ConstantDescs/CD_Object ClassFile/ACC_PUBLIC))))))
 
 (deftest concrete-storage-preserves-field-elements
-  ;; Check emitted bytes without loading an incomplete constructor transform.
-  (testing "retyping merges annotations and preserves unrelated field elements"
+  ;; Inspect real emitted bytes for both enforcement modes, without mocks.
+  (doseq [native? [true false]]
+    (testing (str "retyping preserves unrelated field elements; native=" native?)
+      (let [cf (ClassFile/of)
+            original (.parse cf (fixture))
+            result (.parse cf
+                           (.transformClass
+                            cf original
+                            (reify ClassTransform
+                              (accept [_ output element]
+                                (let [^ClassBuilder output output]
+                                  (if (and (instance? FieldModel element)
+                                           (= "required" (.stringValue (.fieldName ^FieldModel element))))
+                                    (storage/emit! output element (ClassDesc/ofDescriptor "Lstorage/Value;") native?)
+                                    (.with output ^ClassElement element)))))))
+            ^FieldModel required (first (.fields result))
+            ^FieldModel nullable (second (.fields result))
+            visible (cond-> {["Ljava/lang/Deprecated;" {"since" "field-review" "forRemoval" true}] 1}
+                      native? (assoc ["Ljdk/internal/vm/annotation/NullRestricted;" {}] 1))]
+        (is (= "Lstorage/Value;" (.stringValue (.fieldType required))))
+        (is (= (.flagsMask (.flags ^FieldModel (first (.fields original))))
+               (.flagsMask (.flags required))))
+        (is (= visible
+               (annotation-support/annotation-contents required RuntimeVisibleAnnotationsAttribute)))
+        (is (= {["Lstorage/Marker;" {"value" "retained" "revision" 17}] 1}
+               (annotation-support/annotation-contents required RuntimeInvisibleAnnotationsAttribute)))
+        (is (= "Ljava/lang/Object;" (.stringValue (.fieldType nullable))))
+        (is (empty? (annotation-support/annotation-contents nullable RuntimeVisibleAnnotationsAttribute)))))))
+
+(deftest generated-storage-without-annotations-has-no-attribute
+  (testing "a generated field without source annotations gets no empty attribute"
     (let [cf (ClassFile/of)
-          original (.parse cf (fixture))
           result (.parse cf
                          (.transformClass
-                          cf original
+                          cf (.parse cf (fixture))
                           (reify ClassTransform
                             (accept [_ output element]
                               (let [^ClassBuilder output output]
                                 (if (and (instance? FieldModel element)
-                                         (= "required" (.stringValue (.fieldName ^FieldModel element))))
-                                  (storage/emit! output element "Lstorage/Value;")
+                                         (= "nullable" (.stringValue (.fieldName ^FieldModel element))))
+                                  (storage/emit! output element (ClassDesc/ofDescriptor "Lstorage/Value;") false)
                                   (.with output ^ClassElement element)))))))
-          ^FieldModel required (first (.fields result))
-          ^FieldModel nullable (second (.fields result))]
-      (is (= "Lstorage/Value;" (.stringValue (.fieldType required))))
-      (is (= (.flagsMask (.flags ^FieldModel (first (.fields original))))
-             (.flagsMask (.flags required))))
-      (is (= {["Ljdk/internal/vm/annotation/NullRestricted;" {}] 1
-              ["Ljava/lang/Deprecated;" {"since" "field-review" "forRemoval" true}] 1}
-             (annotation-support/annotation-contents required RuntimeVisibleAnnotationsAttribute)))
-      (is (= {["Lstorage/Marker;" {"value" "retained" "revision" 17}] 1}
-             (annotation-support/annotation-contents required RuntimeInvisibleAnnotationsAttribute)))
-      (is (= "Ljava/lang/Object;" (.stringValue (.fieldType nullable))))
-      (is (empty? (annotation-support/annotation-contents nullable RuntimeVisibleAnnotationsAttribute))))))
+          ^FieldModel generated (second (.fields result))]
+      (is (= "Lstorage/Value;" (.stringValue (.fieldType generated))))
+      (is (not-any? #(instance? RuntimeVisibleAnnotationsAttribute %)
+                    (.elementList generated))))))

@@ -5,7 +5,10 @@ Elements, relations, boundaries and rules that realize the
 one responsibility and a data interface.
 
 The runtime and artifact sections describe the current implementation,
-including capability detection and guarded fallback. Their contract is in [Controlled fallback](fallback.md).
+including capability detection and guarded fallback for ordinary definitions.
+Non-nil fields use native or generated constructor enforcement with a separate
+baseline-safe identity backend. The [field embodiment](../non-nil-field-design/embodiment.md)
+records implementation details and accepted evidence limits.
 
 ## Implementation and verification scope
 

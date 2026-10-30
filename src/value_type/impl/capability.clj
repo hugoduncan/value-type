@@ -2,7 +2,23 @@
   "Baseline-safe checks for the value-class bytecode contract."
   (:import (clojure.asm ClassWriter Opcodes)
            (clojure.lang DynamicClassLoader)
+           (java.lang.reflect Method)
            (java.util UUID)))
+
+(set! *warn-on-reflection* true)
+
+(def value-predicate
+  "The cached `Class::isValue` Method, or nil on a JVM with no value classes."
+  (delay
+    (try
+      (.getMethod Class "isValue" (make-array Class 0))
+      (catch NoSuchMethodException _ nil))))
+
+(defn value-class?
+  "True when cls is a value class. False when `Class::isValue` is missing."
+  [^Class cls]
+  (let [^Method predicate @value-predicate]
+    (boolean (and predicate (.invoke predicate cls (object-array 0))))))
 
 (defn- unavailable
   [reason ^Throwable error]
@@ -17,27 +33,44 @@
                       (unavailable :missing-classfile-api error)))]
     (if (map? classfile)
       classfile
-      (try
-        {:classfile classfile
-         :predicate (.getMethod Class "isValue" (make-array Class 0))}
-        (catch NoSuchMethodException error
-          (unavailable :missing-value-predicate error))))))
+      (if-let [predicate @value-predicate]
+        {:predicate predicate}
+        (unavailable :missing-value-predicate
+                     (NoSuchMethodException. "java.lang.Class.isValue()"))))))
 
-(defn- probe-bytes
-  [major internal-name]
-  (let [writer (ClassWriter. 0)]
+(defn latest-major-version
+  "The latest class-file major version of the running JDK.
+   Call only when `java.lang.classfile.ClassFile` exists."
+  []
+  (let [classfile (Class/forName "java.lang.classfile.ClassFile" false
+                                 (.getClassLoader Class))]
+    (.invoke (.getMethod classfile "latestMajorVersion" (make-array Class 0))
+             nil (object-array 0))))
+
+(defn probe-bytes
+  "Return preview class bytes for owner with one strict final field `value`.
+   descriptor is the field descriptor. The constructor takes the field value and
+   assigns it before the super constructor, as JEP 401 strict fields require.
+   restricted? adds the `NullRestricted` annotation to the field."
+  [major owner descriptor restricted?]
+  (let [writer (ClassWriter. 0)
+        primitive? (= "J" descriptor)]
     (.visit writer (unchecked-int (bit-or 0xffff0000 major))
             (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL)
-            internal-name nil "java/lang/Object" nil)
-    ;; JEP 401 strict fields must be assigned before the super constructor.
-    (.visitEnd (.visitField writer
-                            (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL 0x800)
-                            "value" "J" nil nil))
-    (let [ctor (.visitMethod writer Opcodes/ACC_PUBLIC "<init>" "(J)V" nil nil)]
+            owner nil "java/lang/Object" nil)
+    (let [field (.visitField writer
+                             (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL 0x800)
+                             "value" descriptor nil nil)]
+      (when restricted?
+        (.visitEnd (.visitAnnotation field
+                                     "Ljdk/internal/vm/annotation/NullRestricted;" true)))
+      (.visitEnd field))
+    (let [ctor (.visitMethod writer Opcodes/ACC_PUBLIC "<init>"
+                             (str "(" descriptor ")V") nil nil)]
       (.visitCode ctor)
       (.visitVarInsn ctor Opcodes/ALOAD 0)
-      (.visitVarInsn ctor Opcodes/LLOAD 1)
-      (.visitFieldInsn ctor Opcodes/PUTFIELD internal-name "value" "J")
+      (.visitVarInsn ctor (if primitive? Opcodes/LLOAD Opcodes/ALOAD) 1)
+      (.visitFieldInsn ctor Opcodes/PUTFIELD owner "value" descriptor)
       (.visitVarInsn ctor Opcodes/ALOAD 0)
       (.visitMethodInsn ctor Opcodes/INVOKESPECIAL "java/lang/Object" "<init>" "()V" false)
       (.visitInsn ctor Opcodes/RETURN)
@@ -47,12 +80,11 @@
     (.toByteArray writer)))
 
 (defn- probe
-  [{:keys [^Class classfile ^java.lang.reflect.Method predicate]}]
-  (let [major (.invoke (.getMethod classfile "latestMajorVersion" (make-array Class 0))
-                       nil (object-array 0))
+  [{:keys [^Method predicate]}]
+  (let [major (latest-major-version)
         ;; DynamicClassLoader caches classes across loaders. Never reuse a name.
         simple-name (str "CapabilityProbe_" (.replace (str (UUID/randomUUID)) "-" "_"))
-        bytes (probe-bytes major (str "value_type/probe/" simple-name))
+        bytes (probe-bytes major (str "value_type/probe/" simple-name) "J" false)
         klass (try
                 (.defineClass (DynamicClassLoader.)
                               (str "value_type.probe." simple-name) bytes nil)

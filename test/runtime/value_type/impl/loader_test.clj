@@ -7,7 +7,8 @@
    [value-type.impl.loader :as loader]
    [value-type.impl.transform :as transform]
    [value-type.test-support :as support
-    :refer [binary-name compile-cause value? vt-type with-temp-dir]])
+    :refer [binary-name compile-cause message-names? value? vt-type
+            with-temp-dir]])
   (:import
    (clojure.lang Compiler DynamicClassLoader ExceptionInfo Reflector)
    (java.io File)
@@ -29,7 +30,7 @@
   "As `support/vt-type`, but with a `defrecord` form."
   [name fields]
   (let [cname (binary-name *ns* name)]
-    (loader/install! cname)
+    (loader/install! cname [] :value)
     `(let [] (defrecord ~name ~fields) ~(symbol cname))))
 
 ;;; Helpers
@@ -96,13 +97,13 @@
   (testing "with no LOADER binding, install! changes nothing"
     (is (= [false false]
            (support/on-raw-thread
-            #(vector (loader/install! "a.B") (.isBound Compiler/LOADER)))))))
+            #(vector (loader/install! "a.B" [] :value) (.isBound Compiler/LOADER)))))))
 
 (deftest install-binding-test
   (testing "with a LOADER binding, install! sets a new child loader"
     (let [old (DynamicClassLoader.)]
       (with-bindings {Compiler/LOADER old}
-        (is (true? (loader/install! "a.B")))
+        (is (true? (loader/install! "a.B" [] :value)))
         (let [new-loader @Compiler/LOADER]
           (is (instance? DynamicClassLoader new-loader))
           (is (not (identical? old new-loader)))
@@ -242,7 +243,7 @@
 (deftest link-test
   (testing "the define step links the class and wraps VerifyError"
     (let [cname (binary-name test-ns (gensym "Bad"))
-          e (try (#'loader/define-value-class
+          e (try (#'loader/define-target-class
                   (DynamicClassLoader.) cname (super-before-write-class cname) nil)
                  nil
                  (catch ExceptionInfo e e))]
@@ -255,8 +256,7 @@
   [type-name fields nested & body]
   (let [cname (binary-name *ns* type-name)
         cls (resolve nested)]
-    (loader/install! cname [{:field (first fields) :type cls
-                             :descriptor (str "L" (.replace (.getName ^Class cls) \. \/) ";")}])
+    (loader/install! cname [{:field (first fields) :type cls}] :value)
     `(let [] (deftype ~type-name ~fields ~@body) ~(symbol cname))))
 
 (deftest specification-transport-test
@@ -341,8 +341,7 @@
           target (binary-name test-ns (gensym "MismatchHolder"))
           capture (#'loader/capture-loader
                    target (.getClassLoader ^Class replacement)
-                   [{:field 'required :type original
-                     :descriptor (.descriptorString ^Class original)}])
+                   [{:field 'required :type original}] :value)
           error (try
                   (.defineClass ^DynamicClassLoader capture target (byte-array 0) nil)
                   nil
@@ -352,4 +351,87 @@
                                      (.getClassLoader ^Class replacement))))
       (is (= {:value-type/error :invalid-field :class-name target
               :field 'required :reason :field-class-mismatch}
-             (ex-data error))))))
+             (ex-data error)))
+      (is (message-names? error [target "required" (.getName ^Class original)
+                                 "redefine the field type and the dependent definition"])
+          (ex-message error)))))
+
+(defmacro mixed-type
+  "Compile real mixed-mode storage through the capture loader."
+  [type-name nested]
+  (let [cname (binary-name *ns* type-name)
+        cls (resolve nested)]
+    (loader/install!
+     cname [{:field 'native-value :type cls :enforcement :native}
+            {:field 'generated-value :type String :enforcement :generated}]
+     :value)
+    `(let []
+       (deftype ~type-name [~'native-value ~'generated-value
+                            ~(with-meta 'wide {:tag 'long})
+                            ~(with-meta 'fraction {:tag 'double}) ~'nullable]
+         Probe
+         (probe [~'this]
+           (fn
+             ([] [~'native-value ~'generated-value ~'wide ~'fraction ~'nullable])
+             ([~'choose]
+              (let [~'selected (if ~'choose ~'generated-value ~'nullable)]
+                (fn [] [~'native-value ~'selected]))))))
+       ~(symbol cname))))
+
+(deftest mixed-specification-transport-test
+  ;; Real construction verifies strict writes and both enforcement modes together.
+  (testing "mixed native/generated fields retain storage, slots and companion reads"
+    (let [nested-name (gensym "MixedNested")
+          nested (eval-here (point-form nested-name))
+          value (Reflector/invokeConstructor nested (object-array [3 nil]))
+          holder (eval-here `(mixed-type ~(gensym "MixedHolder") ~nested-name))
+          ctor (.getConstructor ^Class holder
+                                (into-array Class [Object Object Long/TYPE Double/TYPE Object]))
+          arguments [value "required" (long 17) (double 2.5) nil]
+          instance (.newInstance ctor (object-array arguments))]
+      (is (value? holder))
+      (doseq [[field-name expected] [["native_value" nested]
+                                     ["generated_value" String]
+                                     ["nullable" Object]]]
+        (let [field (.getField ^Class holder field-name)]
+          (is (identical? expected (.getType field)))
+          (is (java.lang.reflect.Modifier/isFinal (.getModifiers field)))))
+      (is (= arguments ((probe instance))))
+      (is (= [value "required"] (((probe instance) true))))
+      (is (= [value nil] (((probe instance) false))))
+      (doseq [[position invalid expected] [[0 nil NullPointerException]
+                                           [0 :wrong ClassCastException]
+                                           [1 nil NullPointerException]
+                                           [1 :wrong ClassCastException]]]
+        (is (instance? expected
+                       (try (.newInstance ctor (object-array (assoc arguments position invalid)))
+                            nil
+                            (catch java.lang.reflect.InvocationTargetException error
+                              (.getCause error)))))))))
+
+(deftest mixed-construction-entry-points-test
+  ;; Call actual constructors and compiler factories with runtime arguments.
+  (testing "direct and factory calls enforce both constrained positions"
+    (let [nested-name (gensym "ConstructionNested")
+          nested (eval-here (point-form nested-name))
+          value (Reflector/invokeConstructor nested (object-array [5 nil]))
+          holder-name (gensym "ConstructionHolder")
+          holder (eval-here `(mixed-type ~holder-name ~nested-name))
+          direct (eval-here
+                  `(fn [~'a ~'b ~'c ~'d ~'e]
+                     (new ~(symbol (.getName ^Class holder))
+                          ~'a ~'b ~'c ~'d ~'e)))
+          factory (ns-resolve test-ns (symbol (str "->" holder-name)))
+          arguments [value "required" (long 23) (double 4.5) nil]]
+      (doseq [[entry construct] [[:direct direct] [:factory factory]]]
+        (testing (name entry)
+          (is (= arguments ((probe (apply construct arguments)))))
+          (doseq [[position invalid expected] [[0 nil NullPointerException]
+                                               [0 :wrong ClassCastException]
+                                               [1 nil NullPointerException]
+                                               [1 :wrong ClassCastException]]]
+            (is (instance? expected
+                           (try (apply construct (assoc arguments position invalid))
+                                nil
+                                (catch RuntimeException error error)))
+                (str entry " position " position " argument " invalid))))))))

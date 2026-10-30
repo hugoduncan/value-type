@@ -1,9 +1,10 @@
 # Controlled fallback
 
-This document describes definitions without enabled nil-restricted fields.
-Enabled restrictions require native field capability under every policy and
-never select ordinary fallback. Their selection and receiving guards use a
-separate lazy capability probe; see the [field design](../nil-restricted-field-design.md).
+Application policy selects class representation for all definitions. Enabled
+[non-nil fields](../non-nil-field-design.md) preserve their field constraint
+through native or generated enforcement. Missing native field support alone does
+not trigger fallback, warning or strict rejection. The field design's embodiment
+section records the implemented contract and accepted evidence limits.
 
 ## D10. Controlled fallback
 
@@ -13,8 +14,8 @@ separate lazy capability probe; see the [field design](../nil-restricted-field-d
 
   | Policy | Result when support is unavailable |
   |---|---|
-  | `silent` | Define an ordinary `deftype`, with no message. |
-  | `warn` | Print one warning to standard error, then use `deftype`. |
+  | `silent` | Define an identity class, with no message. |
+  | `warn` | Print one warning to standard error, then use an identity class. |
   | `error` | Throw a Java `Error` on every attempt. Define no fallback class. |
 
 - Strict retries: catching or ignoring an earlier `Error` does not
@@ -31,14 +32,16 @@ separate lazy capability probe; see the [field design](../nil-restricted-field-d
   Changing it after initialization is not supported. This gives source
   libraries silent fallback by default and lets applications set policy
   before dependency loading.
-- Semantics: fallback is ordinary `deftype`, not value-semantics
-  emulation. Identity, default equality, hashing and identity-sensitive
+- Semantics: fallback has ordinary identity semantics, not value-semantics
+  emulation. Enabled non-nil fields retain concrete storage and generated checks.
+  Identity, default equality, hashing and identity-sensitive
   operations can differ. Libraries that permit fallback must tolerate
   both representations. Mutable fields remain invalid in both modes
   (D8); changing JVM capability must not make such source valid.
 - Rejected: unconditional failure (prevents portable libraries), one
   warning per type (noise), throw only once then continue (breaks strict
-  policy), and runtime emulation (new semantics and cost).
+  policy), and value-semantics emulation (new semantics and cost). Generated field
+  checks preserve a declared invariant; they do not emulate value semantics.
 - Qualities: improves portability and application control; loses uniform
   identity and equality semantics across JVMs when fallback is allowed.
 - Commitment: firm for the three behaviours, repeated strict failure
@@ -56,7 +59,9 @@ separate lazy capability probe; see the [field design](../nil-restricted-field-d
   `Class::isValue` presence alone is insufficient.
 - Boundary: the public namespace and fallback path must load without
   JEP 401, preview flags or `java.lang.classfile`. Load the value-class
-  machinery only after the initial capability checks permit it.
+  machinery only after the initial capability checks permit it. Identity
+  definitions with enabled non-nil fields use a baseline-safe bytecode backend;
+  ordinary fallback needs no transform.
   Capability detection must use APIs safe on the fallback runtime.
 - Failure classification: only established capability absence permits
   fallback. Invalid forms, unexpected constructor shapes, loader defects

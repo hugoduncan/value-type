@@ -17,13 +17,20 @@
    (java.lang.classfile.instruction FieldInstruction InvokeInstruction
                                     LineNumber LoadInstruction LocalVariable
                                     LocalVariableType ReturnInstruction)
-   (java.lang.constant ClassDesc ConstantDescs)
+   (java.lang.constant ClassDesc ConstantDescs MethodTypeDesc)
    (java.util.function Consumer)))
 
 (set! *warn-on-reflection* true)
 
 (def ^:private ACC_IDENTITY 0x20)
 (def ^:private ACC_STRICT_INIT 0x800)
+
+(def ^:private ^ClassDesc objects-class (ClassDesc/of "java.util.Objects"))
+
+(def ^:private ^MethodTypeDesc require-non-null
+  (MethodTypeDesc/of ConstantDescs/CD_Object
+                     ^"[Ljava.lang.constant.ClassDesc;"
+                     (into-array ClassDesc [ConstantDescs/CD_Object])))
 
 (defn- instance-field? [^FieldModel f]
   (zero? (bit-and (.flagsMask (.flags f)) ClassFile/ACC_STATIC)))
@@ -135,31 +142,34 @@
 ;;; Transform
 
 (defn- constructor-code
-  "Emit writes using original argument slots and optional concrete storage types.
-   `storage-types` maps emitted field names to ClassDesc values. Casts enforce
-   type compatibility; the native field annotation must enforce null rejection."
-  ^Consumer [^ClassDesc this fields storage-types]
+  "Emit writes using original argument slots and optional concrete storage.
+   `storage` maps emitted field names to `{:storage-type :native?}`. Casts
+   enforce type compatibility; non-native fields get explicit null checks."
+  ^Consumer [^ClassDesc this fields storage]
   (reify Consumer
     (accept [_ cb]
       (let [^CodeBuilder cb cb]
         (doseq [[^FieldModel f slot] (map vector fields (field-slots fields))]
           (let [field-name (.stringValue (.fieldName f))
-                ^ClassDesc storage-type (get storage-types field-name)]
+                {:keys [^ClassDesc storage-type native?]} (get storage field-name)]
             (.aload cb 0)
             (.loadLocal cb (field-type-kind f) (int slot))
             (when storage-type
+              (when-not native?
+                (.invokestatic cb objects-class "requireNonNull"
+                               require-non-null))
               (.checkcast cb storage-type))
             (.putfield cb this field-name (or storage-type (.fieldTypeSymbol f)))))
         (.aload cb 0)
         (.invokespecial cb ConstantDescs/CD_Object "<init>" ConstantDescs/MTD_void)
         (.return_ cb)))))
 
-(defn- constructor-transform ^MethodTransform [this fields storage-types]
+(defn- constructor-transform ^MethodTransform [this fields storage]
   (reify MethodTransform
     (accept [_ mb e]
       (let [^MethodBuilder mb mb]
         (if (instance? CodeModel e)
-          (.withCode mb (constructor-code this fields storage-types))
+          (.withCode mb (constructor-code this fields storage))
           (.with mb ^MethodElement e))))))
 
 (def ^:private strict-init-transform
@@ -171,7 +181,7 @@
                                       (long ACC_STRICT_INIT))))
           (.with fb ^FieldElement e))))))
 
-(defn- value-class-transform ^ClassTransform [this fields storage-types]
+(defn- value-class-transform ^ClassTransform [this fields storage]
   (reify ClassTransform
     (accept [_ b e]
       (let [^ClassBuilder b b]
@@ -188,35 +198,39 @@
           (.transformField b ^FieldModel e strict-init-transform)
 
           (and (instance? MethodModel e) (constructor? e))
-          (.transformMethod b ^MethodModel e (constructor-transform this fields storage-types))
+          (.transformMethod b ^MethodModel e (constructor-transform this fields storage))
 
           :else (.with b ^ClassElement e))))))
 
 (defn- storage-transform
-  ^ClassTransform [storage-types]
+  ^ClassTransform [storage]
   (reify ClassTransform
     (accept [_ builder element]
       (let [^ClassBuilder builder builder
-            ^ClassDesc storage-type
+            {:keys [^ClassDesc storage-type native?]}
             (when (instance? FieldModel element)
-              (get storage-types (.stringValue (.fieldName ^FieldModel element))))]
+              (get storage (.stringValue (.fieldName ^FieldModel element))))]
         (if storage-type
-          (field-storage/emit! builder element (.descriptorString storage-type))
+          (field-storage/emit! builder element storage-type native?)
           (.with builder ^ClassElement element))))))
 
 (defn ->value-class
   "Change the bytes of a Clojure `deftype` class into the bytes of a
   JEP 401 value class.
 
-  Input: the class file bytes of a `deftype` class. Optional storage-types
-  maps emitted field names to concrete ClassDesc values for native restriction.
-  Optional class-loader resolves dynamic types during stack-map generation.
+  Input: the class file bytes of a `deftype` class. storage maps
+  emitted field names to `{:storage-type ClassDesc :native? boolean}` for
+  concrete storage. `:native? false` selects constructor null checks
+  instead of native annotations. class-loader (or nil) resolves dynamic
+  types during stack-map generation.
   Output: new class file bytes. The version is the latest version of
   the running JDK with the preview minor version. The class has no
   `ACC_IDENTITY` flag. Each instance field has `ACC_STRICT_INIT`. The
   constructor writes the fields, then calls `Object.<init>`. Selected fields
-  use concrete storage, native restriction and constructor casts; owner field
-  accesses use the concrete descriptors. Other parts retain their behavior.
+  use concrete storage and constructor casts. Non-native fields get
+  `Objects.requireNonNull` checks and no native annotation; native fields
+  get native restriction. Owner field accesses use the concrete
+  descriptors. Other parts retain their behavior.
 
   Errors: when the constructor is not the `deftype` shape, throws
   `ex-info` with `:value-type/error :unexpected-constructor` and
@@ -226,22 +240,18 @@
   the `deftype` constructor shape that value-type supports) and the
   fix (use `Clojure 1.12`). Bytes that are not a class file give the
   exceptions of `java.lang.classfile`."
-  (^bytes [^bytes bs]
-   (->value-class bs {}))
-  (^bytes [^bytes bs storage-types]
-   (->value-class bs storage-types nil))
-  (^bytes [^bytes bs storage-types class-loader]
-   (let [cf (class-file/configured class-loader)
-         cm (.parse cf bs)
-         entry (.thisClass cm)
-         this (.asSymbol entry)
-         fields (filterv instance-field? (.fields cm))]
-     (when-let [part (constructor-difference cm fields)]
-       (unexpected-constructor! (.replace (.asInternalName entry) \/ \.) part))
-     (.transformClass
-      cf cm
-      (.andThen
-       (.andThen (value-class-transform this fields storage-types)
-                 (storage-transform storage-types))
-       (ClassTransform/transformingMethodBodies
-        (field-access/rewrite this storage-types)))))))
+  ^bytes [^bytes bs storage class-loader]
+  (let [cf (class-file/configured class-loader)
+        cm (.parse cf bs)
+        entry (.thisClass cm)
+        this (.asSymbol entry)
+        fields (filterv instance-field? (.fields cm))]
+    (when-let [part (constructor-difference cm fields)]
+      (unexpected-constructor! (.replace (.asInternalName entry) \/ \.) part))
+    (.transformClass
+     cf cm
+     (.andThen
+      (.andThen (value-class-transform this fields storage)
+                (storage-transform storage))
+      (ClassTransform/transformingMethodBodies
+       (field-access/rewrite this storage))))))

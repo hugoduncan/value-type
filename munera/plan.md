@@ -1,3 +1,3 @@
 # Plan
 
-No tasks are scheduled.
+No tasks are currently ordered.

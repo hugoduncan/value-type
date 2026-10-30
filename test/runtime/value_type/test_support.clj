@@ -20,12 +20,20 @@
   [ns name]
   (str (namespace-munge ns) "." name))
 
+(defn message-names?
+  "True when the message of `x` (a Throwable or a string) contains each
+  string in `parts`. Error text is not contractual: tests assert only the
+  parts that a message must name."
+  [x parts]
+  (let [m (str (if (instance? Throwable x) (ex-message x) x))]
+    (every? #(str/includes? m %) parts)))
+
 (defmacro vt-type
   "Install the capture loader for `name` (no `defvaluetype`), then
   expand to the `deftype` form and the class."
   [name fields & specs]
   (let [cname (binary-name *ns* name)]
-    (loader/install! cname)
+    (loader/install! cname [] :value)
     `(let [] (deftype ~name ~fields ~@specs) ~(symbol cname))))
 
 (defn value?

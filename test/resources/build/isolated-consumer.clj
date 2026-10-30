@@ -81,6 +81,28 @@
 
 (defvaluetype Point [^long x ^long y])
 
+(defvaluetype Segment [^Point ^:non-nil start ^String ^:non-nil label])
+
+;; Exercise packaged native/generated selection and baseline generated checks.
+(let [point (->Point 3 7)
+      constructors [(fn [start label] (Segment. start label)) ->Segment]]
+  (assert (= Point (.getType (.getDeclaredField Segment "start"))))
+  (assert (= String (.getType (.getDeclaredField Segment "label"))))
+  (doseq [construct constructors]
+    (let [segment (construct point "segment")]
+      (assert (identical? point (.-start segment)))
+      (assert (= "segment" (.-label segment))))
+    (doseq [[start label expected] [[nil "segment" :null]
+                                    [point nil :null]
+                                    ["wrong" "segment" :type]
+                                    [point point :type]]]
+      (assert (= expected
+                 (try
+                   (construct start label)
+                   :unexpected-success
+                   (catch NullPointerException _ :null)
+                   (catch ClassCastException _ :type)))))))
+
 (defn sequence-results
   [a b]
   (mapv (fn [[values expected]]

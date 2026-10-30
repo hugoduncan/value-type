@@ -1,12 +1,12 @@
 (ns value-type.core-test
   "Tests for `value-type.core`: `defvaluetype` and `check-value-class`."
   (:require
-   [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
+   [clojure.walk :as walk]
    [value-type.core :as vt :refer [defvaluetype]]
-   [value-type.test-support :as support :refer [value? with-temp-dir]])
+   [value-type.test-support :as support :refer [message-names? value? with-temp-dir]])
   (:import
-   (clojure.lang Compiler ExceptionInfo IDeref RT)))
+   (clojure.lang Compiler Compiler$CompilerException ExceptionInfo IDeref RT)))
 
 (set! *warn-on-reflection* true)
 
@@ -34,12 +34,6 @@
   "Call `f`. Return the `ex-data` of the `error-info` exception, or nil."
   [f]
   (ex-data (error-info f)))
-
-(defn- message-names?
-  "True when the message of `e` contains each string in `parts`."
-  [e parts]
-  (let [m (str (ex-message e))]
-    (every? #(str/includes? m %) parts)))
 
 (def ^:private direct-fix "evaluate the defvaluetype form directly")
 
@@ -230,6 +224,21 @@
               :class-name       (class-name n)}
              (ex-data e)))
       (is (message-names? e [(class-name n) direct-fix]) (ex-message e)))))
+
+(deftest not-installed-enabled-field-test
+  ;; Full expansion with no compiler loader binding reaches the receiving
+  ;; macro, which cannot install capture.
+  (let [n     (gensym "NoInstallField")
+        field (with-meta 'a {:tag 'String :non-nil true})
+        form  `(defvaluetype ~n [~field])
+        t     (support/on-raw-thread
+               #(binding [*ns* test-ns] (walk/macroexpand-all form)))]
+    (is (instance? Compiler$CompilerException t) (str "result: " t))
+    (is (= {:value-type/error :not-installed
+            :class-name       (class-name n)}
+           (ex-data (ex-cause t))))
+    (is (message-names? (ex-cause t) [(class-name n) direct-fix])
+        (ex-message (ex-cause t)))))
 
 (deftest not-value-class-test
   (let [n (gensym "MacroExpanded")

@@ -1,39 +1,34 @@
 (ns value-type.field-aot-test
   (:require [clojure.test :refer [deftest is testing]]
             [value-type.aot-fixture :as fixture]
+            [value-type.consumer-aot-checks :as checks]
             [value-type.jvm-config :as config]
             [value-type.jvm-runner :as runner]))
 
 (def restricted-source
   "(ns restricted.aot-fixture (:require [value-type.core :refer [defvaluetype]]))
    (defvaluetype Leaf [payload])
-   (defvaluetype Holder [^Leaf ^:nil-restricted required nullable ^long count ^double weight]
+   (defvaluetype Holder [^Leaf ^:non-nil required nullable ^long count ^double weight]
      java.util.function.Supplier
      (get [this] (fn [] (fn [choose] (if choose (.-required this) (.-nullable this))))))")
 
 (defn- compile-producer
-  [valhalla source output after-compile]
-  (let [result (runner/run-jvm
-                (assoc valhalla :policy "error"
-                       :classpath (str (:classpath valhalla) java.io.File/pathSeparator source)
-                       :form (str "(binding [*compile-path* " (pr-str (.getPath output))
-                                  "] (compile 'restricted.aot-fixture)) " after-compile)))]
-    (is (= 0 (:exit result)) result)
-    (is (= "" (:err result)) result)
-    (when (and (= 0 (:exit result)) (= "" (:err result)))
-      result)))
+  "Compile restricted.aot-fixture on valhalla under strict policy."
+  [valhalla paths & options]
+  (apply fixture/compile-producer (assoc valhalla :policy "error") paths
+         'restricted.aot-fixture options))
 
 (deftest persisted-restricted-field-output-test
   ;; Inspect actual AOT output, including references in generated closure classes.
   (testing "AOT preserves native storage and rewrites persisted companions"
     (fixture/with-fixture
       'restricted.aot-fixture restricted-source
-      (fn [{:keys [source output]}]
+      (fn [{:keys [output] :as paths}]
         (let [{:keys [valhalla]} (config/configuration)
               result (compile-producer
-                      valhalla source output
-                      (str "(require '[value-type.field-aot-checks :as c]) "
-                           "(prn (c/inspect-output " (pr-str (.getPath output)) "))"))]
+                      valhalla paths
+                      :after (str "(require '[value-type.field-aot-checks :as c]) "
+                                  "(prn (c/inspect-output " (pr-str (.getPath output)) "))"))]
           (when result
             (is (= {:fields {"required" "Lrestricted/aot_fixture/Leaf;"
                              "nullable" "Ljava/lang/Object;" "count" "J" "weight" "D"}
@@ -45,106 +40,97 @@
                         (get-in result [:result :companion-references])) result)))))))
 
 (def source-free-consumer
-  '(do
-     (require '[clojure.java.io :as io])
-     (assert (nil? (io/resource "restricted/aot_fixture.clj")))
-     (require '[restricted.aot-fixture :as a])
-     (let [leaf (a/->Leaf nil)
-           direct (restricted.aot_fixture.Holder. leaf nil 42 2.5)
-           factory (a/->Holder leaf nil 42 2.5)
-           constructor (.getConstructor restricted.aot_fixture.Holder
-                                        (into-array Class [Object Object Long/TYPE Double/TYPE]))
-           reflected (.newInstance constructor (object-array [leaf nil (long 42) (double 2.5)]))
-           construct [(fn [x] (restricted.aot_fixture.Holder. x nil 42 2.5))
-                      (fn [x] (a/->Holder x nil 42 2.5))
-                      (fn [x] (.newInstance constructor (object-array [x nil (long 42) (double 2.5)])))]]
-       (doseq [holder [direct factory reflected]]
-         (assert (= leaf (.-required ^restricted.aot_fixture.Holder holder)))
-         (assert (= leaf (.get (.getField restricted.aot_fixture.Holder "required") holder)))
-         (assert (nil? (.-nullable ^restricted.aot_fixture.Holder holder)))
-         (assert (= 42 (.-count ^restricted.aot_fixture.Holder holder)))
-         (assert (= 2.5 (.-weight ^restricted.aot_fixture.Holder holder)))
-         (let [choose ((.get ^java.util.function.Supplier holder))]
-           (assert (= leaf (choose true)))
-           (assert (nil? (choose false)))))
-       (prn {:source-absent? true
-             :reads? true
-             :rejections
-             (mapv (fn [build]
-                     (mapv (fn [value]
-                             (try
-                               (build value)
-                               :accepted
-                               (catch Throwable error
-                                 (.getName (class (if (instance? java.lang.reflect.InvocationTargetException error)
-                                                    (.getCause error)
-                                                    error))))))
-                           [nil "wrong"]))
-                   construct)}))))
+  "Compiled checks of saved Holder; requires restricted.aot-fixture loaded.
+   Returns source absence and, per construction entry (direct, factory,
+   reflective), the compiled and reflective reads, Supplier results and
+   rejection outcomes. The leaf argument is reported as :leaf."
+  '(let [leaf (restricted.aot-fixture/->Leaf nil)
+         constructor (.getConstructor restricted.aot_fixture.Holder
+                                      (into-array Class [Object Object Long/TYPE Double/TYPE]))
+         field (.getField restricted.aot_fixture.Holder "required")
+         present (fn [value] (if (= leaf value) :leaf value))
+         construct [(fn [x] (restricted.aot_fixture.Holder. x nil 42 2.5))
+                    (fn [x] (restricted.aot-fixture/->Holder x nil 42 2.5))
+                    (fn [x] (.newInstance constructor (object-array [x nil (long 42) (double 2.5)])))]]
+     {:source-absent? (nil? (clojure.java.io/resource "restricted/aot_fixture.clj"))
+      :constructions
+      (mapv (fn [build]
+              (let [^restricted.aot_fixture.Holder holder (build leaf)
+                    choose ((.get ^java.util.function.Supplier holder))]
+                {:read (present (.-required holder))
+                 :field (present (.get field holder))
+                 :nullable (.-nullable holder)
+                 :count (.-count holder)
+                 :weight (.-weight holder)
+                 :supplier [(present (choose true)) (present (choose false))]
+                 :rejections (mapv (fn [value] (value-type.consumer-aot-checks/outcome #(build value))) [nil "wrong"])}))
+            construct)}))
+
+(def source-free-result
+  "Expected source-free-consumer result."
+  {:source-absent? true
+   :constructions (vec (repeat 3 {:read :leaf :field :leaf :nullable nil :count 42 :weight 2.5
+                                  :supplier [:leaf nil]
+                                  :rejections ["java.lang.NullPointerException"
+                                               "java.lang.ClassCastException"]}))})
 
 (deftest source-free-restricted-field-loading-test
   ;; Execute saved classes in a fresh JVM after deleting and excluding their source.
   (testing "source-free AOT retains native enforcement and companion reads"
     (fixture/with-fixture
       'restricted.aot-fixture restricted-source
-      (fn [{:keys [source output fixture]}]
-        (let [{:keys [valhalla]} (config/configuration)
-              producer (compile-producer valhalla source output "(prn :compiled)")]
-          (when producer
-            (java.nio.file.Files/delete (.toPath fixture))
-            (is (not (.exists fixture)))
+      (fn [{:keys [output] :as paths}]
+        (let [{:keys [valhalla]} (config/configuration)]
+          (when (compile-producer valhalla paths)
             (let [consumer (runner/run-jvm
                             (assoc valhalla :policy "error"
-                                   :classpath (str (:classpath valhalla) java.io.File/pathSeparator output)
-                                   :form (binding [*print-meta* true] (pr-str source-free-consumer))))]
+                                   :classpath (fixture/classpath-with valhalla output)
+                                   :form (binding [*print-meta* true]
+                                           (pr-str '(require 'clojure.java.io 'restricted.aot-fixture
+                                                             'value-type.consumer-aot-checks)
+                                                   (list 'prn source-free-consumer)))))]
               (is (= 0 (:exit consumer)) consumer)
               (is (= "" (:err consumer)) consumer)
-              (is (= {:source-absent? true :reads? true
-                      :rejections (vec (repeat 3 ["java.lang.NullPointerException"
-                                                  "java.lang.ClassCastException"]))}
-                     (:result consumer)) consumer))))))))
+              (is (= source-free-result (:result consumer)) consumer))))))))
 
 (deftest separately-compiled-restricted-field-consumer-test
   ;; Compile consumer access against saved classes, then execute only saved code.
   (testing "a separately compiled Clojure consumer needs neither source file"
     (fixture/with-fixture
       'restricted.aot-fixture restricted-source
-      (fn [{producer-source :source producer-output :output producer-file :fixture}]
-        (let [{:keys [valhalla]} (config/configuration)
-              producer (compile-producer valhalla producer-source producer-output "(prn :compiled)")]
-          (when producer
-            (java.nio.file.Files/delete (.toPath producer-file))
+      (fn [{producer-output :output producer-file :fixture :as producer-paths}]
+        (let [{:keys [valhalla]} (config/configuration)]
+          (when (compile-producer valhalla producer-paths)
             (fixture/with-fixture
               'restricted.consumer
-              (str "(ns restricted.consumer (:require [restricted.aot-fixture :as a] [clojure.java.io :as io]))\n"
+              (str "(ns restricted.consumer (:require [restricted.aot-fixture] [clojure.java.io]"
+                   " [value-type.consumer-aot-checks]))\n"
                    (binding [*print-meta* true]
                      (pr-str (list 'defn 'run-checks [] source-free-consumer))))
-              (fn [{consumer-source :source consumer-output :output consumer-file :fixture}]
-                (let [artifact-classpath (str (:classpath valhalla) java.io.File/pathSeparator producer-output)
-                      compiler (runner/run-jvm
-                                (assoc valhalla :policy "error"
-                                       :classpath (str artifact-classpath java.io.File/pathSeparator consumer-source)
-                                       :form (str "(require '[clojure.java.io :as io]) "
-                                                  "(assert (nil? (io/resource \"restricted/aot_fixture.clj\"))) "
-                                                  "(binding [*compile-path* " (pr-str (.getPath consumer-output))
-                                                  "] (compile 'restricted.consumer)) (prn :compiled)")))]
-                  (is (= 0 (:exit compiler)) compiler)
-                  (is (= "" (:err compiler)) compiler)
-                  (when (= 0 (:exit compiler))
-                    (java.nio.file.Files/delete (.toPath consumer-file))
-                    (is (and (not (.exists producer-file)) (not (.exists consumer-file))))
+              (fn [{consumer-output :output :as consumer-paths}]
+                (let [artifact-classpath (fixture/classpath-with valhalla producer-output)
+                      compiler (fixture/compile-producer
+                                (assoc valhalla :policy "error" :classpath artifact-classpath)
+                                consumer-paths 'restricted.consumer
+                                :after (pr-str '(prn {:source-absent?
+                                                      (nil? (clojure.java.io/resource
+                                                             "restricted/aot_fixture.clj"))})))]
+                  (when compiler
+                    (is (= {:source-absent? true} (:result compiler)) compiler)
+                    (is (not (.exists producer-file)))
                     (let [consumer (runner/run-jvm
                                     (assoc valhalla :policy "error"
-                                           :classpath (str artifact-classpath java.io.File/pathSeparator consumer-output)
-                                           :form "(require '[clojure.java.io :as io])
-                                                  (assert (nil? (io/resource \"restricted/consumer.clj\")))
-                                                  (require 'restricted.consumer)
-                                                  (restricted.consumer/run-checks)"))]
+                                           :classpath (fixture/classpath-with
+                                                       {:classpath artifact-classpath} consumer-output)
+                                           :form (pr-str
+                                                  '(do (require 'clojure.java.io 'restricted.consumer)
+                                                       (prn (assoc (restricted.consumer/run-checks)
+                                                                   :consumer-source-absent?
+                                                                   (nil? (clojure.java.io/resource
+                                                                          "restricted/consumer.clj"))))))))]
                       (is (= 0 (:exit consumer)) consumer)
                       (is (= "" (:err consumer)) consumer)
-                      (is (= {:source-absent? true :reads? true
-                              :rejections (vec (repeat 3 ["java.lang.NullPointerException"
-                                                          "java.lang.ClassCastException"]))}
+                      (is (= (assoc source-free-result :consumer-source-absent? true)
                              (:result consumer)) consumer))))))))))))
 
 (deftest java-restricted-field-consumer-test
@@ -152,65 +138,46 @@
   (testing "matching EA3 javac preserves direct native enforcement without exports"
     (fixture/with-fixture
       'restricted.aot-fixture restricted-source
-      (fn [{:keys [source output fixture]}]
-        (let [{:keys [valhalla]} (config/configuration)
-              producer (compile-producer valhalla source output "(prn :compiled)")]
-          (when producer
-            (java.nio.file.Files/delete (.toPath fixture))
-            (is (not (.exists fixture)))
-            (let [classpath (str (:classpath valhalla) java.io.File/pathSeparator output)
-                  compiler (runner/run-jvm
-                            (assoc valhalla :classpath classpath
-                                   :form (str "(prn (.run (javax.tools.ToolProvider/getSystemJavaCompiler) nil nil nil "
-                                              "(into-array String [\"--enable-preview\" \"--release\" \"27\" "
-                                              "\"-classpath\" " (pr-str classpath)
-                                              " \"-d\" " (pr-str (.getPath output))
-                                              " \"test/resources/nil-restricted-fields/JavaConsumer.java\"])))")))]
+      (fn [{:keys [output] :as paths}]
+        (let [{:keys [valhalla]} (config/configuration)]
+          (when (compile-producer valhalla paths)
+            (let [classpath (fixture/classpath-with valhalla output)
+                  compiler (fixture/compile-java valhalla classpath output
+                                                 "test/resources/non-nil-fields/JavaConsumer.java")]
               (is (= 0 (:exit compiler)) compiler)
               (is (= 0 (:result compiler)) compiler)
               (when (= 0 (:result compiler))
                 (let [consumer (runner/run-jvm
                                 (assoc valhalla :policy "error" :classpath classpath
-                                       :form "(require '[clojure.java.io :as io])
-                                              (assert (nil? (io/resource \"restricted/aot_fixture.clj\")))
-                                              (fields.JavaConsumer/runChecks)
-                                              (prn :java-checks-passed)"))]
+                                       :form (pr-str (checks/java-consumer-form
+                                                      {:source "restricted/aot_fixture.clj"
+                                                       :owner "restricted.aot_fixture.Holder"
+                                                       :checked ["required"]}
+                                                      "fields.JavaConsumer"))))]
                   (is (= 0 (:exit consumer)) consumer)
                   (is (= "" (:err consumer)) consumer)
-                  (is (= :java-checks-passed (:result consumer)) consumer))))))))))
-
-(def incompatible-consumer
-  '(do
-     (require '[clojure.java.io :as io] 'value-type.core)
-     (assert (nil? (io/resource "restricted/aot_fixture.clj")))
-     (prn
-      (mapv (fn [_]
-              (try
-                (Class/forName "restricted.aot_fixture.Holder")
-                :accepted
-                (catch UnsupportedClassVersionError _
-                  :unsupported-class-version)))
-            (range 2)))))
+                  (is (= {:source-absent? true :value? true
+                          :annotations ["jdk.internal.vm.annotation.NullRestricted"]
+                          :checks :passed}
+                         (:result consumer)) consumer))))))))))
 
 (deftest incompatible-restricted-field-consumer-test
   ;; Real incompatible receivers must reject saved storage, never convert it.
   (testing "source-free native artifacts reject every fallback policy"
     (fixture/with-fixture
       'restricted.aot-fixture restricted-source
-      (fn [{:keys [source output fixture]}]
-        (let [{:keys [baseline valhalla]} (config/configuration)
-              producer (compile-producer valhalla source output "(prn :compiled)")]
-          (when producer
-            (java.nio.file.Files/delete (.toPath fixture))
-            (is (not (.exists fixture)))
+      (fn [{:keys [output] :as paths}]
+        (let [{:keys [baseline valhalla]} (config/configuration)]
+          (when (compile-producer valhalla paths)
             (doseq [receiver [baseline (assoc valhalla :jvm-opts [])]
                     policy ["silent" "warn" "error"]]
               (testing (str (:java receiver) " / " policy)
                 (let [consumer (runner/run-jvm
                                 (assoc receiver :policy policy
-                                       :classpath (str (:classpath receiver) java.io.File/pathSeparator output)
-                                       :form (pr-str incompatible-consumer)))]
+                                       :classpath (fixture/classpath-with receiver output)
+                                       :form (pr-str (checks/incompatible-consumer-form
+                                                      {:source "restricted/aot_fixture.clj"
+                                                       :owner "restricted.aot_fixture.Holder"}))))]
                   (is (= 0 (:exit consumer)) consumer)
                   (is (= "" (:err consumer)) consumer)
-                  (is (= [:unsupported-class-version :unsupported-class-version]
-                         (:result consumer)) consumer))))))))))
+                  (is (= checks/incompatible-result (:result consumer)) consumer))))))))))

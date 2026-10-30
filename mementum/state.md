@@ -3,6 +3,7 @@
 Keep this file as a current-state summary. Replace stale facts; do not append
 history, task progress, review notes or test-run records. Task planning belongs
 in `munera/plan.md`; detailed guidance and evidence belong in the linked documents.
+Git keeps earlier versions of this file.
 
 ## Library
 
@@ -10,46 +11,47 @@ value-type is an experimental Clojure library with no published release.
 Its API is not stable.
 
 - `value-type.core/defvaluetype` provides `deftype`-style syntax for JEP 401
-  value objects. It transforms generated class bytes through a capture loader
-  and `java.lang.classfile`.
+  value objects. It transforms generated class bytes through a capture loader.
+  Value output uses `java.lang.classfile`; identity output uses bundled ASM.
 - On unsupported JVMs, the macro uses ordinary `deftype` semantics. The startup
   property `value-type.fallback` selects `silent` (default), `warn` or `error`.
-  AOT compilation fixes the representation; value-class output cannot fall back.
+  AOT compilation and expansion transfer fix the representation; value-class
+  output cannot fall back.
 - `value-type.array/make-array` allocates native null-restricted atomic arrays
   with an explicit seed. `into-array` constructs them from finite sequences.
   `array-info` inspects reference-array properties. Allocation has no fallback.
 - Source-only JAR builds, quality checks, API generation and release tooling
   are available. Hosted Actions and live publication remain unverified.
-- Native null-restricted fields are available through opt-in `:nil-restricted`
-  metadata and an explicit value-class type hint on EA3. A separate lazy probe
-  verifies native enforcement without exports. Unsupported JVMs reject enabled
-  definitions under every fallback policy.
-- Field specifications retain exact Class identity. The capture loader transforms
-  concrete storage, constructor casts and owner/companion references together.
-  Owner and companion transforms share optional-loader ClassFile configuration
-  behind the optional JDK boundary. Constructor reference parameters remain Object. Mixed primitive slots, nullable
-  controls, methods, closures and same-name/different-loader cases are verified.
-- Transferred expansions install receiver-local loaders. Source-free AOT works
-  with separately compiled Clojure and direct Java consumers. Java 8 and
-  preview-disabled EA3 reject saved restricted-field classes under all policies.
-  Semantic tests pass with flattening on/off and normal/interpreter execution;
-  they do not establish layout or performance guarantees.
-- See the [field design](../ramora/nil-restricted-field-design.md) and
-  [task evidence](../munera/closed/016-nil-restricted-fields/implementation.md).
-  Public usage, API contracts, runtime verification guidance and Ramora embodiment
-  describe native field limits. Detailed compiler decisions distinguish ordinary
-  selection-time installation from restricted receiving installation and companion
-  rewriting. Separate full runtime, compatibility, build and tooling suites pass.
-  External Java value classes are verified through public restricted-field
-  construction, including exact field Class identity and native rejection.
-  Public declaration tests verify structured compiler errors for invalid metadata
-  and ineligible tags, including enclosing-Class redefinition and validation order.
+
+## Non-nil fields
+
+Task 017 is complete and closed. Public `:non-nil` field metadata replaces
+`:nil-restricted` (no alias). It accepts concrete identity and value tags.
+
+- Selection is per field and fixed at expansion. Native enforcement applies when
+  the owner is a value class, the tag is native-eligible and native support is
+  available. Otherwise generated constructor checks and concrete final storage
+  enforce the constraint, also on identity fallback.
+- Direct, factory and reflective constructors reject nil and wrong-type arguments.
+  Methods, protocols, Object overrides and closures read all fields.
+- Receivers of transferred expansions and AOT artifacts keep the fixed
+  enforcement. Incompatible receivers reject value output without fallback.
+- Field specifications keep exact Class identity across redefinition, sibling
+  loaders and cross-process replacement.
+
+Evidence limits: the evidence is bounded, not an exhaustive cross-product.
+No JVM other than those below is claimed. Semantic tests do not establish layout
+or performance. See the
+[acceptance audit](../munera/closed/017-portable-non-nil-fields/acceptance-audit.md),
+its linked per-criterion audits and the
+[implementation record](../munera/closed/017-portable-non-nil-fields/implementation.md).
+The [field design](../ramora/non-nil-field-design.md) is the contract.
 
 ## Runtime and verification limits
 
 - Tested coverage: Clojure 1.12.6, Java 8 and Valhalla
-  `27-jep401ea3+1-1` (EA3), with preview off and on. Future JVM formats are
-  not verified.
+  `27-jep401ea3+1-1` (EA3), with preview off and on, in normal and interpreter
+  execution. Future JVM formats are not verified.
 - Value classes need a supported Valhalla JVM with `--enable-preview`.
   Array allocation also needs
   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
@@ -59,6 +61,10 @@ Its API is not stable.
 - Tests share `test/`, with separate runtime, compatibility, build, release
   and tooling suites and classpaths. Runtime Scry discovery must use
   `--dir test/runtime`, not all of `test/`.
+- Tooling tests require `-M:quickdoc:tooling-test`. Release tests require
+  `-M:release:release-test`.
+- The compatibility suite (`:fallback-test`) is slow: about 27 minutes per
+  host JVM, because each matrix cell starts a child JVM. Task 018 addresses this.
 - Performance depends on the JVM, layout and workload. Recorded tests show
   larger standalone value objects, no stable interface-call penalty, and
   storage and traversal benefits for specific flattened arrays. These are
@@ -67,10 +73,10 @@ Its API is not stable.
 
 ## Orientation
 
-- `README.md`: project overview, value-class, nil-restricted field and value-array quick starts,
+- `munera/plan.md` and `munera/open/`: current tasks.
+- `README.md`: project overview, value-class, non-nil field and value-array quick starts,
   JVM flags and performance limits.
-- `doc/usage.md` and `doc/API.md`: public contracts and limits, including
-  ordinary fallback versus native field requirements and expansion transfer.
+- `doc/usage.md` and `doc/API.md`: public contracts and limits.
 - `doc/development.md`: setup, quality checks, builds and benchmarks.
 - `doc/development/runtime.md`: JVM selection and test commands.
 - `doc/development/release.md`: release operations.

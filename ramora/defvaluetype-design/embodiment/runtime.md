@@ -16,7 +16,7 @@ class-file API. An optional class loader resolves dynamic types for stack maps. 
 
 ## Fallback boundary
 
-For definitions without enabled restrictions, before loader installation,
+For definitions without enabled non-nil fields, before loader installation,
 a capability/policy responsibility selects
 the value-class path, ordinary `deftype`, or strict failure (D10 D12).
 `value-type.impl.runtime` owns the state in D13: initialized policy, a
@@ -36,15 +36,20 @@ that dependency boundary.
 
 - Syntax and options: the same as `clojure.core/deftype`.
 - Result: the class `Name`, the factory `->Name`. The fallback
-  path, only for definitions without enabled restrictions, returns an ordinary
-  identity class. Enabled fields require an explicit concrete value-class tag.
+  path returns an identity class: an ordinary `deftype` class without enabled
+  non-nil fields, or a class with generated constructor checks with them.
+  Enabled fields require an explicit tag that names an already defined concrete
+  class: identity, value or external.
 - Strict failure: an `Error` on every attempted fallback.
   Direct rejection uses plain java.lang.Error. Source compiler operations
   wrap it in CompilerException; failed AOT initializer retries can throw
   NoClassDefFoundError. These phase behaviours are verified by production tests on the recorded matrix.
 - Errors: `ex-info` with `:value-type/error` and `:class-name`;
-  `:value-type/error` in `#{:mutable-field :not-installed
-  :not-value-class :jvm-rejected :unexpected-constructor}`. A
+  `:value-type/error` in `#{:invalid-field :mutable-field :not-installed
+  :not-value-class :value-capability-unavailable
+  :field-capability-unavailable :invalid-field-enforcement :jvm-rejected
+  :unexpected-constructor :unsupported-shape}`. The `defvaluetype` docstring
+  Errors list ([API](../../../doc/API.md)) gives the phase and data of each. A
   `deftype` syntax error (for example a reserved field name) gives the
   `deftype` error.
 
@@ -58,31 +63,38 @@ that dependency boundary.
 
 ```clojure
 ;; value-type.impl.transform
-(->value-class identity-class-bytes) ;=> bytes
-(->value-class identity-class-bytes storage-types)
-(->value-class identity-class-bytes storage-types class-loader)
-;; storage-types maps emitted field names to ClassDesc values.
+(->value-class identity-class-bytes storage class-loader)
+;=> bytes
+;; storage maps emitted field names to {:storage-type ClassDesc
+;; :native? boolean}. :native? false selects constructor null checks
+;; instead of native annotations.
+;; class-loader (or nil) resolves dynamic types for stack maps.
 ;; throws ex-info {:value-type/error :unexpected-constructor
 ;;                  :class-name "binary.Name"}
 ;; when D6 does not match. Check steps, in order: count of
 ;; constructors, parameters, code (super call, field writes).
 
 ;; value-type.impl.loader
-(install! class-name) ;=> true when installed, false when LOADER is not thread-bound
-(install! class-name specifications)
-;; Ordered specifications retain :field, exact :type Class and :descriptor.
+(install! class-name specifications representation)
+;=> true when installed, false when LOADER is not thread-bound
+;; representation is :value or :identity; :identity requires
+;; :generated enforcement.
+;; Ordered specifications retain :field, exact :type Class and
+;; :enforcement. Backends derive descriptors from :type.
+;; :generated selects constructor checks; :native selects native
+;; enforcement.
 ;; The capture loader throws ex-info {:value-type/error :jvm-rejected
 ;; :class-name} with the LinkageError as cause when the JVM rejects
 ;; the define or the link. Errors of ->value-class pass through.
 ```
 
-The one-argument transform uses empty storage selections and the default
-hierarchy resolver. The loader passes its delegate to the three-argument arity
-so stack-map generation can resolve dynamically defined field types.
+The loader passes its delegate through `value-backend/prepare` as the
+class-loader argument, so stack-map generation can resolve dynamically
+defined field types.
 
 ## Data flow
 
-Representation selection for definitions without enabled restrictions:
+Representation selection for definitions without enabled non-nil fields:
 
 ```text
 validate fields → determine capability and application policy
@@ -105,7 +117,7 @@ The existing value-class flow remains:
 ```text
 macroexpand defvaluetype
   core: validate fields                 → ex-info :mutable-field
-  core: installed := (loader/install! "ns.Name")
+  core: installed := (loader/install! "ns.Name" [] :value)
                                         → LOADER := capture loader
   core: return (let [] (deftype ...)
                        (check-value-class ns.Name <installed>)
@@ -115,7 +127,9 @@ analyze (deftype* ...)
   compiler: emit bytes
   compiler: write .class (AOT only)
   compiler: LOADER.defineClass("ns.Name", bytes)
-    loader: bytes' := transform/->value-class bytes
+    loader: bytes' := transform/->value-class bytes storage delegate
+            ;; value-backend/prepare: storage from [] (empty),
+            ;; delegate resolves stack-map types
     loader: write bytes' (AOT only)
     loader: delegate.defineClass("ns.Name", bytes')
     loader: link (getDeclaredMethods)
@@ -126,25 +140,28 @@ runtime
                                           or :not-value-class
 ```
 
-### Enabled nil-restricted fields
+### Enabled non-nil fields
 
-`defvaluetype` validates mutable fields and restriction metadata, requires native
-field capability and resolves eligible field specifications. It returns an outer
-`let` containing `core/native-field-deftype`; selection does not install a loader.
-Both public macroexpansion forms retain this receiving boundary.
+`defvaluetype` validates mutable fields, constraint metadata and concrete tags
+before selecting representation and ordered enforcement modes. Value output uses
+native enforcement where eligible and available, otherwise generated checks.
+Identity output uses generated checks and remains subject to fallback policy.
+Selection does not install a loader.
 
-Receiving analysis checks capability again, resolves exact Classes in the receiver
-and installs the capture loader with ordered specifications. The emitted form
-checks capability at evaluation, defines the type and checks its value-class kind.
-Unsupported receivers reject under every policy, including repeated attempts.
+Both public macroexpansion forms retain a receiving compiler boundary:
+`core/value-field-deftype` or `core/identity-field-deftype`. Receiving analysis
+resolves exact Classes and installs the capture loader with fixed specifications.
+Unsupported receivers reject the selected mode rather than reselect enforcement.
+Emitted forms retain evaluation-time representation guards.
 
 Before target definition, the loader checks each selected Class through its delegate.
 A different Class gives `:invalid-field` with `:reason :field-class-mismatch`.
-The target transform composes concrete storage, native annotations, constructor
-casts and owner accesses. Other captured classes have matching target-field
-references rewritten but keep their class kind. Both paths write transformed
-bytes during AOT. See the [field design](../../nil-restricted-field-design.md)
-for validation order, error contracts and deployment evidence.
+Bundled ASM transforms identity output; `java.lang.classfile` transforms value
+output. Both preserve concrete storage, constructor checks and owner/companion
+field references. Captured companions keep their class kind. Both paths write
+transformed bytes during AOT. See the
+[field embodiment](../../non-nil-field-design/embodiment.md) for evidence
+and accepted evidence limits.
 
 ## State
 
@@ -153,7 +170,7 @@ for validation order, error contracts and deployment evidence.
 - Defined classes are in the `DynamicClassLoader` static cache. This
   is the same as `deftype`.
 - The current implementation also caches reflection lookup of
-  `Class::isValue` in a delay in `core`.
+  `Class::isValue` in the `capability/value-predicate` delay.
 - Cached capability and initialized application policy, plus
   an atomic warning flag owned by the capability/policy responsibility
   (D13). Concurrent attempts share this state. Strict failure is never
@@ -166,14 +183,15 @@ for validation order, error contracts and deployment evidence.
   the class file format in a Valhalla build (the flag values or the
   version rule) changes `transform`. Capability detection may also
   need an update when supported formats or APIs change. A change of
-  the value-class predicate affects both `core` and `capability`.
+  the value-class predicate affects `capability`.
 - The `loader` boundary hides the compiler coupling. Only this
   namespace uses `Compiler/LOADER` and `Compiler/writeClassFile`.
   Both `loader` and `capability` construct `DynamicClassLoader` instances:
   the loader captures user-type bytes; the detector defines an isolated probe.
-- `core` knows the `deftype` syntax. Both `core` and `capability` resolve
-  `Class::isValue`: core checks generated value classes (D9), and the
-  detector checks API availability and the probe result. Core uses runtime
+- `core` knows the `deftype` syntax. Only `capability` resolves
+  `Class::isValue` (`value-predicate`); core checks generated value classes
+  (D9) through `capability/value-class?`, and the detector checks API
+  availability and the probe result. Core uses runtime
   capability and policy, and lazily resolves `loader/install!`.
 
 ## Invariants

@@ -3,8 +3,9 @@
 Clojure's `deftype` creates objects with identity. value-type provides
 `defvaluetype` to define [JEP 401 value objects](https://openjdk.org/jeps/401)
 with familiar `deftype` syntax. It uses value classes on a supported
-Valhalla JVM and ordinary `deftype` classes otherwise, unless native
-nil-restricted fields are enabled. Enabled restrictions have no fallback.
+Valhalla JVM and ordinary identity classes otherwise, subject to application
+fallback policy. Required, typed fields retain their constraints in either
+representation.
 
 For collections of value objects, `value-type.array` creates native arrays
 that reject null elements and provide atomic element access. The JVM can
@@ -70,23 +71,28 @@ To try ordinary-JVM fallback, start with `clojure -M` instead. Construction
 still works, but the two instances are not identical, and `Class.isValue`
 can be absent.
 
-### Nil-restricted fields
+### Non-nil fields
 
-Use an explicit value-class tag and `:nil-restricted` metadata to require a
+Use an explicit concrete-class tag and `:non-nil` metadata to require a
 non-null nested value:
 
 ```clojure
-(defvaluetype Segment [^Point ^:nil-restricted start
-                       ^Point ^:nil-restricted end])
+(defvaluetype Segment [^Point ^:non-nil start
+                       ^Point ^:non-nil end])
 (def segment (->Segment (->Point 1 2) (->Point 3 4)))
 (.-x (.-start segment))                  ;=> 1
 ```
 
-Enabled fields require native support under every fallback policy. On the
-tested Valhalla JVM, they need `--enable-preview` but no internal-package
-export. Constructors reject nil and wrong types. Field restriction does not
-guarantee flattening. See the [field contract](doc/usage.md#native-nil-restricted-fields)
-for eligible tags, errors and deployment limits.
+These declarations also work on ordinary JVMs when fallback policy permits
+identity classes. Constructors retain concrete field types and reject nil and
+wrong types. Eligible value fields use native enforcement when available; other
+fields use generated constructor checks. Neither path guarantees flattening.
+Field enforcement needs no internal-package export.
+
+Tags can name already defined concrete identity or value classes, including
+`String`. The old `:nil-restricted` key is rejected, even when false or nil.
+See the [field contract](doc/usage.md#portable-non-nil-fields) for eligible tags,
+errors and deployment limits.
 
 ### Value arrays
 
@@ -126,7 +132,7 @@ operations such as `aget`, `aset` and `alength`. Stores of null or incompatible
 values fail. Atomic element access does not make compound updates atomic or
 remove the need for thread coordination.
 
-Like enabled nil-restricted fields, array construction has **no ordinary-JVM fallback**.
+Unlike non-nil fields, array construction has **no ordinary-JVM fallback**.
 `into-array` buffers the input before allocation; it is not a streaming
 constructor. `array-info` also accepts ordinary reference arrays. It needs
 the export flag, but ordinary-array inspection does not need preview on the
@@ -143,12 +149,13 @@ handling.
 - Mutable fields are not supported in either representation.
 - Fallback uses ordinary `deftype` identity semantics. It does not emulate
   value equality. Code that permits fallback must work with both forms.
-- Ahead-of-time compilation fixes the representation. Value-class output
-  requires a compatible preview-enabled JVM; it does not convert to fallback.
+- Ahead-of-time compilation fixes representation and field enforcement.
+  Value-class output requires a compatible preview-enabled JVM; it does not
+  convert to fallback. Identity output retains its constructor checks.
 
-The startup property `value-type.fallback` controls definitions without enabled
-nil-restricted fields on unsupported JVMs. Enabled fields reject unavailable
-native support under every policy:
+The startup property `value-type.fallback` controls identity fallback, including
+definitions with non-nil fields. Missing native field enforcement alone does not
+trigger fallback, warnings or strict-policy rejection:
 
 | Value | Behavior when fallback is needed |
 |---|---|

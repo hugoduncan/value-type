@@ -18,9 +18,9 @@ limits; they do not report feature delivery status.
   `defvaluetype` macro. Purpose, context, decisions, embodiment,
   qualities, risks, assertions.
 
-- [Nil-restricted field design](nil-restricted-field-design.md): opt-in
-  `:nil-restricted` metadata, concrete value-class fields, native enforcement,
-  unsupported-JVM rejection and verification requirements.
+- [Non-nil field design](non-nil-field-design.md): `:non-nil`
+  constraint, native or generated enforcement, application-controlled identity
+  fallback, implementation and accepted evidence limits.
 
 - [Value-type array design](value-type-array-design.md): native,
   null-restricted atomic allocation, sequence construction and diagnostics.
@@ -42,8 +42,9 @@ limits; they do not report feature delivery status.
 - [Development guide](../doc/development.md): contributor setup, quality
   checks, tests, builds and benchmarks.
 
-- [Usage guide](../doc/usage.md): fallback, AOT limits, value semantics and
-  error handling.
+- [Usage guide](../doc/usage.md): fallback, AOT limits, value semantics,
+  error handling, value arrays (allocation, sequence construction,
+  diagnostics) and portable non-nil fields.
 
 - [Release workflow](release-workflow.md): tooling ownership, preparation,
   publication order and verification limits.

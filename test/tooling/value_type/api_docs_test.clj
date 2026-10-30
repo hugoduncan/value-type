@@ -16,7 +16,8 @@
               "value-type.array/make-array"
               "value-type.core/defvaluetype"]
              (mapv second (re-seq #"## <a name=\"([^\"]+)\"" markdown))))
-      (doseq [internal ["check-value-class" "is-value-method" "mutable-fields"
+      (doseq [internal ["check-value-class" "value-field-deftype"
+                        "identity-field-deftype" "mutable-fields"
                         "value-type.impl." "checked-length"]]
         (is (not (str/includes? markdown internal)) internal)))
     (testing "arguments and representation boundaries remain explicit"

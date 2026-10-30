@@ -8,37 +8,39 @@
 
 (defn inspect-output
   "Read the saved owner and companion bytes, without using loaded Classes."
-  [output]
-  (let [cf (ClassFile/of)
-        owner (.parse cf (Files/readAllBytes (.toPath (io/file output "restricted/aot_fixture/Holder.class"))))
-        fields (into {} (map (fn [^FieldModel field]
-                               [(.stringValue (.fieldName field)) (.stringValue (.fieldType field))]))
-                     (.fields owner))
-        annotations (into []
-                          (comp (filter #(= "required" (.stringValue (.fieldName ^FieldModel %))))
-                                (mapcat #(.elementList ^FieldModel %))
-                                (filter #(instance? RuntimeVisibleAnnotationsAttribute %))
-                                (mapcat #(.annotations ^RuntimeVisibleAnnotationsAttribute %))
-                                (map #(.stringValue (.className ^Annotation %))))
-                          (.fields owner))
-        constructors (into []
-                           (comp (filter #(= "<init>" (.stringValue (.methodName ^MethodModel %))))
-                                 (map #(.stringValue (.methodType ^MethodModel %))))
-                           (.methods owner))
-        references (into []
-                         (comp (filter #(and (.isFile ^java.io.File %)
-                                             (.endsWith (.getName ^java.io.File %) ".class")
-                                             (not= "Holder.class" (.getName ^java.io.File %))))
-                               (map #(.parse cf (Files/readAllBytes (.toPath ^java.io.File %))))
-                               (mapcat #(.methods ^java.lang.classfile.ClassModel %))
-                               (mapcat #(if (.isPresent (.code ^MethodModel %))
-                                          (.elementList (.get (.code ^MethodModel %))) []))
-                               (filter #(instance? FieldInstruction %))
-                               (filter #(= "restricted/aot_fixture/Holder"
-                                           (.asInternalName (.owner ^FieldInstruction %))))
-                               (filter #(= "required" (.stringValue (.name ^FieldInstruction %))))
-                               (map #(.stringValue (.type ^FieldInstruction %))))
-                         (file-seq (io/file output)))]
-    {:fields (select-keys fields ["required" "nullable" "count" "weight"])
-     :annotations annotations :constructors constructors
-     :companion-references references}))
+  ([output]
+   (inspect-output output "restricted/aot_fixture/Holder" "required"))
+  ([output owner-name field-name]
+   (let [cf (ClassFile/of)
+         owner (.parse cf (Files/readAllBytes (.toPath (io/file output (str owner-name ".class")))))
+         fields (into {} (map (fn [^FieldModel field]
+                                [(.stringValue (.fieldName field)) (.stringValue (.fieldType field))]))
+                      (.fields owner))
+         annotations (into []
+                           (comp (filter #(= field-name (.stringValue (.fieldName ^FieldModel %))))
+                                 (mapcat #(.elementList ^FieldModel %))
+                                 (filter #(instance? RuntimeVisibleAnnotationsAttribute %))
+                                 (mapcat #(.annotations ^RuntimeVisibleAnnotationsAttribute %))
+                                 (map #(.stringValue (.className ^Annotation %))))
+                           (.fields owner))
+         constructors (into []
+                            (comp (filter #(= "<init>" (.stringValue (.methodName ^MethodModel %))))
+                                  (map #(.stringValue (.methodType ^MethodModel %))))
+                            (.methods owner))
+         references (into []
+                          (comp (filter #(and (.isFile ^java.io.File %)
+                                              (.endsWith (.getName ^java.io.File %) ".class")
+                                              (not= (io/file output (str owner-name ".class")) %)))
+                                (map #(.parse cf (Files/readAllBytes (.toPath ^java.io.File %))))
+                                (mapcat #(.methods ^java.lang.classfile.ClassModel %))
+                                (mapcat #(if (.isPresent (.code ^MethodModel %))
+                                           (.elementList (.get (.code ^MethodModel %))) []))
+                                (filter #(instance? FieldInstruction %))
+                                (filter #(= owner-name
+                                            (.asInternalName (.owner ^FieldInstruction %))))
+                                (filter #(= field-name (.stringValue (.name ^FieldInstruction %))))
+                                (map #(.stringValue (.type ^FieldInstruction %))))
+                          (file-seq (io/file output)))]
+     {:fields (select-keys fields [field-name "nullable" "count" "weight"])
+      :annotations annotations :constructors constructors
+      :companion-references references})))

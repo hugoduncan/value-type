@@ -302,7 +302,7 @@
 (defn- value-class
   "Define the output class of fixture `fx` in a round-trip loader."
   ^Class [{:keys [^Class class bytes dir]}]
-  (.loadClass (round-trip-loader (.getName class) (transform/->value-class bytes)
+  (.loadClass (round-trip-loader (.getName class) (transform/->value-class bytes {} nil)
                                  dir)
               (.getName class)))
 
@@ -411,7 +411,7 @@
   (doseq [k (keys fixtures)]
     (testing (str k)
       (let [in (parse (:bytes (fixture k)))
-            out (parse (transform/->value-class (:bytes (fixture k))))
+            out (parse (transform/->value-class (:bytes (fixture k)) {} nil))
             in-fields (.fields in)
             out-fields (.fields out)]
         (testing "version"
@@ -450,7 +450,7 @@
 
 (deftest five-fields-load-test
   (testing "literal load slots and kinds (design Verification 1)"
-    (let [out (parse (transform/->value-class (:bytes (fixture :five-fields))))
+    (let [out (parse (transform/->value-class (:bytes (fixture :five-fields)) {} nil))
           loads (->> (ctor-code-view out)
                      (filter #(= :load (first %)))
                      (remove #(= 0 (nth % 2))))]
@@ -528,18 +528,62 @@
                                     (ClassDesc/of "storage.Marker")
                                     (List/of (AnnotationElement/ofString "value" "retained")
                                              (AnnotationElement/ofInt "revision" 17))))))))))
-          result (parse (transform/->value-class annotated {"e" (ClassDesc/of "storage.Value")}))]
-      (is (= ["I" "J" "D" "Z" "Lstorage/Value;"]
-             (mapv #(.stringValue (.fieldType ^FieldModel %))
-                   (filterv (complement static?) (.fields result)))))
-      (doseq [^FieldModel field (filterv (complement static?) (.fields result))]
-        (is (= (cond-> {["Ljava/lang/Deprecated;"
-                         {"since" "field-review" "forRemoval" true}] 1}
-                 (= "e" (.stringValue (.fieldName field)))
-                 (assoc ["Ljdk/internal/vm/annotation/NullRestricted;" {}] 1))
-               (annotation-support/annotation-contents field RuntimeVisibleAnnotationsAttribute)))
-        (is (= {["Lstorage/Marker;" {"value" "retained" "revision" 17}] 1}
-               (annotation-support/annotation-contents field RuntimeInvisibleAnnotationsAttribute)))))))
+          storage-type (ClassDesc/of "storage.Value")]
+      (doseq [native? [true false]
+              :let [result (parse (transform/->value-class
+                                   annotated {"e" {:storage-type storage-type :native? native?}} nil))]]
+        (is (= (attributes original) (attributes result))
+            "Source file and source debug attributes survive constrained transformation")
+        (is (= ["I" "J" "D" "Z" "Lstorage/Value;"]
+               (mapv #(.stringValue (.fieldType ^FieldModel %))
+                     (filterv (complement static?) (.fields result)))))
+        (doseq [^FieldModel field (filterv (complement static?) (.fields result))]
+          (is (= (cond-> {["Ljava/lang/Deprecated;"
+                           {"since" "field-review" "forRemoval" true}] 1}
+                   (and native? (= "e" (.stringValue (.fieldName field))))
+                   (assoc ["Ljdk/internal/vm/annotation/NullRestricted;" {}] 1))
+                 (annotation-support/annotation-contents field RuntimeVisibleAnnotationsAttribute)))
+          (is (= {["Lstorage/Marker;" {"value" "retained" "revision" 17}] 1}
+                 (annotation-support/annotation-contents field RuntimeInvisibleAnnotationsAttribute))))))))
+
+(deftest integrated-class-annotations-test
+  ;; Inspect class annotation payloads through both composed enforcement paths.
+  (testing "constrained value transformation preserves class annotations"
+    (let [cf (ClassFile/of)
+          original (parse (:bytes (fixture :five-fields)))
+          visible (RuntimeVisibleAnnotationsAttribute/of
+                   (List/of
+                    (Annotation/of
+                     (ClassDesc/of "java.lang.Deprecated")
+                     (List/of (AnnotationElement/ofString "since" "class-review")
+                              (AnnotationElement/ofBoolean "forRemoval" true)))))
+          invisible (RuntimeInvisibleAnnotationsAttribute/of
+                     (List/of
+                      (Annotation/of
+                       (ClassDesc/of "storage.Marker")
+                       (List/of (AnnotationElement/ofString "value" "class-retained")
+                                (AnnotationElement/ofInt "revision" 23)))))
+          annotated (.transformClass
+                     cf original
+                     (reify ClassTransform
+                       (accept [_ builder element]
+                         (.with ^ClassBuilder builder element))
+                       (atEnd [_ builder]
+                         (.with ^ClassBuilder builder visible)
+                         (.with ^ClassBuilder builder invisible))))]
+      (doseq [native? [true false]
+              :let [result (parse (transform/->value-class
+                                   annotated {"e" {:storage-type (ClassDesc/of "storage.Value")
+                                                   :native? native?}}
+                                   nil))]]
+        (is (= {["Ljava/lang/Deprecated;"
+                 {"since" "class-review" "forRemoval" true}] 1}
+               (annotation-support/annotation-contents
+                result RuntimeVisibleAnnotationsAttribute)))
+        (is (= {["Lstorage/Marker;"
+                 {"value" "class-retained" "revision" 23}] 1}
+               (annotation-support/annotation-contents
+                result RuntimeInvisibleAnnotationsAttribute)))))))
 
 ;;; Verification 3: errors
 
@@ -547,11 +591,11 @@
   "Return `[message data]` of the ex-info that `->value-class` throws
   for `bs`."
   [bs]
-  (let [failures (mapv (fn [storage-types]
-                         (try (transform/->value-class bs storage-types)
+  (let [failures (mapv (fn [storage]
+                         (try (transform/->value-class bs storage nil)
                               nil
                               (catch ExceptionInfo e [(ex-message e) (ex-data e)])))
-                       [{} {"v" (ClassDesc/of "storage.Value")}])]
+                       [{} {"v" {:storage-type (ClassDesc/of "storage.Value") :native? true}}])]
     (is (= (first failures) (second failures))
         "storage selection must not bypass original constructor validation")
     (first failures)))
@@ -634,7 +678,7 @@
 
 (deftest not-class-file-error-test
   (testing "bytes that are not a class file: not wrapped"
-    (let [e (try (transform/->value-class (byte-array [1 2 3]))
+    (let [e (try (transform/->value-class (byte-array [1 2 3]) {} nil)
                  nil
                  (catch Exception e e))]
       (is (instance? Exception e))
@@ -652,7 +696,7 @@
         (is (some #(instance? Label %) elements))
         (is (some #(instance? LocalVariable %) elements))
         (is (some #(instance? LocalVariableType %) elements)))
-      (let [out (transform/->value-class bs)]
+      (let [out (transform/->value-class bs {} nil)]
         (is (bytes? out))
         (when out
           (is (= (value-ctor-code in) (ctor-code-view (parse out)))))))))
@@ -673,7 +717,8 @@
                        (.withMethodBody
                         ^ClassBuilder output "<init>"
                         (.methodTypeSymbol (ctor original)) ClassFile/ACC_PUBLIC
-                        ^Consumer (#'transform/constructor-code this fields {"e" storage-type}))))))
+                        ^Consumer (#'transform/constructor-code
+                                   this fields {"e" {:storage-type storage-type :native? true}}))))))
           elements (ctor-elements result)
           writes (into {}
                        (comp (filter #(and (instance? FieldInstruction %)
@@ -687,7 +732,7 @@
              writes))))
   (testing "empty storage types retain the original constructor signature"
     (let [original (parse (:bytes (fixture :five-fields)))
-          result (parse (transform/->value-class (:bytes (fixture :five-fields))))]
+          result (parse (transform/->value-class (:bytes (fixture :five-fields)) {} nil))]
       (is (= (method-view (ctor original)) (method-view (ctor result)))))))
 
 (deftest native-storage-round-trip
@@ -700,11 +745,11 @@
                                       (super-call! code)
                                       (write-v! this code)
                                       (.return_ code)))
-          nested (.defineClass loader nested-name (transform/->value-class nested-bytes) nil)
+          nested (.defineClass loader nested-name (transform/->value-class nested-bytes {} nil) nil)
           value (.newInstance (.getConstructor nested (into-array Class [Long/TYPE]))
                               (object-array [7]))
           {:keys [bytes class]} (fixture :five-fields)
-          transformed (transform/->value-class bytes {"e" (ClassDesc/of nested-name)})
+          transformed (transform/->value-class bytes {"e" {:storage-type (ClassDesc/of nested-name) :native? true}} nil)
           holder (.defineClass loader (.getName ^Class class) transformed nil)
           ctor (.getConstructor holder (into-array Class [Integer/TYPE Long/TYPE Double/TYPE Boolean/TYPE Object]))
           instance (.newInstance ctor (object-array [(int 7) 8 2.5 true value]))]
@@ -718,3 +763,23 @@
                         (catch java.lang.reflect.InvocationTargetException error
                           (.getCause error)))]
           (is (instance? expected failure)))))))
+
+(deftest generated-constructor-enforcement
+  ;; Use actual deftype bytes and JVM construction, not simulated capabilities.
+  (testing "generated value fields have concrete storage without native annotations"
+    (let [{:keys [bytes class]} (compile-fixture (fn [n] `(deftype ~n [~'required])))
+          output (transform/->value-class bytes {"required" {:storage-type (ClassDesc/of "java.lang.String") :native? false}} nil)
+          loader (DynamicClassLoader.)
+          cls (.defineClass loader (.getName ^Class class) output nil)
+          ctor (.getConstructor cls (into-array Class [Object]))
+          field (.getField cls "required")]
+      (is (value? cls))
+      (is (= String (.getType field)))
+      (is (empty? (.getDeclaredAnnotations field)))
+      (is (= "valid" (.get field (.newInstance ctor (object-array ["valid"])))))
+      (doseq [[argument expected] [[nil NullPointerException] [42 ClassCastException]]]
+        (is (instance? expected
+                       (try (.newInstance ctor (object-array [argument]))
+                            nil
+                            (catch java.lang.reflect.InvocationTargetException e
+                              (.getCause e)))))))))

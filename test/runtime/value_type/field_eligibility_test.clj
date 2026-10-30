@@ -11,13 +11,13 @@
 
 (deftest value-type-eligibility-test
   ;; Keep the exact resolved Class, and reject an older enclosing definition.
-  (let [field (with-meta 'nested {:tag NestedValue :nil-restricted true})]
+  (let [field (with-meta 'nested {:tag NestedValue :non-nil true})]
     (testing "a concrete value class with nullable contents is eligible"
       (is (identical? NestedValue
-                      (fields/validate-type "example.Holder" field NestedValue))))
+                      (fields/validate-native-type "example.Holder" field NestedValue))))
     (testing "the same Class is not eligible as its own replacement's field"
       (let [data (try
-                   (fields/validate-type (.getName NestedValue) field NestedValue)
+                   (fields/validate-native-type (.getName NestedValue) field NestedValue)
                    nil
                    (catch clojure.lang.ExceptionInfo e (ex-data e)))]
         (is (= :enclosing-type (:reason data)))))))
@@ -30,7 +30,7 @@
                        (into-array String
                                    ["--enable-preview" "--release" "27"
                                     "-d" (str dir)
-                                    "test/resources/nil-restricted-fields/ExternalValue.java"]))]
+                                    "test/resources/non-nil-fields/ExternalValue.java"]))]
       (is (zero? status) "External value fixture compiles on EA3")
       (when (zero? status)
         (with-open [loader (URLClassLoader.
@@ -38,16 +38,16 @@
                             (.getContextClassLoader (Thread/currentThread)))]
           (let [external (.loadClass loader "fields.ExternalValue")
                 first-field (with-meta 'external-value
-                              {:tag external :nil-restricted true :custom :kept})
+                              {:tag external :non-nil true :custom :kept})
                 last-field (with-meta 'library-value
-                             {:tag NestedValue :nil-restricted true})
-                specs (fields/specifications
-                       (the-ns 'value-type.field-eligibility-test) "example.Holder"
-                       [first-field 'ordinary last-field])]
-            (is (= [{:field first-field :type external
-                     :descriptor "Lfields/ExternalValue;"}
-                    {:field last-field :type NestedValue
-                     :descriptor "Lvalue_type/field_eligibility_test/NestedValue;"}]
+                             {:tag NestedValue :non-nil true})
+                specs (fields/select-enforcement
+                       (fields/specifications
+                        (the-ns 'value-type.field-eligibility-test) "example.Holder"
+                        [first-field 'ordinary last-field])
+                       (constantly true))]
+            (is (= [{:field first-field :type external :enforcement :native}
+                    {:field last-field :type NestedValue :enforcement :native}]
                    specs))
             (is (identical? external (:type (first specs))))
             (is (identical? NestedValue (:type (second specs))))
@@ -74,37 +74,35 @@
   ;; Public expansion must report declaration errors before JVM class definition.
   (doseq [[label type-name declarations field reason]
           [["invalid restriction metadata" 'InvalidMetadata
-            '[^{:nil-restricted :invalid} item] 'item :invalid-nil-restricted]
+            '[^{:non-nil :invalid} item] 'item :invalid-non-nil]
            ["missing tag" 'MissingTag
-            '[^:nil-restricted item] 'item :missing-tag]
+            '[^:non-nil item] 'item :missing-tag]
            ["unresolved qualified tag" 'UnresolvedTag
-            '[^example.missing.Value ^:nil-restricted item] 'item :unresolved-tag]
+            '[^example.missing.Value ^:non-nil item] 'item :unresolved-tag]
            ["forward tag" 'ForwardTag
-            '[^NotYetDefinedValue ^:nil-restricted item] 'item :unresolved-tag]
+            '[^NotYetDefinedValue ^:non-nil item] 'item :unresolved-tag]
            ["primitive tag" 'PrimitiveTag
-            '[^long ^:nil-restricted item] 'item :primitive-type]
-           ["identity tag" 'IdentityTag
-            '[^String ^:nil-restricted item] 'item :identity-type]
+            '[^long ^:non-nil item] 'item :primitive-type]
            ["interface tag" 'InterfaceTag
-            '[^Runnable ^:nil-restricted item] 'item :interface-type]
+            '[^Runnable ^:non-nil item] 'item :interface-type]
            ["abstract tag" 'AbstractTag
-            '[^java.util.AbstractList ^:nil-restricted item] 'item :abstract-type]
+            '[^java.util.AbstractList ^:non-nil item] 'item :abstract-type]
            ["array tag" 'ArrayTag
-            '[^objects ^:nil-restricted item] 'item :array-type]
+            '[^objects ^:non-nil item] 'item :array-type]
            ["existing enclosing value Class" 'NestedValue
-            '[^NestedValue ^:nil-restricted item] 'item :enclosing-type]
+            '[^NestedValue ^:non-nil item] 'item :enclosing-type]
            ["metadata errors precede earlier type errors" 'MetadataFirst
-            '[^String ^:nil-restricted identity
-              ^{:nil-restricted :invalid} invalid]
-            'invalid :invalid-nil-restricted]
+            '[^String ^:non-nil identity
+              ^{:non-nil :invalid} invalid]
+            'invalid :invalid-non-nil]
            ["first invalid metadata wins" 'FirstMetadata
-            '[^{:nil-restricted 0} first ^{:nil-restricted :invalid} second]
-            'first :invalid-nil-restricted]
+            '[^{:non-nil 0} first ^{:non-nil :invalid} second]
+            'first :invalid-non-nil]
            ["first enabled type error wins" 'FirstType
-            '[^String ^:nil-restricted identity ^:nil-restricted missing]
-            'identity :identity-type]
+            '[^String ^:non-nil identity ^:non-nil missing]
+            'missing :missing-tag]
            ["missing tag precedes a later ineligible type" 'FirstMissing
-            '[^:nil-restricted missing ^String ^:nil-restricted identity]
+            '[^:non-nil missing ^String ^:non-nil identity]
             'missing :missing-tag]]]
     (testing label
       (let [failure (binding [*ns* (the-ns 'value-type.field-eligibility-test)]
@@ -121,3 +119,17 @@
                 :reason reason}
                (select-keys (ex-data cause)
                             [:value-type/error :class-name :field :reason])))))))
+
+(deftest enforcement-selection-test
+  ;; Real Classes select per-field modes; capability absence is explicit input.
+  (let [declarations '[^NestedValue ^:non-nil nested ^String ^:non-nil text]]
+    (doseq [[capable? expected] [[true [:native :generated]]
+                                 [false [:generated :generated]]]]
+      (let [specs (fields/select-enforcement
+                   (fields/specifications
+                    (the-ns 'value-type.field-eligibility-test)
+                    "example.Holder" declarations)
+                   (constantly capable?))]
+        (is (= expected (mapv :enforcement specs)))
+        (is (= [NestedValue String] (mapv :type specs)))
+        (is (= declarations (mapv :field specs)))))))
