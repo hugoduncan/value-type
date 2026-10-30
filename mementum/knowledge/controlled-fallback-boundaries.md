@@ -2,8 +2,8 @@
 title: Keep capability detection and fallback policy separate across compiler phases
 status: active
 category: architecture
-tags: [fallback, capability, macroexpansion, aot, testing, valhalla]
-related: [mementum/knowledge/java-lang-classfile.md, mementum/knowledge/testing-clojure-generated-classes.md, mementum/knowledge/testing-library-artifacts.md]
+tags: [fallback, capability, macroexpansion, aot, testing, valhalla, non-nil-fields]
+related: [mementum/knowledge/java-lang-classfile.md, mementum/knowledge/testing-clojure-generated-classes.md, mementum/knowledge/testing-library-artifacts.md, ramora/non-nil-field-design.md]
 depends-on: []
 ---
 
@@ -109,22 +109,43 @@ For source-free AOT tests, delete fixture source, exclude it from the consumer
 classpath and assert resource absence. Keep producer/consumer policy and
 phase assertions visible even when fixture setup and cleanup are shared.
 
-## Native requirements need receiver-local compiler state
+## Non-nil fields: native absence is not fallback
 
-Native nil-restricted fields do not use ordinary fallback. Check their separate
-lazy capability at selection and receiving analysis/evaluation under every
-policy. The probe must demonstrate valid construction and native null rejection
-without explicit null checks; cache capability, not declaration eligibility.
+Task `017-portable-non-nil-fields` replaced the native-only
+`:nil-restricted` contract with `:non-nil`. Application policy selects only
+the owner representation. Enforcement is then selected per field: native
+restriction for a value-class tag when the native probe succeeds, else
+generated `requireNonNull` and cast checks in constructors. Missing native
+support alone gives no warning and no strict-policy error. Do not retry a
+defective transform with the other backend.
+
+Call the lazy native probe only when some validated tag is a value class.
+Otherwise a probe defect fails declarations that need only generated checks.
+Test this without a stub: in a fresh child JVM, check `realized?` of
+`runtime/detected-field-capability` after each declaration.
+
+For controlled native absence, `with-redefs` only the accessor
+`runtime/field-capability` to an unavailable result, not the detector behind
+its cached delay. Do this in isolated child JVMs, because Var redefinition is
+process-wide. Keep compilation, loaders and constructors real. Label the
+result as controlled-capability evidence, not support for a new JVM.
+
+Choose capability messages by `:reason`. Java 8–23 lack both
+`java.lang.classfile` and `Class::isValue`: "no value classes" is correct.
+Valhalla with preview off has both APIs; its `:unsupported-class-version`
+detail is the correct message ("--enable-preview").
+
+## Constrained fields need receiver-local compiler state
 
 Producer loader state cannot cross serialized macroexpansion. Preserve a nested
-receiving macro through both expansion entry points. For native fields, use an
-outer `let`, not top-level `do`: `Compiler.eval` can replace the loader binding
-between top-level forms. The receiving macro resolves exact field Classes and
-installs the receiver's capture loader before emitting the definition. Selection
-still validates and rejects unavailable support, but must not install a redundant
-loader. These rules differ from the ordinary identity-fallback guard above.
+receiving macro through both expansion entry points. Use an outer `let`, not
+top-level `do`: `Compiler.eval` can replace the loader binding between
+top-level forms. The receiving macro checks representation first, resolves
+exact field Classes, verifies the fixed enforcement modes and installs the
+receiver's capture loader. Selection must not install a redundant loader.
+These rules differ from the ordinary identity-fallback guard above.
 
-Source: task `016-nil-restricted-fields`, capability probe (`568662a`),
-implementation slice 3j, supported transfer fix (`2d2db6d`) and redundant-install
-removal (`54fd484`). Verified with Clojure 1.12.6 and EA3; unsupported controls
-use Java 8 and preview-disabled EA3. No internal-package export is needed.
+Source: task `016-nil-restricted-fields` (`568662a`, `2d2db6d`, `54fd484`) and
+task `017-portable-non-nil-fields` (implementation review follow-ups 6–8 and
+16–18). Verified with Clojure 1.12.6, Java 8 and EA3 with preview off/on.
+Non-nil fields need no internal-package export.
