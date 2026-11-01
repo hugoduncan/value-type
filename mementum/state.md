@@ -58,13 +58,20 @@ The [field design](../ramora/non-nil-field-design.md) is the contract.
   Array inspection needs the export; ordinary-array inspection does not need
   preview on EA3. Public validation rejects null diagnostic inputs because
   native queries can crash EA3.
-- Tests share `test/`, with separate runtime, compatibility, build, release
-  and tooling suites and classpaths. Runtime Scry discovery must use
+- Tests share `test/`, with separate runtime, compatibility
+  (`:fallback-test`, per parent JVM), cross-JVM (`:cross-jvm-test`,
+  `test/cross-jvm/`, run once under Java 8), build, release and tooling
+  suites and classpaths. Runtime Scry discovery must use
   `--dir test/runtime`, not all of `test/`.
 - Tooling tests require `-M:quickdoc:tooling-test`. Release tests require
   `-M:release:release-test`.
-- The compatibility suite (`:fallback-test`) is slow: about 27 minutes per
-  host JVM, because each matrix cell starts a child JVM. Task 018 addresses this.
+- Matrix cells share child JVMs under the isolation rules in
+  `doc/development/runtime.md`; `VALUE_TYPE_TEST_JVM_LIMIT` (default 4) sets
+  the concurrent children. The four commands (`:cross-jvm-test` and three
+  `:fallback-test` parents) take about 9 minutes in total at limit 4.
+  The [matrix task record](../munera/closed/018-fast-compatibility-matrix/implementation.md)
+  retains the evidence and closure limits. Two review items remain unresolved:
+  label-order agreement and the loader-isolation negative check.
 - Performance depends on the JVM, layout and workload. Recorded tests show
   larger standalone value objects, no stable interface-call penalty, and
   storage and traversal benefits for specific flattened arrays. These are

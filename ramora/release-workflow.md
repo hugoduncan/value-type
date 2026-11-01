@@ -34,7 +34,7 @@ credentials disabled. It has a finite timeout and one release concurrency group
 with cancellation disabled. Maintainer-controlled master code is trusted.
 
 Both modes run quality and tooling checks, value tests on Valhalla, Java 8 and
-Valhalla preview-off/on fallback tests, isolated JAR consumers and release tests.
+Valhalla preview-off/on fallback tests, cross-JVM tests, isolated JAR consumers and release tests.
 Tooling runs on Java 21; runtime JVMs are selected explicitly. Build tests run
 on Valhalla and launch both consumer JVMs. Each suite preserves Scry failures
 before another suite can clear them. No benchmarks run.

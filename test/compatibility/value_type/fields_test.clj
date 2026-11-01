@@ -1,8 +1,11 @@
 (ns value-type.fields-test
   (:require [clojure.test :refer [deftest is testing]]
+            [value-type.cell-registry :as registry]
+            [value-type.consumer-aot-checks :as checks]
             [value-type.impl.fields :as fields]
             [value-type.jvm-config :as config]
             [value-type.message-checks :refer [message-names?]]
+            [value-type.transfer-checks :as transfer]
             [value-type.core]))
 
 (deftest metadata-normalization-test
@@ -152,45 +155,48 @@
   ;; Mutable rejection precedes restriction validation and keeps compiler wrapping.
   (doseq [mutable-key [:volatile-mutable :unsynchronized-mutable]
           restriction [true false nil :invalid]
-          expand [macroexpand-1 macroexpand]]
-    (let [field (with-meta 'item {mutable-key true :non-nil restriction})
-          type-name (gensym "MutableRestricted")
-          failure (binding [*ns* (the-ns 'value-type.fields-test)]
-                    (try
-                      (expand
-                       (list 'value-type.core/defvaluetype type-name [field]))
-                      (catch clojure.lang.Compiler$CompilerException e e)))]
-      (is (instance? clojure.lang.Compiler$CompilerException failure))
-      (is (instance? clojure.lang.ExceptionInfo (ex-cause failure)))
-      (is (= {:value-type/error :mutable-field
-              :class-name (str "value_type.fields_test." type-name)
-              :fields [field]}
-             (ex-data (ex-cause failure))))
-      (is (nil? (ns-resolve 'value-type.fields-test type-name)))
-      (is (nil? (ns-resolve 'value-type.fields-test
-                            (symbol (str "->" type-name))))))))
+          expand transfer/expands
+          :let [expander (transfer/expanders expand)]]
+    (testing (pr-str expand)
+      (let [field (with-meta 'item {mutable-key true :non-nil restriction})
+            type-name (gensym "MutableRestricted")
+            failure (binding [*ns* (the-ns 'value-type.fields-test)]
+                      (try
+                        (expander
+                         (list 'value-type.core/defvaluetype type-name [field]))
+                        (catch clojure.lang.Compiler$CompilerException e e)))]
+        (is (instance? clojure.lang.Compiler$CompilerException failure))
+        (is (instance? clojure.lang.ExceptionInfo (ex-cause failure)))
+        (is (= {:value-type/error :mutable-field
+                :class-name (str "value_type.fields_test." type-name)
+                :fields [field]}
+               (ex-data (ex-cause failure))))
+        (is (nil? (ns-resolve 'value-type.fields-test type-name)))
+        (is (nil? (ns-resolve 'value-type.fields-test
+                              (registry/factory-symbol type-name))))))))
 
 (deftest disabled-declaration-behavior-test
   ;; Disabled constraints and plain hints retain ordinary constructor behavior.
   (doseq [restriction [{} {:non-nil false} {:non-nil nil}]]
-    (let [type-name (gensym "DisabledRestriction")
-          declarations [(with-meta 'number (assoc restriction :tag 'long))
-                        (with-meta 'text (assoc restriction :tag 'String
-                                                :custom :kept))]
-          cls (binding [*ns* (the-ns 'value-type.fields-test)]
-                (eval (list 'value-type.core/defvaluetype type-name declarations)))
-          constructor (.getConstructor ^Class cls (into-array Class [Long/TYPE Object]))
-          factory (ns-resolve 'value-type.fields-test (symbol (str "->" type-name)))]
-      (is (= [] (fields/specifications
-                 (the-ns 'value-type.fields-test) (.getName ^Class cls)
-                 declarations)))
-      (is (= Long/TYPE (.getType (.getField ^Class cls "number"))))
-      (is (= Object (.getType (.getField ^Class cls "text"))))
-      (doseq [text [nil "valid" 42]
-              instance [(.newInstance constructor (object-array [17 text]))
-                        (factory 17 text)]]
-        (is (= 17 (.get (.getField ^Class cls "number") instance)))
-        (is (= text (.get (.getField ^Class cls "text") instance)))))))
+    (testing (pr-str restriction)
+      (let [type-name (gensym "DisabledRestriction")
+            declarations [(with-meta 'number (assoc restriction :tag 'long))
+                          (with-meta 'text (assoc restriction :tag 'String
+                                                  :custom :kept))]
+            cls (binding [*ns* (the-ns 'value-type.fields-test)]
+                  (eval (list 'value-type.core/defvaluetype type-name declarations)))
+            builds (checks/named-builders 'value-type.fields-test cls)]
+        (is (= [] (fields/specifications
+                   (the-ns 'value-type.fields-test) (.getName ^Class cls)
+                   declarations)))
+        (is (= Long/TYPE (.getType (.getField ^Class cls "number"))))
+        (is (= Object (.getType (.getField ^Class cls "text"))))
+        (doseq [text [nil "valid" 42]
+                [construction build] builds]
+          (testing (pr-str text construction)
+            (let [instance (build [17 text])]
+              (is (= 17 (.get (.getField ^Class cls "number") instance)))
+              (is (= text (.get (.getField ^Class cls "text") instance))))))))))
 
 (deftest unrelated-field-metadata-test
   ;; Macro selection must preserve unrelated field metadata for deftype analysis.
@@ -412,24 +418,26 @@
                         ['Runnable :interface-type]
                         ['java.util.AbstractList :abstract-type]
                         ['objects :array-type]]
-          expand [macroexpand-1 macroexpand]]
+          expand transfer/expands
+          :let [expander (transfer/expanders expand)]]
     (testing (pr-str [tag reason])
-      (let [type-name (gensym "InvalidPortableField")
-            field (with-meta 'item {:tag tag :non-nil true})
-            failure (binding [*ns* (the-ns 'value-type.fields-test)]
-                      (try
-                        (expand (list 'value-type.core/defvaluetype type-name [field]))
-                        (catch clojure.lang.Compiler$CompilerException error error)))]
-        (is (instance? clojure.lang.Compiler$CompilerException failure))
-        (is (= {:value-type/error :invalid-field
-                :class-name (str "value_type.fields_test." type-name)
-                :field 'item
-                :reason reason}
-               (select-keys (ex-data (ex-cause failure))
-                            [:value-type/error :class-name :field :reason])))
-        (is (nil? (ns-resolve 'value-type.fields-test type-name)))
-        (is (nil? (ns-resolve 'value-type.fields-test
-                              (symbol (str "->" type-name)))))))))
+      (testing (pr-str expand)
+        (let [type-name (gensym "InvalidPortableField")
+              field (with-meta 'item {:tag tag :non-nil true})
+              failure (binding [*ns* (the-ns 'value-type.fields-test)]
+                        (try
+                          (expander (list 'value-type.core/defvaluetype type-name [field]))
+                          (catch clojure.lang.Compiler$CompilerException error error)))]
+          (is (instance? clojure.lang.Compiler$CompilerException failure))
+          (is (= {:value-type/error :invalid-field
+                  :class-name (str "value_type.fields_test." type-name)
+                  :field 'item
+                  :reason reason}
+                 (select-keys (ex-data (ex-cause failure))
+                              [:value-type/error :class-name :field :reason])))
+          (is (nil? (ns-resolve 'value-type.fields-test type-name)))
+          (is (nil? (ns-resolve 'value-type.fields-test
+                                (registry/factory-symbol type-name)))))))))
 
 (deftest public-portable-metadata-errors-test
   ;; Public metadata errors must not install a class or factory on any JVM.
@@ -441,23 +449,25 @@
                         [{:tag 'String :non-nil true :nil-restricted value}
                          :removed-nil-restricted value])
                       [true false nil]))
-          expand [macroexpand-1 macroexpand]]
+          expand transfer/expands
+          :let [expander (transfer/expanders expand)]]
     (testing (pr-str metadata)
-      (let [type-name (gensym "InvalidPortableMetadata")
-            field (with-meta 'item metadata)
-            failure (binding [*ns* (the-ns 'value-type.fields-test)]
-                      (try
-                        (expand (list 'value-type.core/defvaluetype type-name [field]))
-                        (catch clojure.lang.Compiler$CompilerException error error)))]
-        (is (instance? clojure.lang.Compiler$CompilerException failure))
-        (is (= {:value-type/error :invalid-field
-                :class-name (str "value_type.fields_test." type-name)
-                :field 'item :reason reason :value value}
-               (select-keys (ex-data (ex-cause failure))
-                            [:value-type/error :class-name :field :reason :value])))
-        (is (nil? (ns-resolve 'value-type.fields-test type-name)))
-        (is (nil? (ns-resolve 'value-type.fields-test
-                              (symbol (str "->" type-name)))))))))
+      (testing (pr-str expand)
+        (let [type-name (gensym "InvalidPortableMetadata")
+              field (with-meta 'item metadata)
+              failure (binding [*ns* (the-ns 'value-type.fields-test)]
+                        (try
+                          (expander (list 'value-type.core/defvaluetype type-name [field]))
+                          (catch clojure.lang.Compiler$CompilerException error error)))]
+          (is (instance? clojure.lang.Compiler$CompilerException failure))
+          (is (= {:value-type/error :invalid-field
+                  :class-name (str "value_type.fields_test." type-name)
+                  :field 'item :reason reason :value value}
+                 (select-keys (ex-data (ex-cause failure))
+                              [:value-type/error :class-name :field :reason :value])))
+          (is (nil? (ns-resolve 'value-type.fields-test type-name)))
+          (is (nil? (ns-resolve 'value-type.fields-test
+                                (registry/factory-symbol type-name)))))))))
 
 (deftest public-enclosing-type-error-test
   ;; Reject recursive replacement without disturbing the existing public definition.
@@ -465,24 +475,26 @@
         type-name (gensym "ExistingPortableOwner")
         cls (binding [*ns* defining-ns]
               (eval (list 'value-type.core/defvaluetype type-name '[item])))
-        factory-symbol (symbol (str "->" type-name))
+        factory-symbol (registry/factory-symbol type-name)
         factory (var-get (ns-resolve defining-ns factory-symbol))]
-    (doseq [expand [macroexpand-1 macroexpand]]
-      (let [field (with-meta 'item {:tag type-name :non-nil true})
-            failure (binding [*ns* defining-ns]
-                      (try
-                        (expand (list 'value-type.core/defvaluetype type-name [field]))
-                        (catch clojure.lang.Compiler$CompilerException error error)))]
-        (is (instance? clojure.lang.Compiler$CompilerException failure))
-        (is (= {:value-type/error :invalid-field
-                :class-name (.getName ^Class cls)
-                :field 'item :reason :enclosing-type :tag type-name}
-               (ex-data (ex-cause failure))))
-        (is (identical? cls (ns-resolve defining-ns type-name)))
-        (is (identical? factory (var-get (ns-resolve defining-ns factory-symbol))))
-        (let [instance (factory nil)]
-          (is (identical? cls (class instance)))
-          (is (nil? (.get (.getField ^Class cls "item") instance))))))))
+    (doseq [expand transfer/expands
+            :let [expander (transfer/expanders expand)]]
+      (testing (pr-str expand)
+        (let [field (with-meta 'item {:tag type-name :non-nil true})
+              failure (binding [*ns* defining-ns]
+                        (try
+                          (expander (list 'value-type.core/defvaluetype type-name [field]))
+                          (catch clojure.lang.Compiler$CompilerException error error)))]
+          (is (instance? clojure.lang.Compiler$CompilerException failure))
+          (is (= {:value-type/error :invalid-field
+                  :class-name (.getName ^Class cls)
+                  :field 'item :reason :enclosing-type :tag type-name}
+                 (ex-data (ex-cause failure))))
+          (is (identical? cls (ns-resolve defining-ns type-name)))
+          (is (identical? factory (var-get (ns-resolve defining-ns factory-symbol))))
+          (let [instance (factory nil)]
+            (is (identical? cls (class instance)))
+            (is (nil? (.get (.getField ^Class cls "item") instance)))))))))
 
 (deftest public-imported-concrete-field-test
   ;; Public receiving compilation retains exact external and nested child Classes.
@@ -490,15 +502,18 @@
         child-name (gensym "NullableChild")
         child-class (binding [*ns* defining-ns]
                       (eval (list 'value-type.core/defvaluetype child-name '[nullable])))
-        child-factory (ns-resolve defining-ns (symbol (str "->" child-name)))
+        child-factory (ns-resolve defining-ns (registry/factory-symbol child-name))
         child (child-factory nil)
+        child-class-name (symbol (.getName ^Class child-class))
         samples [[java.util.Date (java.util.Date. 123)
                   ['Date 'java.util.Date 'ExternalAlias]]
                  [java.util.AbstractMap$SimpleEntry
                   (java.util.AbstractMap$SimpleEntry. "key" "value")
                   ['AbstractMap$SimpleEntry 'java.util.AbstractMap$SimpleEntry]]
-                 [child-class child [child-name (symbol (.getName ^Class child-class))
-                                     'ChildAlias]]]]
+                 [child-class child [child-name child-class-name 'ChildAlias]]]
+        ;; Fixed contexts for the gensym child tags, so labels are equal in each run.
+        contexts {child-name "NullableChild"
+                  child-class-name "imported_fields.NullableChild"}]
     (try
       (is (nil? (.get (.getField ^Class child-class "nullable") child)))
       (.importClass defining-ns 'ExternalAlias java.util.Date)
@@ -507,28 +522,19 @@
         (.importClass defining-ns field-class))
       (doseq [[field-class sample tags] samples
               tag tags
-              expand [macroexpand-1 macroexpand]]
-        (testing (pr-str tag)
-          (let [type-name (gensym "ImportedOwner")
-                field (with-meta 'item {:tag tag :non-nil true :custom :kept})
-                cls (binding [*ns* defining-ns]
-                      (eval (expand (list 'value-type.core/defvaluetype
-                                          type-name [field]))))
-                storage (.getField ^Class cls "item")
-                constructor (.getConstructor ^Class cls (into-array Class [Object]))
-                factory (ns-resolve defining-ns (symbol (str "->" type-name)))]
-            (is (identical? field-class (.getType storage)))
-            (is (java.lang.reflect.Modifier/isFinal (.getModifiers storage)))
-            (doseq [instance [(factory sample)
-                              (.newInstance constructor (object-array [sample]))]]
-              (is (identical? sample (.get storage instance))))
-            (is (thrown? NullPointerException (factory nil)))
-            (is (thrown? ClassCastException (factory "wrong")))
-            (doseq [[argument expected] [[nil NullPointerException]
-                                         ["wrong" ClassCastException]]]
-              (let [failure (try
-                              (.newInstance constructor (object-array [argument]))
-                              (catch java.lang.reflect.InvocationTargetException error
-                                (.getCause error)))]
-                (is (instance? expected failure)))))))
+              expand transfer/expands
+              :let [expander (transfer/expanders expand)]]
+        (testing (get contexts tag (pr-str tag))
+          (testing (pr-str expand)
+            (let [type-name (gensym "ImportedOwner")
+                  field (with-meta 'item {:tag tag :non-nil true :custom :kept})
+                  cls (binding [*ns* defining-ns]
+                        (eval (expander (list 'value-type.core/defvaluetype
+                                              type-name [field]))))
+                  storage (.getField ^Class cls "item")]
+              (is (identical? field-class (.getType storage)))
+              (is (java.lang.reflect.Modifier/isFinal (.getModifiers storage)))
+              (is (= (checks/each-construction
+                      {:stored-input? true :rejections checks/checked-rejections})
+                     (checks/input-results defining-ns cls storage sample "wrong")))))))
       (finally (remove-ns (ns-name defining-ns))))))

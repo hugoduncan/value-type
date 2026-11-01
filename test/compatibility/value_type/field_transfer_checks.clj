@@ -1,145 +1,105 @@
 (ns value-type.field-transfer-checks
-  (:require [value-type.consumer-aot-checks :as checks]
+  "Checks of serialized public-field expansions in a receiver. Each check
+   evaluates in the current namespace; the producer expands in the namespace
+   of the receiving cell, so the class name of an expansion is that of the
+   cell namespace."
+  (:require [value-type.cell-registry :as registry]
+            [value-type.consumer-aot-checks :as checks]
             [value-type.core]
-            [value-type.impl.runtime :as runtime]))
+            [value-type.impl.runtime :as runtime]
+            [value-type.transfer-checks :as transfer])
+  (:import (java.lang.reflect Field)))
 
 (defn produce
-  "Serialize public definitions with native-eligible or generated-only tags."
-  ([] (produce 'Long))
-  ([tag]
-   (mapv (fn [expand]
-           (binding [*print-meta* true]
-             (pr-str (expand (list 'value-type.core/defvaluetype 'TransferredField
-                                   [(with-meta 'value {:tag tag :non-nil true})])))))
-         [macroexpand macroexpand-1])))
-
-(defn- attempt
-  "Return :unexpected-success, else the root failure (checks/failure) with
-   its ex-data and whether both transferred owners are absent."
-  [operation expansion]
-  (try
-    (operation expansion)
-    :unexpected-success
-    (catch Throwable error
-      (let [root (loop [cause error]
-                   (if-let [nested (ex-cause cause)] (recur nested) cause))]
-        (assoc (checks/failure error)
-               :data (ex-data root)
-               :absent? (and (nil? (ns-resolve *ns* 'TransferredField))
-                             (nil? (ns-resolve *ns* 'TransferredMixed))))))))
-
-(defn consume
-  "Receive public expansions twice through analysis and evaluation paths.
-   Give the attempts per mode and the receiver :capability."
-  [expansions]
-  (let [operations {:eval eval
-                    :source #(binding [*print-meta* true]
-                               (load-string (pr-str %)))
-                    :analysis #(eval (list 'fn [] %))}]
-    (reduce-kv
-     (fn [results mode operation]
-       (assoc results mode
-              (mapv (fn [serialized]
-                      (let [expansion (read-string serialized)]
-                        (mapv (fn [_] (attempt operation expansion)) (range 2))))
-                    expansions)))
-     {:capability (runtime/capability)} operations)))
-
-(defn consume-supported
-  "Repeat one transfer case in a fresh receiver and check each installed Class."
-  [serialized mode]
-  (let [operation (case mode
-                    :eval eval
-                    :analysis #(let [definition (eval (list 'fn [] %))]
-                                 (definition))
-                    :source #(binding [*print-meta* true]
-                               (load-string (pr-str %))))]
-    {:initially-absent? (and (nil? (ns-resolve *ns* 'TransferredField))
-                             (nil? (ns-resolve *ns* '->TransferredField)))
-     :attempts
-     (loop [previous nil results []]
-       (if (= 2 (count results))
-         results
-         (let [installed (operation (read-string serialized))
-               factory (ns-resolve *ns* '->TransferredField)
-               direct (eval '(fn [input] (new TransferredField input)))
-               constructor (.getConstructor ^Class installed (into-array Class [Object]))
-               reflective (fn [input]
-                            (try
-                              (.newInstance constructor (object-array [input]))
-                              (catch java.lang.reflect.InvocationTargetException error
-                                (throw (.getCause error)))))
-               field (.getField ^Class installed "value")
-               string? (= String (.getType field))
-               input (if string? "valid" 42)
-               result {:new-class? (and (class? installed)
-                                        (not (identical? previous installed)))
-                       :identity? (not= (factory input) (factory input))
-                       :native? (boolean (some #(= "jdk.internal.vm.annotation.NullRestricted"
-                                                   (.getName (.annotationType %)))
-                                               (.getDeclaredAnnotations field)))
-                       :type (.getName (.getType field))
-                       :construction
-                       (mapv (fn [construct]
-                               (let [value (construct input)]
-                                 {:class? (identical? installed (class value))
-                                  :field (.get field value)
-                                  :nil (try (construct nil) :accepted
-                                            (catch NullPointerException _ :rejected))
-                                  :wrong (try (construct (Object.)) :accepted
-                                              (catch ClassCastException _ :rejected))}))
-                             [factory direct reflective])}]
-           (recur installed (conj results result)))))}))
+  "Serialize a public definition of TransferredField, once for each spec
+   [tag namespace-name expand], with the field tag of the spec, in spec
+   order."
+  [specs]
+  (mapv (fn [[tag namespace-name expand]]
+          (transfer/serialize namespace-name expand
+                              (list 'value-type.core/defvaluetype 'TransferredField
+                                    [(with-meta 'value {:tag tag :non-nil true})])))
+        specs))
 
 (defn produce-mixed
-  "Serialize a public definition with native and generated constraints."
-  []
-  (mapv (fn [expand]
-          (binding [*print-meta* true]
-            (pr-str (expand '(value-type.core/defvaluetype TransferredMixed
-                               [^Long ^:non-nil number ^String ^:non-nil text])))))
-        [macroexpand macroexpand-1]))
+  "Serialize a public definition with native and generated constraints, once
+   for each spec [namespace-name expand], in spec order."
+  [specs]
+  (transfer/produce '(value-type.core/defvaluetype TransferredMixed
+                       [^Long ^:non-nil number ^String ^:non-nil text])
+                    true specs))
+
+(defn- attempt
+  "Return cell-registry/unexpected-success, else the root failure
+   (cell-registry/root-failure) with :absent? of both transferred
+   owners (cell-registry/absent?)."
+  [serialized mode]
+  (registry/failed-call #(assoc (registry/root-failure %)
+                                :absent? (and (registry/absent? *ns* 'TransferredField)
+                                              (registry/absent? *ns* 'TransferredMixed)))
+                        #(transfer/evaluate serialized mode)))
+
+(defn consume
+  "Receive each serialized expansion twice in mode (transfer-checks/evaluate).
+   Return the receiver :capability and the :attempts of each expansion."
+  [expansions mode]
+  {:capability (runtime/capability)
+   :attempts (mapv (fn [serialized]
+                     (registry/twice (fn [] (attempt serialized mode))))
+                   expansions)})
+
+(defn- native-field? [^Field field]
+  (boolean (some (set checks/native-annotations) (checks/annotation-names field))))
+
+(defn consume-supported
+  "Install one serialized TransferredField twice in mode. Return
+   :initially-absent? (cell-registry/absent?) and per attempt its
+   definition map (cell-registry/defined), identity, storage and the
+   construction results (consumer-aot-checks/construction-results) with
+   :class?."
+  [serialized mode]
+  (let [n *ns*]
+    {:initially-absent? (registry/absent? n 'TransferredField)
+     :attempts
+     (registry/twice
+      (fn []
+        (let [^Class installed (transfer/evaluate serialized mode)
+              ^Field field (.getField installed "value")
+              input (if (= String (.getType field)) "valid" 42)
+              definition (registry/defined n 'TransferredField installed input)
+              factory (ns-resolve n '->TransferredField)]
+          (merge definition
+                 {:identity? (registry/identity? factory input)
+                  :native? (native-field? field)
+                  :type (:type (checks/field-facts field))
+                  :constructions
+                  (checks/construction-results
+                   n installed field input (Object.)
+                   :facts (fn [value] {:class? (identical? installed (class value))}))}))))}))
 
 (defn consume-mixed
-  "Repeat mixed installation and check each Class, constructor and constrained slot."
+  "Install one serialized TransferredMixed twice in mode. Return per attempt
+   its definition map (cell-registry/defined), the field types (:type) and
+   storage, and per construction (consumer-aot-checks/builders) the checked
+   outcomes (consumer-aot-checks/checked-outcomes) of each field."
   [serialized mode]
-  (loop [previous nil results []]
-    (if (= 2 (count results))
-      results
-      (let [expansion (read-string serialized)
-            installed (case mode
-                        :eval (eval expansion)
-                        :analysis ((eval (list 'fn [] expansion)))
-                        :source (load-string serialized))
-            factory (ns-resolve *ns* '->TransferredMixed)
-            direct (eval '(fn [number text] (new TransferredMixed number text)))
-            constructor (.getConstructor ^Class installed (into-array Class [Object Object]))
-            reflective (fn [number text]
-                         (try
-                           (.newInstance constructor (object-array [number text]))
-                           (catch java.lang.reflect.InvocationTargetException error
-                             (throw (.getCause error)))))
-            fields (mapv #(.getField ^Class installed %) ["number" "text"])]
-        (recur installed
-               (conj results
-                     {:new-class? (and (class? installed)
-                                       (not (identical? previous installed)))
-                      :types (mapv #(.getName (.getType ^java.lang.reflect.Field %)) fields)
-                      :native (mapv (fn [^java.lang.reflect.Field field]
-                                      (boolean (some #(= "jdk.internal.vm.annotation.NullRestricted"
-                                                         (.getName (.annotationType %)))
-                                                     (.getDeclaredAnnotations field)))) fields)
-                      :construction
-                      (mapv (fn [construct]
-                              (let [value (construct 42 "valid")]
-                                {:class? (identical? installed (class value))
-                                 :fields (mapv #(.get ^java.lang.reflect.Field % value) fields)
-                                 :nil (mapv (fn [arguments]
-                                              (try (apply construct arguments) :accepted
-                                                   (catch NullPointerException _ :rejected)))
-                                            [[nil "valid"] [42 nil]])
-                                 :wrong (mapv (fn [arguments]
-                                                (try (apply construct arguments) :accepted
-                                                     (catch ClassCastException _ :rejected)))
-                                              [[(Object.) "valid"] [42 (Object.)]])}))
-                            [factory direct reflective])}))))))
+  (let [n *ns*]
+    (registry/twice
+     (fn []
+       (let [^Class installed (transfer/evaluate serialized mode)
+             definition (registry/defined n 'TransferredMixed installed 42 "valid")
+             fields (mapv #(.getField installed ^String %) ["number" "text"])]
+         (merge definition
+                {:type (mapv (comp :type checks/field-facts) fields)
+                 :native (mapv native-field? fields)
+                 :constructions
+                 (mapv (fn [build]
+                         (let [value (build [42 "valid"])]
+                           {:class? (identical? installed (class value))
+                            :stored (mapv #(.get ^Field % value) fields)
+                            :rejections
+                            [(checks/checked-outcomes
+                              (fn [[number]] (build [number "valid"])) (Object.))
+                             (checks/checked-outcomes
+                              (fn [[text]] (build [42 text])) (Object.))]}))
+                       (checks/builders n installed))}))))))

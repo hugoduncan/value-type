@@ -1,10 +1,14 @@
 (ns value-type.identity-backend-test
   (:require [clojure.test :refer [deftest is testing]]
+            [value-type.consumer-aot-checks :as checks]
             [value-type.identity-backend.fixture]
             [value-type.impl.identity-backend]
             [value-type.message-checks :refer [message-names?]])
-  (:import (java.lang.reflect InvocationTargetException Modifier)
+  (:import (java.lang.reflect Modifier)
            (value_type.identity_backend.fixture Mixed Reads)))
+
+(def ^:private fixture-ns
+  'value-type.identity-backend.fixture)
 
 (deftest checked-identity-contract
   ;; Exercise real transformed constructors and field reads, not a factory check.
@@ -20,17 +24,10 @@
       (is (= "valid" (.-label value)))
       (is (= "valid" (.get (.getField Mixed "label") value)))))
   (testing "factory, direct and reflective constructors enforce checks"
-    (is (thrown? NullPointerException ((ns-resolve 'value-type.identity-backend.fixture '->Mixed) 7 nil 2.5 nil)))
-    (is (thrown? ClassCastException ((ns-resolve 'value-type.identity-backend.fixture '->Mixed) 7 42 2.5 nil)))
-    (is (thrown? NullPointerException (Mixed. 7 nil 2.5 nil)))
-    (is (thrown? ClassCastException (Mixed. 7 42 2.5 nil)))
-    (let [ctor (.getConstructor Mixed (into-array Class [Long/TYPE Object Double/TYPE Object]))]
-      (doseq [[input expected] [[nil NullPointerException] [42 ClassCastException]]]
-        (is (= expected
-               (try
-                 (.newInstance ctor (object-array [(long 7) input (double 2.5) nil]))
-                 nil
-                 (catch InvocationTargetException e (class (.getCause e))))))))))
+    (doseq [[construction build] (checks/named-builders fixture-ns Mixed)]
+      (testing (pr-str construction)
+        (is (= checks/checked-rejections
+               (checks/checked-outcomes (fn [[x]] (build [7 x 2.5 nil])) 42)))))))
 
 (defn- field-reference-bytes
   [storage? opcode descriptor]
@@ -58,34 +55,37 @@
   ["Shape" part "use Clojure 1.12"])
 
 (defn- shape-failure
-  "Return the message and `:value-type/error` of `(transform bytes)`."
+  "Return the ex-data of the failure of `(transform bytes)` with its
+  `:message`, or nil when it succeeds."
   [transform bytes]
   (try
     (transform bytes)
     nil
     (catch clojure.lang.ExceptionInfo e
-      [(:value-type/error (ex-data e)) (ex-message e)])))
+      (assoc (ex-data e) :message (ex-message e)))))
 
 (deftest unsupported-storage-references
   ;; Feed real class bytes to the backend and inspect its structured failures.
   (let [transforms (value-type.impl.identity-backend/prepare
                     "Shape" [{:field 'label :type String :enforcement :generated}] nil)]
     (testing "owner storage must exist"
-      (let [[error message] (shape-failure (:owner transforms)
-                                           (field-reference-bytes false nil nil))]
+      (let [{error :value-type/error message :message}
+            (shape-failure (:owner transforms) (field-reference-bytes false nil nil))]
         (is (= :unsupported-shape error))
         (is (message-names? message (shape-parts "missing non-nil field storage"))
             message)))
     (testing "owner and companion references must be instance Object references"
-      (doseq [transform (vals transforms)
-              [opcode descriptor] [[clojure.asm.Opcodes/GETFIELD "Ljava/lang/String;"]
-                                   [clojure.asm.Opcodes/GETSTATIC "Ljava/lang/Object;"]
-                                   [clojure.asm.Opcodes/PUTSTATIC "Ljava/lang/Object;"]]]
-        (let [[error message] (shape-failure
-                               transform (field-reference-bytes true opcode descriptor))]
-          (is (= :unsupported-shape error))
-          (is (message-names? message (shape-parts "unsupported non-nil field reference"))
-              message))))))
+      (doseq [[transform-key transform] transforms
+              [instruction opcode descriptor]
+              [['GETFIELD clojure.asm.Opcodes/GETFIELD "Ljava/lang/String;"]
+               ['GETSTATIC clojure.asm.Opcodes/GETSTATIC "Ljava/lang/Object;"]
+               ['PUTSTATIC clojure.asm.Opcodes/PUTSTATIC "Ljava/lang/Object;"]]]
+        (testing (pr-str transform-key instruction)
+          (let [{error :value-type/error message :message}
+                (shape-failure transform (field-reference-bytes true opcode descriptor))]
+            (is (= :unsupported-shape error))
+            (is (message-names? message (shape-parts "unsupported non-nil field reference"))
+                message)))))))
 
 (defn- constructor-bytes
   [write-count branch? extra-constructor?]
@@ -125,20 +125,21 @@
     (testing "straight-line writes cover the selected field"
       (is (bytes? (transform (constructor-bytes 1 false false)))))
     (testing "missing constructors, missing or repeated writes and branches fail"
-      (doseq [[bytes part]
-              [[(field-reference-bytes true nil nil)
+      (doseq [[case-name bytes part]
+              [["no constructor" (field-reference-bytes true nil nil)
                 "missing non-nil constructor"]
-               [(constructor-bytes 0 false false)
+               ["no write" (constructor-bytes 0 false false)
                 "incomplete non-nil constructor writes"]
-               [(constructor-bytes 2 false false)
+               ["two writes" (constructor-bytes 2 false false)
                 "repeated non-nil constructor write"]
-               [(constructor-bytes 1 true false)
+               ["branch" (constructor-bytes 1 true false)
                 "unsupported non-nil constructor control flow"]
-               [(constructor-bytes 1 false true)
+               ["extra constructor" (constructor-bytes 1 false true)
                 "incomplete non-nil constructor writes"]]]
-        (let [[error message] (shape-failure transform bytes)]
-          (is (= :unsupported-shape error))
-          (is (message-names? message (shape-parts part)) message))))))
+        (testing case-name
+          (let [{error :value-type/error message :message} (shape-failure transform bytes)]
+            (is (= :unsupported-shape error))
+            (is (message-names? message (shape-parts part)) message)))))))
 
 (deftest checked-identity-methods
   ;; Real compiler stack maps must remain valid across retyped companion reads.
@@ -155,33 +156,30 @@
 (deftest multiple-identity-constraints
   ;; Each constrained position must be checked by every construction entry point.
   (let [pair-class value_type.identity_backend.fixture.Pair
-        ctor (.getConstructor pair-class
-                              (into-array Class [Object Long/TYPE Object Double/TYPE Object]))
-        direct (fn [left right]
-                 (value_type.identity_backend.fixture.Pair. left 7 right 2.5 nil))
-        factory (fn [left right]
-                  ((ns-resolve 'value-type.identity-backend.fixture '->Pair) left 7 right 2.5 nil))
-        reflective (fn [left right]
-                     (try
-                       (.newInstance ctor (object-array [left (long 7) right (double 2.5) nil]))
-                       (catch InvocationTargetException e (throw (.getCause e)))))
-        date (java.util.Date. 0)]
+        date (java.util.Date. 0)
+        field-names ["left" "count" "right" "weight" "nullable"]
+        args ["left" 7 date 2.5 nil]
+        checked [["left" date] ["right" "wrong"]]]
     (testing "both fields retain concrete final storage"
       (doseq [[field-name expected] [["left" String] ["right" java.util.Date]]]
         (let [field (.getField pair-class field-name)]
           (is (= expected (.getType field)))
           (is (Modifier/isFinal (.getModifiers field))))))
-    (doseq [construct [direct factory reflective]]
-      (testing "valid arguments preserve slots and nullable controls"
-        (let [value (construct "left" date)]
-          (is (= ["left" 7 date 2.5 nil]
-                 (mapv #(.get (.getField pair-class %) value)
-                       ["left" "count" "right" "weight" "nullable"])))))
-      (testing "each constrained position rejects nil and wrong types"
-        (is (thrown? NullPointerException (construct nil date)))
-        (is (thrown? NullPointerException (construct "left" nil)))
-        (is (thrown? ClassCastException (construct date date)))
-        (is (thrown? ClassCastException (construct "left" "wrong")))))))
+    (testing "valid arguments preserve slots and nullable controls"
+      (doseq [[construction build] (checks/named-builders fixture-ns pair-class)]
+        (testing (pr-str construction)
+          (let [value (build args)]
+            (is (= ["left" 7 date 2.5 nil]
+                   (mapv #(.get (.getField pair-class %) value) field-names)))))))
+    (testing "each constrained position rejects nil and wrong types"
+      (doseq [[construction build] (checks/named-builders fixture-ns pair-class)]
+        (testing (pr-str construction)
+          (doseq [[field-name wrong] checked]
+            (testing field-name
+              (let [position (.indexOf ^java.util.List field-names field-name)]
+                (is (= checks/checked-rejections
+                       (checks/checked-outcomes
+                        (fn [[x]] (build (assoc args position x))) wrong)))))))))))
 
 (defn- annotated-constructor-bytes
   []
@@ -225,11 +223,8 @@
     (testing "retained attributes do not replace storage or enforcement"
       (is (= String (.getType field)))
       (is (= cls (class (.newInstance ctor (object-array ["valid"])))))
-      (is (= NullPointerException
-             (try
-               (.newInstance ctor (object-array [nil]))
-               nil
-               (catch InvocationTargetException e (class (.getCause e)))))))))
+      (is (= (first checks/checked-rejections)
+             (checks/outcome #(.newInstance ctor (object-array [nil]))))))))
 
 (defn- altered-storage-bytes
   [access descriptor]
@@ -244,62 +239,54 @@
 (deftest unsupported-identity-storage-and-writes
   ;; Reject malformed storage and mutation paths before defining JVM classes.
   (let [transforms (value-type.impl.identity-backend/prepare
-                    "Shape" [{:field 'label :type String :enforcement :generated}] nil)
-        failure (fn [transform bytes]
-                  (try
-                    (transform bytes)
-                    nil
-                    (catch clojure.lang.ExceptionInfo e
-                      (assoc (ex-data e) :message (ex-message e)))))]
+                    "Shape" [{:field 'label :type String :enforcement :generated}] nil)]
     (testing "selected storage must be final, non-static and Object-typed"
-      (doseq [[access descriptor]
-              [[clojure.asm.Opcodes/ACC_PUBLIC "Ljava/lang/Object;"]
-               [(bit-or clojure.asm.Opcodes/ACC_FINAL clojure.asm.Opcodes/ACC_STATIC)
+      (doseq [[case-name access descriptor]
+              [["not final" clojure.asm.Opcodes/ACC_PUBLIC "Ljava/lang/Object;"]
+               ["static" (bit-or clojure.asm.Opcodes/ACC_FINAL clojure.asm.Opcodes/ACC_STATIC)
                 "Ljava/lang/Object;"]
-               [clojure.asm.Opcodes/ACC_FINAL "Ljava/lang/String;"]]]
-        (let [data (failure (:owner transforms) (altered-storage-bytes access descriptor))]
-          (is (= :unsupported-shape (:value-type/error data)))
-          (is (= "Shape" (:class-name data)))
-          (is (= "label" (:field data)))
-          (is (message-names? (:message data)
-                              (shape-parts "unsupported non-nil field storage"))
-              (:message data)))))
+               ["String typed" clojure.asm.Opcodes/ACC_FINAL "Ljava/lang/String;"]]]
+        (testing case-name
+          (let [data (shape-failure (:owner transforms)
+                                    (altered-storage-bytes access descriptor))]
+            (is (= :unsupported-shape (:value-type/error data)))
+            (is (= "Shape" (:class-name data)))
+            (is (= "label" (:field data)))
+            (is (message-names? (:message data)
+                                (shape-parts "unsupported non-nil field storage"))
+                (:message data))))))
     (testing "owner methods and companions cannot write selected fields"
-      (doseq [transform (vals transforms)]
-        (let [data (failure transform
-                            (field-reference-bytes true clojure.asm.Opcodes/PUTFIELD
-                                                   "Ljava/lang/Object;"))]
-          (is (= :unsupported-shape (:value-type/error data)))
-          (is (= "label" (:field data)))
-          (is (= "read" (:method data)))
-          (is (message-names? (:message data)
-                              (shape-parts "non-nil field write outside constructor"))
-              (:message data)))))))
+      (doseq [[transform-key transform] transforms]
+        (testing (pr-str transform-key)
+          (let [data (shape-failure transform
+                                    (field-reference-bytes true clojure.asm.Opcodes/PUTFIELD
+                                                           "Ljava/lang/Object;"))]
+            (is (= :unsupported-shape (:value-type/error data)))
+            (is (= "label" (:field data)))
+            (is (= "read" (:method data)))
+            (is (message-names? (:message data)
+                                (shape-parts "non-nil field write outside constructor"))
+                (:message data))))))))
 
 (deftest nested-identity-constraint
   ;; The outer constraint must not reject nullable data within the child.
   (let [child (Mixed. 7 "nested" 2.5 nil)
         nested-class value_type.identity_backend.fixture.Nested
-        ctor (.getConstructor nested-class (into-array Class [Object]))
-        factory (ns-resolve 'value-type.identity-backend.fixture '->Nested)
-        direct (fn [input] (value_type.identity_backend.fixture.Nested. input))
-        reflective (fn [input]
-                     (try
-                       (.newInstance ctor (object-array [input]))
-                       (catch InvocationTargetException e
-                         (throw (.getCause e)))))
         field (.getField nested-class "child")]
     (testing "storage retains the exact nested identity Class"
       (is (identical? Mixed (.getType field)))
       (is (Modifier/isFinal (.getModifiers field))))
-    (doseq [construct [factory direct reflective]]
-      (testing "all construction entries retain nested nullable data and reads"
-        (let [value (construct child)]
-          (is (= [7 "nested" 2.5 nil] (.snapshot ^Reads value)))
-          (is (identical? child ((.captured ^Reads value))))
-          (is (identical? child (.get field value)))
-          (is (identical? child (.choose ^Reads value true)))
-          (is (nil? (.choose ^Reads value false)))))
-      (testing "the outer field still rejects nil and an unrelated identity object"
-        (is (thrown? NullPointerException (construct nil)))
-        (is (thrown? ClassCastException (construct "not a child")))))))
+    (testing "all construction entries retain nested nullable data and reads"
+      (doseq [[construction build] (checks/named-builders fixture-ns nested-class)]
+        (testing (pr-str construction)
+          (let [value (build [child])]
+            (is (= [7 "nested" 2.5 nil] (.snapshot ^Reads value)))
+            (is (identical? child ((.captured ^Reads value))))
+            (is (identical? child (.get field value)))
+            (is (identical? child (.choose ^Reads value true)))
+            (is (nil? (.choose ^Reads value false)))))))
+    (testing "the outer field still rejects nil and an unrelated identity object"
+      (doseq [[construction build] (checks/named-builders fixture-ns nested-class)]
+        (testing (pr-str construction)
+          (is (= checks/checked-rejections
+                 (checks/checked-outcomes build "not a child"))))))))

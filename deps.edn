@@ -4,6 +4,9 @@
  {:fallback-test {:extra-paths ["test/compatibility"]
                   :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
                   :main-opts ["-m" "scry.cli" "--dir" "test/compatibility"]}
+  :cross-jvm-test {:extra-paths ["test/cross-jvm" "test/compatibility"]
+                   :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
+                   :main-opts ["-m" "scry.cli" "--dir" "test/cross-jvm"]}
   :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.10"}}
           :ns-default build}
   :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.2.2"}}}

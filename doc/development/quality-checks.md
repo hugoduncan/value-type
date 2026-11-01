@@ -61,7 +61,7 @@ checkout is needed. Downloads and imports are ignored by Git.
 | `bb api-docs` | Regenerate the committed `doc/API.md`. |
 | `bb api-docs --check` | Fail on missing or stale API output without writing it. |
 
-Formatting and code lint cover `src/`, all six test directories listed in the
+Formatting and code lint cover `src/`, all test directories listed in the
 [test layout](runtime.md#test-layout), `bench/`, `dev/release/`, `bb/`,
 `.clj-kondo/hooks/`,
 `build.clj`, `bb.edn` and `deps.edn`. They exclude historical `spike/`

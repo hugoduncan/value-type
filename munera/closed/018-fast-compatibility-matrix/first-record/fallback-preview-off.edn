@@ -1,0 +1,3199 @@
+{value-type.aot-test
+ {:ms 15675,
+  :children
+  {[value-type.aot-test/fallback-aot-compilation-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    :aot-compile]
+   {:count 2, :configurations 2},
+   [value-type.aot-test/source-free-fallback-aot-loading-test :cell]
+   {:count 6, :configurations 6},
+   [value-type.aot-test/source-free-value-aot-loading-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.aot-test/source-free-value-aot-loading-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.aot-test/source-free-runtime-only-fallback-test :cell]
+   {:count 3, :configurations 3}},
+  :labels
+  {[value-type.aot-test/fallback-aot-compilation-test ["error"]] 1,
+   [value-type.aot-test/fallback-aot-compilation-test ["silent"]] 1,
+   [value-type.aot-test/fallback-aot-compilation-test ["warn"]] 1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["silent artifact / error consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["silent artifact / silent consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["silent artifact / warn consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["warn artifact / error consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["warn artifact / silent consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["warn artifact / warn consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test []] 0,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["error"]]
+   1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["silent"]]
+   1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["warn"]]
+   1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test []] 0,
+   [value-type.aot-test/source-free-value-aot-loading-test ["error"]]
+   1,
+   [value-type.aot-test/source-free-value-aot-loading-test ["silent"]]
+   1,
+   [value-type.aot-test/source-free-value-aot-loading-test ["warn"]] 1,
+   [value-type.aot-test/source-free-value-aot-loading-test []] 0}},
+ value-type.array-boundary-test
+ {:ms 4042,
+  :children
+  {[value-type.array-boundary-test/unavailable-boundary-test :cell]
+   {:count 2, :configurations 2}},
+  :labels
+  {[value-type.array-boundary-test/unavailable-boundary-test []] 2}},
+ value-type.array-info-boundary-test
+ {:ms 34097,
+  :children
+  {[value-type.array-info-boundary-test/safe-inspection-boundary-test
+    :cell]
+   {:count 36, :configurations 18},
+   [value-type.array-info-boundary-test/export-only-capabilities-test
+    :cell]
+   {:count 3, :configurations 3}},
+  :labels
+  {[value-type.array-info-boundary-test/export-only-capabilities-test
+    ["error"]]
+   1,
+   [value-type.array-info-boundary-test/export-only-capabilities-test
+    ["silent"]]
+   1,
+   [value-type.array-info-boundary-test/export-only-capabilities-test
+    ["warn"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export-only \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export-only \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export-only \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export-only \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export-only \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:export-only \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:java8 \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:java8 \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:java8 \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:java8 \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:java8 \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:java8 \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-export \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-export \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-export \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-export \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-export \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-export \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-flattening \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-flattening \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-flattening \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-flattening \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-flattening \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-flattening \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-options \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-options \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-options \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-options \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-options \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-info-boundary-test/safe-inspection-boundary-test
+    ["[:no-options \"warn\" [value-type.core value-type.array]]"]]
+   1}},
+ value-type.array-matrix-test
+ {:ms 34895,
+  :children
+  {[value-type.array-matrix-test/configuration-matrix-test :cell]
+   {:count 36, :configurations 18}},
+  :labels
+  {[value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :missing-classfile-api \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :missing-classfile-api \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :missing-classfile-api \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :missing-classfile-api \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :missing-classfile-api \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :missing-classfile-api \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :unsupported-class-version \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :unsupported-class-version \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :unsupported-class-version \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :unsupported-class-version \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :unsupported-class-version \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-matrix-test/configuration-matrix-test
+    ["[[] :unsupported-class-version \"warn\" [value-type.core value-type.array]]"]]
+   1}},
+ value-type.array-sequence-boundary-test
+ {:ms 34368,
+  :children
+  {[value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    :cell]
+   {:count 36, :configurations 18}},
+  :labels
+  {[value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] :unsupported-class-version \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\" \"-XX:-UseArrayFlattening\"] nil \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\" \"--add-exports=java.base/jdk.internal.value=ALL-UNNAMED\"] nil \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[\"--enable-preview\"] :array-access-denied \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :missing-classfile-api \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :missing-classfile-api \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :missing-classfile-api \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :missing-classfile-api \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :missing-classfile-api \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :missing-classfile-api \"warn\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :unsupported-class-version \"error\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :unsupported-class-version \"error\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :unsupported-class-version \"silent\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :unsupported-class-version \"silent\" [value-type.core value-type.array]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :unsupported-class-version \"warn\" [value-type.array value-type.core]]"]]
+   1,
+   [value-type.array-sequence-boundary-test/sequence-configuration-matrix-test
+    ["[[] :unsupported-class-version \"warn\" [value-type.core value-type.array]]"]]
+   1}},
+ value-type.capture-failure-test
+ {:ms 1,
+  :children {},
+  :labels
+  {[value-type.capture-failure-test/unsupported-owner-capture-test
+    ["missing selected storage rejects repeatedly without weaker output"]]
+   0}},
+ value-type.capture-loading-test
+ {:ms 3716,
+  :children
+  {[value-type.capture-loading-test/baseline-capture-loading-test
+    :cell]
+   {:count 2, :configurations 2}},
+  :labels
+  {[value-type.capture-loading-test/baseline-capture-loading-test
+    ["/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java"]]
+   1,
+   [value-type.capture-loading-test/baseline-capture-loading-test
+    ["/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java"]]
+   1}},
+ value-type.child-transfer-test
+ {:ms 258045,
+  :children
+  {[value-type.child-transfer-test/receiver-child-replacement-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    :cell]
+   {:count 72, :configurations 12},
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    :cell]
+   {:count 36, :configurations 6},
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    :cell]
+   {:count 36, :configurations 6},
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    :cell]
+   {:count 36, :configurations 6}},
+  :labels
+  {[value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"error\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"error\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"error\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"error\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"error\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"error\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"silent\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"silent\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"silent\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"silent\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"silent\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"silent\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"warn\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"warn\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"warn\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"warn\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"warn\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    ["[true \"warn\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/native-receiver-child-replacement-test
+    []]
+   0,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/receiver-child-replacement-test []]
+   0,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [] :source]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [] :source]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [] :source]"]]
+   2,
+   [value-type.child-transfer-test/strict-receiver-child-replacement-test
+    []]
+   0,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"error\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"error\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"error\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"error\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"error\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"error\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"silent\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"silent\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"silent\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"silent\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"silent\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"silent\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"warn\" [\"-Xint\"] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"warn\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"warn\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"warn\" [] :analysis]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"warn\" [] :eval]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    ["[false \"warn\" [] :source]"]]
+   2,
+   [value-type.child-transfer-test/value-receiver-child-replacement-test
+    []]
+   0}},
+ value-type.controlled-field-capability-test
+ {:ms 52113,
+  :children
+  {[value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    :cell]
+   {:count 36, :configurations 6},
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    :cell]
+   {:count 6, :configurations 6}},
+  :labels
+  {[value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    ["[\"error\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    ["[\"error\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    ["[\"silent\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    ["[\"silent\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    ["[\"warn\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    ["[\"warn\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-aot-test
+    []]
+   0,
+   [value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    ["[\"error\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    ["[\"error\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    ["[\"silent\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    ["[\"silent\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    ["[\"warn\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-construction-test
+    ["[\"warn\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    ["[\"error\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    ["[\"error\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    ["[\"silent\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    ["[\"silent\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    ["[\"warn\" [\"-Xint\"]]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    ["[\"warn\" []]"]]
+   1,
+   [value-type.controlled-field-capability-test/controlled-native-absence-java-aot-test
+    []]
+   0,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"error\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"error\" [\"-Xint\"] :function]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"error\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"error\" [] :eval]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"error\" [] :function]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"error\" [] :source]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"silent\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"silent\" [\"-Xint\"] :function]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"silent\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"silent\" [] :eval]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"silent\" [] :function]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"silent\" [] :source]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"warn\" [\"-Xint\"] :eval]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"warn\" [\"-Xint\"] :function]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"warn\" [\"-Xint\"] :source]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"warn\" [] :eval]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"warn\" [] :function]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    ["[\"warn\" [] :source]"]]
+   2,
+   [value-type.controlled-field-capability-test/controlled-native-absence-receiving-test
+    []]
+   0}},
+ value-type.field-aot-test
+ {:ms 15099,
+  :children
+  {[value-type.field-aot-test/separately-compiled-restricted-field-consumer-test
+    :cell]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/separately-compiled-restricted-field-consumer-test
+    :aot-compile]
+   {:count 2, :configurations 2},
+   [value-type.field-aot-test/source-free-restricted-field-loading-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/java-restricted-field-consumer-test
+    :cell]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/source-free-restricted-field-loading-test
+    :cell]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/persisted-restricted-field-output-test
+    :cell]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.field-aot-test/java-restricted-field-consumer-test
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.field-aot-test/java-restricted-field-consumer-test
+    :aot-compile]
+   {:count 1, :configurations 1}},
+  :labels
+  {[value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / error"]]
+   1,
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / silent"]]
+   1,
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / warn"]]
+   1,
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / error"]]
+   1,
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / silent"]]
+   1,
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / warn"]]
+   1,
+   [value-type.field-aot-test/incompatible-restricted-field-consumer-test
+    ["source-free native artifacts reject every fallback policy"]]
+   0,
+   [value-type.field-aot-test/java-restricted-field-consumer-test
+    ["matching EA3 javac preserves direct native enforcement without exports"]]
+   1,
+   [value-type.field-aot-test/persisted-restricted-field-output-test
+    ["AOT preserves native storage and rewrites persisted companions"]]
+   1,
+   [value-type.field-aot-test/separately-compiled-restricted-field-consumer-test
+    ["a separately compiled Clojure consumer needs neither source file"]]
+   1,
+   [value-type.field-aot-test/source-free-restricted-field-loading-test
+    ["source-free AOT retains native enforcement and companion reads"]]
+   1}},
+ value-type.field-capability-test
+ {:ms 88686,
+  :children
+  {[value-type.field-capability-test/capability-matrix-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.field-capability-test/malformed-probe-test :cell]
+   {:count 6, :configurations 6},
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    :cell]
+   {:count 9, :configurations 9},
+   [value-type.field-capability-test/public-field-policy-test :cell]
+   {:count 9, :configurations 9},
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    :cell]
+   {:count 36, :configurations 18}},
+  :labels
+  {[value-type.field-capability-test/capability-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"]]"]]
+   1,
+   [value-type.field-capability-test/capability-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" []]"]]
+   1,
+   [value-type.field-capability-test/capability-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" []]"]]
+   1,
+   [value-type.field-capability-test/malformed-probe-test
+    ["[\"error\" [\"-Xint\"]]"]]
+   1,
+   [value-type.field-capability-test/malformed-probe-test
+    ["[\"error\" []]"]]
+   1,
+   [value-type.field-capability-test/malformed-probe-test
+    ["[\"silent\" [\"-Xint\"]]"]]
+   1,
+   [value-type.field-capability-test/malformed-probe-test
+    ["[\"silent\" []]"]]
+   1,
+   [value-type.field-capability-test/malformed-probe-test
+    ["[\"warn\" [\"-Xint\"]]"]]
+   1,
+   [value-type.field-capability-test/malformed-probe-test
+    ["[\"warn\" []]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [] Long]"]]
+   1,
+   [value-type.field-capability-test/public-field-evaluation-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [] String]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.field-capability-test/public-field-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.field-capability-test/required-capability-policy-matrix-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\"]"]]
+   1}},
+ value-type.field-transfer-test
+ {:ms 338699,
+  :children
+  {[value-type.field-transfer-test/identity-public-transfer-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    :producer]
+   {:count 2, :configurations 1},
+   [value-type.field-transfer-test/mixed-public-transfer-test :cell]
+   {:count 36, :configurations 6},
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    :cell]
+   {:count 24, :configurations 12},
+   [value-type.field-transfer-test/supported-public-transfer-test
+    :cell]
+   {:count 72, :configurations 6},
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    :cell]
+   {:count 12, :configurations 12},
+   [value-type.field-transfer-test/supported-public-transfer-test
+    :producer]
+   {:count 2, :configurations 1},
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.field-transfer-test/identity-public-transfer-test :cell]
+   {:count 72, :configurations 12}},
+  :labels
+  {[value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/identity-public-transfer-test []] 0,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"error\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"error\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"error\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"error\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"error\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"error\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"silent\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"silent\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"silent\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"silent\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"silent\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"silent\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"warn\" :analysis 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"warn\" :analysis 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"warn\" :eval 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"warn\" :eval 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"warn\" :source 0]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test
+    ["[[] \"warn\" :source 1]"]]
+   1,
+   [value-type.field-transfer-test/mixed-public-transfer-test []] 0,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] [\"-Xint\"]]"]]
+   1,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] []]"]]
+   1,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] [\"-Xint\"]]"]]
+   1,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] []]"]]
+   1,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] [\"-Xint\"]]"]]
+   1,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] []]"]]
+   1,
+   [value-type.field-transfer-test/strict-identity-public-transfer-test
+    []]
+   0,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :analysis 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :analysis 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :eval 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :eval 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :source 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"error\" :source 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :analysis 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :analysis 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :eval 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :eval 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :source 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"silent\" :source 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :analysis 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :analysis 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :eval 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :eval 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :source 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[\"-Xint\"] \"warn\" :source 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"error\" :analysis 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"error\" :analysis 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"error\" :eval 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"error\" :eval 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"error\" :source 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"error\" :source 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"silent\" :analysis 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"silent\" :analysis 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"silent\" :eval 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"silent\" :eval 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"silent\" :source 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"silent\" :source 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"warn\" :analysis 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"warn\" :analysis 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"warn\" :eval 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"warn\" :eval 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"warn\" :source 0]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test
+    ["[[] \"warn\" :source 1]"]]
+   2,
+   [value-type.field-transfer-test/supported-public-transfer-test []]
+   0,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"error\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"error\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.field-transfer-test/unsupported-mixed-public-transfer-test
+    []]
+   0,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"error\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"error\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\"]"]]
+   2,
+   [value-type.field-transfer-test/unsupported-public-transfer-test []]
+   0}},
+ value-type.fields-test
+ {:ms 19,
+  :children {},
+  :labels
+  {[value-type.fields-test/concrete-class-eligibility-test
+    ["an ordinary fallen-back declaration is a concrete field type"]]
+   0,
+   [value-type.fields-test/concrete-class-eligibility-test []] 0,
+   [value-type.fields-test/concrete-class-rejection-test []] 0,
+   [value-type.fields-test/declaration-boundary-test
+    ["the first invalid field in declaration order is reported"]]
+   0,
+   [value-type.fields-test/declaration-boundary-test []] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test []] 0,
+   [value-type.fields-test/enclosing-type-test []] 0,
+   [value-type.fields-test/explicit-tag-resolution-test ["Date"]] 0,
+   [value-type.fields-test/explicit-tag-resolution-test ["String/1"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test
+    ["\"java.util.Date\""]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test
+    ["java.util.Date"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test ["long"]] 0,
+   [value-type.fields-test/explicit-tag-resolution-test ["longs"]] 0,
+   [value-type.fields-test/ineligible-type-test ["[J"]] 0,
+   [value-type.fields-test/ineligible-type-test
+    ["[Ljava.lang.Object;"]]
+   0,
+   [value-type.fields-test/ineligible-type-test ["java.lang.Runnable"]]
+   0,
+   [value-type.fields-test/ineligible-type-test ["java.lang.String"]]
+   0,
+   [value-type.fields-test/ineligible-type-test
+    ["java.util.AbstractList"]]
+   0,
+   [value-type.fields-test/ineligible-type-test ["long"]] 0,
+   [value-type.fields-test/invalid-metadata-test ["0"]] 0,
+   [value-type.fields-test/invalid-metadata-test ["1"]] 0,
+   [value-type.fields-test/invalid-metadata-test [":true"]] 0,
+   [value-type.fields-test/invalid-metadata-test ["Point"]] 0,
+   [value-type.fields-test/invalid-metadata-test ["[]"]] 0,
+   [value-type.fields-test/invalid-metadata-test ["\"true\""]] 0,
+   [value-type.fields-test/invalid-metadata-test ["{}"]] 0,
+   [value-type.fields-test/metadata-normalization-test []] 0,
+   [value-type.fields-test/mutable-declaration-error-test []] 0,
+   [value-type.fields-test/portable-fallback-class-specification-test
+    []]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":abstract-type"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":array-type"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":enclosing-type"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":interface-type"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":invalid-non-nil"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":missing-tag"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":primitive-type"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":removed-nil-restricted"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":unresolved-tag"]]
+   0,
+   [value-type.fields-test/portable-specifications-test []] 0,
+   [value-type.fields-test/public-enclosing-type-error-test []] 0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["AbstractMap$SimpleEntry"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["ChildAlias"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["Date"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["ExternalAlias"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["NullableChild23895"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["imported_fields_23894.NullableChild23895"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["java.util.AbstractMap$SimpleEntry"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["java.util.Date"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test []] 0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[NotYetDefinedPortableField :unresolved-tag]"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[Runnable :interface-type]"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[example.missing.Field :unresolved-tag]"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[java.util.AbstractList :abstract-type]"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[long :primitive-type]"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[nil :missing-tag]"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[objects :array-type]"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil 0}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil 1}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil :true}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil Point}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil []}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil \"true\"}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted false}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted nil}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted true}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil {}}"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["a native selection cannot become generated for an identity tag"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["identity output permits only generated modes"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["invalid mode transport is rejected"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["invalid modes are rejected before tag resolution"
+     "valid modes reach tag resolution"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["invalid modes are rejected before tag resolution"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test []] 0,
+   [value-type.fields-test/removed-metadata-test []] 0,
+   [value-type.fields-test/specification-validation-order-test
+    ["disabled fields do not resolve or validate their tags"]]
+   0,
+   [value-type.fields-test/specification-validation-order-test []] 0,
+   [value-type.fields-test/unrelated-field-metadata-test []] 0,
+   [value-type.fields-test/unresolved-tag-test ["42"]] 0,
+   [value-type.fields-test/unresolved-tag-test [":Point"]] 0,
+   [value-type.fields-test/unresolved-tag-test ["NotYetDefined"]] 0,
+   [value-type.fields-test/unresolved-tag-test
+    ["example.missing.Point"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test ["nil"]] 0,
+   [value-type.fields-test/unresolved-tag-test ["unknown/Point"]] 0}},
+ value-type.function-redefinition-test
+ {:ms 6876,
+  :children
+  {[value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    :cell]
+   {:count 6, :configurations 6}},
+  :labels
+  {[value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    ["[:controlled-capability \"error\" [\"-Xint\"]]"]]
+   1,
+   [value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    ["[:controlled-capability \"error\" []]"]]
+   1,
+   [value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    ["[:controlled-capability \"silent\" [\"-Xint\"]]"]]
+   1,
+   [value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    ["[:controlled-capability \"silent\" []]"]]
+   1,
+   [value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    ["[:controlled-capability \"warn\" [\"-Xint\"]]"]]
+   1,
+   [value-type.function-redefinition-test/controlled-capability-repeated-definition-test
+    ["[:controlled-capability \"warn\" []]"]]
+   1}},
+ value-type.generated-value-aot-test
+ {:ms 22459,
+  :children
+  {[value-type.generated-value-aot-test/java-generated-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.generated-value-aot-test/java-generated-value-consumer
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.generated-value-aot-test/java-generated-value-consumer
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.generated-value-aot-test/clojure-generated-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.generated-value-aot-test/clojure-generated-value-consumer
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    :cell]
+   {:count 6, :configurations 6}},
+  :labels
+  {[value-type.generated-value-aot-test/clojure-generated-value-consumer
+    ["source-free direct, factory and reflective construction"]]
+   6,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / error"]]
+   1,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / silent"]]
+   1,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / warn"]]
+   1,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / error"]]
+   1,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / silent"]]
+   1,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / warn"]]
+   1,
+   [value-type.generated-value-aot-test/incompatible-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"]]
+   0,
+   [value-type.generated-value-aot-test/java-generated-value-consumer
+    ["source-free value constructors and companions in normal and interpreter execution"]]
+   6}},
+ value-type.identity-aot-test
+ {:ms 25506,
+  :children
+  {[value-type.identity-aot-test/source-free-identity-backend
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.identity-aot-test/source-free-identity-backend :cell]
+   {:count 9, :configurations 9},
+   [value-type.identity-aot-test/java-identity-backend-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.identity-aot-test/java-identity-backend-consumer
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.identity-aot-test/java-identity-backend-consumer :cell]
+   {:count 3, :configurations 3}},
+  :labels
+  {[value-type.identity-aot-test/java-identity-backend-consumer
+    ["Java 8 constructors retain checks on baseline and capable receivers"]]
+   3,
+   [value-type.identity-aot-test/source-free-identity-backend
+    ["Java 8 artifacts execute without producer source on baseline and capable receivers"]]
+   9}},
+ value-type.identity-backend-test
+ {:ms 6,
+  :children {},
+  :labels
+  {[value-type.identity-backend-test/checked-identity-contract
+    ["concrete final storage and unchanged constructor parameters"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["factory, direct and reflective constructors enforce checks"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["mixed slots, nullable control, owner and captured reads"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-methods
+    ["captured branch merges retain constrained and nullable reads"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-methods
+    ["protocol and Object methods read concrete storage"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["missing constructors, missing or repeated writes and branches fail"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["straight-line writes cover the selected field"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["both fields retain concrete final storage"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["valid arguments preserve slots and nullable controls"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["all construction entries retain nested nullable data and reads"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["storage retains the exact nested identity Class"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["the outer field still rejects nil and an unrelated identity object"]]
+   0,
+   [value-type.identity-backend-test/unrelated-attributes-survive
+    ["declared exceptions survive constructor rewriting"]]
+   0,
+   [value-type.identity-backend-test/unrelated-attributes-survive
+    ["retained attributes do not replace storage or enforcement"]]
+   0,
+   [value-type.identity-backend-test/unrelated-attributes-survive
+    ["runtime annotations survive on class, field and constructor"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["owner methods and companions cannot write selected fields"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["selected storage must be final, non-static and Object-typed"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner storage must exist"]]
+   0}},
+ value-type.identity-loader-test
+ {:ms 11,
+  :children {},
+  :labels
+  {[value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand :eval]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand :function]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand :source]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand-1 :eval]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand-1 :function]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand-1 :source]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test []]
+   0,
+   [value-type.identity-loader-test/receiving-redefined-class-test []]
+   0,
+   [value-type.identity-loader-test/stale-identity-specification-test
+    ["identity capture rejects a stale exact Class before reading owner bytes"]]
+   0}},
+ value-type.identity-receiving-test
+ {:ms 50943,
+  :children
+  {[value-type.identity-receiving-test/receiving-identity-policy-test
+    :cell]
+   {:count 9, :configurations 9},
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.identity-receiving-test/generated-value-receiving-policy-test
+    :cell]
+   {:count 3, :configurations 3},
+   [value-type.identity-receiving-test/strict-nested-public-declaration-test
+    :cell]
+   {:count 4, :configurations 4},
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    :cell]
+   {:count 8, :configurations 8}},
+  :labels
+  {[value-type.identity-receiving-test/generated-value-receiving-policy-test
+    ["generated value enforcement under error"]]
+   1,
+   [value-type.identity-receiving-test/generated-value-receiving-policy-test
+    ["generated value enforcement under silent"]]
+   1,
+   [value-type.identity-receiving-test/generated-value-receiving-policy-test
+    ["generated value enforcement under warn"]]
+   1,
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" \"error\"]"]]
+   1,
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" \"error\"]"]]
+   1,
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/incompatible-value-receiving-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/nested-public-warning-scope-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     "direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     "factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     "reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     "direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     "factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     "reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? false"
+     "direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? false"
+     "factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? false"
+     "reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? false"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? true"
+     "direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? true"
+     "factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? true"
+     "reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :function nested? true"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     "direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     "factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     "reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     "direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     "factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     "reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-native-modes-test
+    ["Child"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-native-modes-test
+    ["String"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"error\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-identity-policy-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\"]"]]
+   1,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    []]
+   0,
+   [value-type.identity-receiving-test/strict-nested-public-declaration-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"-Xint\"]]"]]
+   1,
+   [value-type.identity-receiving-test/strict-nested-public-declaration-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" []]"]]
+   1,
+   [value-type.identity-receiving-test/strict-nested-public-declaration-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [\"-Xint\"]]"]]
+   1,
+   [value-type.identity-receiving-test/strict-nested-public-declaration-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" []]"]]
+   1}},
+ value-type.isolated-sibling-loader-test
+ {:ms 26,
+  :children {},
+  :labels
+  {[value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :eval"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :function"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :source"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    []]
+   0}},
+ value-type.loader-policy-test
+ {:ms 21480,
+  :children
+  {[value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    :cell]
+   {:count 14, :configurations 14}},
+  :labels
+  {[value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" []]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" []]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" []]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" []]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" []]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"silent\" []]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" [\"-Xint\"]]"]]
+   0,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"
+     "[:macroexpand :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"
+     "[:macroexpand :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"
+     "[:macroexpand :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"
+     "[:macroexpand-1 :eval]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"
+     "[:macroexpand-1 :function]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"
+     "[:macroexpand-1 :source]"]]
+   1,
+   [value-type.loader-policy-test/fresh-policy-loader-rejection-test
+    ["[\"/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java\" [] \"warn\" []]"]]
+   0}},
+ value-type.public-field-annotations-test
+ {:ms 16,
+  :children {},
+  :labels
+  {[value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"]]
+   0}},
+ value-type.public-field-aot-test
+ {:ms 119468,
+  :children
+  {[value-type.public-field-aot-test/persisted-public-generated-value-output-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/java-public-generated-value-consumer
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-field-aot-test/strict-public-identity-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/source-free-public-generated-value-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/function-public-identity-aot-test
+    :cell]
+   {:count 18, :configurations 18},
+   [value-type.public-field-aot-test/java-public-generated-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/persisted-public-identity-output-test
+    :cell]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/java-public-generated-value-consumer
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/source-free-public-generated-value-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-field-aot-test/java-public-identity-consumer
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/source-free-public-identity-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/function-public-generated-value-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/java-public-identity-consumer
+    :cell]
+   {:count 18, :configurations 18},
+   [value-type.public-field-aot-test/java-public-identity-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/persisted-public-identity-output-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/strict-public-identity-aot-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-field-aot-test/source-free-public-identity-test
+    :cell]
+   {:count 12, :configurations 12},
+   [value-type.public-field-aot-test/persisted-public-generated-value-output-test
+    :cell]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    :cell]
+   {:count 12, :configurations 12},
+   [value-type.public-field-aot-test/function-public-identity-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-field-aot-test/function-public-generated-value-aot-test
+    :cell]
+   {:count 6, :configurations 6}},
+  :labels
+  {[value-type.public-field-aot-test/function-public-generated-value-aot-test
+    ["source-free value function loading and repeated invocation stay silent under every policy"]]
+   6,
+   [value-type.public-field-aot-test/function-public-identity-aot-test
+    ["source-free function invocation retains policy timing and constructor checks"]]
+   18,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / error"]]
+   2,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / silent"]]
+   2,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / warn"]]
+   2,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / error"]]
+   2,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / silent"]]
+   2,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / warn"]]
+   2,
+   [value-type.public-field-aot-test/incompatible-public-generated-value-consumer
+    ["source-free generated artifacts reject incompatible receivers under every policy"]]
+   0,
+   [value-type.public-field-aot-test/java-public-generated-value-consumer
+    ["source-free value constructors and companions in normal and interpreter execution"]]
+   6,
+   [value-type.public-field-aot-test/java-public-identity-consumer
+    ["Java 8 constructors retain checks on baseline and capable receivers"]]
+   18,
+   [value-type.public-field-aot-test/persisted-public-generated-value-output-test
+    ["public generated-value AOT persists concrete storage and companion descriptors"]]
+   1,
+   [value-type.public-field-aot-test/persisted-public-identity-output-test
+    ["public identity AOT persists concrete storage and companion descriptors"]]
+   1,
+   [value-type.public-field-aot-test/source-free-public-generated-value-test
+    ["all policies retain generated value storage and constructor checks"]]
+   6,
+   [value-type.public-field-aot-test/source-free-public-identity-test
+    ["permitted receivers retain identity storage and companion reads after reload"]]
+   12,
+   [value-type.public-field-aot-test/strict-public-identity-aot-test
+    ["strict namespace loading repeatedly rejects source-free identity output"]]
+   6}},
+ value-type.public-mixed-field-aot-test
+ {:ms 34808,
+  :children
+  {[value-type.public-mixed-field-aot-test/java-public-mixed-value-consumer
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    :cell]
+   {:count 12, :configurations 12},
+   [value-type.public-mixed-field-aot-test/function-public-mixed-value-aot-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-mixed-field-aot-test/java-public-mixed-value-consumer
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-mixed-field-aot-test/persisted-public-mixed-output-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-mixed-field-aot-test/persisted-public-mixed-output-test
+    :cell]
+   {:count 2, :configurations 1},
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-mixed-field-aot-test/source-free-public-mixed-value-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-mixed-field-aot-test/source-free-public-mixed-value-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-mixed-field-aot-test/java-public-mixed-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-mixed-field-aot-test/function-public-mixed-value-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1}},
+  :labels
+  {[value-type.public-mixed-field-aot-test/function-public-mixed-value-aot-test
+    ["source-free value function loading and repeated invocation stay silent under every policy"]]
+   6,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / error"]]
+   2,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / silent"]]
+   2,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / warn"]]
+   2,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / error"]]
+   2,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / silent"]]
+   2,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / warn"]]
+   2,
+   [value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer
+    ["source-free mixed artifacts reject incompatible receivers under every policy"]]
+   0,
+   [value-type.public-mixed-field-aot-test/java-public-mixed-value-consumer
+    ["source-free value constructors and companions in normal and interpreter execution"]]
+   6,
+   [value-type.public-mixed-field-aot-test/persisted-public-mixed-output-test
+    ["public mixed AOT persists concrete storage and companion descriptors"]]
+   2,
+   [value-type.public-mixed-field-aot-test/source-free-public-mixed-value-test
+    ["all policies retain mixed value storage and constructor checks"]]
+   6}},
+ value-type.public-native-field-aot-test
+ {:ms 32171,
+  :children
+  {[value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    :cell]
+   {:count 12, :configurations 12},
+   [value-type.public-native-field-aot-test/java-public-native-value-consumer
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-native-field-aot-test/source-free-public-native-value-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-native-field-aot-test/function-public-native-value-aot-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-native-field-aot-test/function-public-native-value-aot-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-native-field-aot-test/source-free-public-native-value-test
+    :cell]
+   {:count 6, :configurations 6},
+   [value-type.public-native-field-aot-test/java-public-native-value-consumer
+    :java-compile]
+   {:count 1, :configurations 1},
+   [value-type.public-native-field-aot-test/java-public-native-value-consumer
+    :cell]
+   {:count 6, :configurations 6}},
+  :labels
+  {[value-type.public-native-field-aot-test/function-public-native-value-aot-test
+    ["source-free value function loading and repeated invocation stay silent under every policy"]]
+   6,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / error"]]
+   2,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / silent"]]
+   2,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java / warn"]]
+   2,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / error"]]
+   2,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / silent"]]
+   2,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"
+     "/Users/duncan/.local/share/mise/installs/java/temurin-8/bin/java / warn"]]
+   2,
+   [value-type.public-native-field-aot-test/incompatible-public-native-value-consumer
+    ["source-free native artifacts reject incompatible receivers under every policy"]]
+   0,
+   [value-type.public-native-field-aot-test/java-public-native-value-consumer
+    ["source-free value constructors and companions in normal and interpreter execution"]]
+   6,
+   [value-type.public-native-field-aot-test/source-free-public-native-value-test
+    ["all policies retain native value storage and constructor checks"]]
+   6}},
+ value-type.runtime-test
+ {:ms 14805,
+  :children
+  {[value-type.runtime-test/fallback-expansion-policy-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/capability-test :cell]
+   {:count 1, :configurations 1},
+   [value-type.runtime-test/invalid-policy-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    :cell]
+   {:count 4, :configurations 1},
+   [value-type.runtime-test/policy-test :cell]
+   {:count 4, :configurations 4},
+   [value-type.runtime-test/source-field-validation-test :cell]
+   {:count 1, :configurations 1},
+   [value-type.runtime-test/constrained-discarded-expansion-test :cell]
+   {:count 12, :configurations 3},
+   [value-type.runtime-test/public-require-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/public-definition-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    :cell]
+   {:count 6, :configurations 3},
+   [value-type.runtime-test/fallback-source-compatibility-test :cell]
+   {:count 1, :configurations 1}},
+  :labels
+  {[value-type.runtime-test/capability-test []] 1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":full error loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":full error loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":full silent loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":full silent loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":full warn loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":full warn loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":one error loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":one error loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":one silent loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":one silent loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":one warn loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":one warn loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":full error"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":full silent"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":full warn"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":one error"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":one silent"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":one warn"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test ["error"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test ["silent"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test ["warn"]] 1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":full loader-bound=false"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":full loader-bound=true"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":one loader-bound=false"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":one loader-bound=true"]]
+   1,
+   [value-type.runtime-test/fallback-source-compatibility-test []] 1,
+   [value-type.runtime-test/invalid-policy-test []] 3,
+   [value-type.runtime-test/policy-test ["policy "]] 1,
+   [value-type.runtime-test/policy-test ["policy error"]] 1,
+   [value-type.runtime-test/policy-test ["policy silent"]] 1,
+   [value-type.runtime-test/policy-test ["policy warn"]] 1,
+   [value-type.runtime-test/public-definition-test []] 3,
+   [value-type.runtime-test/public-require-test []] 3,
+   [value-type.runtime-test/source-field-validation-test []] 1}},
+ value-type.transfer-test
+ {:ms 34227,
+  :children
+  {[value-type.transfer-test/transferred-expansion-test :cell]
+   {:count 4, :configurations 4},
+   [value-type.transfer-test/concurrent-warning-scope-test :cell]
+   {:count 3, :configurations 2},
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    :cell]
+   {:count 17, :configurations 5},
+   [value-type.transfer-test/constrained-concurrent-strict-test :cell]
+   {:count 5, :configurations 3}},
+  :labels
+  {[value-type.transfer-test/concurrent-warning-scope-test
+    ["independent runtime 0"]]
+   1,
+   [value-type.transfer-test/concurrent-warning-scope-test
+    ["independent runtime 1"]]
+   1,
+   [value-type.transfer-test/concurrent-warning-scope-test []] 1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["strict concurrent receiving [\"-Xint\"]"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["strict concurrent receiving []"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-strict-test []] 1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [\"-Xint\"] runtime 0"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [\"-Xint\"] runtime 1"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [] runtime 0"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [] runtime 1"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [\"-Xint\"] runtime 0"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [\"-Xint\"] runtime 1"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [] runtime 0"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [] runtime 1"]]
+   2,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    []]
+   1,
+   [value-type.transfer-test/transferred-expansion-test ["error"]] 1,
+   [value-type.transfer-test/transferred-expansion-test ["silent"]] 1,
+   [value-type.transfer-test/transferred-expansion-test ["warn"]] 1,
+   [value-type.transfer-test/transferred-expansion-test []] 1}}}

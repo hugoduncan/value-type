@@ -31,7 +31,7 @@ it and update this document.
 |---|---|---|
 | JEP 401 class file changes in a new build. | The JVM rejects the class. | Review both `transform` and the capability probe. Unknown probe failures propagate; D9 wraps user-class definition errors. |
 | Clojure changes `deftype` output or the `LOADER` order. | Install or transform fails. | D6 shape check. D9 runtime check. Pin Clojure 1.12.6 (`deps.edn`). The `deftype` compatibility corpus (`value-type.deftype-compat-test`); when the Clojure version changes, copy the corpus again from the new tag. |
-| `macroexpand` from tooling installs a loader. | A loader stays in the tooling binding frame. | Ordinary selection changes only the target name. Non-nil field selection defers installation to receiving analysis; its loader also rewrites selected owner-field references in captured companions. Verify both expansion forms in fresh receivers. |
+| `macroexpand` from tooling installs a loader. | A loader stays in the tooling binding frame. | Ordinary selection changes only the target name. Non-nil field selection defers installation to receiving analysis; its loader also rewrites selected owner-field references in captured companions. Verify both expansion forms in fresh receivers: a new JVM, or a cell with its own `LOADER` binding. |
 | Users depend on identity. | `IdentityException` or changed equality. | README section on semantic differences. |
 | Value-class AOT output is tied to one JDK release. | The class does not load on a different JDK. | Document. Rebuild per JDK release; no load-time conversion. |
 | Optional APIs load before capability detection. | Public namespace fails before fallback. | D12 dependency boundary; isolated consumer tests without those APIs. |

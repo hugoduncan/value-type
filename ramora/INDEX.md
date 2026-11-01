@@ -22,6 +22,10 @@ limits; they do not report feature delivery status.
   constraint, native or generated enforcement, application-controlled identity
   fallback, implementation and accepted evidence limits.
 
+- [deftype* design](deftype-star-design.md): `defvaluetype*` for
+  callers that emit `deftype*`, including the record shape. Compiler record
+  constructors, hash field removal, fallback, exclusions and verification.
+
 - [Value-type array design](value-type-array-design.md): native,
   null-restricted atomic allocation, sequence construction and diagnostics.
   [Semantic report](value-type-array-design/semantic-verification.md),

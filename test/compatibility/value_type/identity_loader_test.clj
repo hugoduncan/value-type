@@ -1,7 +1,7 @@
 (ns value-type.identity-loader-test
   (:require [clojure.test :refer [deftest is testing]]
             [value-type.core]
-            [value-type.identity-loader-checks :as checks]
+            [value-type.identity-loader-checks :as loader-checks]
             [value-type.impl.loader :as loader]
             [value-type.impl.fields :as fields]
             [value-type.message-checks :refer [message-names?]])
@@ -11,8 +11,8 @@
   ;; Real sibling loaders must not make equal binary names interchangeable.
   (testing "identity capture rejects a stale exact Class before reading owner bytes"
     (let [binary-name (str "identity.loader.Nested" (gensym))
-          original (checks/named-class binary-name)
-          replacement (checks/named-class binary-name)
+          original (loader-checks/named-class binary-name)
+          replacement (loader-checks/named-class binary-name)
           target (str "identity.loader.Holder" (gensym))
           capture (#'loader/capture-loader
                    target (.getClassLoader ^Class replacement)
@@ -36,8 +36,8 @@
 (deftest receiving-redefined-class-test
   ;; Fixed modes carry no producer Class; each receiver resolves its own import.
   (let [binary-name (str "identity.loader.Child" (gensym))
-        original (checks/named-class binary-name)
-        replacement (checks/named-class binary-name)
+        original (loader-checks/named-class binary-name)
+        replacement (loader-checks/named-class binary-name)
         receiver (create-ns (gensym "identity.receiver"))
         simple-name (symbol (.getSimpleName ^Class original))
         declarations [(with-meta 'required {:tag simple-name :non-nil true})]]
@@ -55,8 +55,8 @@
 
 (deftest public-stale-sibling-class-test
   ;; A public receiver must reject a mismatched import, not weaken typed storage.
-  (let [results (checks/public-stale-sibling)]
-    (is (= 6 (count results)))
+  (let [results (loader-checks/public-stale-sibling)]
+    (is (= (set loader-checks/cases) (set (keys results))))
     (doseq [[case-key result] results]
       (testing (pr-str case-key)
-        (is (= checks/public-stale-sibling-expected result))))))
+        (is (= loader-checks/public-stale-sibling-expected result))))))

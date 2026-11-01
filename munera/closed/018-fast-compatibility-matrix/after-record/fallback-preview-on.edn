@@ -1,0 +1,2379 @@
+{value-type.aot-test
+ {:ms 9900,
+  :children
+  {[value-type.aot-test/fallback-aot-compilation-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    :aot-compile]
+   {:count 2, :configurations 2},
+   [value-type.aot-test/source-free-fallback-aot-loading-test :cell]
+   {:count 6, :configurations 6},
+   [value-type.aot-test/source-free-value-aot-loading-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.aot-test/source-free-value-aot-loading-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    :aot-compile]
+   {:count 1, :configurations 1},
+   [value-type.aot-test/source-free-runtime-only-fallback-test :cell]
+   {:count 3, :configurations 3}},
+  :labels
+  {[value-type.aot-test/source-free-value-aot-loading-test ["silent"]]
+   1,
+   [value-type.aot-test/fallback-aot-compilation-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"warn\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" fallback.runtime-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["silent artifact / error consumer"]]
+   1,
+   [value-type.aot-test/source-free-value-aot-loading-test []] 0,
+   [value-type.aot-test/source-free-value-aot-loading-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["warn artifact / error consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["silent artifact / warn consumer"]]
+   1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" fallback.runtime-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["warn artifact / warn consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/fallback-aot-compilation-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"silent\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-fallback-aot-loading-test []] 0,
+   [value-type.aot-test/source-free-value-aot-loading-test ["warn"]] 1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["error"]]
+   1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["warn"]]
+   1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["producer"]]
+   0,
+   [value-type.aot-test/fallback-aot-compilation-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [] \"error\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" fallback.runtime-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-value-aot-loading-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["silent artifact / silent consumer"]]
+   1,
+   [value-type.aot-test/fallback-aot-compilation-test ["warn"]] 1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test
+    ["silent"]]
+   1,
+   [value-type.aot-test/source-free-value-aot-loading-test ["error"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["warn artifact / silent consumer"]]
+   1,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["producer"]]
+   0,
+   [value-type.aot-test/fallback-aot-compilation-test []] 0,
+   [value-type.aot-test/source-free-fallback-aot-loading-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/source-free-value-aot-loading-test
+    ["producer"]]
+   0,
+   [value-type.aot-test/source-free-value-aot-loading-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" fallback.aot-fixture]"]]
+   0,
+   [value-type.aot-test/fallback-aot-compilation-test ["silent"]] 1,
+   [value-type.aot-test/fallback-aot-compilation-test ["error"]] 1,
+   [value-type.aot-test/source-free-runtime-only-fallback-test []] 0}},
+ value-type.capture-failure-test
+ {:ms 0,
+  :children {},
+  :labels
+  {[value-type.capture-failure-test/unsupported-owner-capture-test
+    ["missing selected storage rejects repeatedly without weaker output"]]
+   0}},
+ value-type.fields-test
+ {:ms 28,
+  :children {},
+  :labels
+  {[value-type.fields-test/public-imported-concrete-field-test
+    ["imported_fields.NullableChild" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "nil :reflective"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test ["NotYetDefined"]] 0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[NotYetDefinedPortableField :unresolved-tag]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":missing-tag"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil 1}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["imported_fields.NullableChild" ":macroexpand"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test ["longs"]] 0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":primitive-type"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["Date" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test [":Point"]] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "\"valid\" :direct"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "\"valid\" :direct"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil {}}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/portable-specifications-test []] 0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["ExternalAlias" ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-enclosing-type-error-test
+    [":macroexpand"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil :true}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/ineligible-type-test
+    ["[Ljava.lang.Object;"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":interface-type"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil 0}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["AbstractMap$SimpleEntry" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "nil :factory"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "\"valid\" :factory"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "42 :direct"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test []] 0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[example.missing.Field :unresolved-tag]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["identity output permits only generated modes"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["java.util.AbstractMap$SimpleEntry" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[example.missing.Field :unresolved-tag]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "42 :reflective"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["a native selection cannot become generated for an identity tag"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "42 :reflective"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test ["{}"]]
+   0,
+   [value-type.fields-test/declaration-boundary-test []] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted true}"
+     ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "42 :direct"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "42 :factory"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test ["42"]] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil []}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/invalid-metadata-test ["Point"]] 0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[Runnable :interface-type]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil []}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test
+    ["example.missing.Point"]]
+   0,
+   [value-type.fields-test/mutable-declaration-error-test
+    [":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "42 :direct"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":array-type"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["Date" ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "nil :reflective"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil \"true\"}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test ["nil"]] 0,
+   [value-type.fields-test/invalid-metadata-test ["0"]] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "nil :direct"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["ExternalAlias" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/ineligible-type-test ["java.lang.Runnable"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":enclosing-type"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil :true}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["invalid modes are rejected before tag resolution"
+     "valid modes reach tag resolution"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[Runnable :interface-type]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/ineligible-type-test ["long"]] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil 0}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[nil :missing-tag]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "42 :factory"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["invalid mode transport is rejected"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[nil :missing-tag]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test ["Date"]] 0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["AbstractMap$SimpleEntry" ":macroexpand"]]
+   0,
+   [value-type.fields-test/removed-metadata-test []] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil 1}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[NotYetDefinedPortableField :unresolved-tag]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test
+    ["\"java.util.Date\""]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil {}}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[java.util.AbstractList :abstract-type]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/declaration-boundary-test
+    ["the first invalid field in declaration order is reported"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "nil :reflective"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["ChildAlias" ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "nil :factory"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "nil :direct"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil Point}" ":macroexpand"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test
+    ["java.util.Date"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":unresolved-tag"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test ["long"]] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted false}"
+     ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/portable-fallback-class-specification-test
+    []]
+   0,
+   [value-type.fields-test/ineligible-type-test ["java.lang.String"]]
+   0,
+   [value-type.fields-test/public-enclosing-type-error-test
+    [":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["java.util.AbstractMap$SimpleEntry" ":macroexpand"]]
+   0,
+   [value-type.fields-test/concrete-class-rejection-test []] 0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[objects :array-type]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted nil}"
+     ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["java.util.Date" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "nil :direct"]]
+   0,
+   [value-type.fields-test/unresolved-tag-test ["unknown/Point"]] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted true}"
+     ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[long :primitive-type]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":invalid-non-nil"]]
+   0,
+   [value-type.fields-test/enclosing-type-test []] 0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["java.util.Date" ":macroexpand"]]
+   0,
+   [value-type.fields-test/ineligible-type-test
+    ["java.util.AbstractList"]]
+   0,
+   [value-type.fields-test/explicit-tag-resolution-test ["String/1"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test []] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{}" "\"valid\" :reflective"]]
+   0,
+   [value-type.fields-test/invalid-metadata-test [":true"]] 0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[long :primitive-type]" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":removed-nil-restricted"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "\"valid\" :direct"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["NullableChild" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/specification-validation-order-test []] 0,
+   [value-type.fields-test/invalid-metadata-test ["\"true\""]] 0,
+   [value-type.fields-test/invalid-metadata-test ["{}"]] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil \"true\"}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["NullableChild" ":macroexpand"]]
+   0,
+   [value-type.fields-test/mutable-declaration-error-test
+    [":macroexpand-1"]]
+   0,
+   [value-type.fields-test/unrelated-field-metadata-test []] 0,
+   [value-type.fields-test/concrete-class-eligibility-test
+    ["an ordinary fallen-back declaration is a concrete field type"]]
+   0,
+   [value-type.fields-test/specification-validation-order-test
+    ["disabled fields do not resolve or validate their tags"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "\"valid\" :reflective"]]
+   0,
+   [value-type.fields-test/invalid-metadata-test ["[]"]] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "42 :reflective"]]
+   0,
+   [value-type.fields-test/receiving-specifications-test
+    ["invalid modes are rejected before tag resolution"]]
+   0,
+   [value-type.fields-test/invalid-metadata-test ["1"]] 0,
+   [value-type.fields-test/portable-specification-errors-test
+    [":abstract-type"]]
+   0,
+   [value-type.fields-test/public-imported-concrete-field-test
+    ["ChildAlias" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/ineligible-type-test ["[J"]] 0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "\"valid\" :reflective"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "\"valid\" :factory"]]
+   0,
+   [value-type.fields-test/metadata-normalization-test []] 0,
+   [value-type.fields-test/concrete-class-eligibility-test []] 0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted false}"
+     ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil Point}" ":macroexpand-1"]]
+   0,
+   [value-type.fields-test/public-portable-metadata-errors-test
+    ["{:tag String, :non-nil true, :nil-restricted nil}"
+     ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[objects :array-type]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/public-portable-declaration-errors-test
+    ["[java.util.AbstractList :abstract-type]" ":macroexpand"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "42 :factory"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil false}" "nil :factory"]]
+   0,
+   [value-type.fields-test/disabled-declaration-behavior-test
+    ["{:non-nil nil}" "\"valid\" :factory"]]
+   0}},
+ value-type.identity-backend-test
+ {:ms 6,
+  :children {},
+  :labels
+  {[value-type.identity-backend-test/unrelated-attributes-survive
+    ["declared exceptions survive constructor rewriting"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["missing constructors, missing or repeated writes and branches fail"
+     "no constructor"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"
+     ":owner PUTSTATIC"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["valid arguments preserve slots and nullable controls" ":direct"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["factory, direct and reflective constructors enforce checks"
+     ":factory"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["selected storage must be final, non-static and Object-typed"
+     "String typed"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"
+     ":factory"
+     "right"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"
+     ":direct"
+     "left"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["the outer field still rejects nil and an unrelated identity object"
+     ":direct"]]
+   0,
+   [value-type.identity-backend-test/unrelated-attributes-survive
+    ["retained attributes do not replace storage or enforcement"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["owner methods and companions cannot write selected fields"
+     ":companion"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["selected storage must be final, non-static and Object-typed"
+     "static"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["missing constructors, missing or repeated writes and branches fail"
+     "no write"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner storage must exist"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["missing constructors, missing or repeated writes and branches fail"
+     "two writes"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["valid arguments preserve slots and nullable controls"
+     ":reflective"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["factory, direct and reflective constructors enforce checks"
+     ":reflective"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"
+     ":reflective"
+     "left"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["both fields retain concrete final storage"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["owner methods and companions cannot write selected fields"
+     ":owner"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"
+     ":owner GETFIELD"]]
+   0,
+   [value-type.identity-backend-test/unsupported-identity-storage-and-writes
+    ["selected storage must be final, non-static and Object-typed"
+     "not final"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["missing constructors, missing or repeated writes and branches fail"
+     "extra constructor"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-methods
+    ["protocol and Object methods read concrete storage"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["the outer field still rejects nil and an unrelated identity object"
+     ":reflective"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["all construction entries retain nested nullable data and reads"
+     ":reflective"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["storage retains the exact nested identity Class"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"
+     ":companion PUTSTATIC"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["straight-line writes cover the selected field"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-methods
+    ["captured branch merges retain constrained and nullable reads"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"
+     ":factory"
+     "left"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"
+     ":reflective"
+     "right"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["mixed slots, nullable control, owner and captured reads"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["concrete final storage and unchanged constructor parameters"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["each constrained position rejects nil and wrong types"
+     ":direct"
+     "right"]]
+   0,
+   [value-type.identity-backend-test/multiple-identity-constraints
+    ["valid arguments preserve slots and nullable controls"
+     ":factory"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["the outer field still rejects nil and an unrelated identity object"
+     ":factory"]]
+   0,
+   [value-type.identity-backend-test/unrelated-attributes-survive
+    ["runtime annotations survive on class, field and constructor"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["all construction entries retain nested nullable data and reads"
+     ":direct"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"
+     ":companion GETFIELD"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"
+     ":companion GETSTATIC"]]
+   0,
+   [value-type.identity-backend-test/unsupported-storage-references
+    ["owner and companion references must be instance Object references"
+     ":owner GETSTATIC"]]
+   0,
+   [value-type.identity-backend-test/nested-identity-constraint
+    ["all construction entries retain nested nullable data and reads"
+     ":factory"]]
+   0,
+   [value-type.identity-backend-test/constructor-coverage
+    ["missing constructors, missing or repeated writes and branches fail"
+     "branch"]]
+   0,
+   [value-type.identity-backend-test/checked-identity-contract
+    ["factory, direct and reflective constructors enforce checks"
+     ":direct"]]
+   0}},
+ value-type.identity-loader-test
+ {:ms 12,
+  :children {},
+  :labels
+  {[value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand-1 :analysis]"]]
+   0,
+   [value-type.identity-loader-test/stale-identity-specification-test
+    ["identity capture rejects a stale exact Class before reading owner bytes"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand-1 :source]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand :eval]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand :source]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand-1 :eval]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test
+    ["[:macroexpand :analysis]"]]
+   0,
+   [value-type.identity-loader-test/public-stale-sibling-class-test []]
+   0,
+   [value-type.identity-loader-test/receiving-redefined-class-test []]
+   0}},
+ value-type.identity-receiving-test
+ {:ms 154,
+  :children {},
+  :labels
+  {[value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :source"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :source" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :source" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-native-modes-test
+    ["Child"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :eval" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :analysis" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :analysis"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :analysis"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :eval" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :eval" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :analysis" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :source" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :source"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :source" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :analysis"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :eval" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :eval" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :source" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :eval"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :eval" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :source"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":internal"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :eval"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :source" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :analysis" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :analysis" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand-1 :eval"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand-1"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":internal :analysis" "first-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-redefined-child-test
+    [":macroexpand :analysis" "second-owner"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":internal"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-native-modes-test
+    ["String"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":reflective"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":internal"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":internal"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand-1"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":factory"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":internal"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand-1"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand-1"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand"
+     ":factory"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":direct"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? false"
+     ":macroexpand-1"
+     ":factory"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :eval nested? true"
+     ":macroexpand-1"
+     ":direct"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? true"
+     ":macroexpand"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":reflective"
+     "label"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":macroexpand"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? true"
+     ":macroexpand"
+     ":direct"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :source nested? false"
+     ":macroexpand"
+     ":reflective"
+     "required"]]
+   0,
+   [value-type.identity-receiving-test/receiving-identity-fields-test
+    ["fixed generated identity receiving via :analysis nested? false"
+     ":internal"
+     ":factory"
+     "label"]]
+   0}},
+ value-type.isolated-sibling-loader-test
+ {:ms 18,
+  :children {},
+  :labels
+  {[value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :eval" "right :macroexpand-1"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :analysis" "right :macroexpand-1"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :analysis" "left :macroexpand"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :eval" "left :macroexpand"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :eval" "left :macroexpand-1"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :source" "right :macroexpand-1"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :source" "left :macroexpand"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :source" "left :macroexpand-1"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :eval" "right :macroexpand"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :source" "right :macroexpand"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    []]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :analysis" "left :macroexpand-1"]]
+   0,
+   [value-type.isolated-sibling-loader-test/public-isolated-sibling-construction-test
+    ["isolated sibling through :analysis" "right :macroexpand"]]
+   0}},
+ value-type.public-field-annotations-test
+ {:ms 20,
+  :children {},
+  :labels
+  {[value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]" ":macroexpand-1" "required1"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]" ":macroexpand" "required0"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"
+     "ratio"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"
+     "ratio"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]" ":macroexpand"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]" ":macroexpand-1"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"
+     "ratio"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]" ":macroexpand" "required0"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]" ":macroexpand-1" "required0"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"
+     "count_value"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"
+     "ratio"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"
+     "ratio"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"
+     "count_value"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"
+     "count_value"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     ":macroexpand-1"
+     "owner and ordinary two-slot field annotations survive"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]" ":macroexpand" "required1"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]" ":macroexpand-1" "required0"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"
+     "count_value"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"
+     "count_value"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long String]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"
+     "ratio"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]" ":macroexpand-1"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]" ":macroexpand" "required0"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]" ":macroexpand-1"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]" ":macroexpand"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]"
+     ":macroexpand"
+     "owner and ordinary two-slot field annotations survive"
+     "count_value"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [Long]" ":macroexpand"]]
+   0,
+   [value-type.public-field-annotations-test/public-field-annotations-test
+    ["annotations with [String]" ":macroexpand-1" "required0"]]
+   0}},
+ value-type.runtime-test
+ {:ms 5428,
+  :children
+  {[value-type.runtime-test/fallback-expansion-policy-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/capability-test :cell]
+   {:count 1, :configurations 1},
+   [value-type.runtime-test/invalid-policy-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    :cell]
+   {:count 4, :configurations 1},
+   [value-type.runtime-test/policy-test :cell]
+   {:count 4, :configurations 4},
+   [value-type.runtime-test/source-field-validation-test :cell]
+   {:count 1, :configurations 1},
+   [value-type.runtime-test/constrained-discarded-expansion-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/public-require-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/public-definition-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    :cell]
+   {:count 3, :configurations 3},
+   [value-type.runtime-test/fallback-source-compatibility-test :cell]
+   {:count 1, :configurations 1}},
+  :labels
+  {[value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand-1 silent loader-bound=true"]]
+   1,
+   [value-type.runtime-test/invalid-policy-test ["policy \"\""]] 1,
+   [value-type.runtime-test/policy-test ["policy error"]] 1,
+   [value-type.runtime-test/fallback-source-compatibility-test []] 1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/policy-test ["policy warn"]] 1,
+   [value-type.runtime-test/invalid-policy-test []] 0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":macroexpand error"]]
+   1,
+   [value-type.runtime-test/capability-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] nil nil]"]]
+   0,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":macroexpand loader-bound=true"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/source-field-validation-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/public-require-test ["policy silent"]] 1,
+   [value-type.runtime-test/fallback-source-compatibility-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand-1 error loader-bound=true"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test ["error"]]
+   1,
+   [value-type.runtime-test/public-require-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    []]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/fallback-expansion-policy-test []] 0,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":macroexpand-1 loader-bound=true"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test ["silent"]]
+   1,
+   [value-type.runtime-test/public-definition-test ["policy warn"]] 1,
+   [value-type.runtime-test/public-definition-test ["policy error"]] 1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand warn loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand silent loader-bound=false"]]
+   1,
+   [value-type.runtime-test/invalid-policy-test ["policy \"WARN\""]] 1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand error loader-bound=true"]]
+   1,
+   [value-type.runtime-test/public-require-test []] 0,
+   [value-type.runtime-test/invalid-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"WARN\" nil]"]]
+   0,
+   [value-type.runtime-test/public-definition-test ["policy silent"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":macroexpand-1 loader-bound=false"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-policy-test ["warn"]] 1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/capability-test []] 1,
+   [value-type.runtime-test/fallback-expansion-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] nil nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand-1 warn loader-bound=true"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand warn loader-bound=false"]]
+   1,
+   [value-type.runtime-test/policy-test []] 0,
+   [value-type.runtime-test/invalid-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"unknown\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand-1 silent loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":macroexpand-1 error"]]
+   1,
+   [value-type.runtime-test/public-require-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":macroexpand silent"]]
+   1,
+   [value-type.runtime-test/policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/policy-test ["policy "]] 1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":macroexpand-1 silent"]]
+   1,
+   [value-type.runtime-test/policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/policy-test ["policy silent"]] 1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test
+    [":macroexpand loader-bound=false"]]
+   1,
+   [value-type.runtime-test/invalid-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":macroexpand warn"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand silent loader-bound=true"]]
+   1,
+   [value-type.runtime-test/policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/public-require-test ["policy warn"]] 1,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/public-definition-test []] 0,
+   [value-type.runtime-test/public-definition-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/fallback-expansion-policy-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/invalid-policy-test ["policy \"unknown\""]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-validation-before-policy-test
+    [":macroexpand-1 warn"]]
+   1,
+   [value-type.runtime-test/public-require-test ["policy error"]] 1,
+   [value-type.runtime-test/source-field-validation-test []] 1,
+   [value-type.runtime-test/public-definition-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test []] 0,
+   [value-type.runtime-test/public-definition-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.runtime-test/public-require-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand-1 warn loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand-1 error loader-bound=false"]]
+   1,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.runtime-test/constrained-discarded-expansion-test
+    [":macroexpand error loader-bound=false"]]
+   1,
+   [value-type.runtime-test/fallback-expansion-warning-timing-test []]
+   0}},
+ value-type.transfer-test
+ {:ms 18305,
+  :children
+  {[value-type.transfer-test/transferred-expansion-test :producer]
+   {:count 1, :configurations 1},
+   [value-type.transfer-test/transferred-expansion-test :cell]
+   {:count 3, :configurations 3},
+   [value-type.transfer-test/concurrent-warning-scope-test :producer]
+   {:count 1, :configurations 1},
+   [value-type.transfer-test/concurrent-warning-scope-test :cell]
+   {:count 2, :configurations 1},
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    :cell]
+   {:count 8, :configurations 4},
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    :producer]
+   {:count 1, :configurations 1},
+   [value-type.transfer-test/constrained-concurrent-strict-test :cell]
+   {:count 2, :configurations 2}},
+  :labels
+  {[value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [\"-Xint\"] runtime 0" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test []] 0,
+   [value-type.transfer-test/concurrent-warning-scope-test []] 0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [] runtime 1" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["strict concurrent receiving []" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [\"-Xint\"] runtime 0" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"error\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["silent" "eval" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["warn" "eval" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [] runtime 0" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test ["producer"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["silent" "eval" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["producer"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    []]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [\"-Xint\"] runtime 1" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/concurrent-warning-scope-test
+    ["producer"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [] runtime 1" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["error" "source" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["producer"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["warn" "source" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [\"-Xint\"] runtime 0" "macroexpand"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["error" "source" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [] runtime 1" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [\"-Xint\"] runtime 1" "macroexpand"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["warn" "eval" "macroexpand"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["error" "eval" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [\"-Xint\"] runtime 1" "macroexpand"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["warn" "source" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["silent" "source" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["strict concurrent receiving [\"-Xint\"]" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/concurrent-warning-scope-test
+    ["independent runtime 0"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [\"-Xint\"] runtime 1" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"error\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["silent" "source" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [] runtime 0" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [\"-Xint\"] runtime 0" "macroexpand-1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"silent\" nil]"]]
+   0,
+   [value-type.transfer-test/transferred-expansion-test
+    ["error" "eval" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [] runtime 1" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"error\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["warn execution [] runtime 0" "macroexpand"]]
+   1,
+   [value-type.transfer-test/transferred-expansion-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"silent\" nil]"]]
+   0,
+   [value-type.transfer-test/concurrent-warning-scope-test
+    ["[\"child stderr\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["strict concurrent receiving []" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test
+    ["strict concurrent receiving [\"-Xint\"]" "macroexpand"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["[\"child\" \"/Users/duncan/.local/share/mise/installs/java/openjdk-27.0.0-jep401ea3+1-1/bin/java\" [\"--enable-preview\" \"-Xint\"] \"warn\" nil]"]]
+   0,
+   [value-type.transfer-test/concurrent-warning-scope-test
+    ["independent runtime 1"]]
+   1,
+   [value-type.transfer-test/constrained-concurrent-strict-test []] 0,
+   [value-type.transfer-test/constrained-concurrent-warning-scope-test
+    ["silent execution [] runtime 0" "macroexpand"]]
+   1}}}

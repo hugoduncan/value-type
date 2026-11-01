@@ -32,7 +32,8 @@ Tests share one parent directory, but use separate class path roots:
 | Directory | Purpose |
 | --- | --- |
 | `test/runtime/` | Library tests on Valhalla with preview enabled. |
-| `test/compatibility/` | Fallback, AOT and fresh-JVM startup checks. |
+| `test/compatibility/` | Per-parent fallback, AOT and startup checks, and shared child-JVM test support. |
+| `test/cross-jvm/` | Cross-JVM policy, transfer, AOT and array matrices. |
 | `test/build/` | Build contracts and isolated JAR consumers. |
 | `test/release/` | Release tooling contracts. |
 | `test/tooling/` | API, lint, prose, Git-hook and CI checks. |
@@ -66,13 +67,80 @@ Run the separate fallback suite without inheriting the value-only alias:
 JAVA_CMD=<java8-home>/bin/java clojure -M:fallback-test
 JAVA_CMD=<valhalla-jdk-home>/bin/java clojure -M:fallback-test
 JAVA_CMD=<valhalla-jdk-home>/bin/java clojure -J--enable-preview -M:fallback-test
+JAVA_CMD=<java8-home>/bin/java clojure -M:cross-jvm-test
 ```
 
-Cross-JVM tests also need both executables. Set `VALUE_TYPE_BASELINE_JAVA`
+The cross-JVM tests need both executables. Set `VALUE_TYPE_BASELINE_JAVA`
 and `VALUE_TYPE_VALHALLA_JAVA` to their full executable paths when they are
-not at the local defaults recorded in the task 009 plan. Build tests use
+not at the local defaults recorded in the task 009 plan. The focused
+`:cross-jvm-test` commands below use
+`JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA"`; set this variable before you run
+them. If it is not set, `JAVA_CMD` is empty and the parent uses `java` on
+`PATH`. Build tests use
 both JVMs for isolated JAR consumers. Fallback tests use real processes,
 including source-free AOT consumers, and the same Scry exit/failure rules.
+
+The `:cross-jvm-test` alias runs `test/cross-jvm/` once. Its owner parent is
+Java 8. Each child takes its executable, options and class path from the
+test configuration, not from the parent, so another parent adds no
+coverage. Do not run cross-JVM namespaces with `:fallback-test`; Scry
+reports a runner error.
+
+### Child JVMs
+
+`VALUE_TYPE_TEST_JVM_LIMIT` sets how many child JVMs run at the same time.
+The value is a positive decimal integer, at most 2147483647
+(`Integer/MAX_VALUE`); the default is 4. An invalid value fails the load of
+the test support with the variable name and value. Scry reports a runner
+error, runs no tests and exits 1.
+
+A child times out after `:timeout-ms` (default 120000 ms) plus 10000 ms for
+each cell after the first. The time starts when the process starts; the wait
+for a free slot is not included.
+
+A child can run more than one cell. Each cell has its own namespace, its own
+`Compiler/LOADER` binding and its own `*out*` and `*err*`. Each cell that
+defines a type checks that the Class is new in the JVM. Cells share a child
+only when they have the same values for these axes:
+
+1. Java executable and JVM options.
+2. Fallback policy.
+3. Producer or consumer role.
+4. AOT artifact (a source-free consumer loads exactly one artifact).
+5. First-event evidence: first capability detection, require order, warning
+   scope across runtimes, or the first load of an AOT namespace. Such a cell
+   has its own child.
+
+In a `warn` child, only the first fallback cell writes the warning line. Each
+grouped `warn` fallback cell has a matching `error` fallback cell in the same
+test namespace (not always the same test). For example, the
+`transfer-test` constrained-warning cells match
+`constrained-concurrent-strict-test`. The `error` cell gives the guard
+evidence for the form and mode of the `warn` cell, and the
+repeated-rejection evidence.
+
+After a change to the test support, run its in-process tests. They take
+seconds and start no child JVM:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.aot-fixture-test \
+  --namespace value-type.cell-outcomes-test \
+  --namespace value-type.cell-registry-test \
+  --namespace value-type.jvm-runner-test \
+  --namespace value-type.label-record-test \
+  --namespace value-type.unavailable-predicates-test
+```
+
+Add `--namespace value-type.cell-runner-test` for the runner cases that start
+child JVMs: policy rules, cell isolation, failing, crashing, unreadable and
+timed-out children, a producer with an unreadable result, a child that does
+not start, the child limit with its permit-wait rule, and the read of
+`VALUE_TYPE_TEST_JVM_LIMIT` when `value-type.jvm-runner` loads.
+
+Set `VALUE_TYPE_TEST_RECORD` to a file path to write a record of child starts,
+labels and times for each test Var. The record is off when the variable is
+not set.
 
 ## Verify portable non-nil fields
 
@@ -81,8 +149,9 @@ and EA3 executable paths. The following checks need no internal-package exports:
 
 ```sh
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+  --namespace value-type.fields-test
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
   --namespace value-type.field-capability-test \
-  --namespace value-type.fields-test \
   --namespace value-type.field-transfer-test \
   --namespace value-type.field-aot-test \
   --namespace value-type.public-field-aot-test \
@@ -124,6 +193,8 @@ for mode in normal interpreter; do
     -M:test -m scry.cli \
     --namespace value-type.value-receiving-test || exit 1
 done
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.identity-receiving-cross-jvm-test
 ```
 
 These local controls cover constructor checks, receiving analysis and Class
@@ -133,7 +204,7 @@ or AOT tests.
 Run the controlled-capability check separately:
 
 ```sh
-JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
   --namespace value-type.controlled-field-capability-test \
   --namespace value-type.function-redefinition-test
 ```
@@ -179,17 +250,18 @@ Set both cross-JVM executable paths explicitly:
 ```sh
 export VALUE_TYPE_BASELINE_JAVA=<java8-home>/bin/java
 export VALUE_TYPE_VALHALLA_JAVA=<valhalla-jdk-home>/bin/java
-JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test --namespace value-type.array-matrix-test
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test --namespace value-type.array-matrix-test
 ```
 
-This test starts fresh JVMs for six configurations: Java 8; EA3 without
+This test checks six configurations: Java 8; EA3 without
 preview, with and without exports; EA3 with preview but no exports; EA3
 with preview and exports; and the supported configuration with array
 flattening disabled. Each configuration tests all three class-fallback
 policies and both public namespace require orders. Child flags are explicit;
 the parent does not need preview or exports. Unsupported configurations
 check safe loading and repeated capability errors, not value allocation.
-The full fallback commands above also include this matrix.
+Child JVMs run the cells under the rules in "Child JVMs". The full
+`:cross-jvm-test` command above also includes this matrix.
 
 Run native semantics and layout checks with flattening disabled:
 
@@ -210,18 +282,18 @@ stores; they do not establish support for other JDK builds. See the
 Use the explicit executable paths from "Verify array allocation":
 
 ```sh
-JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
   --namespace value-type.array-sequence-boundary-test
 ```
 
 This matrix uses the same six configurations, three fallback policies and
-both require orders as allocation. Each child has a 120-second timeout and
-must exit zero with complete EDN results and no fallback warning. Unsupported
+both require orders as allocation. Each child has the timeout in
+"Child JVMs" and must exit zero with complete EDN results and no fallback warning. Unsupported
 configurations reject both forms repeatedly before input effects. Supported
 configurations check component type, length and ordered contents for both
 forms, plus explicit-seed nil input. Export-only EA3 does not enable sequence
 construction. Child flags are explicit; the parent needs neither preview nor
-exports. The full fallback suite includes this matrix.
+exports. The full `:cross-jvm-test` suite includes this matrix.
 
 Run construction, allocation and layout checks together:
 
@@ -247,13 +319,13 @@ Use the explicit executable paths from "Verify array allocation". Run the
 public validation and inspection checks in disposable JVMs first:
 
 ```sh
-JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
   --namespace value-type.array-info-boundary-test
 ```
 
 This namespace checks all six startup configurations, all three fallback
-policies and both require orders. Each child has a 120-second timeout and
-must exit zero with complete EDN results. Independent native observations
+policies and both require orders. Each child has the timeout in "Child JVMs"
+and must exit zero with complete EDN results. Independent native observations
 separate API absence from denied invocation access. Invalid public inputs
 (null, non-arrays and primitive arrays) must report `:invalid-array` before
 inspection capability is checked. A valid Object array reports

@@ -1,6 +1,7 @@
 (ns value-type.source-checks
   "Source checks executed in isolated policy JVMs."
-  (:require [value-type.core :refer [defvaluetype]]))
+  (:require [value-type.cell-registry :as registry]
+            [value-type.core :refer [defvaluetype]]))
 
 (defprotocol Reading
   (reading [this]))
@@ -24,10 +25,13 @@
   (toString [_] (str text ":" n)))
 
 (defn- observations
-  [^Class cls factory]
+  "Return the definition map of type-name (Class cls, defined at load)."
+  [type-name ^Class cls factory]
   (let [a (factory 42 "sample")
         b (factory 42 "sample")]
-    {:factory (= cls (class a))
+    {:new-class? (registry/new-class! cls)
+     :factory? (boolean (and (identical? cls (ns-resolve 'value-type.source-checks type-name))
+                             (identical? cls (class a))))
      :fields (mapv #(.getName (.getType (.getDeclaredField cls %))) ["n" "text"])
      :protocol (reading a)
      :interface (.call ^java.util.concurrent.Callable a)
@@ -43,8 +47,8 @@
 (defn compatibility
   "Compare fallback source behaviour with ordinary deftype."
   []
-  {:ordinary (observations Ordinary ->Ordinary)
-   :portable (observations Portable ->Portable)
+  {:ordinary (observations 'Ordinary Ordinary ->Ordinary)
+   :portable (observations 'Portable Portable ->Portable)
    :hinted-field (.-n ^Portable (->Portable 42 "sample"))
    :constructor (= Portable (class (Portable. 42 "sample")))
    :import (eval '(do (import 'value_type.source_checks.Portable)

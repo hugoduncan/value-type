@@ -78,7 +78,7 @@ cmp README.md "$tmp/readme.expected"
 # All test roots and release sources are maintained; edits are never staged.
 rm test/runtime/hook_probe.clj
 git add -u test/runtime/hook_probe.clj
-for dir in dev/release test/runtime test/compatibility test/build test/release test/tooling test/resources; do
+for dir in dev/release test/runtime test/compatibility test/cross-jvm test/build test/release test/tooling test/resources; do
   path="$dir/release_hook_probe.clj"
   printf '(ns release-hook-probe)\n(defn probe []\n(+ 1 2))\n' > "$path"
   git add "$path"

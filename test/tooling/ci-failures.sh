@@ -43,7 +43,7 @@ mise exec -- clojure -Srepro -M:quickdoc:tooling-test -m scry.cli --dir test/too
 git diff --exit-code HEAD --
 
 # Required directories and files must not silently disappear from project scope.
-for path in test/runtime test/compatibility test/build test/release test/tooling test/resources build.clj dev/release; do
+for path in test/runtime test/compatibility test/cross-jvm test/build test/release test/tooling test/resources build.clj dev/release; do
   rm -rf "$path"
   for task in clj-fmt:check clj-fmt:fix clj-kondo:lint; do
     expect_failure "missing-scope-$path-$task" bb "$task"

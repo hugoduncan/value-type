@@ -42,8 +42,8 @@ In GitHub Actions, select the Release workflow on `master`. Keep `dry-run` true
 (the default). The workflow checks out the dispatch SHA with complete history;
 later changes to master do not change that checkout. Other branches are rejected.
 
-Both modes run quality, tooling, release, value-path, fallback and isolated JAR
-consumer tests before notes selection. Preview builds without Clojars secrets or
+Both modes run quality, tooling, release, value-path, fallback, cross-JVM and
+isolated JAR consumer tests before notes selection. Preview builds without Clojars secrets or
 release writes. Its summary reports SHA, version, tag, notes source and whether
 preparation is required. Nonempty Unreleased is a preview fallback only when no
 matching version exists. Invalid or empty matching notes always fail.

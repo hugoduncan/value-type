@@ -22,8 +22,13 @@
 - `src/value_type/impl/capability.clj`, `src/value_type/impl/runtime.clj`:
   baseline-safe capability and policy implementation.
 - `test/runtime/value_type/...`: unit, integration and AOT tests (D11).
-- `test/compatibility/value_type/...`: explicit fresh-JVM policy, transfer and AOT
-  tests. Alias `:fallback-test` adds no preview flags or value-only tests.
+- `test/compatibility/value_type/...`: per-parent policy, transfer and AOT
+  tests, and the shared child-JVM test support. Alias `:fallback-test` adds
+  no preview flags or value-only tests.
+- `test/cross-jvm/value_type/...`: cross-JVM policy, transfer, AOT and array
+  matrices in child JVMs with explicit runtime, options and class path. Alias
+  `:cross-jvm-test`, run once under Java 8. Cells share children under the
+  isolation rules of `doc/development/runtime.md`.
 - `bench/value_type/bench.clj`: the method-call benchmark
   (`value-type.bench`, D11).
 - `README.md`: usage, JDK requirement, semantic differences from

@@ -5,12 +5,12 @@
             [clojure.string :as str]))
 
 (def maintained-paths
-  ["src" "test/runtime" "test/compatibility" "test/build" "test/release"
+  ["src" "test/runtime" "test/compatibility" "test/cross-jvm" "test/build" "test/release"
    "test/tooling" "test/resources" "bench" "build.clj" "dev/release"
    "bb" "bb.edn" "deps.edn" ".clj-kondo/hooks"])
 
 (def dependency-aliases
-  [:test :build :build-test :fallback-test :bench :object-size
+  [:test :build :build-test :fallback-test :cross-jvm-test :bench :object-size
    :quickdoc :tooling-test :deploy :release :release-test])
 
 (defn- project-paths!
