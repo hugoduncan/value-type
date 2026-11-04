@@ -2,7 +2,7 @@
 title: Test classes that Clojure generates, and their value-class form
 status: active
 category: testing
-tags: [testing, deftype, classloader, DynamicClassLoader, valhalla, value-objects, fixtures]
+tags: [testing, deftype, deftype*, records, classloader, DynamicClassLoader, valhalla, value-objects, fixtures]
 related: [mementum/memories/clojure-compiler-loader-hook.md, mementum/memories/valhalla-jdk-selection-java-cmd.md, mementum/memories/reflection-warning-check-new-jvm.md, mementum/knowledge/java-lang-classfile.md]
 depends-on: []
 ---
@@ -201,3 +201,33 @@ defvaluetype", and checks nothing. Evaluate in the test namespace
 `test_helper.clj` into `value-type.deftype-compat-test`). A `deftype` error message that names the
 type uses the dashed `*ns*` name (`a-b.MyType`), not the munged class
 name.
+
+## Record-shaped `deftype*` fixtures
+
+Source: task `019-deftype-star-support` (spike
+`spike/record-value-type/gate.clj`,
+`test/runtime/value_type/deftype_star_record_test.clj`). Verified on
+Clojure 1.12.6 and EA3. The compiler rules are in
+`ramora/deftype-star-design.md`; these are the test traps.
+
+- A bare `deftype*` evaluates to nil. `deftype` returns the class only
+  because its macro appends `classname`. End a test form with the fully
+  qualified class symbol; it resolves after `deftype*` with no `import`.
+- In a `deftype*` method body, name the own class by its simple name
+  (`(new Rec …)`). `ns.Rec` and `ns/Rec` do not resolve there: the
+  compiler analyses the body against a compile stub.
+- Record constants: `Compiler.emitValue` checks `IType` before
+  `IRecord`. An `IRecord` constant is emitted through `create` with a map
+  copied from `entrySet`. A record fixture must implement `IRecord` and
+  `java.util.Map` with `entrySet`, and must not implement `IType`. A plain
+  fixture implements `IType`.
+- The generated `create` casts an `^int` field to `Integer`. A map
+  literal with a Long for that field fails in every representation. Use
+  `^long`/`^double` for primitive fixture fields.
+- `getBasis` gives the declared fields only, not the four hidden fields.
+- `defrecord` bytes have the same constructor set (three constructors,
+  `create`). Use them as real record-shaped bytes for transform tests.
+- The compiler cannot emit an extra constructor or a `putfield` of a hash
+  field from another class. Build such bytes with `java.lang.classfile`
+  and give them to the capture loader's `defineClass`
+  (`#'loader/capture-loader`).
