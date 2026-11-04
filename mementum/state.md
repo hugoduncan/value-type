@@ -17,6 +17,11 @@ Its API is not stable.
   property `value-type.fallback` selects `silent` (default), `warn` or `error`.
   AOT compilation and expansion transfer fix the representation; value-class
   output cannot fall back.
+- `value-type.core/defvaluetype*` takes `deftype*` arguments (plain or
+  compiler record shape) and evaluates to the Class. Value output removes
+  `__hash`/`__hasheq` and keeps all three record constructors and `create`.
+  Same fallback policy; no `:non-nil` fields. See
+  [deftype* design](../ramora/deftype-star-design.md) and the usage guide.
 - `value-type.array/make-array` allocates native null-restricted atomic arrays
   with an explicit seed. `into-array` constructs them from finite sequences.
   `array-info` inspects reference-array properties. Allocation has no fallback.

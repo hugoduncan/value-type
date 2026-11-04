@@ -12,7 +12,7 @@
 (defmacro define-checked []
   (loader/install! "value_type.identity_backend.fixture.Mixed"
                    [{:field 'label :type String :enforcement :generated}]
-                   :identity)
+                   :identity :plain)
   `(let []
      (deftype ~'Mixed [~'^long count ~'label ~'^double weight ~'nullable]
        Reads
@@ -33,7 +33,7 @@
   (loader/install! "value_type.identity_backend.fixture.Pair"
                    [{:field 'left :type String :enforcement :generated}
                     {:field 'right :type java.util.Date :enforcement :generated}]
-                   :identity)
+                   :identity :plain)
   `(let []
      (deftype ~'Pair [~'left ~'^long count ~'right ~'^double weight ~'nullable])))
 
@@ -43,7 +43,7 @@
   (loader/install! "value_type.identity_backend.fixture.Nested"
                    [{:field 'child :type value_type.identity_backend.fixture.Mixed
                      :enforcement :generated}]
-                   :identity)
+                   :identity :plain)
   `(let []
      (deftype ~'Nested [~'child]
        Reads

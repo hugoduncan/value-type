@@ -386,3 +386,56 @@ The contract excludes reflective mutation with access checks suppressed, Unsafe,
 instrumentation, and allocation or restoration that bypasses constructors.
 Neither enforcement mode guarantees flat storage or better performance. Array
 allocation retains its separate native-only capability boundary.
+
+## `deftype*` forms
+
+Libraries that emit `deftype*` can use `value-type.core/defvaluetype*`. It
+takes the `deftype*` arguments and evaluates to the defined Class. Use it in
+the same top-level position as `deftype*`, not inside a method body.
+
+```clojure
+(value-type.core/defvaluetype* my.ns/Point my.ns.Point [x y]
+  :implements [clojure.lang.IType])
+```
+
+Two field shapes are accepted:
+
+- Plain: no field has a hidden name (`__meta`, `__extmap`, `__hash`,
+  `__hasheq`; the namespace is ignored).
+- Record: the fields end with `__meta __extmap ^int __hash ^int __hasheq`,
+  unqualified, with no tag on `__meta` and `__extmap`. This is the shape that
+  the Clojure compiler gives `defrecord`.
+
+Mutable fields give `:mutable-field`. Other shapes give `:invalid-field`
+with `:reason :record-shape`. `:nil-restricted` metadata gives
+`:removed-nil-restricted`, and `:non-nil` metadata, with any value, gives
+`:non-nil-unsupported`. These checks run at macroexpansion, in that order,
+before representation policy. An invalid form never selects fallback.
+
+Caller obligations for record shapes:
+
+- Do not read or write `__hash` or `__hasheq`.
+- Pass 0 for both hash arguments in explicit constructor calls.
+- Make the code work with both value and identity output.
+
+Value output removes both hash fields and ignores those arguments. The
+compiler-generated constructors, `create` and `getBasis` keep their
+contracts, so record literals and compiled record constants work. Methods
+must compute hashes on each call. Owner or companion code that accesses a
+removed field gives `:invalid-field` with `:reason :removed-field-access`.
+Reflective access is not checked. Identity output keeps both fields; they hold
+0 when callers meet these obligations. value-type does not validate
+constructor arguments.
+
+Representation policy, fallback and AOT behave as for `defvaluetype`. The
+fallback expansion is guarded `deftype*` output with no transform; receivers
+of a transferred fallback expansion apply their own policy. A value expansion
+evaluated apart from its macroexpansion fails with `:not-installed` or
+`:not-value-class`; it never selects fallback. An unexpected constructor shape
+gives `:unexpected-constructor`.
+
+Exclusions: `:non-nil` fields, mutable caches, value-equality emulation,
+changes to `defrecord` and serialization guarantees. Real-JVM evidence covers
+Clojure 1.12.6, Java 8 and Valhalla `27-jep401ea3+1-1` with preview off and
+on. It does not establish other JVMs, Clojure versions, object size or
+performance.

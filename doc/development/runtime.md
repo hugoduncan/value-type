@@ -243,6 +243,44 @@ verify construction, reads, mixed primitive slots, methods and companions.
 They do not assert flat storage or establish performance. The tested builds
 are those in the fallback matrix above, not future JVM formats.
 
+## Verify `deftype*` forms
+
+Set `VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA` to the Java 8
+and EA3 executable paths. These checks need no internal-package exports.
+Run the value-path checks on EA3 with preview:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:test -m scry.cli \
+  --namespace value-type.deftype-star-test \
+  --namespace value-type.deftype-star-record-test \
+  --namespace value-type.impl.removed-field-test
+```
+
+These checks cover declaration errors, plain and record shapes in both
+outputs, the record transform and the removed-field access check.
+
+Run the policy and transfer checks on the three JVMs:
+
+```bash
+for c in "$VALUE_TYPE_BASELINE_JAVA|" "$VALUE_TYPE_VALHALLA_JAVA|" \
+         "$VALUE_TYPE_VALHALLA_JAVA|-J--enable-preview"; do
+  JAVA_CMD="${c%|*}" clojure ${c#*|} -M:fallback-test \
+    --namespace value-type.runtime-test \
+    --namespace value-type.deftype-star-transfer-test || exit 1
+done
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.deftype-star-aot-test
+```
+
+`value-type.deftype-star-transfer-test` is in `test/compatibility/`, so it
+runs with `:fallback-test`. The AOT test fixes the representation at compile
+time and checks source-free consumers and incompatible receivers.
+
+Limits: interpreter (`-Xint`) runs cover only the value artifact consumers of
+the AOT test. Reflective access to `__hash` and `__hasheq` is not checked.
+The feasibility gate for record-shaped value classes has its own command in
+[`spike/record-value-type/README.md`](../../spike/record-value-type/README.md).
+
 ## Verify array allocation
 
 Set both cross-JVM executable paths explicitly:

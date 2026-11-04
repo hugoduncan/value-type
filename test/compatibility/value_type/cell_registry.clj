@@ -4,7 +4,7 @@
    identity fact, factory symbols, cell namespace names, failure maps (of
    an error: thrown, failure, root-data and root-failure; of a failed type
    definition), rejection maps, call outcomes, failed, guarded and rejected calls,
-   runtime facts and child call forms.
+   runtime facts, child call forms and the hash-field count.
 
    Requires only clojure.core and uses Java 8 APIs, so a child JVM loads it
    without test support."
@@ -180,6 +180,13 @@
    its name): the munged namespace name, \".\" and simple-name."
   [ns-or-name simple-name]
   (str (namespace-munge ns-or-name) "." simple-name))
+
+(defn hash-field-count
+  "Return the count of fields named __hash or __hasheq that Class c
+   declares."
+  [^Class c]
+  (count (filter #(#{"__hash" "__hasheq"} (.getName ^java.lang.reflect.Field %))
+                 (.getDeclaredFields c))))
 
 (defn factory-symbol
   "Return the factory symbol ->simple-name; with ns-or-name (a namespace or

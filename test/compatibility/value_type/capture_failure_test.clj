@@ -20,7 +20,7 @@
           capture (#'loader/capture-loader
                    target (.getContextClassLoader (Thread/currentThread))
                    [{:field 'required :type String :enforcement :generated}]
-                   :identity)
+                   :identity :plain)
           bytes (empty-owner-bytes target)
           errors (java.io.StringWriter.)]
       (binding [*err* errors]

@@ -42,14 +42,15 @@
 (defn- capture-loader
   "Carry ordered field specifications to the target transform.
    The exact `:type` Classes serve `check-field-classes!`."
-  ^DynamicClassLoader [^String target ^ClassLoader parent specifications representation]
+  ^DynamicClassLoader [^String target ^ClassLoader parent specifications representation shape]
   (let [delegate (DynamicClassLoader. parent)
         ;; Resolve only at installation, not when baseline code loads capture support.
         {:keys [owner companion]}
-        ((requiring-resolve (case representation
-                              :value 'value-type.impl.value-backend/prepare
-                              :identity 'value-type.impl.identity-backend/prepare))
-         target specifications delegate)]
+        (case representation
+          :value ((requiring-resolve 'value-type.impl.value-backend/prepare)
+                  target specifications delegate shape)
+          :identity ((requiring-resolve 'value-type.impl.identity-backend/prepare)
+                     target specifications delegate))]
     (proxy [DynamicClassLoader] [parent]
       (defineClass [^String class-name ^bytes bs src]
         (if (= class-name target)
@@ -72,7 +73,8 @@
   contain `:field`, exact `:type` Class and `:enforcement`.
   `:generated` selects constructor checks; `:native` selects native enforcement.
   `representation` is :value or :identity. Identity output requires
-  generated enforcement.
+  generated enforcement. `shape` is `:plain` or `:record`; only value
+  output reads it.
   A resolved Class identity mismatch gives `:invalid-field` with reason
   `:field-class-mismatch` before target definition.
   Output: `true` when `Compiler/LOADER` has a thread binding. Then the
@@ -86,7 +88,8 @@
   The capture loader defines each class through one delegate loader.
   For `class-name` only, it changes the bytes with the owner transform of
   the selected backend (errors pass through): `:value` uses
-  `value-type.impl.transform/->value-class`; `:identity` uses
+  `value-type.impl.transform/->value-class` for `:plain` and
+  `value-type.impl.transform/->record-value-class` for `:record`; `:identity` uses
   `value-type.impl.identity-backend` constructor checks. It writes the bytes
   to the class file when `*compile-files*` is true, it defines them and links
   the class. With field specifications, it also rewrites
@@ -97,9 +100,9 @@
   `:class-name`, and the error as cause. The compiler wraps these
   errors in a `CompilerException`. `install!` throws no error of its
   own."
-  [^String class-name specifications representation]
+  [^String class-name specifications representation shape]
   (if (.isBound Compiler/LOADER)
     (do (.set Compiler/LOADER (capture-loader class-name @Compiler/LOADER
-                                              specifications representation))
+                                              specifications representation shape))
         true)
     false))

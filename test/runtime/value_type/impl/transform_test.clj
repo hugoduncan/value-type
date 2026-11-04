@@ -6,7 +6,7 @@
    [clojure.test :refer [deftest is testing]]
    [value-type.annotation-support :as annotation-support]
    [value-type.impl.transform :as transform]
-   [value-type.test-support :refer [value?]])
+   [value-type.test-support :refer [record-tail value?]])
   (:import
    (clojure.lang DynamicClassLoader ExceptionInfo Reflector)
    (java.io File)
@@ -588,27 +588,43 @@
 ;;; Verification 3: errors
 
 (defn- thrown-data
+  "Return `[message data]` of the ex-info that `(f bs)` throws, or nil."
+  [f bs]
+  (try (f bs)
+       nil
+       (catch ExceptionInfo e [(ex-message e) (ex-data e)])))
+
+(defn- value-class-failure
   "Return `[message data]` of the ex-info that `->value-class` throws
-  for `bs`."
+  for `bs`, with and without storage selection."
   [bs]
   (let [failures (mapv (fn [storage]
-                         (try (transform/->value-class bs storage nil)
-                              nil
-                              (catch ExceptionInfo e [(ex-message e) (ex-data e)])))
+                         (thrown-data #(transform/->value-class % storage nil) bs))
                        [{} {"v" {:storage-type (ClassDesc/of "storage.Value") :native? true}}])]
     (is (= (first failures) (second failures))
         "storage selection must not bypass original constructor validation")
     (first failures)))
 
-(defn- check-error [bs class-name part]
-  (let [[msg data] (thrown-data bs)]
-    (is (= {:value-type/error :unexpected-constructor :class-name class-name}
-           (select-keys data [:value-type/error :class-name])))
-    (is (string? msg))
-    (when msg
-      (is (.contains ^String msg class-name))
-      (is (.contains ^String msg part))
-      (is (.contains ^String msg "Clojure 1.12")))))
+(defn- record-failure
+  "Return `[message data]` of the ex-info that `->record-value-class`
+  throws for `bs`."
+  [bs]
+  (thrown-data #(transform/->record-value-class % nil) bs))
+
+(defn- check-error
+  "Check that `failure` of `bs` gives `:unexpected-constructor` for
+  `class-name` with `part` in the message. `failure` defaults to
+  `value-class-failure`."
+  ([bs class-name part] (check-error value-class-failure bs class-name part))
+  ([failure bs class-name part]
+   (let [[msg data] (failure bs)]
+     (is (= {:value-type/error :unexpected-constructor :class-name class-name}
+            (select-keys data [:value-type/error :class-name])))
+     (is (string? msg))
+     (when msg
+       (is (.contains ^String msg class-name))
+       (is (.contains ^String msg part))
+       (is (.contains ^String msg "Clojure 1.12"))))))
 
 (defn- built-name
   "A new built class name `vt.built.Built<n>`."
@@ -718,7 +734,8 @@
                         ^ClassBuilder output "<init>"
                         (.methodTypeSymbol (ctor original)) ClassFile/ACC_PUBLIC
                         ^Consumer (#'transform/constructor-code
-                                   this fields {"e" {:storage-type storage-type :native? true}}))))))
+                                   this fields (constantly true)
+                                   {"e" {:storage-type storage-type :native? true}}))))))
           elements (ctor-elements result)
           writes (into {}
                        (comp (filter #(and (instance? FieldInstruction %)
@@ -783,3 +800,249 @@
                             nil
                             (catch java.lang.reflect.InvocationTargetException e
                               (.getCause e)))))))))
+
+;;; Record path: `->record-value-class`
+
+(def ^:private record-fixtures
+  "Record-shaped `deftype*` fixtures. `:declared` are the declared fields;
+  `:args` are arguments for the declared-fields constructor."
+  {:zero-fields {:declared [] :args []}
+   :reference-fields {:declared ['a 'b] :args [:x "y"]}
+   :mixed-primitives {:declared ['a (with-meta 'b {:tag 'long})
+                                 (with-meta 'c {:tag 'double})
+                                 (with-meta 'd {:tag 'int})]
+                      :args [:x 8 2.5 (int 3)]}})
+
+(defn- record-form [declared]
+  (fn [n]
+    (let [cname (str "value_type.impl.transform_test." n)]
+      `(do (deftype* ~(symbol "value-type.impl.transform-test" (str n))
+             ~(symbol cname) ~(into declared record-tail)
+             :implements [clojure.lang.IRecord])
+           ~(symbol cname)))))
+
+(def ^:private compiled-records
+  (delay (update-vals record-fixtures
+                      #(merge % (compile-fixture (record-form (:declared %)))))))
+
+(defn- ctor-descriptors [^ClassModel cm]
+  (set (map #(.stringValue (.methodType ^MethodModel %))
+            (filter ctor? (.methods cm)))))
+
+(defn- ctor-code-by-descriptor [^ClassModel cm]
+  (into {} (map (fn [^MethodModel m]
+                  [(.stringValue (.methodType m)) (vec (code-bytes m))]))
+        (filter ctor? (.methods cm))))
+
+(defn- record-value-class ^Class [{:keys [^Class class bytes dir]}]
+  (.loadClass (round-trip-loader (.getName class)
+                                 (transform/->record-value-class bytes nil)
+                                 dir)
+              (.getName class)))
+
+(deftest record-structure-test
+  (doseq [[k {:keys [declared bytes]}] @compiled-records]
+    (testing (str k)
+      (let [in (parse bytes)
+            out (parse (transform/->record-value-class bytes nil))
+            names (fn [^ClassModel cm]
+                    (mapv #(.stringValue (.fieldName ^FieldModel %)) (.fields cm)))
+            main (str "(" (apply str (map #(.stringValue (.fieldType ^FieldModel %))
+                                          (.fields in)))
+                      ")V")]
+        (testing "hash fields are removed, other fields kept in order"
+          (is (= (into (mapv name declared) ["__meta" "__extmap"]) (names out))))
+        (testing "kept fields get ACC_STRICT_INIT"
+          (is (every? #(pos? (bit-and (flags %) @#'transform/ACC_STRICT_INIT))
+                      (.fields out))))
+        (testing "no ACC_IDENTITY"
+          (is (zero? (bit-and (flags out) @#'transform/ACC_IDENTITY))))
+        (testing "constructor descriptors are unchanged"
+          (is (= 3 (count (ctor-descriptors out))))
+          (is (= (ctor-descriptors in) (ctor-descriptors out))))
+        (testing "delegating constructors are copied unchanged"
+          (is (= (dissoc (ctor-code-by-descriptor in) main)
+                 (dissoc (ctor-code-by-descriptor out) main))))
+        (testing "the main constructor writes no hash field"
+          (is (not-any? #(and (instance? FieldInstruction %)
+                              (#{"__hash" "__hasheq"}
+                               (.stringValue (.name ^FieldInstruction %))))
+                        (.elementList ^CodeModel
+                         (.orElseThrow
+                          (.code ^MethodModel
+                           (first (filter #(= main (.stringValue
+                                                    (.methodType ^MethodModel %)))
+                                          (.methods out)))))))))
+        (testing "create and getBasis are unchanged"
+          (let [statics (fn [^ClassModel cm]
+                          (into {} (comp (filter #(#{"create" "getBasis"}
+                                                   (.stringValue (.methodName ^MethodModel %))))
+                                         (map (fn [^MethodModel m]
+                                                [(.stringValue (.methodName m))
+                                                 (vec (code-bytes m))])))
+                                (.methods cm)))]
+            (is (= (statics in) (statics out)))))))))
+
+(deftest record-round-trip-test
+  (doseq [[k {:keys [declared args] :as fx}] @compiled-records]
+    (testing (str k)
+      (let [vc (record-value-class fx)
+            field (fn [o f] (.get (.getField vc (name f)) o))
+            kept (fn [o] (mapv #(field o %) (into declared ['__meta '__extmap])))]
+        (is (value? vc))
+        (testing "declared-fields constructor"
+          (is (= (into (vec args) [nil nil])
+                 (kept (new-instance vc args)))))
+        (testing "meta-and-extmap constructor"
+          (is (= (into (vec args) [{:m 1} {:x 2}])
+                 (kept (new-instance vc (into (vec args) [{:m 1} {:x 2}]))))))
+        (testing "main constructor ignores the hash arguments"
+          (is (= (into (vec args) [{:m 1} {:x 2}])
+                 (kept (new-instance vc (into (vec args)
+                                              [{:m 1} {:x 2} (int 7) (int 8)]))))))))))
+
+(def ^:private built-record-fields
+  [["v" ConstantDescs/CD_long] ["__meta" ConstantDescs/CD_Object]
+   ["__extmap" ConstantDescs/CD_Object] ["__hash" ConstantDescs/CD_int]
+   ["__hasheq" ConstantDescs/CD_int]])
+
+(def ^:private built-main-desc "(JLjava/lang/Object;Ljava/lang/Object;II)V")
+
+(defn- record-write! [^ClassDesc this ^CodeBuilder c [fname ^ClassDesc ftype] slot]
+  (.aload c 0)
+  (.loadLocal c (TypeKind/from ftype) (int slot))
+  (.putfield c this ^String fname ftype))
+
+(def ^:private built-record-slots [1 3 4 5 6])
+
+(defn- standard-main! [this ^CodeBuilder c]
+  (super-call! c)
+  (doseq [[f slot] (map vector built-record-fields built-record-slots)]
+    (record-write! this c f slot))
+  (.return_ c))
+
+(defn- build-record-class
+  "Build a record-shaped class `name` with fields `v` (long) and the four
+  hidden fields, a main constructor with code from `main!`, the two
+  compiler delegating constructors and, when `extra-desc`, one extra
+  constructor that delegates with `null`s."
+  ^bytes [^String name main! extra-desc]
+  (let [this (ClassDesc/of name)
+        delegate! (fn [meta-extmap? ^CodeBuilder c]
+                    (.aload c 0) (.lload c 1)
+                    (if meta-extmap?
+                      (do (.aload c 3) (.aload c 4))
+                      (do (.aconst_null c) (.aconst_null c)))
+                    (.iconst_0 c) (.iconst_0 c)
+                    (.invokespecial c this "<init>"
+                                    (MethodTypeDesc/ofDescriptor built-main-desc))
+                    (.return_ c))
+        method! (fn [^ClassBuilder cb desc code!]
+                  (.withMethodBody cb "<init>" (MethodTypeDesc/ofDescriptor desc)
+                                   (int ClassFile/ACC_PUBLIC)
+                                   (reify Consumer (accept [_ c] (code! c)))))]
+    (.build (ClassFile/of) this
+            (reify Consumer
+              (accept [_ cb]
+                (let [^ClassBuilder cb cb]
+                  (.withFlags cb (int (bit-or ClassFile/ACC_PUBLIC ClassFile/ACC_FINAL
+                                              @#'transform/ACC_IDENTITY)))
+                  (.withSuperclass cb ConstantDescs/CD_Object)
+                  (doseq [[^String fname ^ClassDesc ftype] built-record-fields]
+                    (.withField cb fname ftype
+                                (int (bit-or ClassFile/ACC_PUBLIC ClassFile/ACC_FINAL))))
+                  (method! cb built-main-desc #(main! this %))
+                  (method! cb "(J)V" #(delegate! false %))
+                  (method! cb "(JLjava/lang/Object;Ljava/lang/Object;)V"
+                           #(delegate! true %))
+                  (when extra-desc
+                    (method! cb extra-desc
+                             (fn [^CodeBuilder c]
+                               (super-call! c) (.return_ c))))))))))
+
+(defn- replace-constructor
+  "Replace the constructor `desc` of the class `bs` with a constructor
+  `new-desc` whose body is a plain super call."
+  ^bytes [^bytes bs ^String desc ^String new-desc]
+  (.transformClass
+   (ClassFile/of) (parse bs)
+   (reify ClassTransform
+     (accept [_ b e]
+       (let [^ClassBuilder b b]
+         (if (and (instance? MethodModel e)
+                  (= desc (.stringValue (.methodType ^MethodModel e))))
+           (.withMethodBody b "<init>" (MethodTypeDesc/ofDescriptor new-desc)
+                            (int ClassFile/ACC_PUBLIC)
+                            (reify Consumer
+                              (accept [_ c]
+                                (super-call! c)
+                                (.return_ ^CodeBuilder c))))
+           (.with b ^java.lang.classfile.ClassElement e)))))))
+
+(deftest record-built-accepted-test
+  (testing "the built record class is accepted"
+    (is (bytes? (transform/->record-value-class
+                 (build-record-class (built-name) standard-main! nil) nil)))))
+
+(deftest record-constructor-set-error-test
+  (testing "plain deftype bytes: one constructor"
+    (let [{:keys [^Class class bytes]} (fixture :five-fields)]
+      (check-error record-failure bytes (.getName class) "count of constructors")))
+  (testing "fewer than four instance fields"
+    (doseq [k [:no-fields :branch]]
+      (let [{:keys [^Class class bytes]} (fixture k)]
+        (check-error record-failure bytes (.getName class) "parameters"))))
+  (testing "an extra constructor"
+    (let [n (built-name)]
+      (check-error record-failure (build-record-class n standard-main! "(I)V") n
+                   "count of constructors")))
+  (testing "three constructors, one with a wrong descriptor"
+    (let [n (built-name)]
+      (check-error record-failure
+                   (replace-constructor (build-record-class n standard-main! nil)
+                                        "(J)V" "(I)V")
+                   n "parameters")))
+  (doseq [desc ["(J)V" "(JLjava/lang/Object;Ljava/lang/Object;)V"]]
+    (testing (str "delegating constructor " desc " with other code")
+      (let [n (built-name)]
+        (check-error record-failure
+                     (replace-constructor (build-record-class n standard-main! nil)
+                                          desc desc)
+                     n "delegating constructor")))))
+
+(deftest record-main-constructor-error-test
+  (testing "one field write missing"
+    (let [n (built-name)]
+      (check-error record-failure
+                   (build-record-class
+                    n (fn [this ^CodeBuilder c]
+                        (super-call! c)
+                        (doseq [[f slot] (butlast (map vector built-record-fields
+                                                       built-record-slots))]
+                          (record-write! this c f slot))
+                        (.return_ c))
+                    nil)
+                   n "field writes")))
+  (testing "two writes swapped"
+    (let [n (built-name)
+          [w0 w1 & ws] (map vector built-record-fields built-record-slots)]
+      (check-error record-failure
+                   (build-record-class
+                    n (fn [this ^CodeBuilder c]
+                        (super-call! c)
+                        (doseq [[f slot] (list* w1 w0 ws)]
+                          (record-write! this c f slot))
+                        (.return_ c))
+                    nil)
+                   n "field writes")))
+  (testing "a write before the super call"
+    (let [n (built-name)]
+      (check-error record-failure
+                   (build-record-class
+                    n (fn [this ^CodeBuilder c]
+                        (doseq [[f slot] (map vector built-record-fields built-record-slots)]
+                          (record-write! this c f slot))
+                        (super-call! c)
+                        (.return_ c))
+                    nil)
+                   n "super call"))))

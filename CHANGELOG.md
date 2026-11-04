@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+- Add [`value-type.core/defvaluetype*`](doc/usage.md#deftype-forms) for
+  libraries that emit `deftype*`, such as closed-record. It accepts the plain
+  shape and the `defrecord` record shape (`__meta __extmap ^int __hash
+  ^int __hasheq`). Value output removes `__hash` and `__hasheq`; identity
+  fallback keeps them under the `value-type.fallback` policy. Callers must not
+  read or write the hash fields, must pass 0 for both hash arguments and must
+  make code work with both outputs. `:non-nil` fields are excluded. Tested on
+  Clojure 1.12.6 with Java 8 and Valhalla `27-jep401ea3+1-1`, preview off and
+  on.
+
 - Add [portable non-nil fields](doc/usage.md#portable-non-nil-fields) through
   `:non-nil` metadata and an explicit concrete-class tag. Constructors reject nil
   with `NullPointerException` and wrong types with `ClassCastException`. Value

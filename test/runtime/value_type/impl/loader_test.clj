@@ -30,7 +30,7 @@
   "As `support/vt-type`, but with a `defrecord` form."
   [name fields]
   (let [cname (binary-name *ns* name)]
-    (loader/install! cname [] :value)
+    (loader/install! cname [] :value :plain)
     `(let [] (defrecord ~name ~fields) ~(symbol cname))))
 
 ;;; Helpers
@@ -97,13 +97,13 @@
   (testing "with no LOADER binding, install! changes nothing"
     (is (= [false false]
            (support/on-raw-thread
-            #(vector (loader/install! "a.B" [] :value) (.isBound Compiler/LOADER)))))))
+            #(vector (loader/install! "a.B" [] :value :plain) (.isBound Compiler/LOADER)))))))
 
 (deftest install-binding-test
   (testing "with a LOADER binding, install! sets a new child loader"
     (let [old (DynamicClassLoader.)]
       (with-bindings {Compiler/LOADER old}
-        (is (true? (loader/install! "a.B" [] :value)))
+        (is (true? (loader/install! "a.B" [] :value :plain)))
         (let [new-loader @Compiler/LOADER]
           (is (instance? DynamicClassLoader new-loader))
           (is (not (identical? old new-loader)))
@@ -256,7 +256,7 @@
   [type-name fields nested & body]
   (let [cname (binary-name *ns* type-name)
         cls (resolve nested)]
-    (loader/install! cname [{:field (first fields) :type cls}] :value)
+    (loader/install! cname [{:field (first fields) :type cls}] :value :plain)
     `(let [] (deftype ~type-name ~fields ~@body) ~(symbol cname))))
 
 (deftest specification-transport-test
@@ -341,7 +341,7 @@
           target (binary-name test-ns (gensym "MismatchHolder"))
           capture (#'loader/capture-loader
                    target (.getClassLoader ^Class replacement)
-                   [{:field 'required :type original}] :value)
+                   [{:field 'required :type original}] :value :plain)
           error (try
                   (.defineClass ^DynamicClassLoader capture target (byte-array 0) nil)
                   nil
@@ -364,7 +364,7 @@
     (loader/install!
      cname [{:field 'native-value :type cls :enforcement :native}
             {:field 'generated-value :type String :enforcement :generated}]
-     :value)
+     :value :plain)
     `(let []
        (deftype ~type-name [~'native-value ~'generated-value
                             ~(with-meta 'wide {:tag 'long})

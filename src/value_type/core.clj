@@ -58,8 +58,9 @@
   `:value-type/error` `:not-installed` when `installed` is false, or
   `:not-value-class` when `installed` is true, and `:class-name`.
 
-  The expansion of `defvaluetype` calls it, with `installed` the result
-  of the capture loader install at macroexpansion."
+  The value expansions of `defvaluetype` and `defvaluetype*` call it,
+  with `installed` the result of the capture loader install at
+  macroexpansion."
   [^Class cls installed]
   (when-not (capability/value-class? cls)
     (let [key        (if installed :not-value-class :not-installed)
@@ -68,19 +69,29 @@
                       {:value-type/error key
                        :class-name       class-name})))))
 
+(defn- field-symbols
+  "Return `[index symbol]` for each symbol in `fields` when it is a
+  vector, else nil. All declaration checks select fields with it;
+  `deftype*` reports other elements and shapes."
+  [fields]
+  (when (vector? fields)
+    (into [] (keep-indexed #(when (symbol? %2) [%1 %2])) fields)))
+
 (defn- mutable-fields [fields]
-  (filterv #(and (symbol? %)
-                 (let [m (meta %)]
-                   (or (:volatile-mutable m) (:unsynchronized-mutable m))))
-           fields))
+  (into []
+        (comp (map second)
+              (filter #(let [m (meta %)]
+                         (or (:volatile-mutable m)
+                             (:unsynchronized-mutable m)))))
+        (field-symbols fields)))
 
 (defn- check-fields
-  "Return nil when `fields` is not a vector (`deftype` rejects it) or
-  has no mutable field. Else throw `ex-info`
-  with `:value-type/error` `:mutable-field`, `:class-name` and
+  "Return nil when `fields` is not a vector (`deftype` or `deftype*`
+  rejects it) or has no mutable field. Else throw `ex-info` with
+  `:value-type/error` `:mutable-field`, `:class-name` and
   `:fields` (the mutable fields, in field order)."
   [class-name fields]
-  (let [ms (when (vector? fields) (mutable-fields fields))]
+  (let [ms (mutable-fields fields)]
     (when (seq ms)
       (throw (ex-info (str "Cannot define value class " class-name
                            ": mutable fields " (pr-str ms)
@@ -91,6 +102,68 @@
                        :class-name       class-name
                        :fields           ms})))))
 
+(defn- hidden-index
+  "Index of `field` in `fields/record-hidden-fields` when it is a symbol
+  with a hidden name (namespace ignored), else nil."
+  [field]
+  (when (symbol? field)
+    (first (keep-indexed (fn [i [n _]] (when (= n (name field)) i))
+                         fields/record-hidden-fields))))
+
+(defn- in-place?
+  "True when the hidden-name `field` at index `i` of `n` fields is the
+  unqualified symbol at index n - 4 + k with its required tag."
+  [n i field]
+  (let [k (hidden-index field)]
+    (and (= i (+ (- n 4) k))
+         (nil? (namespace field))
+         (= (second (fields/record-hidden-fields k)) (:tag (meta field))))))
+
+(defn- record-shape
+  "Return `:plain` or `:record` for `fields`. Throw `ex-info` with
+  `:value-type/error` `:invalid-field`, `:reason :record-shape`,
+  `:class-name` and `:field` for other shapes. A non-vector `fields` is
+  `:plain` (`deftype*` reports it)."
+  [class-name fields]
+  (let [hidden (filterv (comp hidden-index second) (field-symbols fields))]
+    (if (empty? hidden)
+      :plain
+      (let [n         (count fields)
+            misplaced (remove (fn [[i f]] (in-place? n i f)) hidden)]
+        (if (and (= 4 (count hidden)) (empty? misplaced))
+          :record
+          (let [field (second (or (first misplaced) (first hidden)))]
+            (throw (ex-info (str "Cannot define class " class-name
+                                 ": unsupported record shape at field " field
+                                 ". Fix: use no hidden field names, or end the "
+                                 "fields with __meta __extmap ^int __hash "
+                                 "^int __hasheq.")
+                            {:value-type/error :invalid-field
+                             :class-name       class-name
+                             :field            field
+                             :reason           :record-shape}))))))))
+
+(defn- check-field-metadata
+  "Return nil when no field symbol has `:nil-restricted` or `:non-nil`
+  metadata. Else throw `ex-info` with `:value-type/error` `:invalid-field`
+  for the first such field, in field order."
+  [class-name fields]
+  (doseq [[_ field] (field-symbols fields)
+          :let [m (meta field)]]
+    (cond
+      (contains? m :nil-restricted)
+      (fields/removed-nil-restricted! class-name field
+                                      (str "defvaluetype* does not support it. "
+                                           "Fix: remove the metadata."))
+      (contains? m :non-nil)
+      (throw (ex-info (str "Unsupported :non-nil metadata on " class-name
+                           "/" field "; defvaluetype* does not support "
+                           "non-nil fields. Fix: remove the metadata.")
+                      {:value-type/error :invalid-field
+                       :class-name       class-name
+                       :field            field
+                       :reason           :non-nil-unsupported})))))
+
 (defn- not-installed-message [kind class-name]
   (str "Cannot define class " class-name ": " kind " field capture requires "
        "a compiler loader. " macroexpanded-outside-compilation ". "
@@ -99,15 +172,26 @@
 (defn- install-capture!
   "Install class capture; return the loader install result. Resolve the loader
   lazily: `core` does not require it eagerly."
-  [class-name specifications representation]
+  [class-name specifications representation shape]
   ((requiring-resolve 'value-type.impl.loader/install!)
-   class-name specifications representation))
+   class-name specifications representation shape))
+
+(defn- value-expansion
+  "Install capture for `class-name` with `shape` at macroexpansion; return
+  the value expansion of `definition`, which evaluates to the Class."
+  [class-name shape definition]
+  (let [installed (install-capture! class-name [] :value shape)
+        cls       (symbol class-name)]
+    `(let []
+       ~definition
+       (check-value-class ~cls ~installed)
+       ~cls)))
 
 (defn- install-receiving!
   "Install capture for a receiving expansion. Throw `:not-installed` when
   `Compiler/LOADER` has no thread binding."
   [kind class-name specifications representation]
-  (when-not (install-capture! class-name specifications representation)
+  (when-not (install-capture! class-name specifications representation :plain)
     (throw (ex-info (not-installed-message kind class-name)
                     {:value-type/error :not-installed
                      :class-name class-name}))))
@@ -258,12 +342,8 @@
         (if (seq specifications)
           ;; Preserve receiving analysis checks through both macroexpand forms.
           `(let [] (value-field-deftype ~class-name ~modes ~name ~fields ~@opts+specs))
-          (let [installed (install-capture! class-name [] :value)
-                cls (symbol class-name)]
-            `(let []
-               (deftype ~name ~fields ~@opts+specs)
-               (check-value-class ~cls ~installed)
-               ~cls)))
+          (value-expansion class-name :plain
+                           `(deftype ~name ~fields ~@opts+specs)))
         (do
           (runtime/enforce-fallback! detail)
           (if (seq specifications)
@@ -271,3 +351,59 @@
                (identity-field-deftype ~class-name ~modes ~name ~fields
                                        ~@opts+specs))
             `(do (runtime/guarded-deftype ~name ~fields ~@opts+specs))))))))
+
+(defmacro defvaluetype*
+  "As `deftype*`, with the same arguments. Evaluate to the defined Class.
+  Define a JEP 401 value class when supported, or an ordinary identity
+  class under the `value-type.fallback` policy (see `defvaluetype`). Use
+  it in the same top-level position as `deftype*`.
+
+  Field shapes:
+  - Plain: no field has a hidden name (`__meta`, `__extmap`, `__hash`,
+    `__hasheq`; namespace ignored).
+  - Record: the fields end with `__meta __extmap ^int __hash ^int __hasheq`,
+    unqualified, with no tag on `__meta` and `__extmap`.
+  Other shapes give `:invalid-field` with `:reason :record-shape`.
+
+  Caller obligations for record shapes: do not read or write `__hash` or
+  `__hasheq`, and pass 0 for both hash arguments in explicit constructor
+  calls. Value output removes both fields and ignores those arguments.
+  Identity output keeps both fields; they hold 0 when callers meet these
+  obligations. value-type does not validate constructor arguments.
+
+  Restrictions: no mutable fields, no `:non-nil` and no `:nil-restricted`
+  field metadata.
+
+  Errors (`ex-info` with `:value-type/error` and `:class-name`), checked at
+  macroexpansion before representation policy, in this order:
+  - `:mutable-field` (data `:fields`).
+  - `:invalid-field` `:reason :record-shape` (data `:field`).
+  - `:invalid-field` `:reason :removed-nil-restricted` (data `:field`,
+    `:value`) or `:non-nil-unsupported` (data `:field`).
+  Errors of value output, when the capture loader defines the class:
+  - `:unexpected-constructor`: the constructors are
+    not the plain or the record shape.
+  - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
+    captured class reads or writes `__hash` or `__hasheq`.
+  Other policy, capability, loader and run time errors are as for
+  `defvaluetype`. A value expansion
+  evaluated apart from its macroexpansion fails with `:not-installed` or
+  `:not-value-class`; it never selects fallback.
+
+  Excluded: `:non-nil` fields, mutable caches, value-equality emulation and
+  serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
+  Valhalla 27-jep401ea3+1-1 only. See doc/usage.md."
+  {:arglists '([tagname classname [& fields] & opts+specs])}
+  [tagname classname fields & opts+specs]
+  (let [class-name (str classname)]
+    (check-fields class-name fields)
+    (let [shape (record-shape class-name fields)]
+      (check-field-metadata class-name fields)
+      (let [{:keys [available? detail]} (runtime/capability)]
+        (if available?
+          (value-expansion class-name shape
+                           `(deftype* ~tagname ~classname ~fields ~@opts+specs))
+          (do
+            (runtime/enforce-fallback! detail)
+            `(do (runtime/guarded-deftype* ~tagname ~classname ~fields
+                                           ~@opts+specs))))))))

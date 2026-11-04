@@ -1,5 +1,6 @@
 (ns value-type.impl.fields
-  "Baseline-safe declaration handling for non-nil fields."
+  "Baseline-safe declaration handling for non-nil fields and the record
+  hidden fields."
   (:require [clojure.string :as str]
             [value-type.impl.capability :as capability])
   (:import (clojure.lang Compiler Compiler$HostExpr)
@@ -7,9 +8,29 @@
 
 (set! *warn-on-reflection* true)
 
+(def record-hidden-fields
+  "Hidden field names of the `deftype*` record shape, in place order, each
+  with its required tag. Value output removes the fields with tag `int`."
+  [["__meta" nil] ["__extmap" nil] ["__hash" 'int] ["__hasheq" 'int]])
+
 (def direct-fix
   "Fix text for receiving boundary errors."
   "Fix: evaluate the defvaluetype form directly.")
+
+(defn removed-nil-restricted!
+  "Throw `ex-info` with `:value-type/error` `:invalid-field`, `:class-name`,
+  `:field`, `:reason :removed-nil-restricted` and `:value` (the
+  `:nil-restricted` metadata of `field`). `fix` ends the message."
+  [class-name field fix]
+  (throw
+   (ex-info
+    (str "Removed :nil-restricted metadata on " class-name
+         "/" field "; " fix)
+    {:value-type/error :invalid-field
+     :class-name class-name
+     :field field
+     :reason :removed-nil-restricted
+     :value (:nil-restricted (meta field))})))
 
 (defn- non-nil?
   "Validate the :non-nil metadata of `field`; return true when it is enabled.
@@ -19,15 +40,7 @@
   (let [metadata (meta field)
         value (:non-nil metadata)]
     (when (contains? metadata :nil-restricted)
-      (throw
-       (ex-info
-        (str "Removed :nil-restricted metadata on " class-name
-             "/" field "; use :non-nil instead.")
-        {:value-type/error :invalid-field
-         :class-name class-name
-         :field field
-         :reason :removed-nil-restricted
-         :value (:nil-restricted metadata)})))
+      (removed-nil-restricted! class-name field "use :non-nil instead."))
     (when-not (or (nil? value) (true? value) (false? value))
       (throw
        (ex-info

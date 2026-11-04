@@ -15,6 +15,7 @@ Regenerate from the repository root with `bb api-docs`. Check without writing wi
     -  [`make-array`](#value-type.array/make-array) - Allocate a native null-restricted atomic array with every slot set to initial.
 -  [`value-type.core`](#value-type.core)  - Define JEP 401 value classes with [<code>defvaluetype</code>](#value-type.core/defvaluetype), a <code>deftype</code> compatible macro.
     -  [`defvaluetype`](#value-type.core/defvaluetype) - As <code>deftype</code> (see its docstring for syntax, options, specs, the <code>-&gt;name</code> factory and the import).
+    -  [`defvaluetype*`](#value-type.core/defvaluetype*) - As <code>deftype*</code>, with the same arguments.
 
 -----
 # <a name="value-type.array">value-type.array</a>
@@ -210,4 +211,52 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L147-L273">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L231-L353">Source</a></sub></p>
+
+## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
+``` clojure
+(defvaluetype* tagname classname [& fields] & opts+specs)
+```
+Macro.
+
+As `deftype*`, with the same arguments. Evaluate to the defined Class.
+  Define a JEP 401 value class when supported, or an ordinary identity
+  class under the `value-type.fallback` policy (see [`defvaluetype`](#value-type.core/defvaluetype)). Use
+  it in the same top-level position as `deftype*`.
+
+  Field shapes:
+  - Plain: no field has a hidden name (`__meta`, `__extmap`, `__hash`,
+    `__hasheq`; namespace ignored).
+  - Record: the fields end with `__meta __extmap ^int __hash ^int __hasheq`,
+    unqualified, with no tag on `__meta` and `__extmap`.
+  Other shapes give `:invalid-field` with `:reason :record-shape`.
+
+  Caller obligations for record shapes: do not read or write `__hash` or
+  `__hasheq`, and pass 0 for both hash arguments in explicit constructor
+  calls. Value output removes both fields and ignores those arguments.
+  Identity output keeps both fields; they hold 0 when callers meet these
+  obligations. value-type does not validate constructor arguments.
+
+  Restrictions: no mutable fields, no `:non-nil` and no `:nil-restricted`
+  field metadata.
+
+  Errors (`ex-info` with `:value-type/error` and `:class-name`), checked at
+  macroexpansion before representation policy, in this order:
+  - `:mutable-field` (data `:fields`).
+  - `:invalid-field` `:reason :record-shape` (data `:field`).
+  - `:invalid-field` `:reason :removed-nil-restricted` (data `:field`,
+    `:value`) or `:non-nil-unsupported` (data `:field`).
+  Errors of value output, when the capture loader defines the class:
+  - `:unexpected-constructor`: the constructors are
+    not the plain or the record shape.
+  - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
+    captured class reads or writes `__hash` or `__hasheq`.
+  Other policy, capability, loader and run time errors are as for
+  [`defvaluetype`](#value-type.core/defvaluetype). A value expansion
+  evaluated apart from its macroexpansion fails with `:not-installed` or
+  `:not-value-class`; it never selects fallback.
+
+  Excluded: `:non-nil` fields, mutable caches, value-equality emulation and
+  serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
+  Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L355-L409">Source</a></sub></p>

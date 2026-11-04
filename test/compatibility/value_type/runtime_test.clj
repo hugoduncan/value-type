@@ -128,6 +128,121 @@
                 :fallback? (not available?)
                 :warning :any}])))))
 
+(defn- deftype*-form
+  "A child form: evaluate defvaluetype* of simple-name with fields in the
+   cell namespace. Give {:named? :new-class? :value? :hash-fields :stored}
+   (hash-fields is the count of declared __hash/__hasheq fields; stored is
+   field x of (new cn 42), the declared-fields constructor), or the
+   failed-definition map."
+  [simple-name fields]
+  (list 'do '(require 'value-type.core 'value-type.impl.capability
+                      'value-type.cell-registry)
+        (list 'let ['cell-ns '*ns*
+                    'cn (list 'symbol (list 'str '(namespace-munge cell-ns)
+                                            (str "." simple-name)))]
+              (list 'value-type.cell-registry/outcome
+                    (list 'fn '[e] (list 'value-type.cell-registry/failed-definition
+                                         'e 'cell-ns (list 'quote simple-name)))
+                    (list 'fn '[] (list 'eval (list 'list ''value-type.core/defvaluetype*
+                                                    (list 'quote simple-name) 'cn
+                                                    (list 'quote fields))))
+                    '(fn [^Class c]
+                       {:named? (= (str cn) (.getName c))
+                        :new-class? (value-type.cell-registry/new-class! c)
+                        :value? (value-type.impl.capability/value-class? c)
+                        :hash-fields (value-type.cell-registry/hash-field-count c)
+                        :stored (eval (list '.-x (list 'new cn 42)))})))))
+
+(deftest deftype*-policy-test
+  ;; Both shapes follow policy; warn emits once per runtime, shared with
+  ;; defvaluetype; declaration errors come before policy.
+  (let [{:keys [available?] :as configuration} (config/configuration)
+        context (harness/rejection-context configuration)
+        fallback (fn [policy expected]
+                   (if (and (not available?) (= "error" policy))
+                     (harness/described (harness/failed-definition context {}))
+                     expected))]
+    (harness/run-cells
+     (for [policy config/policies]
+       (child policy
+              [{:context [(policy-context policy) "plain"]
+                :form (deftype*-form 'PolicyPlain '[x])
+                :expected (fallback policy {:named? true :new-class? true
+                                            :value? available?
+                                            :hash-fields 0 :stored 42})
+                :fallback? (not available?)
+                :warning context}
+               {:context [(policy-context policy) "record"]
+                :form (deftype*-form 'PolicyRecord
+                        ['x '__meta '__extmap
+                         (with-meta '__hash {:tag 'int})
+                         (with-meta '__hasheq {:tag 'int})])
+                :expected (fallback policy {:named? true :new-class? true
+                                            :value? available?
+                                            :hash-fields (if available? 0 2)
+                                            :stored 42})
+                :fallback? (not available?)
+                :warning context}
+               {:context [(policy-context policy) "defvaluetype after"]
+                :form '(do (require 'value-type.core)
+                           (try (eval '(value-type.core/defvaluetype PolicyLater [x]))
+                                :defined
+                                (catch Throwable _ :rejected)))
+                :expected (if (and (not available?) (= "error" policy))
+                            :rejected
+                            :defined)
+                :fallback? (not available?)
+                :warning context}
+               {:context [(policy-context policy) "declaration error"]
+                :form '(do (require 'value-type.core 'value-type.cell-registry)
+                           (value-type.cell-registry/outcome
+                            value-type.cell-registry/root-data
+                            #(eval '(value-type.core/defvaluetype*
+                                      PolicyBad cell.PolicyBad [^:non-nil x]))))
+                :expected {:value-type/error :invalid-field
+                           :class-name "cell.PolicyBad"
+                           :field 'x
+                           :reason :non-nil-unsupported}
+                :fallback? false}])))))
+
+(deftest deftype*-removed-field-check-test
+  ;; Value output rejects hash-field reads; identity fallback does not check.
+  (let [{:keys [available?]} (config/configuration)]
+    (harness/run-cells
+     (for [policy ["silent" "warn"]]
+       (child policy
+              [{:context [(policy-context policy)]
+                :form '(do (require 'value-type.core 'value-type.cell-registry)
+                           (value-type.cell-registry/outcome
+                            value-type.cell-registry/root-data
+                            #(eval (list 'value-type.core/defvaluetype*
+                                         'HashRead 'cell.HashRead
+                                         ['a '__meta '__extmap
+                                          (with-meta '__hash {:tag 'int})
+                                          (with-meta '__hasheq {:tag 'int})]
+                                         :implements ['clojure.lang.IHashEq]
+                                         '(hasheq [this] __hash)))))
+                :expected (if available?
+                            {:value-type/error :invalid-field
+                             :class-name "cell.HashRead"
+                             :field '__hash
+                             :reason :removed-field-access}
+                            :accepted)
+                :fallback? (not available?)
+                :warning :any}])))))
+
+(deftest loader-require-test
+  ;; Requiring the loader loads no optional value-output namespace.
+  (harness/run-cells
+   [(child nil
+           [{:context []
+             :form '(do (require 'value-type.impl.loader)
+                        (boolean
+                         (some find-ns '[value-type.impl.value-backend
+                                         value-type.impl.transform
+                                         value-type.impl.field-access])))
+             :expected false}])]))
+
 (deftest fallback-source-compatibility-test
   ;; Compare real identity types; capable JVMs must not be forced into fallback.
   (let [{:keys [available?]} (config/configuration)

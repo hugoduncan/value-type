@@ -17,7 +17,7 @@
           capture (#'loader/capture-loader
                    target (.getClassLoader ^Class replacement)
                    [{:field 'required :type original :enforcement :generated}]
-                   :identity)]
+                   :identity :plain)]
       (is (not (identical? original replacement)))
       (is (identical? replacement
                       (Class/forName binary-name false

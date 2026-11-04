@@ -48,6 +48,17 @@
      (enforce-fixed-fallback!)
      (deftype ~name ~fields ~@opts+specs)))
 
+(defmacro guarded-deftype*
+  "Internal expansion guard for `deftype*` forms. Enforce fixed fallback
+   policy during analysis and evaluation. Evaluate to the defined Class,
+   because `deftype*` evaluates to nil."
+  [tagname classname fields & opts+specs]
+  (enforce-fixed-fallback!)
+  `(do
+     (enforce-fixed-fallback!)
+     (deftype* ~tagname ~classname ~fields ~@opts+specs)
+     ~(symbol (str classname))))
+
 (def ^:private detected-field-capability (delay (field-capability/detect)))
 
 (defn field-capability

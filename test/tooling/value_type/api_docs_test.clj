@@ -14,7 +14,7 @@
     (testing "only the public macro and array functions are documented"
       (is (= ["value-type.array/array-info" "value-type.array/into-array"
               "value-type.array/make-array"
-              "value-type.core/defvaluetype"]
+              "value-type.core/defvaluetype" "value-type.core/defvaluetype*"]
              (mapv second (re-seq #"## <a name=\"([^\"]+)\"" markdown))))
       (doseq [internal ["check-value-class" "value-field-deftype"
                         "identity-field-deftype" "mutable-fields"
@@ -27,7 +27,14 @@
                     "error (reject with Java Error)" "AOT fixes representation"
                     "policy on invocation" "direct class access"
                     "Value artifacts do not convert" "no mutable fields"
-                    "`:volatile-mutable`" "`:unsynchronized-mutable`"]]
+                    "`:volatile-mutable`" "`:unsynchronized-mutable`"
+                    "(defvaluetype* tagname classname [& fields] & opts+specs)"
+                    "pass 0 for both hash arguments"
+                    "they hold 0 when callers meet these"
+                    ":reason :record-shape" ":reason :removed-field-access"
+                    "not the plain or the record shape"
+                    "never selects fallback"
+                    "serialization guarantees"]]
         (is (str/includes? markdown text) text)))
     (testing "allocation arguments and experimental limits remain explicit"
       (doseq [text ["(make-array component length initial)"

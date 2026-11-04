@@ -8,7 +8,7 @@
   "(ns checked.aot-fixture (:require [value-type.impl.loader :as loader]))
    (defmacro define-holder []
      (loader/install! \"checked.aot_fixture.Holder\"
-       [{:field 'required :type String :enforcement :generated}] :value)
+       [{:field 'required :type String :enforcement :generated}] :value :plain)
      `(let []
         (deftype ~'Holder [~'required ~'^long count ~'^double weight ~'nullable]
           java.util.concurrent.Callable

@@ -28,12 +28,33 @@
   (let [m (str (if (instance? Throwable x) (ex-message x) x))]
     (every? #(str/includes? m %) parts)))
 
+(def record-tail
+  "The four hidden fields that end a record-shaped `deftype*` field vector."
+  ['__meta '__extmap (with-meta '__hash {:tag 'int})
+   (with-meta '__hasheq {:tag 'int})])
+
+(defn ex-info-data
+  "Return the `ex-data` of the first `ExceptionInfo` in the cause chain of
+  `t`, or nil."
+  [^Throwable t]
+  (some #(when (instance? clojure.lang.ExceptionInfo %) (ex-data %))
+        (take-while some? (iterate ex-cause t))))
+
+(defn thrown-data
+  "Call `f`. Return :no-error, or the `ex-data` of the first
+  `ExceptionInfo` in the cause chain of the thrown exception. Rethrow when
+  the chain has no `ExceptionInfo`."
+  [f]
+  (try (f) :no-error
+       (catch Throwable t
+         (or (ex-info-data t) (throw t)))))
+
 (defmacro vt-type
   "Install the capture loader for `name` (no `defvaluetype`), then
   expand to the `deftype` form and the class."
   [name fields & specs]
   (let [cname (binary-name *ns* name)]
-    (loader/install! cname [] :value)
+    (loader/install! cname [] :value :plain)
     `(let [] (deftype ~name ~fields ~@specs) ~(symbol cname))))
 
 (defn value?

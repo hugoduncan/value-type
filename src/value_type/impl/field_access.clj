@@ -8,6 +8,14 @@
 
 (set! *warn-on-reflection* true)
 
+(defn owner-field-access?
+  "True when `element` is a `getfield` or `putfield` on the class `owner`
+  (a `ClassDesc`)."
+  [^ClassDesc owner element]
+  (and (instance? FieldInstruction element)
+       (#{Opcode/GETFIELD Opcode/PUTFIELD} (.opcode ^FieldInstruction element))
+       (= owner (.asSymbol (.owner ^FieldInstruction element)))))
+
 (defn rewrite
   "Return a code transform for Object instance-field references to `owner`.
    `storage` maps emitted field names to `{:storage-type ClassDesc ...}`.
@@ -17,12 +25,10 @@
   (reify CodeTransform
     (accept [_ builder element]
       (let [^CodeBuilder builder builder
-            ^FieldInstruction instruction (when (instance? FieldInstruction element)
+            ^FieldInstruction instruction (when (owner-field-access? owner element)
                                             element)
             ^ClassDesc storage-type
             (when (and instruction
-                       (#{Opcode/GETFIELD Opcode/PUTFIELD} (.opcode instruction))
-                       (= owner (.asSymbol (.owner instruction)))
                        (= ConstantDescs/CD_Object (.typeSymbol instruction)))
               (:storage-type (get storage (.stringValue (.name instruction)))))]
         (if storage-type

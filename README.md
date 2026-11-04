@@ -7,6 +7,10 @@ Valhalla JVM and ordinary identity classes otherwise, subject to application
 fallback policy. Required, typed fields retain their constraints in either
 representation.
 
+Libraries that emit `deftype*`, such as closed-record, can use
+`defvaluetype*` for plain and `defrecord`-shaped classes. See
+[`deftype*` forms](doc/usage.md#deftype-forms).
+
 For collections of value objects, `value-type.array` creates native arrays
 that reject null elements and provide atomic element access. The JVM can
 store values directly in the array instead of through separate object
