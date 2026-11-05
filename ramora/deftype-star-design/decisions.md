@@ -7,11 +7,14 @@ requires it).
 ## D1. Add `defvaluetype*` with `deftype*` syntax (interface)
 
 - Choice: a public macro `value-type.core/defvaluetype*` that takes the
-  arguments of the `deftype*` special form. It validates fields, applies
-  capability and policy, installs the capture loader, and expands to
-  `(let [] (deftype* …) (check-value-class <class> <installed>) <class>)`.
-  The `deftype*` call gets the macro arguments with no change, so field
-  metadata stays.
+  arguments of the `deftype*` special form. It validates fields and applies
+  capability and policy (D5). Without enabled non-nil fields, value output
+  installs the capture loader at macroexpansion and expands to
+  `(let [] (deftype* …) (check-value-class <class> <installed>) <class>)`,
+  and fallback expands to a guarded `deftype*`. With enabled fields, the
+  expansion is a receiving macro that installs the capture loader during
+  analysis (D5). Each expansion evaluates to the class. Its `deftype*` call
+  gets the macro arguments with no change, so field metadata stays.
 - Rejected:
   - A `defvaluetype` option. `deftype` rejects the hidden record names and
     does not emit the record constructors.
@@ -75,21 +78,22 @@ requires it).
 - Improves: compatibility. Degrades: more coupling to compiler output.
 - Assumption: JEP 401 permits `this(…)` calls in value-class constructors.
   D7 verifies this first.
-- Commitment: provisional, until D7 passes.
+- Commitment: firm (D7 gate passed).
 
 ## D4. Remove the hash fields from value output (state)
 
 - Choice: for the record shape, value output does not declare `__hash` and
   `__hasheq`. The main constructor keeps its descriptor. Field slots are
   computed from the full parameter list, and the constructor writes only the
-  kept fields. In value output, the loader rejects each captured owner or
-  companion class that accesses a removed field, with `:invalid-field`
+  kept fields. In value output, the value backend rejects each captured owner
+  or companion class that accesses a removed field, with `:invalid-field`
   `:reason :removed-field-access`. An access is a `getfield` or `putfield`
   that names the target class and a removed field, other than the
   main-constructor writes that the transform removes. Reflective access is
   not checked. When one class accesses both fields, `:field` is `__hash`.
-  Identity output keeps the fields, installs no capture loader and does not
-  check access. Removal is implicit for the record shape.
+  Identity output keeps the fields and does not check access. It installs a
+  capture loader only for enabled non-nil fields (D8). Removal is implicit
+  for the record shape.
 - Rejected:
   - Keep final fields that are always 0. Simple, but it adds 8 unused bytes
     to each instance.
@@ -107,43 +111,129 @@ requires it).
 ## D5. Same representation policy as `defvaluetype` (scope and authority)
 
 - Choice: `defvaluetype*` uses the capability check and `value-type.fallback`
-  policy of `defvaluetype` (D10, D12, D13). Fallback emits a guarded `deftype*`
-  with no transform. AOT fixes the representation, as for `defvaluetype` (D7).
+  policy of `defvaluetype` (D10, D12, D13). Without enabled non-nil fields,
+  fallback emits a guarded `deftype*` with no transform. With enabled fields,
+  fallback gives identity output with generated checks, and enforcement modes
+  are fixed at expansion, as for `defvaluetype` (non-nil D2, D5). The
+  receiving boundary derives the shape from the fields and repeats the
+  declaration checks, in the D6 order; the expansion does not transport the
+  shape. AOT fixes the representation, as for `defvaluetype` (D7).
 - Rejected: separate policy or options for `deftype*` callers.
 - Rationale: the application controls representation. One policy for all
   definitions keeps that control simple.
 - Improves: consistency. Degrades: nothing found.
 - Commitment: firm.
 
-## D6. Exclude non-nil fields for now (scope)
+## D6. Support non-nil fields as `defvaluetype` does (scope)
 
-- Choice: reject field metadata that contains the key `:non-nil`, with any
-  value including `false` and `nil`, on any field of `defvaluetype*`, with
-  `:invalid-field` `:reason :non-nil-unsupported`. As in `defvaluetype`,
-  the key `:nil-restricted` is rejected first, by presence, with
-  `:reason :removed-nil-restricted`. The first such field is reported.
-  The check examines only fields that are symbols in a `fields` vector, as
-  in `defvaluetype`. Elements that are not symbols, and a `fields` value
-  that is not a vector, go to `deftype*`, as in D2.
-- Rejected: support it now. The identity backend rejects constructors that
-  do not write the non-nil fields, so it would also need the record shape.
-- Rationale: the first caller does not need it. Rejection keeps the
-  extension open: the main constructor already holds all field writes, so
-  generated checks there cover every constructor and `create`.
-- Improves: minimality. Degrades: features differ between `defvaluetype` and
-  `defvaluetype*`.
-- Commitment: provisional.
+- Choice: `defvaluetype*` accepts `:non-nil` field metadata in the plain and
+  the record shape. The rules of the
+  [non-nil field design](../non-nil-field-design.md) apply with no change:
+  metadata values, tag resolution, eligible types, per-field native or
+  generated enforcement, receiving analysis of transferred expansions and
+  fixed AOT enforcement (non-nil D1–D5). The key `:nil-restricted` is
+  rejected by presence, with `:reason :removed-nil-restricted`. In a
+  record-shaped form, `:non-nil true` on a hidden-name field gives
+  `:invalid-field` `:reason :hidden-field` with `:field`. Absent, `false`
+  and `nil` disable the constraint, as on other fields. The checks examine
+  only fields that are symbols in a `fields` vector. Elements that are not
+  symbols, and a `fields` value that is not a vector, go to `deftype*`, as
+  in D2.
+- Declaration order, after `:mutable-field` and `:record-shape`:
+  1. metadata keys (`:removed-nil-restricted`, `:invalid-non-nil`), for
+     the first such field in field order;
+  2. `:hidden-field`, for the first such field in field order;
+  3. tag and type reasons of `defvaluetype` (`:missing-tag`,
+     `:unresolved-tag`, `:enclosing-type`, `:primitive-type`,
+     `:array-type`, `:interface-type`, `:abstract-type`), for each enabled
+     field in field order.
+- Record behaviour: the main constructor enforces the constraint (D8). Thus
+  the delegating constructors, `create`, both record literal forms, record
+  code constants and an `assoc` that the caller implements with a
+  constructor call reject `nil` for an enabled field with
+  `NullPointerException`, and a value of the wrong type with
+  `ClassCastException`. `create` from a map that has no entry for an
+  enabled field gives `nil` for it and fails. The compiler, class
+  initialization and reflection can wrap these exceptions. Error text is
+  not specified, as in the non-nil design.
+- Rejected:
+  - Keep the rejection of `:non-nil` (the earlier choice). The main
+    constructor holds all field writes, so the restriction has no technical
+    cause, and the two macros would have different field contracts.
+  - Let the existing errors reject `:non-nil` on hidden fields
+    (`:missing-tag` for `__meta` and `__extmap`, `:primitive-type` for the
+    hash fields). Their fixes ("add a tag") lead to `:record-shape`. A
+    dedicated reason names the real cause.
+  - A record-specific nil contract, for example a default for absent
+    `create` keys. It adds a second contract to the non-nil design.
+- Rationale: one field contract for both macros. The record shape needs no
+  new enforcement concept, only one check site (D8).
+- Improves: consistency. Degrades: record operations that pass `nil` for an
+  enabled field fail, although records usually accept `nil`; more
+  verification.
+- Commitment: firm (D7 non-nil gate passed).
 
 ## D7. Verification (verification)
 
 - Spike first, on Valhalla `27-jep401ea3+1-1` with preview: transform a
   record-shaped `deftype*`, then call each constructor and `create`, read a
   record literal, and emit a record as a code constant.
+- Non-nil gate, before D6 and D8 are implemented, on the same JVM with
+  preview and `-Xverify:all`: a record-shaped value class with one native
+  field (`NullRestricted`, concrete value-class storage) and one generated
+  field (concrete identity-class storage) verifies. Each constructor,
+  `create`, both record literals and a compiled record constant store valid
+  values and reject `nil`. The compiler emits a record constant as a call
+  to `create` with the map view of the instance, so a valid instance whose
+  map view gives `nil` for an enabled field shows the rejection. A failure
+  stops the work for a design decision.
 - Unit tests: shape validation and its errors; transform output (no hash
   fields, rewritten main constructor, unchanged record constructors);
-  removed-field access is rejected.
+  removed-field access is rejected; non-nil declaration errors and their
+  order (D6), also as the receiving macros repeat them (D5); record value
+  output with concrete storage and checks; identity backend acceptance of
+  delegating constructors and rejection of the shapes that D8 rejects.
 - Integration tests in both representations: plain and record shapes, record
   literals, code constants, `create`, metadata, AOT in a subprocess JVM.
-- Fallback tests: `silent`, `warn` and `error` policies give the same results
-  as for `defvaluetype`.
+  With enabled fields: valid construction and `nil` or wrong-type rejection
+  through every construction path of D6, native and generated enforcement,
+  transferred expansions and AOT.
+- Fallback tests, for both shapes: `silent`, `warn` and `error` policies
+  give the same results as for `defvaluetype`, including identity output
+  with generated checks on Java 8.
 - Commitment: firm.
+
+## D8. Enforce non-nil fields in the main constructor (behaviour)
+
+- Choice: the checks for enabled fields are in the constructors that write
+  fields. In the record shape, only the main constructor writes fields; the
+  two delegating constructors and `create` reach the checks through it.
+  - Value output: the record path gives the main constructor the concrete
+    storage, casts, native restriction and `nil` checks of the plain path,
+    and rewrites owner and companion references to enabled fields to the
+    concrete descriptors. The delegating constructors, `create` and all
+    constructor descriptors do not change. D3 shape validation and the D4
+    access check still apply.
+  - Identity output: a constructor delegates when it calls a constructor of
+    the target class on its own receiver (`this(…)`). Each other
+    constructor writes each enabled field once, as now. A delegating
+    constructor that writes an enabled field, and a constructor that both
+    creates an instance of the target class and calls one of its
+    constructors, give `:unsupported-shape`. The rule does not depend on
+    the shape. The identity backend does not validate the exact record
+    shape.
+- Rejected:
+  - Checks in each constructor. The delegating constructors write no
+    fields, and their arguments reach the main constructor unchanged.
+  - Exact record-shape validation in the identity backend. It would repeat
+    D3 in a second bytecode library (ASM, which loads on Java 8). Write
+    tracking with delegation already proves that each completed construction
+    checks each enabled field.
+  - Checks in `create` only. Java callers and reflection bypass it
+    (non-nil D4).
+- Rationale: each construction path calls the main constructor once, so one
+  check site covers all paths. The identity rule stays a property of
+  constructor writes, as for `defvaluetype`.
+- Improves: minimality, correctness. Degrades: the identity backend accepts
+  a wider set of constructors than the plain shape needs.
+- Commitment: firm (D7 non-nil gate passed).

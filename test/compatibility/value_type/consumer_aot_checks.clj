@@ -84,6 +84,33 @@
   "The declared annotation names of a native checked field."
   ["jdk.internal.vm.annotation.NullRestricted"])
 
+(defn native-field?
+  "Return true when field has a native-annotations annotation."
+  [^Field field]
+  (boolean (some (set native-annotations) (annotation-names field))))
+
+(defn enforcement-facts
+  "Return the enforcement and storage facts of field: :native?
+   (native-field?) and :type (field-facts)."
+  [^Field field]
+  {:native? (native-field? field)
+   :type (:type (field-facts field))})
+
+(defn enabled-facts
+  "Return the facts of the non-nil Long field x: enforcement-facts,
+   :stored (x of (build 42)) and :rejections (checked-outcomes of nil and
+   a wrong type). build maps a value of x to an instance."
+  [^Field field build]
+  (merge (enforcement-facts field)
+         {:stored (.get field (build 42))
+          :rejections (checked-outcomes (fn [[x]] (build x)) (Object.))}))
+
+(defn enabled-expected
+  "Return the expected enabled-facts of value? output."
+  [value?]
+  {:native? value? :type "java.lang.Long" :stored 42
+   :rejections checked-rejections})
+
 (defn- instance-fields
   [^Class owner]
   (remove #(Modifier/isStatic (.getModifiers ^Field %)) (.getFields owner)))

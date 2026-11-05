@@ -264,6 +264,15 @@
           (field-storage/emit! builder element storage-type native?)
           (.with builder ^ClassElement element))))))
 
+(defn- with-storage
+  "Return constructor-transform, then concrete field storage, then owner
+  field accesses rewritten to the storage descriptors of this."
+  ^ClassTransform [this storage ^ClassTransform constructor-transform]
+  (.andThen
+   (.andThen constructor-transform (storage-transform storage))
+   (ClassTransform/transformingMethodBodies
+    (field-access/rewrite this storage))))
+
 (defn ->value-class
   "Change the bytes of a Clojure `deftype` class into the bytes of a
   JEP 401 value class.
@@ -299,12 +308,9 @@
       (unexpected-constructor! cm part))
     (.transformClass
      cf cm
-     (.andThen
-      (.andThen (let [code (constructor-code this fields (constantly true) storage)]
-                  (value-class-transform (constantly true) (constantly code)))
-                (storage-transform storage))
-      (ClassTransform/transformingMethodBodies
-       (field-access/rewrite this storage))))))
+     (with-storage this storage
+       (let [code (constructor-code this fields (constantly true) storage)]
+         (value-class-transform (constantly true) (constantly code)))))))
 
 ;;; Record path
 
@@ -380,10 +386,11 @@
        main-descriptor])))
 
 (defn- record-value-class-transform
-  "Drop the hash fields and rewrite only the main constructor."
-  ^ClassTransform [this fields ^String main-descriptor]
+  "Drop the hash fields and rewrite only the main constructor, with the
+  concrete `storage` of `constructor-code`."
+  ^ClassTransform [this fields ^String main-descriptor storage]
   (let [keep-field? #(not (hash-field? (field-name %)))
-        code (constructor-code this fields keep-field? nil)]
+        code (constructor-code this fields keep-field? storage)]
     (value-class-transform
      keep-field?
      #(when (= main-descriptor (.stringValue (.methodType ^MethodModel %)))
@@ -395,26 +402,30 @@
 
   Input: the class file bytes of a `deftype*` class whose last four
   instance fields are `__meta`, `__extmap`, `int __hash` and
-  `int __hasheq`, with the three compiler record constructors.
-  class-loader (or nil) resolves types during stack-map generation.
-  Output: new class file bytes, as for `->value-class` with no storage,
+  `int __hasheq`, with the three compiler record constructors. storage is
+  as for `->value-class` (declared fields only). class-loader (or nil)
+  resolves types during stack-map generation.
+  Output: new class file bytes, as for `->value-class` with `storage`,
   except: the class has no `__hash` and `__hasheq` fields; only the main
-  constructor (all fields) is rewritten, and it ignores the two hash
-  arguments; the two delegating constructors, `create`, `getBasis` and all
-  constructor descriptors are unchanged.
+  constructor (all fields) is rewritten (casts, null checks and concrete
+  writes), and it ignores the two hash arguments; the two delegating
+  constructors, `create`, `getBasis` and all constructor descriptors are
+  unchanged.
 
   Errors: when the constructors are not the compiler record shape,
   throws `ex-info` with `:value-type/error :unexpected-constructor` and
   `:class-name`, before any bytes change. The message part is
   `count of constructors`, `parameters`, `delegating constructor`,
   `super call` or `field writes`."
-  ^bytes [^bytes bs class-loader]
+  ^bytes [^bytes bs storage class-loader]
   (let [cf (class-file/configured class-loader)
         cm (.parse cf bs)
+        this (.asSymbol (.thisClass cm))
         fields (filterv instance-field? (.fields cm))
         [part main-descriptor] (record-constructor-difference cm fields)]
     (when part
       (unexpected-constructor! cm part))
     (.transformClass
      cf cm
-     (record-value-class-transform (.asSymbol (.thisClass cm)) fields main-descriptor))))
+     (with-storage this storage
+       (record-value-class-transform this fields main-descriptor storage)))))

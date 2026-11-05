@@ -24,7 +24,8 @@ limits; they do not report feature delivery status.
 
 - [deftype* design](deftype-star-design.md): `defvaluetype*` for
   callers that emit `deftype*`, including the record shape. Compiler record
-  constructors, hash field removal, fallback, exclusions and verification.
+  constructors, hash field removal, non-nil fields, fallback, exclusions and
+  verification.
 
 - [Value-type array design](value-type-array-design.md): native,
   null-restricted atomic allocation, sequence construction and diagnostics.

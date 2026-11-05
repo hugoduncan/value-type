@@ -21,13 +21,19 @@
 
 (def ^:private test-ns (the-ns 'value-type.impl.removed-field-test))
 
+(def ^:private enabled-a
+  "A non-nil `String` field `a`: it gives a non-empty storage."
+  (with-meta 'a {:tag 'String :non-nil true}))
+
 (defn- record-form
   "A record-shaped `defvaluetype*` form for `n` in the namespace `ns`
-  (default `test-ns`) whose `hasheq` body is `body`, built by `head`
-  (`vt/defvaluetype*` or `deftype*`)."
+  (default `test-ns`) whose first field is `a` (default untagged) and
+  whose `hasheq` body is `body`, built by `head` (`vt/defvaluetype*` or
+  `deftype*`)."
   ([head n body] (record-form test-ns head n body))
-  ([ns head n body]
-   (list head n (symbol (binary-name ns n)) (into '[a] record-tail)
+  ([ns head n body] (record-form ns head n 'a body))
+  ([ns head n a body]
+   (list head n (symbol (binary-name ns n)) (into [a] record-tail)
          :implements ['clojure.lang.IHashEq]
          (list 'hasheq '[this] body))))
 
@@ -69,7 +75,19 @@
                                                              '(+ __hasheq __hash))))))))
     (testing "no access is accepted"
       (let [n (gensym "Owner")]
-        (is (class? (eval-here (record-form `vt/defvaluetype* n 0))))))))
+        (is (class? (eval-here (record-form `vt/defvaluetype* n 0))))))
+    (testing "an owner method that reads __hash, with an enabled field"
+      (let [n (gensym "Owner")]
+        (is (= (removed-access n '__hash)
+               (support/thrown-data
+                #(eval-here (record-form test-ns `vt/defvaluetype* n enabled-a
+                                         '__hash)))))))))
+
+(defn- companion-body
+  "A `hasheq` body that calls a closure that reads `__hasheq` of the
+  target `n`."
+  [n]
+  (list (list 'fn [] (list '.-__hasheq (with-meta 'this {:tag n})))))
 
 (deftest companion-access-test
   (when (value-output?)
@@ -77,10 +95,13 @@
       (let [n (gensym "Companion")]
         (is (= (removed-access n '__hasheq)
                (support/thrown-data
-                #(eval-here (record-form `vt/defvaluetype* n
-                                         (list (list 'fn []
-                                                     (list '.-__hasheq
-                                                           (with-meta 'this {:tag n})))))))))))))
+                #(eval-here (record-form `vt/defvaluetype* n (companion-body n))))))))
+    (testing "a fn class that reads __hasheq, with an enabled field"
+      (let [n (gensym "Companion")]
+        (is (= (removed-access n '__hasheq)
+               (support/thrown-data
+                #(eval-here (record-form test-ns `vt/defvaluetype* n enabled-a
+                                         (companion-body n))))))))))
 
 (deftest aot-removed-field-test
   (when (value-output?)

@@ -57,23 +57,31 @@ fields then have no use, but the constructor parameters are necessary.
 type cannot go through `defvaluetype`; it needs a `deftype*` entry point.
 
 The `defvaluetype` value transform (`->value-class`) requires exactly one
-constructor and rewrites every constructor. The identity backend rejects
-constructors that do not write the non-nil fields. Neither accepts the record
-shape; the record path (`->record-value-class`) is separate.
+constructor and rewrites every constructor, so the record shape has a separate
+value path (`->record-value-class`). For non-nil fields, the identity backend
+requires each constructor to write each enabled field, but the record
+delegating constructors write no fields. Thus identity output needs a rule for
+delegating constructors
+([D8](deftype-star-design/decisions.md#d8-enforce-non-nil-fields-in-the-main-constructor-behaviour)).
 
 Included:
 
 - the plain `deftype*` shape (one constructor);
 - the record shape, as described above, with immutable `^int` hash fields;
 - value output and identity fallback under existing policy;
+- `:non-nil` fields in both shapes, under the
+  [non-nil field design](non-nil-field-design.md)
+  ([D6](deftype-star-design/decisions.md#d6-support-non-nil-fields-as-defvaluetype-does-scope),
+  D8);
 - source compilation, receiving compilation of the fallback expansion, and
-  AOT, with the existing `defvaluetype` limits. As for an ordinary
-  `defvaluetype`, a value expansion evaluated apart from its macroexpansion
-  fails with `:not-installed` or `:not-value-class`.
+  AOT, with the existing `defvaluetype` limits. As for `defvaluetype`, a
+  value expansion without enabled non-nil fields evaluated apart from its
+  macroexpansion fails with `:not-installed` or `:not-value-class`. An
+  expansion with enabled fields keeps receiving analysis (non-nil D5).
 
 Excluded:
 
-- `:non-nil` field metadata (see [D6](deftype-star-design/decisions.md#d6-exclude-non-nil-fields-for-now-scope));
+- `:non-nil true` on a hidden-name field (D6);
 - hidden field names outside the exact record suffix of
   [D2](deftype-star-design/decisions.md#d2-identify-the-record-shape-by-the-compiler-rule-data-model);
 - mutable fields, as in `defvaluetype`;
@@ -104,7 +112,17 @@ For a record-shaped form, the caller must:
 Value output removes the `__hash` and `__hasheq` fields. Constructors keep
 their descriptors and ignore the two hash arguments. Identity output keeps
 both fields; they hold 0 when callers meet these obligations. value-type
-does not validate constructor arguments. Callers must work with both outputs.
+does not validate the hash arguments. Callers must work with both outputs.
+
+`:non-nil` field metadata has the contract of the
+[non-nil field design](non-nil-field-design.md). In a record shape, the main
+constructor enforces it. Thus the delegating constructors, `create`, both
+record literal forms, record code constants and an `assoc` that the caller
+implements with a constructor call (as `defrecord` does) reject `nil` for an
+enabled field with `NullPointerException`, and a value of the wrong type with
+`ClassCastException`. `create` from a map with no entry for an enabled field
+fails. The compiler, class initialization and reflection can wrap these
+exceptions. Error text is not specified.
 
 Errors use the existing `ex-info` keys of `defvaluetype`, with `:class-name`:
 
@@ -113,14 +131,18 @@ Errors use the existing `ex-info` keys of `defvaluetype`, with `:class-name`:
 | `:mutable-field` | a field is mutable | `:fields` |
 | `:invalid-field` | a form is neither the plain nor the record shape (D2) | `:field`, `:reason :record-shape` |
 | `:invalid-field` | field metadata contains `:nil-restricted`, with any value | `:field`, `:value`, `:reason :removed-nil-restricted` |
-| `:invalid-field` | field metadata contains `:non-nil`, with any value (D6) | `:field`, `:reason :non-nil-unsupported` |
+| `:invalid-field` | the `:non-nil` value is not `true`, `false` or `nil` | as for `defvaluetype`, `:reason :invalid-non-nil` |
+| `:invalid-field` | `:non-nil true` on a hidden-name field (D6) | `:field`, `:reason :hidden-field` |
+| `:invalid-field` | an enabled field has a missing, unresolved or ineligible tag | as for `defvaluetype` (non-nil design) |
 | `:invalid-field` | in value output, a captured class accesses a removed field (D4) | `:field`, `:reason :removed-field-access` |
 | `:unexpected-constructor` | the constructors are not the plain or record shape | — |
 
 The declaration checks run at macroexpansion, before representation policy,
 in this order: `:mutable-field` (including the hash fields), `:record-shape`,
-field metadata. The first failure gives the error. The policy, capability,
-loader and run-time check errors of `defvaluetype` also apply.
+metadata keys, `:hidden-field`, then tag and type reasons (D6). The first
+failure gives the error. The policy, capability, receiving, loader
+(`:field-class-mismatch`, `:jvm-rejected`), identity backend
+(`:unsupported-shape`) and run-time check errors of `defvaluetype` also apply.
 
 ## Architectural decisions
 
@@ -133,30 +155,29 @@ alternatives and rationale:
   main constructor.
 - D4: remove the hash fields from value output; keep the constructor parameters.
 - D5: use the same representation policy and fallback as `defvaluetype`.
-- D6: exclude `:non-nil` fields for now.
+- D6: support `:non-nil` fields as `defvaluetype` does.
 - D7: verification.
+- D8: enforce non-nil fields in the main constructor.
 
 ## Embodiment
 
-Implemented. The elements:
+Implemented, including D6, D8 and the D7 non-nil gate. The elements:
 
-- `value-type.core`: the `defvaluetype*` macro and the three declaration
-  checks (mutable fields, record shape, field metadata), in that order, at
-  macroexpansion. It passes the shape (`:plain` or `:record`) to the loader.
-- `value-type.impl.runtime`: `guarded-deftype*`, the guarded and
-  untransformed `deftype*` fallback. It evaluates to the Class.
-- `value-type.impl.loader`: `install!` and `capture-loader` carry the shape
-  to the value backend only. The loader has no new import, so it still loads
-  on Java 8.
-- `value-type.impl.transform`: `->record-value-class` checks the delegating
-  constructors and the main-constructor body, rewrites only the main
-  constructor, and removes the hash fields. `->value-class` does not change.
-- `value-type.impl.value-backend`: for the record shape, it scans owner and
-  companion bytes for `getfield`/`putfield` of a removed field, after the
-  transform and before the loader writes a class file.
+- `value-type.core`: `defvaluetype*` runs the D6 declaration checks at
+  macroexpansion (`:mutable-field`, `:record-shape`, metadata keys,
+  `:hidden-field`, tag and type). With enabled fields, it expands to the
+  receiving macros `value-field-deftype*` or `identity-field-deftype*`.
+- `value-type.impl.fields`: the one owner of the non-nil declaration rules,
+  including `:hidden-field`.
+- `value-type.impl.transform` and `value-type.impl.value-backend`: record
+  value output with field storage and checks in the main constructor only.
+- `value-type.impl.identity-backend`: the D8 delegation rule.
+- `value-type.impl.runtime`: `guarded-deftype*` for forms without enabled
+  fields.
 
-The identity backend does not change while D6 applies. The D7 gate result is
-in [the feasibility gate](deftype-star-design/feasibility-gate.md).
+[Implementation detail](deftype-star-design/embodiment.md). Gate records:
+[D3 feasibility gate](deftype-star-design/feasibility-gate.md) and
+[non-nil gate](deftype-star-design/non-nil-gate.md).
 
 ## Qualities and risks
 
@@ -169,6 +190,12 @@ in [the feasibility gate](deftype-star-design/feasibility-gate.md).
   accepts a value-class constructor that calls `this(…)`. All three
   constructors, `create`, `getBasis`, both record literals and compiled
   record constants work in both representations. Other JVMs are not verified.
+  The [non-nil gate](deftype-star-design/non-nil-gate.md) adds one native and
+  one generated field on the same JVM with `-Xverify:all`; it used a
+  spike-local transform, and the test suites cover the production transform.
+- Risk: records with enabled non-nil fields reject `nil` in `create`,
+  record literals and `assoc`, where records usually accept it. Callers that
+  build records from partial maps must supply each enabled field.
 - Risk: records implement `java.io.Serializable`. The behavior of serializable
   value classes on the EA JVM is not verified. This design does not promise
   serialization.

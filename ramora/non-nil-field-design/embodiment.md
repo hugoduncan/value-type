@@ -19,6 +19,10 @@ Constrained public expansions retain `core/identity-field-deftype` or
 resolves local Classes and installs the capture loader. The loader rejects a
 same-name Class mismatch. Transferred forms do not reselect enforcement.
 
+`defvaluetype*` uses the same declarations in the plain and the record shape,
+through `core/value-field-deftype*` and `core/identity-field-deftype*`. See the
+[deftype* embodiment](../deftype-star-design/embodiment.md).
+
 The identity backend uses Clojure's bundled ASM without optional JDK APIs. The
 value backend uses `java.lang.classfile`. Both retype final storage and matching
 owner/companion references. Generated enforcement casts and rejects nil in actual

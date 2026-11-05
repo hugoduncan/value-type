@@ -52,3 +52,14 @@
        (~'choose [~'_ ~'selected] (if ~'selected ~'child nil)))))
 
 (define-nested)
+
+(defmacro define-record
+  "A `defrecord` (record shape: three constructors, two delegate) with one
+  generated field."
+  []
+  (loader/install! "value_type.identity_backend.fixture.Rec"
+                   [{:field 'label :type String :enforcement :generated}]
+                   :identity :record)
+  `(defrecord ~'Rec [~'label ~'^long count]))
+
+(define-record)

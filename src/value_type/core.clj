@@ -143,27 +143,6 @@
                              :field            field
                              :reason           :record-shape}))))))))
 
-(defn- check-field-metadata
-  "Return nil when no field symbol has `:nil-restricted` or `:non-nil`
-  metadata. Else throw `ex-info` with `:value-type/error` `:invalid-field`
-  for the first such field, in field order."
-  [class-name fields]
-  (doseq [[_ field] (field-symbols fields)
-          :let [m (meta field)]]
-    (cond
-      (contains? m :nil-restricted)
-      (fields/removed-nil-restricted! class-name field
-                                      (str "defvaluetype* does not support it. "
-                                           "Fix: remove the metadata."))
-      (contains? m :non-nil)
-      (throw (ex-info (str "Unsupported :non-nil metadata on " class-name
-                           "/" field "; defvaluetype* does not support "
-                           "non-nil fields. Fix: remove the metadata.")
-                      {:value-type/error :invalid-field
-                       :class-name       class-name
-                       :field            field
-                       :reason           :non-nil-unsupported})))))
-
 (defn- not-installed-message [kind class-name]
   (str "Cannot define class " class-name ": " kind " field capture requires "
        "a compiler loader. " macroexpanded-outside-compilation ". "
@@ -190,27 +169,76 @@
 (defn- install-receiving!
   "Install capture for a receiving expansion. Throw `:not-installed` when
   `Compiler/LOADER` has no thread binding."
-  [kind class-name specifications representation]
-  (when-not (install-capture! class-name specifications representation :plain)
+  [kind class-name specifications representation shape]
+  (when-not (install-capture! class-name specifications representation shape)
     (throw (ex-info (not-installed-message kind class-name)
                     {:value-type/error :not-installed
                      :class-name class-name}))))
+
+(defn- value-receiving
+  "Value receiving expansion of `definition` for fixed `modes`. The caller
+  checks `fields` and derives `shape` first. `opts` is as for
+  `fields/receiving-specifications`."
+  [class-name fields modes shape opts definition]
+  (require-value-capability! class-name)
+  (let [specifications (fields/receiving-specifications
+                        *ns* class-name fields modes #{:native :generated}
+                        opts)
+        native? (some #(= :native (:enforcement %)) specifications)
+        cls     (symbol class-name)]
+    (when native? (runtime/require-field-capability! class-name))
+    (install-receiving! "value" class-name specifications :value shape)
+    `(let []
+       ~@(when native? `((runtime/require-field-capability! ~class-name)))
+       ~definition
+       (check-value-class ~cls true)
+       ~cls)))
+
+(defn- identity-receiving
+  "Identity receiving expansion of `definition` for fixed generated `modes`.
+  The caller checks `fields` and derives `shape` first. Apply fixed identity
+  policy during analysis and evaluation. `opts` is as for
+  `fields/receiving-specifications`."
+  [class-name fields modes shape opts definition]
+  (let [specifications (fields/receiving-specifications
+                        *ns* class-name fields modes #{:generated} opts)]
+    (runtime/enforce-fixed-fallback!)
+    (install-receiving! "identity" class-name specifications :identity shape)
+    `(let []
+       (runtime/enforce-fixed-fallback!)
+       ~definition
+       ~(symbol class-name))))
+
+(defn- policy-expansion
+  "Select representation and field enforcement for `validated`
+  specifications; return the expansion. The caller validates the declaration
+  first. `value-form` and `identity-form` take the enforcement modes and
+  return a receiving form; `definition` is the plain definition and
+  `guarded` its fallback form. A receiving form is wrapped in `let` to keep
+  receiving analysis checks through both macroexpand forms."
+  [class-name shape validated value-form identity-form definition guarded]
+  (let [{:keys [available? detail]} (runtime/capability)
+        specifications (fields/select-enforcement
+                        validated
+                        #(and available?
+                              (:available? (runtime/field-capability))))
+        modes (mapv :enforcement specifications)]
+    (if available?
+      (if (seq specifications)
+        `(let [] ~(value-form modes))
+        (value-expansion class-name shape definition))
+      (do
+        (runtime/enforce-fallback! detail)
+        (if (seq specifications)
+          `(let [] ~(identity-form modes))
+          `(do ~guarded))))))
 
 (defmacro value-field-deftype
   "Internal receiving boundary for fixed value field enforcement modes."
   [class-name modes name fields & opts+specs]
   (check-fields class-name fields)
-  (require-value-capability! class-name)
-  (let [specifications (fields/receiving-specifications
-                        *ns* class-name fields modes #{:native :generated})
-        native? (some #(= :native (:enforcement %)) specifications)]
-    (when native? (runtime/require-field-capability! class-name))
-    (install-receiving! "value" class-name specifications :value)
-    `(let []
-       ~@(when native? `((runtime/require-field-capability! ~class-name)))
-       (deftype ~name ~fields ~@opts+specs)
-       (check-value-class ~(symbol class-name) true)
-       ~(symbol class-name))))
+  (value-receiving class-name fields modes :plain nil
+                   `(deftype ~name ~fields ~@opts+specs)))
 
 (defmacro identity-field-deftype
   "Internal receiving boundary for fixed generated identity field declarations.
@@ -219,14 +247,29 @@
   policy during both analysis and evaluation; do not upgrade representation."
   [class-name modes name fields & opts+specs]
   (check-fields class-name fields)
-  (let [specifications (fields/receiving-specifications
-                        *ns* class-name fields modes #{:generated})]
-    (runtime/enforce-fixed-fallback!)
-    (install-receiving! "identity" class-name specifications :identity)
-    `(let []
-       (runtime/enforce-fixed-fallback!)
-       (deftype ~name ~fields ~@opts+specs)
-       ~(symbol class-name))))
+  (identity-receiving class-name fields modes :plain nil
+                      `(deftype ~name ~fields ~@opts+specs)))
+
+(defmacro value-field-deftype*
+  "Internal `defvaluetype*` receiving boundary for fixed value field
+  enforcement modes. Derive the shape from `fields`."
+  [tagname classname modes fields & opts+specs]
+  (let [class-name (str classname)]
+    (check-fields class-name fields)
+    (value-receiving class-name fields modes (record-shape class-name fields)
+                     {:hidden-field? true}
+                     `(deftype* ~tagname ~classname ~fields ~@opts+specs))))
+
+(defmacro identity-field-deftype*
+  "Internal `defvaluetype*` receiving boundary for fixed generated identity
+  field declarations. Derive the shape from `fields`; apply fixed identity
+  policy during analysis and evaluation."
+  [tagname classname modes fields & opts+specs]
+  (let [class-name (str classname)]
+    (check-fields class-name fields)
+    (identity-receiving class-name fields modes
+                        (record-shape class-name fields) {:hidden-field? true}
+                        `(deftype* ~tagname ~classname ~fields ~@opts+specs))))
 
 (defmacro defvaluetype
   "As `deftype` (see its docstring for syntax, options, specs, the
@@ -331,26 +374,14 @@
   [name fields & opts+specs]
   (let [class-name (str (namespace-munge *ns*) "." name)]
     (check-fields class-name fields)
-    (let [validated (fields/specifications *ns* class-name fields)
-          {:keys [available? detail]} (runtime/capability)
-          specifications (fields/select-enforcement
-                          validated
-                          #(and available?
-                                (:available? (runtime/field-capability))))
-          modes (mapv :enforcement specifications)]
-      (if available?
-        (if (seq specifications)
-          ;; Preserve receiving analysis checks through both macroexpand forms.
-          `(let [] (value-field-deftype ~class-name ~modes ~name ~fields ~@opts+specs))
-          (value-expansion class-name :plain
-                           `(deftype ~name ~fields ~@opts+specs)))
-        (do
-          (runtime/enforce-fallback! detail)
-          (if (seq specifications)
-            `(let []
-               (identity-field-deftype ~class-name ~modes ~name ~fields
-                                       ~@opts+specs))
-            `(do (runtime/guarded-deftype ~name ~fields ~@opts+specs))))))))
+    (policy-expansion
+     class-name :plain (fields/specifications *ns* class-name fields)
+     (fn [modes]
+       `(value-field-deftype ~class-name ~modes ~name ~fields ~@opts+specs))
+     (fn [modes]
+       `(identity-field-deftype ~class-name ~modes ~name ~fields ~@opts+specs))
+     `(deftype ~name ~fields ~@opts+specs)
+     `(runtime/guarded-deftype ~name ~fields ~@opts+specs))))
 
 (defmacro defvaluetype*
   "As `deftype*`, with the same arguments. Evaluate to the defined Class.
@@ -369,28 +400,47 @@
   `__hasheq`, and pass 0 for both hash arguments in explicit constructor
   calls. Value output removes both fields and ignores those arguments.
   Identity output keeps both fields; they hold 0 when callers meet these
-  obligations. value-type does not validate constructor arguments.
+  obligations. value-type does not validate the hash arguments.
 
-  Restrictions: no mutable fields, no `:non-nil` and no `:nil-restricted`
-  field metadata.
+  Non-nil fields: `:non-nil` metadata as for `defvaluetype`, in both
+  shapes. Hidden-name fields cannot be non-nil. The main constructor checks
+  each enabled field, so each constructor, `create`, record literals,
+  compiled record constants and reflection reject nil with
+  `NullPointerException` and wrong types with `ClassCastException`. The
+  compiler, class initialization and reflection can wrap these exceptions;
+  find the exception in the cause chain. Error text is not specified.
+  With enabled fields, the expansion is a receiving form, also on
+  fallback, and receivers repeat the declaration checks.
+
+  Restrictions: no mutable fields and no `:nil-restricted` field metadata.
 
   Errors (`ex-info` with `:value-type/error` and `:class-name`), checked at
   macroexpansion before representation policy, in this order:
   - `:mutable-field` (data `:fields`).
   - `:invalid-field` `:reason :record-shape` (data `:field`).
-  - `:invalid-field` `:reason :removed-nil-restricted` (data `:field`,
-    `:value`) or `:non-nil-unsupported` (data `:field`).
+  - `:invalid-field` `:reason :removed-nil-restricted` or `:invalid-non-nil`
+    (data `:field`, `:value`).
+  - `:invalid-field` `:reason :hidden-field` (data `:field`): a hidden-name
+    field with `:non-nil true`.
+  - The `defvaluetype` tag and type reasons of enabled fields.
   Errors of value output, when the capture loader defines the class:
   - `:unexpected-constructor`: the constructors are
     not the plain or the record shape.
   - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
     captured class reads or writes `__hash` or `__hasheq`.
-  Other policy, capability, loader and run time errors are as for
-  `defvaluetype`. A value expansion
+  Errors of identity output with enabled fields, when the capture loader
+  defines the class:
+  - `:unsupported-shape`: a delegating constructor writes an enabled field,
+    or a constructor both creates and calls the target.
+  Other policy, capability, receiving, loader and run time errors are as for
+  `defvaluetype`. A value expansion without enabled fields
   evaluated apart from its macroexpansion fails with `:not-installed` or
-  `:not-value-class`; it never selects fallback.
+  `:not-value-class`; it never selects fallback. With enabled fields,
+  separate `eval` of the expansion works, and only a full expansion
+  outside compilation (for example `clojure.walk/macroexpand-all`) gives
+  `:not-installed`; see doc/usage.md.
 
-  Excluded: `:non-nil` fields, mutable caches, value-equality emulation and
+  Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md."
   {:arglists '([tagname classname [& fields] & opts+specs])}
@@ -398,12 +448,14 @@
   (let [class-name (str classname)]
     (check-fields class-name fields)
     (let [shape (record-shape class-name fields)]
-      (check-field-metadata class-name fields)
-      (let [{:keys [available? detail]} (runtime/capability)]
-        (if available?
-          (value-expansion class-name shape
-                           `(deftype* ~tagname ~classname ~fields ~@opts+specs))
-          (do
-            (runtime/enforce-fallback! detail)
-            `(do (runtime/guarded-deftype* ~tagname ~classname ~fields
-                                           ~@opts+specs))))))))
+      (policy-expansion
+       class-name shape
+       (fields/specifications *ns* class-name fields {:hidden-field? true})
+       (fn [modes]
+         `(value-field-deftype* ~tagname ~classname ~modes ~fields
+                                ~@opts+specs))
+       (fn [modes]
+         `(identity-field-deftype* ~tagname ~classname ~modes ~fields
+                                   ~@opts+specs))
+       `(deftype* ~tagname ~classname ~fields ~@opts+specs)
+       `(runtime/guarded-deftype* ~tagname ~classname ~fields ~@opts+specs)))))

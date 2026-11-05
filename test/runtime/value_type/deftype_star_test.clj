@@ -3,6 +3,7 @@
   value-expansion receiving."
   (:require
    [clojure.test :refer [deftest is testing]]
+   [clojure.walk :as walk]
    [value-type.core :as vt]
    [value-type.impl.runtime :as runtime]
    [value-type.test-support :as support :refer [record-tail]]))
@@ -82,38 +83,85 @@
            (expansion-error ['__meta "__extmap" (record-tail 2)
                              (record-tail 3)])))))
 
-(deftest field-metadata-rejection-test
-  (testing ":non-nil by presence, any value"
-    (doseq [v [true false nil]]
-      (let [f (with-meta 'a {:non-nil v})]
-        (is (= {:value-type/error :invalid-field :class-name class-name
-                :field f :reason :non-nil-unsupported}
-               (expansion-error [f]))))))
-  (testing ":nil-restricted by presence, before :non-nil"
-    (let [f (with-meta 'a {:nil-restricted nil :non-nil true})]
-      (is (= {:value-type/error :invalid-field :class-name class-name
-              :field f :reason :removed-nil-restricted :value nil}
-             (expansion-error [f])))))
-  (testing "first faulty field in field order"
-    (let [a (with-meta 'a {:non-nil true})
-          b (with-meta 'b {:nil-restricted true})]
-      (is (= :non-nil-unsupported (:reason (expansion-error [a b]))))))
-  (testing "hidden fields are checked"
-    (let [m (with-meta '__meta {:non-nil true})]
-      (is (= :non-nil-unsupported
-             (:reason (expansion-error (assoc record-tail 0 m))))))))
+(defn- field-error
+  "Expected `:invalid-field` data for `field` with `reason` and `extra`."
+  [field reason & {:as extra}]
+  (merge {:value-type/error :invalid-field :class-name class-name
+          :field field :reason reason}
+         extra))
 
-(deftest validation-order-test
+(defn- non-nil
+  "`sym` with `:non-nil true` and the tag `tag`, if given."
+  ([sym] (with-meta sym {:non-nil true}))
+  ([sym tag] (with-meta sym {:non-nil true :tag tag})))
+
+(deftest declaration-error-test
+  ;; Each D6 declaration error, on the plain shape and the record shape.
+  (doseq [[label tail] [["plain" []] ["record" record-tail]]]
+    (testing label
+      (testing ":removed-nil-restricted"
+        (let [f (with-meta 'a {:nil-restricted true})]
+          (is (= (field-error f :removed-nil-restricted :value true)
+                 (expansion-error (into [f] tail))))))
+      (testing ":invalid-non-nil"
+        (let [f (with-meta 'a {:non-nil :yes})]
+          (is (= (field-error f :invalid-non-nil :value :yes)
+                 (expansion-error (into [f] tail))))))
+      (doseq [[reason f] [[:missing-tag (non-nil 'a)]
+                          [:unresolved-tag (non-nil 'a 'no.such.Type)]
+                          [:primitive-type (non-nil 'a 'long)]
+                          [:array-type (non-nil 'a 'longs)]
+                          [:interface-type (non-nil 'a 'java.util.List)]
+                          [:abstract-type (non-nil 'a 'java.lang.Number)]]]
+        (testing (name reason)
+          (is (= (field-error f reason)
+                 (select-keys (expansion-error (into [f] tail))
+                              [:value-type/error :class-name :field
+                               :reason])))))))
+  (testing ":hidden-field, each hidden field"
+    (doseq [i (range 4)]
+      (let [h (vary-meta (record-tail i) assoc :non-nil true)]
+        (is (= (field-error h :hidden-field)
+               (expansion-error (into ['x] (assoc record-tail i h))))))))
+  (testing ":hidden-field gives the first such field"
+    (let [m (non-nil '__meta)
+          e (non-nil '__extmap)]
+      (is (= (field-error m :hidden-field)
+             (expansion-error (assoc record-tail 0 m 1 e))))))
+  (testing "false and nil :non-nil on hidden fields are accepted"
+    (doseq [v [false nil]]
+      (is (= :no-error
+             (expansion-error
+              (assoc record-tail 0 (with-meta '__meta {:non-nil v}))))))))
+
+(deftest declaration-order-test
   (let [mutable-hash (with-meta '__hash {:tag 'int :unsynchronized-mutable true})
-        non-nil (with-meta 'a {:non-nil true})]
-    (testing "mutable field first, including hash fields"
+        untagged (non-nil 'a)
+        removed (with-meta 'b {:nil-restricted true})]
+    (testing ":mutable-field before :record-shape"
       (is (= {:value-type/error :mutable-field :class-name class-name
               :fields [mutable-hash]}
-             (expansion-error (into [non-nil '__meta]
+             (expansion-error (into [untagged '__meta]
                                     (assoc record-tail 2 mutable-hash))))))
-    (testing "record shape before field metadata"
-      (is (= :record-shape
-             (:reason (expansion-error [non-nil '__meta '__extmap])))))))
+    (testing ":record-shape before metadata keys"
+      (is (= {:value-type/error :invalid-field :reason :record-shape}
+             (support/error-keys
+              (expansion-error [removed '__meta '__extmap])))))
+    (testing "metadata keys before :hidden-field, error on a later field"
+      (is (= {:value-type/error :invalid-field :reason :invalid-non-nil}
+             (support/error-keys
+              (expansion-error
+               (assoc record-tail
+                      0 (non-nil '__meta)
+                      2 (with-meta '__hash {:tag 'int :non-nil :x})))))))
+    (testing ":hidden-field before tag and type"
+      (is (= {:value-type/error :invalid-field :reason :hidden-field}
+             (support/error-keys
+              (expansion-error
+               (into [untagged] (assoc record-tail 0 (non-nil '__meta))))))))
+    (testing "metadata keys of all fields before tag and type"
+      (is (= {:value-type/error :invalid-field :reason :removed-nil-restricted}
+             (support/error-keys (expansion-error [untagged removed])))))))
 
 (deftest unchecked-shapes-test
   ;; Non-symbol elements and non-vector fields pass the checks; deftype*
@@ -160,3 +208,18 @@
                     #(binding [*ns* (the-ns 'value-type.deftype-star-test)]
                        (eval (list 'eval (list 'macroexpand
                                                (list 'quote (star-form n record?)))))))))))))))
+
+(deftest not-installed-enabled-field-test
+  ;; Full expansion with no compiler loader binding reaches the receiving
+  ;; macro, which cannot install capture.
+  (let [n  (gensym "NoInstallStar")
+        cn (symbol (str "value_type.deftype_star_test." n))
+        form `(vt/defvaluetype* ~n ~cn
+                ~(into [(with-meta 'a {:tag 'String :non-nil true})]
+                       record-tail))
+        t  (support/on-raw-thread
+            #(binding [*ns* (the-ns 'value-type.deftype-star-test)]
+               (walk/macroexpand-all form)))]
+    (is (instance? clojure.lang.Compiler$CompilerException t) (str "result: " t))
+    (is (= {:value-type/error :not-installed :class-name (str cn)}
+           (ex-data (ex-cause t))))))

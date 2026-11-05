@@ -49,25 +49,27 @@
 (defn prepare
   "Return owner and companion transforms for ordered field specifications.
    `shape` is `:plain` (a `deftype` class) or `:record` (a record-shaped
-   `deftype*` class; specifications are empty and ignored). For `:record`,
+   `deftype*` class). Both shapes give concrete storage, constructor checks
+   and concrete field references for the specified fields. For `:record`,
    owner (after the transform) and companion bytes that read or write
    `__hash`/`__hasheq` of `target` throw `:invalid-field` with
    `:reason :removed-field-access`.
    Load this namespace only after selecting value output."
   [target specifications delegate shape]
-  (case shape
-    :record
-    {:owner #(check-removed-fields
-              (transform/->record-value-class % delegate) target)
-     :companion #(check-removed-fields % target)}
-    :plain
-    (let [storage (into {} (map (juxt fields/emitted-name
-                                      (fn [{:keys [^Class type enforcement]}]
-                                        {:storage-type (ClassDesc/ofDescriptor
-                                                        (.descriptorString type))
-                                         :native? (= :native enforcement)})))
-                        specifications)]
+  (let [storage (into {} (map (juxt fields/emitted-name
+                                    (fn [{:keys [^Class type enforcement]}]
+                                      {:storage-type (ClassDesc/ofDescriptor
+                                                      (.descriptorString type))
+                                       :native? (= :native enforcement)})))
+                      specifications)
+        rewrite #(if (empty? storage)
+                   %
+                   (field-access/rewrite-class % target storage delegate))]
+    (case shape
+      :record
+      {:owner #(check-removed-fields
+                (transform/->record-value-class % storage delegate) target)
+       :companion #(check-removed-fields (rewrite %) target)}
+      :plain
       {:owner #(transform/->value-class % storage delegate)
-       :companion #(if (empty? storage)
-                     %
-                     (field-access/rewrite-class % target storage delegate))})))
+       :companion rewrite})))

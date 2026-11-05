@@ -29,3 +29,32 @@ compiled record constant (`eval` of a form that embeds an instance),
 
 Without `--enable-preview` the JVM rejects the preview class version; that
 configuration is not a gate case.
+
+## Non-nil gate
+
+Task 020, Slice 1 (D7 non-nil gate). `non-nil-gate.clj` transforms a
+record-shaped `deftype*` class with the fields `[p s __meta __extmap ^int
+__hash ^int __hasheq]` into a value class with a spike-local transform.
+Field `p` has native storage (tag `Pt`, a `defvaluetype` class, with
+`NullRestricted`). Field `s` has generated storage (`String`,
+`Objects.requireNonNull` and `checkcast`). Only the main constructor
+changes; owner field references use the concrete descriptors.
+`gate.clj` does not change.
+
+```sh
+JDK="$HOME/.local/jdks/jdk-27.jdk/Contents/Home"
+"$JDK/bin/java" --enable-preview -Xverify:all \
+  --add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
+  -cp "$(JAVA_CMD="$JDK/bin/java" clojure -Spath)" \
+  clojure.main spike/record-value-type/non-nil-gate.clj
+```
+
+The script prints one EDN map (`:results`, `:failed`) and exits 0 only when
+no case fails. Structure cases: value class, three constructors, field
+storage and `NullRestricted`, `create` with an absent key, `withMeta`.
+Path cases: each of the three constructors (direct and by reflection),
+`create`, the map literal, the positional literal (`load-string` and
+`read-string`) and a compiled record constant, each with valid arguments
+and with `nil` and wrong-type values for the native and the generated
+field. A rejection case passes only when the expected exception class is
+in the cause chain.

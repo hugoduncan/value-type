@@ -4,7 +4,8 @@
    identity fact, factory symbols, cell namespace names, failure maps (of
    an error: thrown, failure, root-data and root-failure; of a failed type
    definition), rejection maps, call outcomes, failed, guarded and rejected calls,
-   runtime facts, child call forms and the hash-field count.
+   runtime facts, child call forms, the hash-field count and the record
+   tail of `deftype*`.
 
    Requires only clojure.core and uses Java 8 APIs, so a child JVM loads it
    without test support."
@@ -19,6 +20,12 @@
    got; add it. Compare by identity, not by name."
   [value]
   (and (class? value) (.add classes value)))
+
+(def record-tail
+  "The hidden fields of the record shape of `deftype*`, in field order."
+  ['__meta '__extmap
+   (with-meta '__hash {:tag 'int})
+   (with-meta '__hasheq {:tag 'int})])
 
 (def ^:private cell-ns-prefix "cell.")
 

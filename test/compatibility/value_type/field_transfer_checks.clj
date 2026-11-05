@@ -48,9 +48,6 @@
                      (registry/twice (fn [] (attempt serialized mode))))
                    expansions)})
 
-(defn- native-field? [^Field field]
-  (boolean (some (set checks/native-annotations) (checks/annotation-names field))))
-
 (defn consume-supported
   "Install one serialized TransferredField twice in mode. Return
    :initially-absent? (cell-registry/absent?) and per attempt its
@@ -69,9 +66,8 @@
               definition (registry/defined n 'TransferredField installed input)
               factory (ns-resolve n '->TransferredField)]
           (merge definition
+                 (checks/enforcement-facts field)
                  {:identity? (registry/identity? factory input)
-                  :native? (native-field? field)
-                  :type (:type (checks/field-facts field))
                   :constructions
                   (checks/construction-results
                    n installed field input (Object.)
@@ -91,7 +87,7 @@
              fields (mapv #(.getField installed ^String %) ["number" "text"])]
          (merge definition
                 {:type (mapv (comp :type checks/field-facts) fields)
-                 :native (mapv native-field? fields)
+                 :native (mapv checks/native-field? fields)
                  :constructions
                  (mapv (fn [build]
                          (let [value (build [42 "valid"])]

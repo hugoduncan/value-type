@@ -5,6 +5,7 @@
    [clojure.java.io :as io]
    [clojure.test :refer [deftest is testing]]
    [value-type.annotation-support :as annotation-support]
+   [value-type.impl.identity-backend :as identity-backend]
    [value-type.impl.transform :as transform]
    [value-type.test-support :refer [record-tail value?]])
   (:import
@@ -609,7 +610,7 @@
   "Return `[message data]` of the ex-info that `->record-value-class`
   throws for `bs`."
   [bs]
-  (thrown-data #(transform/->record-value-class % nil) bs))
+  (thrown-data #(transform/->record-value-class % nil nil) bs))
 
 (defn- check-error
   "Check that `failure` of `bs` gives `:unexpected-constructor` for
@@ -829,14 +830,47 @@
   (set (map #(.stringValue (.methodType ^MethodModel %))
             (filter ctor? (.methods cm)))))
 
-(defn- ctor-code-by-descriptor [^ClassModel cm]
-  (into {} (map (fn [^MethodModel m]
-                  [(.stringValue (.methodType m)) (vec (code-bytes m))]))
-        (filter ctor? (.methods cm))))
+(defn- ctor-code-by-descriptor
+  "Return a map from constructor descriptor to `(code m)`; `code` defaults
+  to the code bytes."
+  ([cm] (ctor-code-by-descriptor cm #(vec (code-bytes %))))
+  ([^ClassModel cm code]
+   (into {} (map (fn [^MethodModel m] [(.stringValue (.methodType m)) (code m)]))
+         (filter ctor? (.methods cm)))))
+
+(defn- main-descriptor
+  "Return the main constructor descriptor of the record class `cm`: one
+  parameter per field."
+  [^ClassModel cm]
+  (str "(" (apply str (map #(.stringValue (.fieldType ^FieldModel %)) (.fields cm)))
+       ")V"))
+
+(defn- code-elements
+  "Return the code elements of the method `m`."
+  [^MethodModel m]
+  (.elementList ^CodeModel (.orElseThrow (.code m))))
+
+(defn- method-elements
+  "Return the code elements of the constructor `desc` of `cm`."
+  [^ClassModel cm desc]
+  (code-elements
+   (first (filter #(and (ctor? %) (= desc (.stringValue (.methodType ^MethodModel %))))
+                  (.methods cm)))))
+
+(defn- field-types
+  "Return `[name descriptor]` for each field of `fields`."
+  [fields]
+  (mapv (juxt #(.stringValue (.fieldName ^FieldModel %))
+              #(.stringValue (.fieldType ^FieldModel %)))
+        fields))
+
+(defn- null-check? [e]
+  (and (instance? InvokeInstruction e)
+       (= "requireNonNull" (.stringValue (.name ^InvokeInstruction e)))))
 
 (defn- record-value-class ^Class [{:keys [^Class class bytes dir]}]
   (.loadClass (round-trip-loader (.getName class)
-                                 (transform/->record-value-class bytes nil)
+                                 (transform/->record-value-class bytes nil nil)
                                  dir)
               (.getName class)))
 
@@ -844,12 +878,10 @@
   (doseq [[k {:keys [declared bytes]}] @compiled-records]
     (testing (str k)
       (let [in (parse bytes)
-            out (parse (transform/->record-value-class bytes nil))
+            out (parse (transform/->record-value-class bytes nil nil))
             names (fn [^ClassModel cm]
                     (mapv #(.stringValue (.fieldName ^FieldModel %)) (.fields cm)))
-            main (str "(" (apply str (map #(.stringValue (.fieldType ^FieldModel %))
-                                          (.fields in)))
-                      ")V")]
+            main (main-descriptor in)]
         (testing "hash fields are removed, other fields kept in order"
           (is (= (into (mapv name declared) ["__meta" "__extmap"]) (names out))))
         (testing "kept fields get ACC_STRICT_INIT"
@@ -867,12 +899,7 @@
           (is (not-any? #(and (instance? FieldInstruction %)
                               (#{"__hash" "__hasheq"}
                                (.stringValue (.name ^FieldInstruction %))))
-                        (.elementList ^CodeModel
-                         (.orElseThrow
-                          (.code ^MethodModel
-                           (first (filter #(= main (.stringValue
-                                                    (.methodType ^MethodModel %)))
-                                          (.methods out)))))))))
+                        (method-elements out main))))
         (testing "create and getBasis are unchanged"
           (let [statics (fn [^ClassModel cm]
                           (into {} (comp (filter #(#{"create" "getBasis"}
@@ -882,6 +909,67 @@
                                                  (vec (code-bytes m))])))
                                 (.methods cm)))]
             (is (= (statics in) (statics out)))))))))
+
+(deftest record-storage-structure-test
+  ;; Value record output with concrete storage: native and generated fields.
+  (let [{:keys [bytes]} (:reference-fields @compiled-records)
+        in (parse bytes)
+        storage {"a" {:storage-type (ClassDesc/of "storage.Value") :native? true}
+                 "b" {:storage-type ConstantDescs/CD_String :native? false}}
+        out (parse (transform/->record-value-class bytes storage nil))
+        fields (filterv (complement static?) (.fields out))
+        by-name (into {} (map (juxt #(.stringValue (.fieldName ^FieldModel %)) identity))
+                      fields)
+        main (main-descriptor in)
+        elements (method-elements out main)]
+    (testing "concrete storage, no hash fields"
+      (is (= [["a" "Lstorage/Value;"] ["b" "Ljava/lang/String;"]
+              ["__meta" "Ljava/lang/Object;"] ["__extmap" "Ljava/lang/Object;"]]
+             (field-types fields))))
+    (testing "native restriction only where selected"
+      (is (= {["Ljdk/internal/vm/annotation/NullRestricted;" {}] 1}
+             (annotation-support/annotation-contents
+              (by-name "a") RuntimeVisibleAnnotationsAttribute)))
+      (is (empty? (annotation-support/annotation-contents
+                   (by-name "b") RuntimeVisibleAnnotationsAttribute))))
+    (testing "main constructor: one null check (generated field), two casts"
+      (is (= 1 (count (filter null-check? elements))))
+      (is (= 2 (count (filter #(= Opcode/CHECKCAST (.opcode ^java.lang.classfile.Instruction %))
+                              (filter #(instance? java.lang.classfile.Instruction %)
+                                      elements))))))
+    (testing "constructor descriptors and delegating constructors are unchanged"
+      (is (= (ctor-descriptors in) (ctor-descriptors out)))
+      (is (= (dissoc (ctor-code-by-descriptor in) main)
+             (dissoc (ctor-code-by-descriptor out) main))))))
+
+(deftest identity-record-storage-structure-test
+  ;; Identity record output: concrete storage, checks only in the main
+  ;; constructor, hash fields kept.
+  (let [{:keys [bytes ^Class class]} (:reference-fields @compiled-records)
+        in (parse bytes)
+        specs [{:field 'a :type String :enforcement :generated}
+               {:field 'b :type Long :enforcement :generated}]
+        out (parse ((:owner (identity-backend/prepare (.getName class) specs nil))
+                    bytes))
+        main (main-descriptor in)
+        null-checks #(count (filter null-check? (code-elements %)))]
+    (testing "concrete storage; hash fields kept"
+      (is (= [["a" "Ljava/lang/String;"] ["b" "Ljava/lang/Long;"]
+              ["__meta" "Ljava/lang/Object;"] ["__extmap" "Ljava/lang/Object;"]
+              ["__hash" "I"] ["__hasheq" "I"]]
+             (field-types (remove static? (.fields out))))))
+    (testing "null checks only in the main constructor, one per field"
+      (is (= {main 2}
+             (into {} (remove (comp zero? val))
+                   (ctor-code-by-descriptor out null-checks)))))
+    (testing "constructor descriptors and delegating constructors unchanged"
+      ;; ASM rebuilds the constant pool, so compare resolved instructions.
+      (let [instructions (fn [m]
+                           (mapv str (filter #(instance? java.lang.classfile.Instruction %)
+                                             (code-elements m))))
+            code #(dissoc (ctor-code-by-descriptor % instructions) main)]
+        (is (= (ctor-descriptors in) (ctor-descriptors out)))
+        (is (= (code in) (code out)))))))
 
 (deftest record-round-trip-test
   (doseq [[k {:keys [declared args] :as fx}] @compiled-records]
@@ -982,7 +1070,7 @@
 (deftest record-built-accepted-test
   (testing "the built record class is accepted"
     (is (bytes? (transform/->record-value-class
-                 (build-record-class (built-name) standard-main! nil) nil)))))
+                 (build-record-class (built-name) standard-main! nil) nil nil)))))
 
 (deftest record-constructor-set-error-test
   (testing "plain deftype bytes: one constructor"

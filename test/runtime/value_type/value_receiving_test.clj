@@ -243,3 +243,44 @@
                            (catch InvocationTargetException error
                              (class (.getCause error)))))))))))
         (finally (remove-ns (ns-name receiver)))))))
+
+;;; defvaluetype* receiving: value-field-deftype*
+
+(def ^:private star-class "value_type.value_receiving_test.StarHolder")
+
+(defn- star-error
+  "Macroexpand a `value-field-deftype*` form with `modes` and `fields`;
+  return :no-error or the `ex-data` of the cause."
+  [modes fields]
+  (support/thrown-data
+   #(binding [*ns* (the-ns 'value-type.value-receiving-test)]
+      (macroexpand-1 (list 'value-type.core/value-field-deftype* 'StarHolder
+                           (symbol star-class) modes fields)))))
+
+(deftest receiving-star-order-test
+  (let [nn #(with-meta % {:non-nil true})
+        tail support/record-tail]
+    (testing ":mutable-field before :record-shape"
+      (is (= {:value-type/error :mutable-field}
+             (support/error-keys (star-error [] [(with-meta 'a {:volatile-mutable true})
+                                                 '__meta])))))
+    (testing ":record-shape before metadata keys"
+      (is (= {:value-type/error :invalid-field :reason :record-shape}
+             (support/error-keys (star-error [] [(with-meta 'a {:non-nil :x}) '__meta])))))
+    (testing "metadata keys before :hidden-field, error on a later field"
+      (is (= {:value-type/error :invalid-field :reason :invalid-non-nil}
+             (support/error-keys (star-error [:generated]
+                                             (assoc tail 0 (nn '__meta)
+                                                    2 (with-meta '__hash
+                                                        {:tag 'int :non-nil :x})))))))
+    (testing ":hidden-field before tag and type"
+      (is (= {:value-type/error :invalid-field :reason :hidden-field}
+             (support/error-keys (star-error [:generated :generated]
+                                             (into [(nn 'a)]
+                                                   (assoc tail 0 (nn '__meta))))))))))
+
+(deftest receiving-star-invalid-modes-test
+  (is (= {:value-type/error :invalid-field-enforcement
+          :class-name star-class
+          :modes []}
+         (star-error [] [(with-meta 'a {:tag 'String :non-nil true})]))))

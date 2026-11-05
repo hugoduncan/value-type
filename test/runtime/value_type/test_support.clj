@@ -49,6 +49,12 @@
        (catch Throwable t
          (or (ex-info-data t) (throw t)))))
 
+(defn error-keys
+  "The `:value-type/error` and `:reason` of the error data `data`; `data`
+  itself when it is not a map (for example :no-error)."
+  [data]
+  (if (map? data) (select-keys data [:value-type/error :reason]) data))
+
 (defmacro vt-type
   "Install the capture loader for `name` (no `defvaluetype`), then
   expand to the `deftype` form and the class."

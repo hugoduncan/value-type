@@ -159,3 +159,52 @@
                                          "evaluate the defvaluetype form directly"])
                   (ex-message cause))))))
       (finally (remove-ns (ns-name receiver))))))
+
+;;; defvaluetype* receiving: identity-field-deftype*
+
+(def ^:private star-class "value_type.identity_receiving_test.StarHolder")
+
+(defn- error-keys
+  "The `:value-type/error` and `:reason` of the error data `data`; `data`
+  itself when it is not a map (for example :no-error)."
+  [data]
+  (if (map? data) (select-keys data [:value-type/error :reason]) data))
+
+(defn- star-error
+  "Macroexpand an `identity-field-deftype*` form with `modes` and `fields`;
+  return :no-error or the `ex-data` of the cause."
+  [modes fields]
+  (try
+    (binding [*ns* (the-ns 'value-type.identity-receiving-test)]
+      (macroexpand-1 (list 'value-type.core/identity-field-deftype* 'StarHolder
+                           (symbol star-class) modes fields)))
+    :no-error
+    (catch clojure.lang.Compiler$CompilerException thrown
+      (ex-data (.getCause thrown)))))
+
+(deftest receiving-star-order-test
+  (let [nn #(with-meta % {:non-nil true})]
+    (testing ":mutable-field before :record-shape"
+      (is (= {:value-type/error :mutable-field}
+             (error-keys (star-error [] [(with-meta 'a {:volatile-mutable true})
+                                         '__meta])))))
+    (testing ":record-shape before metadata keys"
+      (is (= {:value-type/error :invalid-field :reason :record-shape}
+             (error-keys (star-error [] [(with-meta 'a {:non-nil :x}) '__meta])))))
+    (testing "metadata keys before :hidden-field, error on a later field"
+      (is (= {:value-type/error :invalid-field :reason :invalid-non-nil}
+             (error-keys (star-error [:generated]
+                                     (assoc registry/record-tail 0 (nn '__meta)
+                                            2 (with-meta '__hash
+                                                {:tag 'int :non-nil :x})))))))
+    (testing ":hidden-field before tag and type"
+      (is (= {:value-type/error :invalid-field :reason :hidden-field}
+             (error-keys (star-error [:generated :generated]
+                                     (into [(nn 'a)]
+                                           (assoc registry/record-tail 0 (nn '__meta))))))))))
+
+(deftest receiving-star-native-modes-test
+  (is (= {:value-type/error :invalid-field-enforcement
+          :class-name star-class
+          :modes [:native]}
+         (star-error [:native] [(with-meta 'a {:tag 'String :non-nil true})]))))

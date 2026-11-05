@@ -253,11 +253,15 @@ Run the value-path checks on EA3 with preview:
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:test -m scry.cli \
   --namespace value-type.deftype-star-test \
   --namespace value-type.deftype-star-record-test \
-  --namespace value-type.impl.removed-field-test
+  --namespace value-type.impl.removed-field-test \
+  --namespace value-type.value-receiving-test \
+  --namespace value-type.impl.transform-test
 ```
 
-These checks cover declaration errors, plain and record shapes in both
-outputs, the record transform and the removed-field access check.
+These checks cover declaration errors and their order, plain and record
+shapes in both outputs, non-nil fields (both shapes, both outputs), the
+record transform, the record storage bytecode, the removed-field access
+check and the receiving order and errors of `value-field-deftype*`.
 
 Run the policy and transfer checks on the three JVMs:
 
@@ -266,20 +270,29 @@ for c in "$VALUE_TYPE_BASELINE_JAVA|" "$VALUE_TYPE_VALHALLA_JAVA|" \
          "$VALUE_TYPE_VALHALLA_JAVA|-J--enable-preview"; do
   JAVA_CMD="${c%|*}" clojure ${c#*|} -M:fallback-test \
     --namespace value-type.runtime-test \
-    --namespace value-type.deftype-star-transfer-test || exit 1
+    --namespace value-type.deftype-star-transfer-test \
+    --namespace value-type.identity-receiving-test \
+    --namespace value-type.identity-backend-test || exit 1
 done
 JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
   --namespace value-type.deftype-star-aot-test
 ```
 
 `value-type.deftype-star-transfer-test` is in `test/compatibility/`, so it
-runs with `:fallback-test`. The AOT test fixes the representation at compile
-time and checks source-free consumers and incompatible receivers.
+runs with `:fallback-test`. These checks cover the fallback policies with
+non-nil fields, the transfer of enabled fields, the receiving order and errors
+of `identity-field-deftype*` and the D8 delegation rule of the identity
+backend. The AOT test fixes the representation and enforcement at compile
+time and checks source-free consumers and incompatible receivers. Its
+fixtures include `PlainNonNil` and `RecNonNil`.
 
 Limits: interpreter (`-Xint`) runs cover only the value artifact consumers of
 the AOT test. Reflective access to `__hash` and `__hasheq` is not checked.
-The feasibility gate for record-shaped value classes has its own command in
+The feasibility gate for record-shaped value classes and the non-nil gate
+(`spike/record-value-type/non-nil-gate.clj`) have their own commands in
 [`spike/record-value-type/README.md`](../../spike/record-value-type/README.md).
+The non-nil gate needs
+`--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
 
 ## Verify array allocation
 

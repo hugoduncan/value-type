@@ -406,17 +406,39 @@ Two field shapes are accepted:
   unqualified, with no tag on `__meta` and `__extmap`. This is the shape that
   the Clojure compiler gives `defrecord`.
 
-Mutable fields give `:mutable-field`. Other shapes give `:invalid-field`
-with `:reason :record-shape`. `:nil-restricted` metadata gives
-`:removed-nil-restricted`, and `:non-nil` metadata, with any value, gives
-`:non-nil-unsupported`. These checks run at macroexpansion, in that order,
-before representation policy. An invalid form never selects fallback.
+Fields can be non-nil, as in
+[portable non-nil fields](#portable-non-nil-fields), in both shapes. A
+hidden-name field cannot be non-nil. The main constructor checks each enabled
+field. All constructors, `create`, record literals, compiled record constants
+and reflection reject nil with `NullPointerException` and wrong types with
+`ClassCastException`. The compiler, class initialization and reflection can
+wrap these exceptions (for example in `CompilerException`,
+`ExceptionInInitializerError` or `InvocationTargetException`); find the
+exception in the cause chain. The error text is not specified.
+
+These declaration checks run at macroexpansion, before representation policy,
+in this order; the first failure wins:
+
+1. Mutable fields give `:mutable-field`.
+2. Other shapes give `:invalid-field` with `:reason :record-shape`.
+3. `:nil-restricted` metadata gives `:removed-nil-restricted`; a `:non-nil`
+   value other than true, false or nil gives `:invalid-non-nil`.
+4. A hidden-name field with `:non-nil true` gives `:reason :hidden-field`.
+5. The tag and type reasons of `defvaluetype` for enabled fields.
+
+An invalid form never selects fallback. Identity output with enabled fields
+gives `:unsupported-shape` when a delegating constructor writes an enabled
+field, or when a constructor both creates and calls the target.
 
 Caller obligations for record shapes:
 
 - Do not read or write `__hash` or `__hasheq`.
 - Pass 0 for both hash arguments in explicit constructor calls.
 - Make the code work with both value and identity output.
+- Supply each enabled field. `create` from a map with no entry for an
+  enabled field fails, and an `assoc` that calls a constructor (as
+  `defrecord` does) rejects nil for an enabled field. Code that builds
+  records from partial maps must supply each enabled field.
 
 Value output removes both hash fields and ignores those arguments. The
 compiler-generated constructors, `create` and `getBasis` keep their
@@ -424,17 +446,24 @@ contracts, so record literals and compiled record constants work. Methods
 must compute hashes on each call. Owner or companion code that accesses a
 removed field gives `:invalid-field` with `:reason :removed-field-access`.
 Reflective access is not checked. Identity output keeps both fields; they hold
-0 when callers meet these obligations. value-type does not validate
-constructor arguments.
+0 when callers meet these obligations. value-type does not validate the
+hash arguments.
 
 Representation policy, fallback and AOT behave as for `defvaluetype`. The
-fallback expansion is guarded `deftype*` output with no transform; receivers
-of a transferred fallback expansion apply their own policy. A value expansion
-evaluated apart from its macroexpansion fails with `:not-installed` or
-`:not-value-class`; it never selects fallback. An unexpected constructor shape
-gives `:unexpected-constructor`.
+fallback expansion without enabled fields is guarded `deftype*` output with
+no transform. With enabled fields, the value and fallback expansions are
+receiving forms that repeat the declaration checks; the fallback receiver
+gives identity output with generated checks. Receivers of a transferred
+fallback expansion apply their own policy. A value expansion without enabled
+fields evaluated apart from its macroexpansion fails with `:not-installed` or
+`:not-value-class`; it never selects fallback. With enabled fields, see the
+receiving boundary paragraph in
+[Differences from `deftype`](#differences-from-deftype): separate `eval` of the
+expansion works, and only a full expansion outside compilation (for example
+`clojure.walk/macroexpand-all`) gives `:not-installed`. An unexpected
+constructor shape gives `:unexpected-constructor`.
 
-Exclusions: `:non-nil` fields, mutable caches, value-equality emulation,
+Exclusions: mutable caches, value-equality emulation,
 changes to `defrecord` and serialization guarantees. Real-JVM evidence covers
 Clojure 1.12.6, Java 8 and Valhalla `27-jep401ea3+1-1` with preview off and
 on. It does not establish other JVMs, Clojure versions, object size or

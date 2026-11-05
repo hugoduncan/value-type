@@ -20,7 +20,8 @@ Its API is not stable.
 - `value-type.core/defvaluetype*` takes `deftype*` arguments (plain or
   compiler record shape) and evaluates to the Class. Value output removes
   `__hash`/`__hasheq` and keeps all three record constructors and `create`.
-  Same fallback policy; no `:non-nil` fields. See
+  Same fallback policy; `:non-nil` fields in both shapes (main constructor
+  checks; receiving macros `value-field-deftype*`/`identity-field-deftype*`). See
   [deftype* design](../ramora/deftype-star-design.md) and the usage guide.
 - `value-type.array/make-array` allocates native null-restricted atomic arrays
   with an explicit seed. `into-array` constructs them from finite sequences.

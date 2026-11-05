@@ -87,54 +87,68 @@
             (is (message-names? message (shape-parts "unsupported non-nil field reference"))
                 message)))))))
 
+(defn- super-call
+  "Emit `super()`."
+  [^clojure.asm.MethodVisitor m]
+  (.visitVarInsn m clojure.asm.Opcodes/ALOAD 0)
+  (.visitMethodInsn m clojure.asm.Opcodes/INVOKESPECIAL
+                    "java/lang/Object" "<init>" "()V" false))
+
 (defn- constructor-bytes
-  [write-count branch? extra-constructor?]
-  (let [writer (clojure.asm.ClassWriter. 0)
-        emit (fn [descriptor count-writes]
-               (let [method (.visitMethod writer clojure.asm.Opcodes/ACC_PUBLIC
-                                          "<init>" descriptor nil nil)]
-                 (.visitCode method)
-                 (.visitVarInsn method clojure.asm.Opcodes/ALOAD 0)
-                 (.visitMethodInsn method clojure.asm.Opcodes/INVOKESPECIAL
-                                   "java/lang/Object" "<init>" "()V" false)
-                 (when branch?
-                   (let [label (clojure.asm.Label.)]
-                     (.visitJumpInsn method clojure.asm.Opcodes/GOTO label)
-                     (.visitLabel method label)))
-                 (dotimes [_ count-writes]
-                   (.visitVarInsn method clojure.asm.Opcodes/ALOAD 0)
-                   (.visitVarInsn method clojure.asm.Opcodes/ALOAD 1)
-                   (.visitFieldInsn method clojure.asm.Opcodes/PUTFIELD
-                                    "Shape" "label" "Ljava/lang/Object;"))
-                 (.visitInsn method clojure.asm.Opcodes/RETURN)
-                 (.visitMaxs method 2 2)
-                 (.visitEnd method)))]
-    (.visit writer clojure.asm.Opcodes/V1_8 clojure.asm.Opcodes/ACC_PUBLIC
-            "Shape" nil "java/lang/Object" nil)
-    (.visitEnd (.visitField writer clojure.asm.Opcodes/ACC_FINAL
-                            "label" "Ljava/lang/Object;" nil nil))
-    (emit "(Ljava/lang/Object;)V" write-count)
-    (when extra-constructor? (emit "()V" 0))
-    (.visitEnd writer)
-    (.toByteArray writer)))
+  "Class `Shape` (field `label`) with a constructor `(Object)V` that calls
+  `super()`, then writes `label` `write-count` times (after a `GOTO` when
+  `branch?`). When given, `second-body` (an ASM method visitor function)
+  builds a second constructor `()V`."
+  ([write-count branch?]
+   (constructor-bytes write-count branch? nil))
+  ([write-count branch? second-body]
+   (let [writer (clojure.asm.ClassWriter. 0)
+         op clojure.asm.Opcodes/ACC_PUBLIC]
+     (.visit writer clojure.asm.Opcodes/V1_8 op "Shape" nil "java/lang/Object" nil)
+     (.visitEnd (.visitField writer clojure.asm.Opcodes/ACC_FINAL
+                             "label" "Ljava/lang/Object;" nil nil))
+     (let [m (.visitMethod writer op "<init>" "(Ljava/lang/Object;)V" nil nil)]
+       (.visitCode m)
+       (super-call m)
+       (when branch?
+         (let [label (clojure.asm.Label.)]
+           (.visitJumpInsn m clojure.asm.Opcodes/GOTO label)
+           (.visitLabel m label)))
+       (dotimes [_ write-count]
+         (.visitVarInsn m clojure.asm.Opcodes/ALOAD 0)
+         (.visitVarInsn m clojure.asm.Opcodes/ALOAD 1)
+         (.visitFieldInsn m clojure.asm.Opcodes/PUTFIELD
+                          "Shape" "label" "Ljava/lang/Object;"))
+       (.visitInsn m clojure.asm.Opcodes/RETURN)
+       (.visitMaxs m 2 2)
+       (.visitEnd m))
+     (when second-body
+       (let [m (.visitMethod writer op "<init>" "()V" nil nil)]
+         (.visitCode m)
+         (second-body m)
+         (.visitInsn m clojure.asm.Opcodes/RETURN)
+         (.visitMaxs m 4 1)
+         (.visitEnd m)))
+     (.visitEnd writer)
+     (.toByteArray writer))))
 
 (deftest constructor-coverage
   ;; Unsupported constructors must fail before unchecked classes can be installed.
   (let [transform (:owner (value-type.impl.identity-backend/prepare
                            "Shape" [{:field 'label :type String :enforcement :generated}] nil))]
     (testing "straight-line writes cover the selected field"
-      (is (bytes? (transform (constructor-bytes 1 false false)))))
+      (is (bytes? (transform (constructor-bytes 1 false)))))
     (testing "missing constructors, missing or repeated writes and branches fail"
       (doseq [[case-name bytes part]
               [["no constructor" (field-reference-bytes true nil nil)
                 "missing non-nil constructor"]
-               ["no write" (constructor-bytes 0 false false)
+               ["no write" (constructor-bytes 0 false)
                 "incomplete non-nil constructor writes"]
-               ["two writes" (constructor-bytes 2 false false)
+               ["two writes" (constructor-bytes 2 false)
                 "repeated non-nil constructor write"]
-               ["branch" (constructor-bytes 1 true false)
+               ["branch" (constructor-bytes 1 true)
                 "unsupported non-nil constructor control flow"]
-               ["extra constructor" (constructor-bytes 1 false true)
+               ["extra constructor" (constructor-bytes 1 false super-call)
                 "incomplete non-nil constructor writes"]]]
         (testing case-name
           (let [{error :value-type/error message :message} (shape-failure transform bytes)]
@@ -202,7 +216,7 @@
               (annotate (.visitAnnotation ^clojure.asm.MethodVisitor method-visitor
                                           "Ljava/lang/Deprecated;" true))
               method-visitor)))]
-    (.accept (clojure.asm.ClassReader. ^bytes (constructor-bytes 1 false false)) visitor 0)
+    (.accept (clojure.asm.ClassReader. ^bytes (constructor-bytes 1 false)) visitor 0)
     (.toByteArray writer)))
 
 (deftest unrelated-attributes-survive
@@ -232,7 +246,7 @@
         visitor (proxy [clojure.asm.ClassVisitor] [clojure.asm.Opcodes/ASM6 writer]
                   (visitField [_access field _descriptor signature value]
                     (proxy-super visitField access field descriptor signature value)))]
-    (.accept (clojure.asm.ClassReader. ^bytes (constructor-bytes 1 false false))
+    (.accept (clojure.asm.ClassReader. ^bytes (constructor-bytes 1 false))
              visitor 0)
     (.toByteArray writer)))
 
@@ -290,3 +304,72 @@
         (testing (pr-str construction)
           (is (= checks/checked-rejections
                  (checks/checked-outcomes build "not a child"))))))))
+
+(deftest delegating-record-constructors
+  ;; Real defrecord output: two compiler delegating constructors and create.
+  (let [rec value_type.identity_backend.fixture.Rec
+        build {:declared #(clojure.lang.Reflector/invokeConstructor
+                           rec (object-array [% 7]))
+               :meta-extmap #(clojure.lang.Reflector/invokeConstructor
+                              rec (object-array [% 7 nil nil]))
+               :main #(clojure.lang.Reflector/invokeConstructor
+                       rec (object-array [% 7 nil nil (int 0) (int 0)]))
+               :create #(clojure.lang.Reflector/invokeStaticMethod
+                         rec "create" (object-array [{:label % :count 7}]))
+               :map-factory #((resolve 'value-type.identity-backend.fixture/map->Rec)
+                              {:label % :count 7})}]
+    (testing "concrete final storage; hash fields kept"
+      (is (= String (.getType (.getField rec "label"))))
+      (is (Modifier/isFinal (.getModifiers (.getField rec "label"))))
+      (is (= Integer/TYPE (.getType (.getDeclaredField rec "__hash")))))
+    (doseq [[path f] build]
+      (testing (pr-str path)
+        (is (= "ok" (:label (f "ok"))))
+        (is (= checks/checked-rejections
+               (checks/checked-outcomes (fn [[x]] (f x)) 42)))))))
+
+(defn- delegate-to-main
+  "Emit `this(\"x\")`."
+  [^clojure.asm.MethodVisitor m]
+  (.visitVarInsn m clojure.asm.Opcodes/ALOAD 0)
+  (.visitLdcInsn m "x")
+  (.visitMethodInsn m clojure.asm.Opcodes/INVOKESPECIAL
+                    "Shape" "<init>" "(Ljava/lang/Object;)V" false))
+
+(deftest constructor-delegation-rule
+  ;; D8: delegation is a call to a target constructor; shape-independent.
+  (let [transform (:owner (value-type.impl.identity-backend/prepare
+                           "Shape" [{:field 'label :type String :enforcement :generated}] nil))]
+    (testing "a delegating constructor that writes no field is accepted and loads"
+      (let [bytes (transform (constructor-bytes 1 false delegate-to-main))
+            cls (.defineClass (clojure.lang.DynamicClassLoader.) "Shape" bytes nil)]
+        (is (= "x" (.get (doto (.getDeclaredField cls "label") (.setAccessible true))
+                         (.newInstance (.getConstructor cls (into-array Class []))
+                                       (object-array 0)))))))
+    (testing "rejected delegation shapes"
+      (doseq [[case-name body part]
+              [["delegating constructor writes a field"
+                (fn [^clojure.asm.MethodVisitor m]
+                  (delegate-to-main m)
+                  (.visitVarInsn m clojure.asm.Opcodes/ALOAD 0)
+                  (.visitLdcInsn m "y")
+                  (.visitFieldInsn m clojure.asm.Opcodes/PUTFIELD
+                                   "Shape" "label" "Ljava/lang/Object;"))
+                "delegating non-nil constructor writes a field"]
+               ["constructor creates and calls the target"
+                (fn [^clojure.asm.MethodVisitor m]
+                  (super-call m)
+                  (.visitVarInsn m clojure.asm.Opcodes/ALOAD 0)
+                  (.visitTypeInsn m clojure.asm.Opcodes/NEW "Shape")
+                  (.visitInsn m clojure.asm.Opcodes/DUP)
+                  (.visitLdcInsn m "z")
+                  (.visitMethodInsn m clojure.asm.Opcodes/INVOKESPECIAL
+                                    "Shape" "<init>" "(Ljava/lang/Object;)V" false)
+                  (.visitFieldInsn m clojure.asm.Opcodes/PUTFIELD
+                                   "Shape" "label" "Ljava/lang/Object;"))
+                "non-nil constructor both creates and calls the target"]]]
+        (testing case-name
+          (let [{error :value-type/error message :message}
+                (shape-failure transform (constructor-bytes 1 false body))]
+            (is (= :unsupported-shape error))
+            (is (message-names? message (shape-parts part)) message)))))))

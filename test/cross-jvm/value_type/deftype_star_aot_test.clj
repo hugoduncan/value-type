@@ -38,7 +38,8 @@
   ;; Incompatible receivers reject value output; no conversion to identity.
   (testing "source-free value artifacts on baseline and preview off"
     (let [{:keys [valhalla] :as configuration} (config/configuration)]
-      (doseq [owner ["star.aot_fixture.Plain" "star.aot_fixture.Rec"]]
+      (doseq [owner ["star.aot_fixture.Plain" "star.aot_fixture.Rec"
+                     "star.aot_fixture.PlainNonNil" "star.aot_fixture.RecNonNil"]]
         (fixture/incompatible-consumers
          'star.aot-fixture checks/fixture-source valhalla
          (config/incompatible-receivers configuration)

@@ -1,5 +1,6 @@
 (ns value-type.runtime-test
-  (:require [clojure.test :refer [deftest]]
+  (:require [clojure.set :as set]
+            [clojure.test :refer [deftest]]
             [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
             [value-type.expansion-checks :as expansion]
@@ -128,13 +129,33 @@
                 :fallback? (not available?)
                 :warning :any}])))))
 
+(defn- root-class
+  "A child form: the root class name of the cause chain of the failure of
+   call (a form that `eval` runs), through failed-call."
+  [call]
+  (list 'value-type.cell-registry/failed-call
+        '#(:class (value-type.cell-registry/thrown %))
+        (list 'fn* [] (list 'eval call))))
+
+(defn- non-nil-checks
+  "A child form map: the root class names of (new cn nil) and (new cn \"s\"),
+   and for record? the same checks through create, with :create-stored."
+  [record?]
+  (merge
+   {:nil (root-class '(list 'new cn nil))
+    :wrong-type (root-class '(list 'new cn "s"))}
+   (when record?
+     {:create-stored '(eval (list '.-x (list '. cn 'create {:x 42})))
+      :create-nil (root-class '(list '. cn 'create {:x nil}))
+      :create-wrong-type (root-class '(list '. cn 'create {:x "s"}))})))
+
 (defn- deftype*-form
   "A child form: evaluate defvaluetype* of simple-name with fields in the
    cell namespace. Give {:named? :new-class? :value? :hash-fields :stored}
    (hash-fields is the count of declared __hash/__hasheq fields; stored is
-   field x of (new cn 42), the declared-fields constructor), or the
-   failed-definition map."
-  [simple-name fields]
+   field x of (new cn 42), the declared-fields constructor), merged with
+   the child form map checks, or the failed-definition map."
+  [simple-name fields checks]
   (list 'do '(require 'value-type.core 'value-type.impl.capability
                       'value-type.cell-registry)
         (list 'let ['cell-ns '*ns*
@@ -146,12 +167,23 @@
                     (list 'fn '[] (list 'eval (list 'list ''value-type.core/defvaluetype*
                                                     (list 'quote simple-name) 'cn
                                                     (list 'quote fields))))
-                    '(fn [^Class c]
-                       {:named? (= (str cn) (.getName c))
-                        :new-class? (value-type.cell-registry/new-class! c)
-                        :value? (value-type.impl.capability/value-class? c)
-                        :hash-fields (value-type.cell-registry/hash-field-count c)
-                        :stored (eval (list '.-x (list 'new cn 42)))})))))
+                    (list 'fn '[^Class c]
+                          (list 'merge
+                                '{:named? (= (str cn) (.getName c))
+                                  :new-class? (value-type.cell-registry/new-class! c)
+                                  :value? (value-type.impl.capability/value-class? c)
+                                  :hash-fields (value-type.cell-registry/hash-field-count c)
+                                  :stored (eval (list '.-x (list 'new cn 42)))}
+                                checks))))))
+
+(def ^:private non-nil-field
+  "The enabled field of the non-nil cells."
+  (with-meta 'x {:tag 'Long :non-nil true}))
+
+(def ^:private rejected-checks
+  "The expected :nil and :wrong-type outcomes."
+  {:nil "java.lang.NullPointerException"
+   :wrong-type "java.lang.ClassCastException"})
 
 (deftest deftype*-policy-test
   ;; Both shapes follow policy; warn emits once per runtime, shared with
@@ -161,28 +193,40 @@
         fallback (fn [policy expected]
                    (if (and (not available?) (= "error" policy))
                      (harness/described (harness/failed-definition context {}))
-                     expected))]
+                     expected))
+        definition (fn [policy label class-name fields record? checks extra]
+                     {:context [(policy-context policy) label]
+                      :form (deftype*-form class-name
+                              (cond-> fields
+                                record? (into registry/record-tail))
+                              checks)
+                      :expected (fallback policy
+                                          (merge {:named? true :new-class? true
+                                                  :value? available?
+                                                  :hash-fields (if (and record?
+                                                                        (not available?))
+                                                                 2
+                                                                 0)
+                                                  :stored 42}
+                                                 extra))
+                      :fallback? (not available?)
+                      :warning context})]
     (harness/run-cells
      (for [policy config/policies]
        (child policy
-              [{:context [(policy-context policy) "plain"]
-                :form (deftype*-form 'PolicyPlain '[x])
-                :expected (fallback policy {:named? true :new-class? true
-                                            :value? available?
-                                            :hash-fields 0 :stored 42})
-                :fallback? (not available?)
-                :warning context}
-               {:context [(policy-context policy) "record"]
-                :form (deftype*-form 'PolicyRecord
-                        ['x '__meta '__extmap
-                         (with-meta '__hash {:tag 'int})
-                         (with-meta '__hasheq {:tag 'int})])
-                :expected (fallback policy {:named? true :new-class? true
-                                            :value? available?
-                                            :hash-fields (if available? 0 2)
-                                            :stored 42})
-                :fallback? (not available?)
-                :warning context}
+              [(definition policy "plain" 'PolicyPlain '[x] false {} {})
+               (definition policy "record" 'PolicyRecord '[x] true {} {})
+               (definition policy "plain non-nil" 'PolicyPlainNonNil
+                 [non-nil-field] false (non-nil-checks false)
+                 rejected-checks)
+               (definition policy "record non-nil" 'PolicyRecordNonNil
+                 [non-nil-field] true (non-nil-checks true)
+                 (merge {:create-stored 42}
+                        rejected-checks
+                        (set/rename-keys
+                         rejected-checks
+                         {:nil :create-nil
+                          :wrong-type :create-wrong-type})))
                {:context [(policy-context policy) "defvaluetype after"]
                 :form '(do (require 'value-type.core)
                            (try (eval '(value-type.core/defvaluetype PolicyLater [x]))
@@ -202,7 +246,8 @@
                 :expected {:value-type/error :invalid-field
                            :class-name "cell.PolicyBad"
                            :field 'x
-                           :reason :non-nil-unsupported}
+                           :reason :missing-tag
+                           :tag nil}
                 :fallback? false}])))))
 
 (deftest deftype*-removed-field-check-test

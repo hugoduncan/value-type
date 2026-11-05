@@ -16,10 +16,16 @@
                             (into-array Type [(Type/getType Object)])))
 
 (defn- method-visitor
-  "Check constructor control flow and writes; retype selected field references."
+  "Check constructor control flow and writes; retype selected field references.
+  A constructor that calls a constructor of `owner` delegates: it must write
+  no selected field and must not also create an `owner` instance (then the
+  receiver of the call is not known). Each other constructor writes each
+  selected field once."
   [^MethodVisitor delegate owner types field-names method desc constructor?
    unsupported!]
   (let [writes (volatile! #{})
+        delegates? (volatile! false)
+        creates? (volatile! false)
         reject-control-flow
         (fn []
           (when constructor?
@@ -38,12 +44,30 @@
       (visitTryCatchBlock [start end handler type]
         (reject-control-flow)
         (.visitTryCatchBlock delegate start end handler type))
+      (visitTypeInsn [opcode type]
+        (when (and (= opcode Opcodes/NEW) (= type owner))
+          (vreset! creates? true))
+        (.visitTypeInsn delegate opcode type))
+      (visitMethodInsn [opcode target name method-desc interface?]
+        (when (and (= opcode Opcodes/INVOKESPECIAL) (= target owner)
+                   (= name "<init>"))
+          (vreset! delegates? true))
+        (.visitMethodInsn delegate opcode target name method-desc interface?))
       (visitInsn [opcode]
-        (when (and constructor? (= opcode Opcodes/RETURN)
-                   (not= @writes field-names))
-          (unsupported! "incomplete non-nil constructor writes"
-                        {:descriptor desc
-                         :fields (set (remove @writes field-names))}))
+        (when (and constructor? (= opcode Opcodes/RETURN))
+          (cond
+            (and @delegates? @creates?)
+            (unsupported! "non-nil constructor both creates and calls the target"
+                          {:descriptor desc})
+
+            (and @delegates? (seq @writes))
+            (unsupported! "delegating non-nil constructor writes a field"
+                          {:descriptor desc :fields @writes})
+
+            (and (not @delegates?) (not= @writes field-names))
+            (unsupported! "incomplete non-nil constructor writes"
+                          {:descriptor desc
+                           :fields (set (remove @writes field-names))})))
         (.visitInsn delegate opcode))
       (visitFieldInsn [opcode target field field-desc]
         (if-let [^Type concrete (when (= target owner) (get types field))]

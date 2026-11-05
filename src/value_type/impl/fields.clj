@@ -160,15 +160,44 @@
              :enforcement :generated}))
         enabled))
 
+(defn- check-hidden-fields!
+  "Return `enabled`. Throw `ex-info` with `:value-type/error`
+  `:invalid-field`, `:reason :hidden-field` and `:field` for the first
+  enabled field with a hidden record field name (namespace ignored)."
+  [class-name enabled]
+  (let [hidden (set (map first record-hidden-fields))]
+    (when-let [field (first (filter #(hidden (name %)) enabled))]
+      (throw
+       (ex-info
+        (str "Invalid :non-nil metadata on hidden field " class-name
+             "/" field "; hidden record fields cannot be non-nil.")
+        {:value-type/error :invalid-field
+         :class-name class-name
+         :field field
+         :reason :hidden-field}))))
+  enabled)
+
+(defn- declared-enabled
+  "Return the enabled fields of `declarations`. With `hidden-field?`,
+  check `:hidden-field` after the metadata keys."
+  [class-name declarations hidden-field?]
+  (cond->> (enabled-fields class-name declarations)
+    hidden-field? (check-hidden-fields! class-name)))
+
 (defn specifications
   "Return ordered field specifications for enabled declarations.
 
   Each specification has :generated enforcement; `select-enforcement` selects
   :native modes. Call after mutable-field validation. Disabled fields are not
-  resolved; each specification preserves the exact Class and symbol."
-  [defining-ns class-name declarations]
-  (field-specifications defining-ns class-name
-                        (enabled-fields class-name declarations)))
+  resolved; each specification preserves the exact Class and symbol.
+  Option `:hidden-field?` (for `defvaluetype*`) rejects enabled hidden
+  record fields after the metadata checks and before tag resolution."
+  ([defining-ns class-name declarations]
+   (specifications defining-ns class-name declarations nil))
+  ([defining-ns class-name declarations {:keys [hidden-field?]}]
+   (field-specifications defining-ns class-name
+                         (declared-enabled class-name declarations
+                                           hidden-field?))))
 
 (defn emitted-name
   "Return the class file field name of specification `spec`."
@@ -195,15 +224,20 @@
   Modes are an ordered vector parallel to enabled fields; each mode must be in
   the `permitted` set. Reject invalid transport data before tag resolution, and
   native-ineligible Classes instead of selecting another mode. The caller must
-  check representation and native capability before installing capture."
-  [defining-ns class-name declarations modes permitted]
-  (let [enabled (enabled-fields class-name declarations)]
-    (when-not (and (vector? modes)
-                   (= (count enabled) (count modes))
-                   (every? permitted modes))
-      (invalid-enforcement! class-name modes permitted (count enabled)))
-    (mapv (fn [spec mode]
-            (when (= :native mode)
-              (validate-native-type class-name (:field spec) (:type spec)))
-            (assoc spec :enforcement mode))
-          (field-specifications defining-ns class-name enabled) modes)))
+  check representation and native capability before installing capture.
+  Option `:hidden-field?` is as for `specifications`; the check runs before
+  the modes check."
+  ([defining-ns class-name declarations modes permitted]
+   (receiving-specifications defining-ns class-name declarations modes
+                             permitted nil))
+  ([defining-ns class-name declarations modes permitted {:keys [hidden-field?]}]
+   (let [enabled (declared-enabled class-name declarations hidden-field?)]
+     (when-not (and (vector? modes)
+                    (= (count enabled) (count modes))
+                    (every? permitted modes))
+       (invalid-enforcement! class-name modes permitted (count enabled)))
+     (mapv (fn [spec mode]
+             (when (= :native mode)
+               (validate-native-type class-name (:field spec) (:type spec)))
+             (assoc spec :enforcement mode))
+           (field-specifications defining-ns class-name enabled) modes))))
