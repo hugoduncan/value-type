@@ -2,7 +2,7 @@
 title: Test classes that Clojure generates, and their value-class form
 status: active
 category: testing
-tags: [testing, deftype, deftype*, records, classloader, DynamicClassLoader, valhalla, value-objects, fixtures]
+tags: [testing, deftype, deftype*, records, non-nil-fields, asm, classloader, DynamicClassLoader, valhalla, value-objects, fixtures]
 related: [mementum/memories/clojure-compiler-loader-hook.md, mementum/memories/valhalla-jdk-selection-java-cmd.md, mementum/memories/reflection-warning-check-new-jvm.md, mementum/knowledge/java-lang-classfile.md]
 depends-on: []
 ---
@@ -193,6 +193,17 @@ AOT in a new JVM (the class loads from the `.class` files only):
 Test idiom: find the first `ExceptionInfo` in the cause chain. To see
 the chain: `(map class (take-while some? (iterate ex-cause t)))`.
 
+Constructor checks (`NullPointerException`, `ClassCastException`) arrive
+wrapped by construction path (task 020, Clojure 1.12.6):
+
+- `load-string` of a record literal: cause of `CompilerException`.
+- `read-string` of a record literal: the exception directly.
+- compiled record constant: cause of `ExceptionInInitializerError`.
+- `Constructor.newInstance`: cause of `InvocationTargetException`.
+
+Find the expected class anywhere in the cause chain. On a miss, report
+`:returned` or the chain classes, not only `false`.
+
 Trap: `(thrown? Exception (eval '(defvaluetype …)))` under
 `-m scry.cli` (`*ns*` is `user`) passes on "Unable to resolve symbol:
 defvaluetype", and checks nothing. Evaluate in the test namespace
@@ -206,7 +217,9 @@ name.
 
 Source: task `019-deftype-star-support` (spike
 `spike/record-value-type/gate.clj`,
-`test/runtime/value_type/deftype_star_record_test.clj`). Verified on
+`test/runtime/value_type/deftype_star_record_test.clj`) and task
+`020-deftype-star-non-nil-fields` (non-nil record paths,
+`spike/record-value-type/non-nil-gate.clj`). Verified on
 Clojure 1.12.6 and EA3. The compiler rules are in
 `ramora/deftype-star-design.md`; these are the test traps.
 
@@ -221,6 +234,30 @@ Clojure 1.12.6 and EA3. The compiler rules are in
   copied from `entrySet`. A record fixture must implement `IRecord` and
   `java.util.Map` with `entrySet`, and must not implement `IType`. A plain
   fixture implements `IType`.
+- To send a bad value through the constant path, construct a valid
+  instance with an `__extmap` entry for a declared field key. If the map
+  view merges `__extmap` last, `entrySet` gives the `__extmap` value, and
+  the emitted `create` call receives it when the constant initializes.
+- Record literals (`#ns.R{…}`, `#ns.R[…]`) do not evaluate their
+  elements. For a value-class element, use read-eval:
+  `#=(ns.Pt. 7)` with the fully qualified class name.
+- A field with a non-primitive tag has an `Object` constructor
+  parameter. `(new cn "s")` compiles, so a wrong-type test reaches the
+  generated `checkcast`.
+- `deftype*` with the record tail and `:implements []` still emits
+  `public static create(IPersistentMap)`.
+- A test macro that tests use inside an `eval` form must be public. The
+  form evaluates in another `*ns*`, and a private macro var fails
+  `isMacro` there.
+- Give a tag in an `eval` form as a fully qualified class symbol. Tag
+  resolution uses `*ns*` at expansion, which can differ under the runner.
+- ASM rebuilds the constant pool. Code of an unchanged method thus
+  differs in raw bytes after an ASM pass. Compare resolved instructions
+  (opcode, owner, name, descriptor), not bytes.
+- On EA3 with preview, `java.lang.Long` is a value class. A
+  `^Long ^:non-nil` field thus selects native enforcement there and
+  generated enforcement elsewhere. The root exception classes are the
+  same; an expectation of the enforcement mode must depend on the JVM.
 - The generated `create` casts an `^int` field to `Integer`. A map
   literal with a Long for that field fails in every representation. Use
   `^long`/`^double` for primitive fixture fields.
