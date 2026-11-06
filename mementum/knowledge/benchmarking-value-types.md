@@ -13,7 +13,7 @@ Source: task `006-method-call-benchmark`, `design.md`, `plan.md`,
 `steps.md` and `implementation.md`; implementation commit `2f8cbc8`
 and interpretation correction `f69243b`. The checks used Clojure
 1.12.6, Valhalla JDK `27-jep401ea3` and Criterium `0.5.245-ALPHA`.
-The reusable benchmark is `bench/value_type/bench.clj`.
+The reusable benchmark is `dev/bench/value_type/bench.clj`.
 
 ## Convert batch time to operation time
 
@@ -131,5 +131,5 @@ Sources for these size and evidence rules: task `007-object-size-comparison`,
 in planning commit `8f6cc35`; evidence-test commits `413ae16` and `4b5ea7e`.
 Review follow-ups confirmed that removing supplied values or environment
 metadata from temporary evidence copies made the new checks fail.
-Reusable entry points: `bench/object-size.sh` and
-`bench/object-size-integration-test.sh`.
+Reusable entry points: `dev/bench/object-size.sh` and
+`dev/bench/object-size-integration-test.sh`.

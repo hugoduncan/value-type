@@ -126,7 +126,7 @@
       (when-not (zero? (:exit result))
         (throw (ex-info "Cannot prepare Git fixture" result)))))
   (doseq [path ["target/stale.txt" "target/classes/stale.class"
-                "test/runtime/development.clj" "bench/development.clj"
+                "test/runtime/development.clj" "dev/bench/development.clj"
                 "test/resources/value-array/ArrayAccess.java"
                 "dev/release/excluded.clj" "test/release/excluded_test.clj"]]
     (let [file (io/file directory path)]

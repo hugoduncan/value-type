@@ -29,7 +29,7 @@
   matrices in child JVMs with explicit runtime, options and class path. Alias
   `:cross-jvm-test`, run once under Java 8. Cells share children under the
   isolation rules of `doc/development/runtime.md`.
-- `bench/value_type/bench.clj`: the method-call benchmark
+- `dev/bench/value_type/bench.clj`: the method-call benchmark
   (`value-type.bench`, D11).
 - `README.md`: usage, JDK requirement, semantic differences from
   `deftype`.

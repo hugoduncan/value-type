@@ -4,7 +4,7 @@ The method-call benchmark compares `defvaluetype` with `deftype` with
 the same body. It gives evidence for the success criterion in
 [Purpose](purpose.md): "Method call performance is equal to a
 `deftype` with the same body." It is manual and not a gate (D11).
-Code: `bench/value_type/bench.clj` (`value-type.bench`).
+Code: `dev/bench/value_type/bench.clj` (`value-type.bench`).
 
 The [interface-call investigation](interface-call.md) found no stable
 slowdown in 16 fresh JVMs. Java controls behaved similarly; the inspected

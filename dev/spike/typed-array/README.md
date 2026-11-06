@@ -13,6 +13,6 @@ JAVA_CMD=$HOME/.local/jdks/jdk-27.jdk/Contents/Home/bin/java \
 ```
 
 The repeatable storage, allocation and traversal benchmark is now in
-[`bench/typed-array/`](../../../bench/typed-array/README.md). It uses the public
+[`dev/bench/typed-array/`](../../bench/typed-array/README.md). It uses the public
 array allocator. Historical results remain in the
 [typed-array report](../../../ramora/defvaluetype-design/typed-array.md).

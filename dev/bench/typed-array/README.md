@@ -3,7 +3,7 @@
 Run from the repository root with Clojure CLI and the Valhalla EA3 JDK:
 
 ```sh
-bash bench/typed-array/run.sh
+bash dev/bench/typed-array/run.sh
 ```
 
 The default JDK is `~/.local/jdks/jdk-27.jdk/Contents/Home`.
@@ -50,7 +50,7 @@ screen, use `BENCH_SECONDS=6`; inspect warnings before drawing timing
 conclusions. `SIZES` and `TRIALS` can select runs:
 
 ```sh
-SIZES=1048576 TRIALS='0 1 2' bash bench/typed-array/run.sh target/typed-array-extended
+SIZES=1048576 TRIALS='0 1 2' bash dev/bench/typed-array/run.sh target/typed-array-extended
 ```
 
 Do not edit `run.clj` while a measurement JVM is reading it. A Clojure script
@@ -60,7 +60,7 @@ can continue reading forms after the timed work finishes.
 
 ```sh
 JAVA_CMD=$HOME/.local/jdks/jdk-27.jdk/Contents/Home/bin/java \
-  clojure -M bench/typed-array/summarize.clj \
+  clojure -M dev/bench/typed-array/summarize.clj \
   target/typed-array/results target/typed-array/summary.edn
 ```
 
@@ -68,7 +68,7 @@ The validator requires all three rotations per configuration and size. It
 checks flattening, value status, sums, storage, allocation bounds and positive
 timing results. Size expectations are specific to this recorded VM setup.
 Reports identify the restricted allocator with `:restricted-allocator`.
-The retained results linked from the [original report](../../ramora/defvaluetype-design/typed-array.md)
+The retained results linked from the [original report](../../../ramora/defvaluetype-design/typed-array.md)
 used the direct internal allocator, before this benchmark moved to the public API.
 Do not treat those results as measurements of the public allocator.
 No production code or normal test configuration is changed.

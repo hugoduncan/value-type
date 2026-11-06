@@ -8,7 +8,7 @@
 (deftest native-evidence-test
   ;; Check the real launcher's files independently of its result validation.
   (let [directory (or (System/getenv "OBJECT_SIZE_EVIDENCE_DIR")
-                      (throw (ex-info "Run bench/object-size-integration-test.sh" {})))
+                      (throw (ex-info "Run dev/bench/object-size-integration-test.sh" {})))
         raw (edn/read-string (slurp (io/file directory "raw.edn")))
         results (edn/read-string (slurp (io/file directory "results.edn")))
         case-key (juxt :kind :field-count)

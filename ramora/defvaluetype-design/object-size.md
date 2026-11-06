@@ -27,7 +27,7 @@ Run from the repository root with the Valhalla JDK and Clojure CLI.
 The exact command for the preserved run was:
 
 ```sh
-JAVA_CMD=$HOME/.local/jdks/jdk-27.jdk/Contents/Home/bin/java bash bench/object-size.sh
+JAVA_CMD=$HOME/.local/jdks/jdk-27.jdk/Contents/Home/bin/java bash dev/bench/object-size.sh
 ```
 
 Change `JAVA_CMD` to your Valhalla `java` path if necessary. The isolated
@@ -81,7 +81,7 @@ fbf14546dcbb868c1ab0ca8c61b290bb60bdc2c3d6fe75bd0aa3f7d7b9435897
 
 ## Method and limits
 
-The paired declarations in `bench/value_type/object_size.clj` differ
+The paired declarations in `dev/bench/value_type/object_size.clj` differ
 only in macro and type name. Fields are `f0`, `f1`, `f2`, in that
 order, all primitive `long`. Sample index `i` (0–9) supplies
 `long(i + field-index)` to both kinds. Empty types have no fields.

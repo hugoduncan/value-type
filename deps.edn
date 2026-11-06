@@ -20,12 +20,12 @@
   :test {:extra-paths ["test/runtime"]
          :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
          :jvm-opts ["--enable-preview"]}
-  :bench {:extra-paths ["bench"]
+  :bench {:extra-paths ["dev/bench"]
           :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.253-ALPHA"}}
           :jvm-opts ["--enable-preview"
                      "-XX:+UnlockExperimentalVMOptions"
                      "-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume"]}
-  :object-size {:extra-paths ["bench"]
+  :object-size {:extra-paths ["dev/bench"]
                 :extra-deps {org.hugoduncan/criterium {:mvn/version "0.5.253-ALPHA"}}
                 :jvm-opts ["--enable-preview"]}
   :quickdoc {:extra-paths ["bb"]

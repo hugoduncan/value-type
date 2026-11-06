@@ -101,8 +101,8 @@ for a precise timing claim.
 
 ## Reproduction and evidence
 
-See [benchmark instructions](../../bench/typed-array/README.md).
-`bench/typed-array/summarize.clj` validates each report's sums, layout flags,
+See [benchmark instructions](../../dev/bench/typed-array/README.md).
+`dev/bench/typed-array/summarize.clj` validates each report's sums, layout flags,
 size totals and allocation bounds. Production code is unchanged.
 
 Retained evidence is under [typed-array](typed-array/):

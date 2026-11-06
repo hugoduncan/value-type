@@ -6,7 +6,7 @@
 
 (def maintained-paths
   ["src" "test/runtime" "test/compatibility" "test/cross-jvm" "test/build" "test/release"
-   "test/tooling" "test/resources" "bench" "build.clj" "dev/release"
+   "test/tooling" "test/resources" "dev/bench" "build.clj" "dev/release"
    "bb" "bb.edn" "deps.edn" ".clj-kondo/hooks"])
 
 (def dependency-aliases

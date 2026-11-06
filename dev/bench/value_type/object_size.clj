@@ -1,5 +1,5 @@
 (ns value-type.object-size
-  "Manual shallow-size comparison. Run with bash bench/object-size.sh."
+  "Manual shallow-size comparison. Run with bash dev/bench/object-size.sh."
   (:require
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]
@@ -31,7 +31,7 @@
 (defn- require-agent!
   []
   (when-not (agent/attached?)
-    (throw (ex-info "Criterium native agent is not attached; run bash bench/object-size.sh"
+    (throw (ex-info "Criterium native agent is not attached; run bash dev/bench/object-size.sh"
                     {}))))
 
 (defn- class-evidence

@@ -193,7 +193,7 @@ representation for performance.
 Separate [typed-array measurements](ramora/defvaluetype-design/typed-array.md)
 found storage and traversal benefits for flattened arrays of single-`long`
 values on the tested JVM. These are workload-specific results, not a promise
-for other value types or layouts. The [array benchmark](bench/typed-array/README.md)
+for other value types or layouts. The [array benchmark](dev/bench/typed-array/README.md)
 uses the public allocator; the retained measurements used the internal JVM
 allocator directly and do not measure `into-array` construction.
 

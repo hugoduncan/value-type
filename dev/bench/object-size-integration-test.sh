@@ -12,7 +12,7 @@ printf keep >target/object-size/keep.txt
 for file in results.edn raw.edn stdout.log stderr.log; do
   printf stale >"target/object-size/$file"
 done
-if JAVA_CMD="$work/missing-java" bash bench/object-size.sh; then
+if JAVA_CMD="$work/missing-java" bash dev/bench/object-size.sh; then
   echo 'Setup failure returned success' >&2; exit 1
 fi
 [[ ! -e target/object-size/results.edn && ! -e target/object-size/raw.edn ]]
@@ -23,7 +23,7 @@ if clojure -M:object-size -m value-type.object-size >"$work/no-agent.log" 2>&1; 
   echo 'Measurement without agent returned success' >&2; exit 1
 fi
 [[ ! -e target/object-size/results.edn ]]
-bash bench/object-size.sh
+bash dev/bench/object-size.sh
 [[ -s target/object-size/results.edn && -s target/object-size/raw.edn ]]
 OBJECT_SIZE_EVIDENCE_DIR="$work/target/object-size" \
   clojure -M:test:object-size -m scry.cli --dir test/runtime \

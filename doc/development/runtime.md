@@ -507,13 +507,13 @@ rejected before measurement. The results are in
 
 ## Compare array storage and traversal
 
-The [typed-array benchmark](../../bench/typed-array/README.md) compares standard
+The [typed-array benchmark](../../dev/bench/typed-array/README.md) compares standard
 identity and value arrays with arrays from `value-type.array/make-array`.
 It measures retained storage, allocated bytes and sequential traversal time.
 It does not measure construction time.
 
 ```sh
-bash bench/typed-array/run.sh
+bash dev/bench/typed-array/run.sh
 ```
 
 The runner selects the Valhalla JDK and required JVM flags. See its instructions
@@ -525,7 +525,7 @@ Use a Valhalla JDK with JEP 401 support (see "Select the JDK"). Run
 from the repository root:
 
 ```sh
-JAVA_CMD=<valhalla-jdk-home>/bin/java bash bench/object-size.sh
+JAVA_CMD=<valhalla-jdk-home>/bin/java bash dev/bench/object-size.sh
 ```
 
 This compares shallow size for paired types with 0–3 primitive `long`

@@ -82,7 +82,7 @@ The [field design](../ramora/non-nil-field-design.md) is the contract.
   larger standalone value objects, no stable interface-call penalty, and
   storage and traversal benefits for specific flattened arrays. These are
   not general performance guarantees. The maintained typed-array benchmark
-  is in `bench/typed-array/` and uses the public allocator.
+  is in `dev/bench/typed-array/` and uses the public allocator.
 
 ## Orientation
 
