@@ -57,10 +57,36 @@ guard. That guard applies policy during analysis and emits a runtime check.
 Test transfer to fresh receivers, including capable receivers: they must
 apply their own policy to the fixed identity representation.
 
-One runtime owner holds startup policy, cached capability and the warning
-flag. All phases share it. Use atomic compare-and-set only for warn-once
+`impl.runtime` holds startup policy, the warning flag and the fallback
+guards. All phases share it. Use atomic compare-and-set only for warn-once
 emission; strict policy must reject on every call. Requiring the namespace
 alone is not a fallback attempt.
+
+## Each capability result has one owner accessor
+
+Task `021-capability-report` moved the cached capability results out of
+`impl.runtime`. The namespace that defines a probe owns its result: a
+private `detected-*` delay and one public accessor
+(`impl.capability/capability`, `impl.field-capability/capability`,
+`impl.array/allocation-capability`, `impl.array/inspection-capability`).
+Then a reader of a capability result does not load policy, and an invalid
+`value-type.fallback` value has no effect on `value-type.capability/report`.
+
+- Every reader calls the accessor var: `value-type.core`, guards, the
+  array `require-*` functions, `report` and the dependent probes. The field
+  probe and allocation discovery read the value-class prerequisite through
+  `impl.capability/capability`, not `detect`. Then one runtime computes the
+  value-class result once, and one `with-redefs` replaces it for all readers.
+- Only the owner accessor derefs its delay. Tests can read the delay only
+  for `realized?` (laziness checks).
+- Do not delegate from an old accessor to the new owner during a move. A
+  `with-redefs` of the delegating var does not reach readers of the owner
+  var. Move the guard, the `src/` readers and the `with-redefs` target of
+  the controlled tests in one commit.
+- Dependent delays keep the prerequisite of their first read. In a
+  controlled child, install the redefinition before any capability read.
+- A Clojure `delay` keeps a thrown exception and throws it again on each
+  deref, so a probe defect propagates the same way from every reader (D12).
 
 ## AOT policy runs where the form is evaluated
 
