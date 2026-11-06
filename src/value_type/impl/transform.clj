@@ -280,8 +280,9 @@
   Input: the class file bytes of a `deftype` class. storage maps
   emitted field names to `{:storage-type ClassDesc :native? boolean}` for
   concrete storage. `:native? false` selects constructor null checks
-  instead of native annotations. class-loader (or nil) resolves dynamic
-  types during stack-map generation.
+  instead of native annotations. Stack-map generation resolves the class
+  itself from its bytes, because it is not loadable yet; class-loader (or
+  nil) resolves the other types.
   Output: new class file bytes. The version is the latest version of
   the running JDK with the preview minor version. The class has no
   `ACC_IDENTITY` flag. Each instance field has `ACC_STRICT_INIT`. The
@@ -300,8 +301,8 @@
   fix (use `Clojure 1.12`). Bytes that are not a class file give the
   exceptions of `java.lang.classfile`."
   ^bytes [^bytes bs storage class-loader]
-  (let [cf (class-file/configured class-loader)
-        cm (.parse cf bs)
+  (let [cm (.parse (ClassFile/of) bs)
+        cf (class-file/configured class-loader (into {} [(class-file/hierarchy-info cm)]))
         this (.asSymbol (.thisClass cm))
         fields (filterv instance-field? (.fields cm))]
     (when-let [part (constructor-difference cm fields)]
@@ -403,8 +404,8 @@
   Input: the class file bytes of a `deftype*` class whose last four
   instance fields are `__meta`, `__extmap`, `int __hash` and
   `int __hasheq`, with the three compiler record constructors. storage is
-  as for `->value-class` (declared fields only). class-loader (or nil)
-  resolves types during stack-map generation.
+  as for `->value-class` (declared fields only). Stack-map resolution is
+  as for `->value-class`.
   Output: new class file bytes, as for `->value-class` with `storage`,
   except: the class has no `__hash` and `__hasheq` fields; only the main
   constructor (all fields) is rewritten (casts, null checks and concrete
@@ -418,8 +419,8 @@
   `count of constructors`, `parameters`, `delegating constructor`,
   `super call` or `field writes`."
   ^bytes [^bytes bs storage class-loader]
-  (let [cf (class-file/configured class-loader)
-        cm (.parse cf bs)
+  (let [cm (.parse (ClassFile/of) bs)
+        cf (class-file/configured class-loader (into {} [(class-file/hierarchy-info cm)]))
         this (.asSymbol (.thisClass cm))
         fields (filterv instance-field? (.fields cm))
         [part main-descriptor] (record-constructor-difference cm fields)]

@@ -2,7 +2,8 @@
   "Field-reference rewriting shared by owner and companion class transforms."
   (:require [value-type.impl.class-file :as class-file])
   (:import
-   (java.lang.classfile ClassTransform CodeBuilder CodeElement CodeTransform Opcode)
+   (java.lang.classfile ClassFile ClassTransform CodeBuilder CodeElement CodeTransform
+                        Opcode)
    (java.lang.classfile.instruction FieldInstruction)
    (java.lang.constant ClassDesc ConstantDescs)))
 
@@ -40,10 +41,14 @@
   "Rewrite references to non-nil fields of `owner-name` in captured bytes.
    `storage` is as for `rewrite`. Keep the caller's class kind, fields and
    method signatures unchanged.
-   `class-loader`, when not nil, resolves dynamic types during stack-map
-   generation."
+   Stack-map generation resolves the captured class and the owner from their
+   known hierarchy, because neither is loadable yet. `class-loader`, when not
+   nil, resolves the other types."
   ^bytes [^bytes bytes ^String owner-name storage class-loader]
-  (let [cf (class-file/configured class-loader)]
-    (.transformClass cf (.parse cf bytes)
+  (let [model (.parse (ClassFile/of) bytes)
+        cf (class-file/configured class-loader
+                                  (into {} [(class-file/owner-hierarchy-info owner-name)
+                                            (class-file/hierarchy-info model)]))]
+    (.transformClass cf model
                      (ClassTransform/transformingMethodBodies
                       (rewrite (ClassDesc/of owner-name) storage)))))

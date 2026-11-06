@@ -381,3 +381,16 @@
 (deftest receiving-identity-plain-non-nil-test
   (check-plain-non-nil
    (define-non-nil `identity-receiving* :plain "ReceivingIdentityPlain") false))
+
+(deftest public-value-record-merge-test
+  ;; The record transform must resolve its own class, which is not loadable
+  ;; yet, where a concrete field read merges with the receiver.
+  (let [cn 'value_type.deftype_star_record_test.NonNilMergeRec
+        ^Class c (eval (record-form `vt/defvaluetype* cn (non-nil-declared)
+                                    :interfaces ['java.util.function.Function]
+                                    :methods ['(apply [this choose]
+                                                      (if choose p this))]))
+        p (NnPt. 1)
+        ^java.util.function.Function r (construct c [p "a" nil nil])]
+    (is (= p (.apply r true)))
+    (is (identical? r (.apply r false)))))

@@ -123,6 +123,88 @@
       (testing (str "nested branch " [payload optional choose-required?])
         (is (= expected (reader :fallback)))))))
 
+(defn- define-merge-fixture
+  "Eval `form` in this namespace and return its value. `form` defines a
+  type whose code merges a concrete field read with another class at a
+  branch, and returns a function of a Leaf. Eval keeps a transform
+  failure inside the test."
+  [form]
+  (support/eval-in 'value-type.non-nil-fields-test form))
+
+(deftest unloaded-class-merge-test
+  ;; Stack maps of rewritten field reads must resolve classes that the
+  ;; loader cannot load yet: the class in transform and the owner.
+  (let [leaf (->Leaf :payload)]
+    (testing "owner merges the field with its receiver"
+      (let [f (define-merge-fixture
+                '(do (defvaluetype MergeOwnerSelf [^Leaf ^:non-nil required]
+                       java.util.function.Function
+                       (apply [this choose] (if choose required this)))
+                     (fn [leaf]
+                       (let [^java.util.function.Function v (MergeOwnerSelf. leaf)]
+                         [(.apply v true) (.apply v false) v]))))
+            [field other v] (f leaf)]
+        (is (= leaf field))
+        (is (identical? v other))))
+    (testing "owner merges the field with a new owner"
+      (let [f (define-merge-fixture
+                '(do (defvaluetype MergeOwnerNew [^Leaf ^:non-nil required]
+                       java.util.function.Function
+                       (apply [this choose]
+                              (if choose required (MergeOwnerNew. required))))
+                     (fn [leaf]
+                       (let [^java.util.function.Function v (MergeOwnerNew. leaf)]
+                         [(.apply v true) (class (.apply v false)) MergeOwnerNew]))))
+            [field other-class owner-class] (f leaf)]
+        (is (= leaf field))
+        (is (= owner-class other-class))))
+    (testing "reify companion merges the field with its receiver"
+      (let [f (define-merge-fixture
+                '(do (defvaluetype MergeReify [^Leaf ^:non-nil a]
+                       clojure.lang.ILookup
+                       (valAt [this k]
+                              (reify clojure.lang.ILookupThunk
+                                (get [thunk target]
+                                  (if (identical? (class target) MergeReify)
+                                    (.-a ^MergeReify target)
+                                    thunk))))
+                       (valAt [this k nf] nf))
+                     (fn [leaf]
+                       (let [v (MergeReify. leaf)
+                             ^clojure.lang.ILookupThunk thunk (.valAt v :a)]
+                         [(.get thunk v) (.get thunk :other) thunk]))))
+            [field other thunk] (f leaf)]
+        (is (= leaf field))
+        (is (identical? thunk other))))
+    (testing "fn companion merges the field with itself"
+      (let [f (define-merge-fixture
+                '(do (defvaluetype MergeFnSelf [^Leaf ^:non-nil required]
+                       java.util.function.Supplier
+                       (get [this]
+                            (fn self [choose]
+                              (if choose (.-required this) self))))
+                     (fn [leaf]
+                       (let [g (.get ^java.util.function.Supplier (MergeFnSelf. leaf))]
+                         [(g true) (g false) g]))))
+            [field other g] (f leaf)]
+        (is (= leaf field))
+        (is (identical? g other))))
+    (testing "fn companion merges the field with a new owner"
+      (let [f (define-merge-fixture
+                '(do (defvaluetype MergeFnNew [^Leaf ^:non-nil required]
+                       java.util.function.Supplier
+                       (get [this]
+                            (fn [choose]
+                              (if choose
+                                (.-required this)
+                                (MergeFnNew. (.-required this))))))
+                     (fn [leaf]
+                       (let [g (.get ^java.util.function.Supplier (MergeFnNew. leaf))]
+                         [(g true) (class (g false)) MergeFnNew]))))
+            [field other-class owner-class] (f leaf)]
+        (is (= leaf field))
+        (is (= owner-class other-class))))))
+
 (deftest native-probe-scope-test
   ;; A fresh JVM shows when the cached native field probe is realized.
   (with-temp-dir [dir]
