@@ -5,23 +5,30 @@
 | Namespace | Responsibility | Decisions |
 |---|---|---|
 | `value-type.core` | Public macro `defvaluetype` and runtime check `check-value-class`. Validate, select representation, lazily install the value loader, expand and check. | D1 D8 D9 D10 D12 |
-| `value-type.impl.runtime` | Initialized policy, cached class/field capabilities, warning flag, fallback and native-field guards. | D10 D13 |
-| `value-type.impl.capability` | Baseline-safe API checks and isolated format probe. | D12 |
+| `value-type.capability` | Public `report` of the four cached capability results. Reads no policy. | D14 |
+| `value-type.impl.runtime` | Initialized policy, warning flag and fallback guards. | D10 D13 |
+| `value-type.impl.capability` | Baseline-safe API checks, isolated format probe and the cached value-class result (`capability`). | D12 D13 |
+| `value-type.impl.field-capability` | Native-field probe, its cached result (`capability`) and the native-field guard. | D12 D13 |
 | `value-type.impl.loader` | Capture loader. Transform target storage and companion references, check exact field Classes, write for AOT, define and link. | D3 D4 D7, D9 define errors |
 | `value-type.impl.transform` | Transform identity-class bytes with selected field descriptors and an optional hierarchy loader. | D5 D6 |
 
-Dependency direction: `core → runtime → capability`; only the available
-branch resolves `core → loader → transform`. `transform` composes field-storage and field-access helpers using the JDK
-class-file API. An optional class loader resolves dynamic types for stack maps. `transform` has no Clojure compiler dependency.
+Dependency direction: `core → {runtime, impl.capability,
+impl.field-capability}`; `impl.field-capability → impl.capability`;
+`value-type.capability → {impl.capability, impl.field-capability,
+impl.array}`; `impl.runtime` requires no capability namespace. Only the
+available branch resolves `core → loader → transform`. `transform` composes
+field-storage and field-access helpers using the JDK class-file API. An
+optional class loader resolves dynamic types for stack maps. `transform` has
+no Clojure compiler dependency.
 
 ## Fallback boundary
 
 For definitions without enabled non-nil fields, before loader installation,
-a capability/policy responsibility selects
+the value-class capability result and the policy select
 the value-class path, ordinary `deftype`, or strict failure (D10 D12).
-`value-type.impl.runtime` owns the state in D13: initialized policy, a
-delayed result from baseline-safe `impl.capability/detect`, and an atomic
-warning flag.
+D13 state owners: `impl.capability` owns the delayed result of
+baseline-safe `detect`; `value-type.impl.runtime` owns the initialized policy
+and an atomic warning flag.
 `core` must not eagerly require `loader` or `transform`; fallback must
 load without their optional JDK APIs. Only the value-class path crosses
 that dependency boundary.
@@ -171,8 +178,8 @@ and accepted evidence limits.
   is the same as `deftype`.
 - The current implementation also caches reflection lookup of
   `Class::isValue` in the `capability/value-predicate` delay.
-- Cached capability and initialized application policy, plus
-  an atomic warning flag owned by the capability/policy responsibility
+- Cached capability results owned by the probe namespaces, and initialized
+  application policy plus an atomic warning flag owned by `impl.runtime`
   (D13). Concurrent attempts share this state. Strict failure is never
   disabled by a previous attempt.
 
@@ -191,8 +198,8 @@ and accepted evidence limits.
 - `core` knows the `deftype` syntax. Only `capability` resolves
   `Class::isValue` (`value-predicate`); core checks generated value classes
   (D9) through `capability/value-class?`, and the detector checks API
-  availability and the probe result. Core uses runtime
-  capability and policy, and lazily resolves `loader/install!`.
+  availability and the probe result. Core reads the owner capability
+  accessors and runtime policy, and lazily resolves `loader/install!`.
 
 ## Invariants
 

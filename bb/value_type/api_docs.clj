@@ -23,7 +23,8 @@
   {:outfile false
    :github/repo "https://github.com/hugoduncan/value-type"
    :git/branch "master"
-   :source-paths ["src/value_type/core.clj" "src/value_type/array.clj"]
+   :source-paths ["src/value_type/core.clj" "src/value_type/array.clj"
+                  "src/value_type/capability.clj"]
    :overrides {'value-type.core {'check-value-class {:no-doc true}
                                  'value-field-deftype {:no-doc true}
                                  'identity-field-deftype {:no-doc true}

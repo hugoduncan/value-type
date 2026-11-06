@@ -19,16 +19,21 @@
   [build-test command](../../../doc/development/runtime.md#run-the-build-tests).
 - `src/value_type/core.clj`, `src/value_type/impl/loader.clj`,
   `src/value_type/impl/transform.clj`.
-- `src/value_type/impl/capability.clj`, `src/value_type/impl/runtime.clj`:
-  baseline-safe capability and policy implementation.
+- `src/value_type/capability.clj`: public capability report.
+- `src/value_type/impl/capability.clj`,
+  `src/value_type/impl/field_capability.clj`, `src/value_type/impl/runtime.clj`:
+  baseline-safe capability and policy implementation. The probe namespaces
+  own the cached capability results; `impl.runtime` owns the policy, the
+  warning flag and the fallback guards (`enforce-fallback!`,
+  `guarded-deftype`, `guarded-deftype*`).
 - `test/runtime/value_type/...`: unit, integration and AOT tests (D11).
 - `test/compatibility/value_type/...`: per-parent policy, transfer and AOT
   tests, and the shared child-JVM test support. Alias `:fallback-test` adds
   no preview flags or value-only tests.
-- `test/cross-jvm/value_type/...`: cross-JVM policy, transfer, AOT and array
-  matrices in child JVMs with explicit runtime, options and class path. Alias
-  `:cross-jvm-test`, run once under Java 8. Cells share children under the
-  isolation rules of `doc/development/runtime.md`.
+- `test/cross-jvm/value_type/...`: cross-JVM policy, transfer, AOT, array and
+  capability report matrices in child JVMs with explicit runtime, options
+  and class path. Alias `:cross-jvm-test`, run once under Java 8. Cells
+  share children under the isolation rules of `doc/development/runtime.md`.
 - `dev/bench/value_type/bench.clj`: the method-call benchmark
   (`value-type.bench`, D11).
 - `README.md`: usage, JDK requirement, semantic differences from
@@ -48,12 +53,15 @@ focused tests are in `test/tooling/`. See the development guide
 [commands and check scopes](../../../doc/development/quality-checks.md#quality-checks), including
 excluded paths and warning/error handling.
 
-`doc/API.md` is generated from docstrings in `src/value_type/core.clj` and
-`src/value_type/array.clj`, with configuration and introductory prose from
-`bb/value_type/api_docs.clj`. It documents the `value-type.core/defvaluetype`
-macro and the `value-type.array/make-array`, `value-type.array/into-array` and
-`value-type.array/array-info` functions, not private vars,
-implementation namespaces or the expansion helper `check-value-class`. Run `bb api-docs` to regenerate it, or
+`doc/API.md` is generated from docstrings in `src/value_type/core.clj`,
+`src/value_type/array.clj` and `src/value_type/capability.clj`, with
+configuration and introductory prose from `bb/value_type/api_docs.clj`. It
+documents the `value-type.core/defvaluetype` and
+`value-type.core/defvaluetype*` macros and the
+`value-type.array/make-array`, `value-type.array/into-array`,
+`value-type.array/array-info` and `value-type.capability/report` functions,
+not private vars, implementation namespaces or the expansion helper
+`check-value-class`. Run `bb api-docs` to regenerate it, or
 `bb api-docs --check` to detect missing or stale output without writing.
 Change the sources, not the generated file.
 
@@ -117,11 +125,13 @@ Isolated source-JAR consumers passed in four configurations:
   creation, while allocation remains unavailable.
 
 All three unsupported-allocation configurations, including export-only EA3,
-reject both sequence arities repeatedly before value creation and without input
-effects. They also check that null, non-array and primitive-array diagnostic
-inputs report `:invalid-array` before capability checks. All four configurations retain the macro checks and verify that the
-core and both array source resources resolve from the exact built JAR, without
-checkout sources. See the development
+reject both sequence arities repeatedly before value creation and without
+input effects. They also check that null, non-array and primitive-array
+diagnostic inputs report `:invalid-array` before capability checks. All four
+configurations retain the macro checks and call `value-type.capability/report`
+and compare it with the expected row of the configuration. They verify that
+the core, both array and the capability source resources resolve from the
+exact built JAR, without checkout sources. See the development
 [build-test guide](../../../doc/development/runtime.md#run-the-build-tests).
 
 Fallback AOT fixes identity representation and enforces receiving policy where

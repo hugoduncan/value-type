@@ -24,12 +24,12 @@
       configuration
       [{:context [(harness/runtime-context configuration)]
         :form '(do
-                 (require 'value-type.core 'value-type.impl.runtime)
-                 (let [cache @#'value-type.impl.runtime/detected-field-capability
+                 (require 'value-type.core 'value-type.impl.field-capability)
+                 (let [cache @#'value-type.impl.field-capability/detected-field-capability
                        lazy? (not (realized? cache))
-                       result (value-type.impl.runtime/field-capability)]
+                       result (value-type.impl.field-capability/capability)]
                    {:lazy? lazy? :capability (dissoc result :detail)
-                    :cached? (identical? result (value-type.impl.runtime/field-capability))}))
+                    :cached? (identical? result (value-type.impl.field-capability/capability))}))
         :expected {:lazy? true :cached? true
                    :capability (if reason {:available? false :reason reason}
                                    {:available? true})}}]))))
@@ -83,9 +83,9 @@
         (assoc configuration :policy policy)
         [{:context [(harness/runtime-context configuration policy)]
           :form '(do
-                   (require 'value-type.impl.runtime)
+                   (require 'value-type.core)
                    (let [attempt (fn []
-                                   (try (value-type.impl.runtime/require-field-capability!
+                                   (try (value-type.impl.field-capability/require-field-capability!
                                          "RequiredHolder")
                                         :supported
                                         (catch clojure.lang.ExceptionInfo e (ex-data e))))]

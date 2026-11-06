@@ -6,7 +6,7 @@
   (:require [value-type.cell-registry :as registry]
             [value-type.consumer-aot-checks :as checks]
             [value-type.core]
-            [value-type.impl.runtime :as runtime]
+            [value-type.impl.capability :as capability]
             [value-type.transfer-checks :as transfer])
   (:import (java.lang.reflect Field)))
 
@@ -43,7 +43,7 @@
   "Receive each serialized expansion twice in mode (transfer-checks/evaluate).
    Return the receiver :capability and the :attempts of each expansion."
   [expansions mode]
-  {:capability (runtime/capability)
+  {:capability (capability/capability)
    :attempts (mapv (fn [serialized]
                      (registry/twice (fn [] (attempt serialized mode))))
                    expansions)})

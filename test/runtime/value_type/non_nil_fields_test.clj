@@ -209,7 +209,7 @@
   ;; A fresh JVM shows when the cached native field probe is realized.
   (with-temp-dir [dir]
     (let [form (str "(require 'value-type.core)"
-                    "(let [probe @#'value-type.impl.runtime/detected-field-capability"
+                    "(let [probe @#'value-type.impl.field-capability/detected-field-capability"
                     "      error (fn [form]"
                     "              (try (eval form) nil"
                     "                (catch Throwable e"

@@ -305,6 +305,42 @@ estimate. Support for other JVM builds is not implied. Use the public wrapper:
 native diagnostic calls with null can crash the tested JVM. See the
 [runtime guide](development/runtime.md) for verification commands.
 
+## Capability report
+
+`value-type.capability/report` returns the optional JVM capabilities of the
+loaded runtime as an EDN map. Use it to check a deployment before you define
+types or allocate arrays.
+
+```clojure
+(require '[value-type.capability :as capability])
+(capability/report)
+;=> {:value-class {:available? true},
+;    :native-non-nil-field {:available? true},
+;    :array-allocation {:available? false, :reason :array-access-denied},
+;    :array-inspection {:available? false, :reason :array-access-denied}}
+```
+
+The example result is from Valhalla `27-jep401ea3+1-1` with
+`--enable-preview` and without the export flag.
+
+| Key | Meaning |
+| --- | --- |
+| `:value-class` | `defvaluetype` can define value classes. |
+| `:native-non-nil-field` | Eligible `:non-nil` fields use native restriction. |
+| `:array-allocation` | `make-array` and `into-array` can allocate. |
+| `:array-inspection` | `array-info` can inspect. |
+
+Each value is `{:available? true}` or `{:available? false :reason r}`. The
+reason keywords are in the [API reference](API.md). Each value equals the
+`:available?` and `:reason` entries of the cached result that definitions and
+array functions use. `report` runs the probes that have not run yet. A probe
+defect propagates; no partial report is returned.
+
+`report` does not read the `value-type.fallback` policy. Loading
+`value-type.capability` does not load `value-type.core` and needs no JEP 401
+support, preview flag, export or `java.lang.classfile`. Results are cached per
+loaded runtime; set JVM flags before startup.
+
 ## Portable non-nil fields
 
 Use an explicit concrete-class tag and `:non-nil` metadata:
@@ -348,12 +384,13 @@ Generated checks run in actual constructors, not only in factories. Reads add no
 policy checks. Unexpected probe, loader, verification and transformation failures
 remain errors; they do not select weaker output.
 
-Requiring the public namespace is safe on Java 8 and preview-disabled EA3. Identity
-output does not require optional JDK interfaces or preview. Value output requires preview;
-field construction needs no internal-package export. Real-JVM evidence covers
-Java 8 and Valhalla `27-jep401ea3+1-1` with Clojure 1.12.6. Controlled capability
-cases do not establish support for other JVMs. See the
-[runtime instructions](development/runtime.md) for verification commands and limits.
+Requiring `value-type.core` is safe on Java 8 and preview-disabled EA3.
+Identity output does not require optional JDK interfaces or preview. Value
+output requires preview; field construction needs no internal-package export.
+Real-JVM evidence covers Java 8 and Valhalla `27-jep401ea3+1-1` with Clojure
+1.12.6. Controlled capability cases do not establish support for other JVMs.
+See the [runtime instructions](development/runtime.md) for verification
+commands and limits.
 
 Field declaration errors are `ExceptionInfo` with `:value-type/error`,
 `:class-name` and `:reason`. Invalid fields use `:invalid-field` and include

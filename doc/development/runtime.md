@@ -33,7 +33,7 @@ Tests share one parent directory, but use separate class path roots:
 | --- | --- |
 | `test/runtime/` | Library tests on Valhalla with preview enabled. |
 | `test/compatibility/` | Per-parent fallback, AOT and startup checks, and shared child-JVM test support. |
-| `test/cross-jvm/` | Cross-JVM policy, transfer, AOT and array matrices. |
+| `test/cross-jvm/` | Cross-JVM policy, transfer, AOT, array and capability report matrices. |
 | `test/build/` | Build contracts and isolated JAR consumers. |
 | `test/release/` | Release tooling contracts. |
 | `test/tooling/` | API, lint, prose, Git-hook and CI checks. |
@@ -308,9 +308,10 @@ This test checks six configurations: Java 8; EA3 without
 preview, with and without exports; EA3 with preview but no exports; EA3
 with preview and exports; and the supported configuration with array
 flattening disabled. Each configuration tests all three class-fallback
-policies and both public namespace require orders. Child flags are explicit;
-the parent does not need preview or exports. Unsupported configurations
-check safe loading and repeated capability errors, not value allocation.
+policies and both require orders of `value-type.core` and
+`value-type.array`. Child flags are explicit; the parent does not need
+preview or exports. Unsupported configurations check safe loading and
+repeated capability errors, not value allocation.
 Child JVMs run the cells under the rules in "Child JVMs". The full
 `:cross-jvm-test` command above also includes this matrix.
 
@@ -410,6 +411,37 @@ contents before and after caller stores. Atomic access does not guarantee
 compound updates, safe publication or caller synchronization. See the
 [inspection guide](../usage.md#value-array-diagnostics) for the public contract.
 
+## Verify the capability report
+
+Use the explicit executable paths from "Verify array allocation". Run the
+report matrix in disposable JVMs:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.capability-matrix-test
+```
+
+This namespace checks all six startup configurations, all three fallback
+policies and three require orders (rotations of `value-type.capability`,
+`value-type.core` and `value-type.array`): 54 children. Each report must
+equal the expected row, agree with definition, `:non-nil` field and array
+outcomes, and stay equal on a second call.
+
+Run the controlled value-class check separately:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.controlled-value-capability-test
+```
+
+It replaces `value-type.impl.capability/capability` in an EA3 export child.
+It checks that the report (`:value-class`, `:native-non-nil-field` and
+`:array-allocation`), `make-array` and the definition read the replaced
+result, and that `:array-inspection` stays available. The "Verified fallback
+matrix" commands include the invalid-policy report check. See the
+[capability report guide](../usage.md#capability-report) for the public
+contract.
+
 ## Build a local JAR
 
 Run these commands from the repository root with the Clojure CLI and
@@ -482,13 +514,16 @@ ordinary and restricted array diagnostics. It also checks both sequence
 forms, ordered contents and explicit-seed empty input. Unsupported consumers,
 including export-only EA3, reject both sequence forms repeatedly before value
 creation and without input effects. All consumers load library resources
-from the JAR, with no checkout sources on the class path. Nested Point/String
-non-nil fields also retain concrete storage and direct/factory constructor checks
-on Java 8 and EA3 preview off/on under `silent`. These packaging checks do not
-establish all-policy field coverage.
-Set `VALUE_TYPE_BASELINE_JAVA` explicitly;
-the supported consumer uses `JAVA_CMD`. It selects `test/build/`; it does not replace the library test
-command above. Exit status and failure files follow the same Scry rules.
+from the JAR, with no checkout sources on the class path. Each consumer
+also loads `value-type.capability` from the JAR, and its `report` equals the
+expected row for its configuration (`:java8`, `:no-options`, `:export-only`
+or `:export`). Nested Point/String non-nil fields also retain concrete
+storage and direct/factory constructor checks on Java 8 and EA3 preview
+off/on under `silent`. These packaging checks do not establish all-policy
+field coverage. Set `VALUE_TYPE_BASELINE_JAVA` explicitly; the supported
+consumer uses `JAVA_CMD`. It selects `test/build/`; it does not replace the
+library test command above. Exit status and failure files follow the same
+Scry rules.
 
 ## Run the benchmark
 

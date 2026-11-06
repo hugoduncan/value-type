@@ -11,9 +11,9 @@
 (deftest public-reference-test
   ;; Check the rendered contract, not a snapshot of the whole document.
   (let [markdown (docs/generated-markdown)]
-    (testing "only the public macro and array functions are documented"
+    (testing "only the public macro, array and capability functions are documented"
       (is (= ["value-type.array/array-info" "value-type.array/into-array"
-              "value-type.array/make-array"
+              "value-type.array/make-array" "value-type.capability/report"
               "value-type.core/defvaluetype" "value-type.core/defvaluetype*"]
              (mapv second (re-seq #"## <a name=\"([^\"]+)\"" markdown))))
       (doseq [internal ["check-value-class" "value-field-deftype"
@@ -69,6 +69,16 @@
                     "Native failures propagate" "does not change or retain the array"
                     "compound-update safety or caller synchronization"]]
         (is (str/includes? markdown text) text)))
+    (testing "capability report keys and reasons remain explicit"
+      (doseq [text ["(report)" ":value-class" ":native-non-nil-field"
+                    ":array-allocation" ":array-inspection"
+                    ":missing-classfile-api" ":missing-value-predicate"
+                    ":unsupported-class-version" ":missing-array-api"
+                    ":missing-array-signature" ":array-access-denied"
+                    "{:available? false :reason r}" "EDN-printable"
+                    "does not read the `value-type.fallback` policy"
+                    "no partial report"]]
+        (is (str/includes? markdown text) text)))
     (testing "generation instructions and navigation are present"
       (doseq [text ["generated from source docstrings" "Do not edit"
                     "[README](../README.md)" "[usage guide](usage.md)" "`bb api-docs`"
@@ -111,7 +121,7 @@
     (try
       (doseq [path ["deps.edn" "bb.edn" "bb/value_type/quality.clj"
                     "bb/value_type/api_docs.clj" "src/value_type/core.clj"
-                    "src/value_type/array.clj"]]
+                    "src/value_type/array.clj" "src/value_type/capability.clj"]]
         (let [destination (io/file dir path)]
           (io/make-parents destination)
           (io/copy (io/file path) destination)))

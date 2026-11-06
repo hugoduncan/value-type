@@ -68,3 +68,7 @@ See [capability boundary](fallback.md#d12-capability-boundary).
 ## D13. Fallback lifecycle (state and deployment)
 
 See [fallback lifecycle](fallback.md#d13-fallback-lifecycle).
+
+## D14. Public capability report (interface and state)
+
+See [capability report](decisions/capability-report.md).

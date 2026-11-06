@@ -3,7 +3,7 @@
 (defn check-resource-origins!
   []
   (doseq [path ["value_type/core.clj" "value_type/array.clj"
-                "value_type/impl/array.clj"]
+                "value_type/capability.clj" "value_type/impl/array.clj"]
           :let [resource (io/resource path)]]
     (assert (= "jar" (.getProtocol resource)))
     (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
@@ -13,7 +13,8 @@
 (check-resource-origins!)
 
 (require '[value-type.core :refer [defvaluetype]]
-         '[value-type.array :as va])
+         '[value-type.array :as va]
+         '[value-type.capability :as capability])
 
 (defn check-unsupported-diagnostics!
   []
@@ -154,7 +155,8 @@
 
 (let [a (Point. 3 7)
       b (Point. 11 13)]
-  (prn {:value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
+  (prn {:report (capability/report)
+        :value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
                                                            (.getMethods Class)))]
                         (.invoke predicate (class a) (object-array 0)))
         :equal-copy? (= a (->Point 3 7))

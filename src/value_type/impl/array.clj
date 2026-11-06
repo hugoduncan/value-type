@@ -6,7 +6,7 @@
 
 (defn- discover
   []
-  (let [prerequisites (capability/detect)]
+  (let [prerequisites (capability/capability)]
     (if-not (:available? prerequisites)
       prerequisites
       (try
@@ -24,12 +24,18 @@
         (catch IllegalAccessException error
           {:available? false :reason :array-access-denied :cause error})))))
 
-(def ^:private allocation-capability (delay (discover)))
+(def ^:private detected-allocation-capability (delay (discover)))
+
+(defn allocation-capability
+  "The cached allocation capability result of this runtime.
+   Every reader reads through this var; tests replace it with `with-redefs`."
+  []
+  @detected-allocation-capability)
 
 (defn require-allocation
   "Return cached allocation methods, or throw a capability error."
   []
-  (let [{:keys [available? cause] :as result} @allocation-capability]
+  (let [{:keys [available? cause] :as result} (allocation-capability)]
     (when-not available?
       (throw (ex-info
               (str "Value-array allocation requires a supported Valhalla JVM, "
@@ -82,12 +88,18 @@
     (catch IllegalAccessException error
       {:available? false :reason :array-access-denied :cause error})))
 
-(def ^:private inspection-capability (delay (discover-inspection)))
+(def ^:private detected-inspection-capability (delay (discover-inspection)))
+
+(defn inspection-capability
+  "The cached inspection capability result of this runtime.
+   Every reader reads through this var; tests replace it with `with-redefs`."
+  []
+  @detected-inspection-capability)
 
 (defn require-inspection
   "Return cached inspection methods, or throw a capability error."
   []
-  (let [{:keys [available? cause] :as result} @inspection-capability]
+  (let [{:keys [available? cause] :as result} (inspection-capability)]
     (when-not available?
       (throw (ex-info
               (str "Array inspection requires a supported Valhalla JVM and "

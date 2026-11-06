@@ -10,7 +10,10 @@ field enforcement. See the [usage contract](../../doc/usage.md#portable-non-nil-
 Baseline-safe declaration resolution (`impl.fields`) validates metadata and tags.
 Ordered specifications retain exact Classes and enforcement modes; backends
 derive descriptors from the Classes.
-Native capability is probed lazily. Public selection fixes representation and
+`impl.field-capability` probes native capability lazily and caches the result
+for one loaded library runtime. It reads the value-class prerequisite through
+`impl.capability/capability`, and it owns the native-field guard
+(`require-field-capability!`). Public selection fixes representation and
 per-field modes; missing native support alone does not select identity fallback.
 No global field registry is used.
 

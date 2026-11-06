@@ -5,7 +5,7 @@
    [clojure.test :refer [deftest is testing]]
    [clojure.walk :as walk]
    [value-type.core :as vt]
-   [value-type.impl.runtime :as runtime]
+   [value-type.impl.capability :as capability]
    [value-type.test-support :as support :refer [record-tail]]))
 
 (set! *warn-on-reflection* true)
@@ -187,7 +187,7 @@
         (if record? (into '[a] record-tail) '[a])))
 
 (deftest value-expansion-receiving-test
-  (when (:available? (runtime/capability))
+  (when (:available? (capability/capability))
     (doseq [record? [false true]]
       (testing (if record? "record shape" "plain shape")
         (testing "expansion with no compiler loader gives :not-installed"

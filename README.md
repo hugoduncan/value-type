@@ -54,6 +54,9 @@ export JAVA_CMD=<valhalla-jdk-home>/bin/java
 clojure -M:dev
 ```
 
+To check which value-class and array features a deployment supports, see
+[Capability report](doc/usage.md#capability-report).
+
 ### Example
 
 Define and construct a value type:
@@ -199,7 +202,8 @@ allocator directly and do not measure `into-array` construction.
 
 ## Documentation
 
-- [API reference](doc/API.md): macro syntax and array function contracts.
+- [API reference](doc/API.md): macro syntax, array function contracts and
+  the capability report.
 - [Usage guide](doc/usage.md): detailed behavior and limitations.
 - [Development guide](doc/development.md): tools, quality checks, tests,
   builds and benchmarks.

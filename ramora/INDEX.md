@@ -37,6 +37,9 @@ limits; they do not report feature delivery status.
 - [Controlled fallback](defvaluetype-design/fallback.md): policy,
   capability boundary, warning and Error behaviour, AOT limits and tests.
 
+- [Capability report](defvaluetype-design/decisions/capability-report.md):
+  D14, the public `value-type.capability/report` and the cache owners.
+
 - [Library packaging](defvaluetype-design/embodiment.md#library-packaging):
   source-only JAR, build artifacts, consumer requirements and development commands.
 
@@ -49,7 +52,7 @@ limits; they do not report feature delivery status.
 
 - [Usage guide](../doc/usage.md): fallback, AOT limits, value semantics,
   error handling, value arrays (allocation, sequence construction,
-  diagnostics) and portable non-nil fields.
+  diagnostics), the capability report and portable non-nil fields.
 
 - [Release workflow](release-workflow.md): tooling ownership, preparation,
   publication order and verification limits.

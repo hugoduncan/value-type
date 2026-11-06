@@ -1,7 +1,6 @@
 (ns value-type.impl.runtime
-  "Per-library-runtime fallback policy, capability cache and warning state."
-  (:require [value-type.impl.capability :as capability]
-            [value-type.impl.field-capability :as field-capability]))
+  "Per-library-runtime fallback policy, warning state and fallback guards.
+   Capability results are cached by their probe namespaces.")
 
 (set! *warn-on-reflection* true)
 
@@ -13,13 +12,7 @@
                    "; expected silent, warn or error"))))
     configured))
 
-(def ^:private detected-capability (delay (capability/detect)))
 (def ^:private warned? (atom false))
-
-(defn capability
-  "Return the cached capability result. This does not apply fallback policy."
-  []
-  @detected-capability)
 
 (defn enforce-fallback!
   "Apply initialized policy to an attempted fixed identity representation.
@@ -58,25 +51,3 @@
      (enforce-fixed-fallback!)
      (deftype* ~tagname ~classname ~fields ~@opts+specs)
      ~(symbol (str classname))))
-
-(def ^:private detected-field-capability (delay (field-capability/detect)))
-
-(defn field-capability
-  "Return cached native field capability without applying fallback policy."
-  []
-  @detected-field-capability)
-
-(defn require-field-capability!
-  "Require native field enforcement independently of ordinary fallback policy.
-   Return nil on support; otherwise throw a structured definition error. Probe
-   defects propagate unchanged. This guard is safe to call again in receivers."
-  [class-name]
-  (let [{:keys [available? reason detail]} (field-capability)]
-    (when-not available?
-      (throw
-       (ex-info
-        (str "Cannot define " class-name
-             ": native non-nil field enforcement is unavailable. " detail)
-        {:value-type/error :field-capability-unavailable
-         :class-name class-name
-         :reason reason})))))

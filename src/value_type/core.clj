@@ -3,6 +3,7 @@
   compatible macro."
   (:require
    [value-type.impl.capability :as capability]
+   [value-type.impl.field-capability :as field-capability]
    [value-type.impl.fields :as fields]
    [value-type.impl.runtime :as runtime]))
 
@@ -26,7 +27,7 @@
   with `:value-type/error` `:value-capability-unavailable`, `:class-name`
   and `:reason`."
   [class-name]
-  (let [{:keys [available? reason detail]} (runtime/capability)]
+  (let [{:keys [available? reason detail]} (capability/capability)]
     (when-not available?
       (throw (ex-info (str "Cannot define value class " class-name
                            ": fixed value representation is unavailable. "
@@ -186,10 +187,10 @@
                         opts)
         native? (some #(= :native (:enforcement %)) specifications)
         cls     (symbol class-name)]
-    (when native? (runtime/require-field-capability! class-name))
+    (when native? (field-capability/require-field-capability! class-name))
     (install-receiving! "value" class-name specifications :value shape)
     `(let []
-       ~@(when native? `((runtime/require-field-capability! ~class-name)))
+       ~@(when native? `((field-capability/require-field-capability! ~class-name)))
        ~definition
        (check-value-class ~cls true)
        ~cls)))
@@ -217,11 +218,11 @@
   `guarded` its fallback form. A receiving form is wrapped in `let` to keep
   receiving analysis checks through both macroexpand forms."
   [class-name shape validated value-form identity-form definition guarded]
-  (let [{:keys [available? detail]} (runtime/capability)
+  (let [{:keys [available? detail]} (capability/capability)
         specifications (fields/select-enforcement
                         validated
                         #(and available?
-                              (:available? (runtime/field-capability))))
+                              (:available? (field-capability/capability))))
         modes (mapv :enforcement specifications)]
     (if available?
       (if (seq specifications)

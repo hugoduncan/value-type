@@ -46,10 +46,10 @@
 - For ordinary definitions, `value-type.impl.capability` checks the optional ClassFile API and
   `Class.isValue`, then defines and instantiates an isolated strict-field
   probe. Only missing required APIs or an unsupported probe class version
-  select fallback. Other failures propagate. `value-type.impl.runtime`
-  caches the result; `core` selects the representation before loading the
-  optional loader. Both the detector and the value-path result check use
-  the value-class predicate.
+  select fallback. Other failures propagate. `value-type.impl.capability`
+  caches the result (`capability`); `core` selects the representation
+  before loading the optional loader. Both the detector and the value-path
+  result check use the value-class predicate.
 - Ordinary definitions: throwing `:not-installed` at macroexpansion is
   rejected. Tools call `macroexpand` with no `LOADER` binding only to show
   the expansion; the run-time check throws instead.

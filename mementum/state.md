@@ -26,6 +26,15 @@ Its API is not stable.
 - `value-type.array/make-array` allocates native null-restricted atomic arrays
   with an explicit seed. `into-array` constructs them from finite sequences.
   `array-info` inspects reference-array properties. Allocation has no fallback.
+- `value-type.capability/report` returns the `:available?` and `:reason`
+  entries of the four cached capability results (`:value-class`,
+  `:native-non-nil-field`, `:array-allocation`, `:array-inspection`) as EDN.
+  It reads no fallback policy. The probe namespaces (`impl.capability`,
+  `impl.field-capability`, `impl.array`) own the cached results through
+  zero-arity accessors; `impl.runtime` owns only policy, the warning flag
+  and the fallback guards (`enforce-fallback!`, `guarded-deftype`,
+  `guarded-deftype*`).
+  See D14 in the defvaluetype decisions.
 - Source-only JAR builds, quality checks, API generation and release tooling
   are available. Hosted Actions and live publication remain unverified.
 

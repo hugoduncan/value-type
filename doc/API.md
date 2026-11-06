@@ -13,6 +13,8 @@ Regenerate from the repository root with `bb api-docs`. Check without writing wi
     -  [`array-info`](#value-type.array/array-info) - Return actual properties of a reference array (experimental Valhalla API).
     -  [`into-array`](#value-type.array/into-array) - Build a native null-restricted atomic array from finite seqable input.
     -  [`make-array`](#value-type.array/make-array) - Allocate a native null-restricted atomic array with every slot set to initial.
+-  [`value-type.capability`](#value-type.capability)  - Read-only report of the optional JVM capabilities that value-type uses.
+    -  [`report`](#value-type.capability/report) - Return the capability results of this runtime as an EDN-printable map.
 -  [`value-type.core`](#value-type.core)  - Define JEP 401 value classes with [<code>defvaluetype</code>](#value-type.core/defvaluetype), a <code>deftype</code> compatible macro.
     -  [`defvaluetype`](#value-type.core/defvaluetype) - As <code>deftype</code> (see its docstring for syntax, options, specs, the <code>-&gt;name</code> factory and the import).
     -  [`defvaluetype*`](#value-type.core/defvaluetype*) - As <code>deftype*</code>, with the same arguments.
@@ -96,6 +98,45 @@ Allocate a native null-restricted atomic array with every slot set to initial.
    The caller owns the mutable slots. Flattening is not guaranteed. Atomic
    element access does not provide safe publication or compound-update safety.
 <p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L38-L55">Source</a></sub></p>
+
+-----
+# <a name="value-type.capability">value-type.capability</a>
+
+
+Read-only report of the optional JVM capabilities that value-type uses.
+
+
+
+
+## <a name="value-type.capability/report">`report`</a>
+``` clojure
+(report)
+```
+Function.
+
+Return the capability results of this runtime as an EDN-printable map.
+
+  Keys:
+  - `:value-class`: this runtime can define value classes.
+  - `:native-non-nil-field`: value classes use native restriction for
+    eligible `:non-nil` fields.
+  - `:array-allocation`: `make-array` and `into-array` can allocate.
+  - `:array-inspection`: `array-info` can inspect.
+
+  Each value is `{:available? true}` or `{:available? false :reason r}`.
+  Reasons:
+  - `:value-class`, `:native-non-nil-field`: `:missing-classfile-api`,
+    `:missing-value-predicate`, `:unsupported-class-version`.
+  - `:array-allocation`: the value-class reasons, `:missing-array-api`,
+    `:missing-array-signature`, `:array-access-denied`.
+  - `:array-inspection`: `:missing-array-api`, `:missing-array-signature`,
+    `:array-access-denied`.
+
+  Each value equals the `:available?` and `:reason` entries of the cached
+  result that definitions and array functions use. Probes that have not run
+  yet run now; a probe defect propagates and no partial report is returned.
+  The report does not read the `value-type.fallback` policy.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L7-L35">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>
@@ -211,7 +252,7 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L274-L384">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L275-L385">Source</a></sub></p>
 
 ## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
 ``` clojure
@@ -278,4 +319,4 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L386-L461">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L387-L462">Source</a></sub></p>

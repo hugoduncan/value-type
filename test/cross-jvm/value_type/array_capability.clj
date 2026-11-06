@@ -1,6 +1,7 @@
 (ns value-type.array-capability
   "Array capability axis and expectations of the cross-JVM array tests."
-  (:require [value-type.cell-harness :as harness]
+  (:require [value-type.capability-rows :as rows]
+            [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
             [value-type.jvm-config :as config]
             [value-type.jvm-runner :as runner]))
@@ -54,15 +55,12 @@
   [configuration label]
   (get (into {} (runtimes configuration)) label))
 
-(def ^:private allocation-reasons
-  "The `:array-unavailable` reason of allocation in each runtime label, or
-   nil when allocation is available."
-  {:java8 :missing-classfile-api
-   :no-options :unsupported-class-version
-   :export-only :unsupported-class-version
-   :no-export :array-access-denied
-   :export nil
-   :no-flattening nil})
+(defn- allocation-reason
+  "Return the `:array-unavailable` reason of allocation in runtime label
+   (the `:array-allocation` column of capability-rows/report), or nil when
+   allocation is available."
+  [label]
+  (:reason (:array-allocation (rows/report label))))
 
 (defn allocation-configurations
   "Return the allocation capability rows: [runtime reason], in the order of
@@ -71,7 +69,7 @@
    reason is the `:array-unavailable` reason, or nil when allocation is
    available."
   []
-  (mapv (fn [[label runtime]] [runtime (allocation-reasons label)])
+  (mapv (fn [[label runtime]] [runtime (allocation-reason label)])
         (runtimes (config/configuration))))
 
 (defn expected-flags

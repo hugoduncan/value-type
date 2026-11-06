@@ -5,7 +5,7 @@
   (:require [value-type.cell-registry :as registry]
             [value-type.consumer-aot-checks :as checks]
             [value-type.core]
-            [value-type.impl.runtime :as runtime])
+            [value-type.impl.capability :as capability])
   (:import (java.lang.reflect Field)))
 
 (defn- policy-attempts
@@ -15,7 +15,7 @@
   ([f]
    (policy-attempts registry/failure f identity))
   ([failure-of f success]
-   {:detail (:detail (runtime/capability))
+   {:detail (:detail (capability/capability))
     :attempts (registry/twice #(registry/outcome failure-of f success))}))
 
 (defn expansion

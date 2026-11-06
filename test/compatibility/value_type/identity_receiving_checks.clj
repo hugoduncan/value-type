@@ -6,7 +6,7 @@
   (:require [value-type.consumer-aot-checks :as checks]
             [value-type.core]
             [value-type.cell-registry :as registry]
-            [value-type.impl.runtime :as runtime]
+            [value-type.impl.capability :as capability]
             [value-type.transfer-checks :as transfer])
   (:import (clojure.lang Compiler RT)
            (java.lang.reflect Field)))
@@ -67,7 +67,7 @@
   (let [n *ns*
         holder (registry/class-name n 'Holder)]
     {:class-name holder
-     :capability (runtime/capability)
+     :capability (capability/capability)
      :outcome (define n 'Holder registry/root-failure
                 #(evaluate n (list 'value-type.core/value-field-deftype
                                    holder [:generated]
@@ -121,7 +121,7 @@
   (let [n *ns*
         child (evaluate n '(deftype Child [optional]))]
     {:child (registry/defined n 'Child child nil)
-     :detail (:detail (runtime/capability))
+     :detail (:detail (capability/capability))
      :declarations (nested n (fn [expansion owner]
                                {:outcome (registry/outcome registry/root-failure
                                                            #(do (expansion) :expanded)

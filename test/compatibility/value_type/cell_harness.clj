@@ -52,18 +52,18 @@
   [(:class (policy-rejection fallback-context))])
 
 (defn controlled-absence
-  "Return a form that loads value-type.impl.runtime and the namespaces of
-   requires (symbols), then evaluates body under controlled native absence:
-   with-redefs replaces only the native capability accessor
-   (value-type.impl.runtime/field-capability) with an unavailable result of
+  "Return a form that loads value-type.impl.field-capability and the
+   namespaces of requires (symbols), then evaluates body under controlled
+   native absence: with-redefs replaces only the native capability accessor
+   (value-type.impl.field-capability/capability) with an unavailable result of
    reason :controlled-absence. The require is a separate top-level form, so
    the namespaces are loaded before body is compiled."
   [requires body]
   (list 'do
         (list* 'require (map #(list 'quote %)
-                             (cons 'value-type.impl.runtime requires)))
+                             (cons 'value-type.impl.field-capability requires)))
         (list 'with-redefs
-              '[value-type.impl.runtime/field-capability
+              '[value-type.impl.field-capability/capability
                 (constantly {:available? false :reason :controlled-absence})]
               body)))
 

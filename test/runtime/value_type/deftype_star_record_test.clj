@@ -12,6 +12,7 @@
    [clojure.test :refer [deftest is testing]]
    [value-type.core :as vt]
    [value-type.impl.capability :as capability]
+   [value-type.impl.field-capability :as field-capability]
    [value-type.impl.fields :as fields]
    [value-type.impl.loader :as loader]
    [value-type.impl.runtime :as runtime]
@@ -64,7 +65,7 @@
   "The representations to check: identity always, value when capable."
   []
   (cond-> [[:identity `runtime/guarded-deftype*]]
-    (:available? (runtime/capability)) (conj [:value `vt/defvaluetype*])))
+    (:available? (capability/capability)) (conj [:value `vt/defvaluetype*])))
 
 (defn- construct [^Class c args]
   (clojure.lang.Reflector/invokeConstructor c (object-array args)))
@@ -180,7 +181,7 @@
                                              {:hidden-field? true})
                 (= :value representation)
                 (fields/select-enforcement
-                 #(:available? (runtime/field-capability))))]
+                 #(:available? (field-capability/capability))))]
     (loader/install! class-name specs representation shape)
     `(let [] (deftype* ~tagname ~classname ~fields ~@opts+specs) ~classname)))
 

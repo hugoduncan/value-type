@@ -1,6 +1,7 @@
 (ns value-type.array-info-boundary-test
   (:require [clojure.test :refer [deftest]]
             [value-type.array-capability :as capability]
+            [value-type.capability-rows :as rows]
             [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
             [value-type.jvm-config :as config]))
@@ -115,15 +116,19 @@
                               (capability/equal-repeated
                                (valid-expected supported? reason cause)))))))))
 
-(def ^:private inspection-rows
-  "The inspection rows of each runtime label (array-capability/runtimes):
-   [label supported? reason cause]."
-  [[:java8 false :missing-array-api "java.lang.ClassNotFoundException"]
-   [:no-options false :array-access-denied "java.lang.IllegalAccessException"]
-   [:no-export false :array-access-denied "java.lang.IllegalAccessException"]
-   [:export true nil nil]
-   [:export-only true nil nil]
-   [:no-flattening true nil nil]])
+(def ^:private inspection-causes
+  "Inspection rejection reason to the class name of its cause."
+  {:missing-array-api "java.lang.ClassNotFoundException"
+   :array-access-denied "java.lang.IllegalAccessException"})
+
+(defn- inspection-rows
+  "Return the inspection rows of each runtime label
+   (array-capability/runtimes): [label supported? reason cause], from the
+   `:array-inspection` column of capability-rows/report."
+  []
+  (for [[label] (capability/runtimes (config/configuration))
+        :let [{:keys [available? reason]} (:array-inspection (rows/report label))]]
+    [label available? reason (inspection-causes reason)]))
 
 (deftest safe-inspection-boundary-test
   ;; Crash-risk public inputs. Configuration and policy select the child
@@ -131,7 +136,7 @@
   ;; child (rule 5). Empty cell *err* replaces the fallback check.
   (let [configurations (config/configuration)]
     (harness/run-cells
-     (for [[label supported? reason cause] inspection-rows
+     (for [[label supported? reason cause] (inspection-rows)
            :let [configuration (capability/runtime configurations label)]
            policy config/policies
            require-order capability/require-orders]
@@ -144,7 +149,7 @@
 
 (def ^:private export-only-reason
   "The allocation rejection reason of the export-only runtime."
-  :unsupported-class-version)
+  (:reason (:array-allocation (rows/report :export-only))))
 
 (def ^:private export-only-form
   `(do

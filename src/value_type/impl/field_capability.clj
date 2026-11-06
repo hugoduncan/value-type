@@ -50,7 +50,30 @@
    Inherit only the value probe's narrow API/version absence classifications.
    Field linkage, verification and enforcement failures remain errors."
   []
-  (let [prerequisites (capability/detect)]
+  (let [prerequisites (capability/capability)]
     (if (:available? prerequisites)
       (probe)
       prerequisites)))
+
+(def ^:private detected-field-capability (delay (detect)))
+
+(defn capability
+  "The cached native non-nil field capability result of this runtime.
+   Every reader reads through this var; tests replace it with `with-redefs`."
+  []
+  @detected-field-capability)
+
+(defn require-field-capability!
+  "Require native field enforcement independently of ordinary fallback policy.
+   Return nil on support; otherwise throw a structured definition error. Probe
+   defects propagate unchanged. This guard is safe to call again in receivers."
+  [class-name]
+  (let [{:keys [available? reason detail]} (capability)]
+    (when-not available?
+      (throw
+       (ex-info
+        (str "Cannot define " class-name
+             ": native non-nil field enforcement is unavailable. " detail)
+        {:value-type/error :field-capability-unavailable
+         :class-name class-name
+         :reason reason})))))

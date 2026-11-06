@@ -272,6 +272,22 @@
                          (.readAllBytes stream)))))
                 (check-metadata archive)))))))))
 
+;; The build suite cannot load test/compatibility; this repeats the
+;; Contract rows of value-type.capability-rows for its four runtimes.
+(def ^:private consumer-reports
+  (let [result #(if % {:available? false :reason %} {:available? true})
+        report (fn [& reasons]
+                 (zipmap [:value-class :native-non-nil-field
+                          :array-allocation :array-inspection]
+                         (map result reasons)))]
+    {:java8 (report :missing-classfile-api :missing-classfile-api
+                    :missing-classfile-api :missing-array-api)
+     :no-options (report :unsupported-class-version :unsupported-class-version
+                         :unsupported-class-version :array-access-denied)
+     :export-only (report :unsupported-class-version :unsupported-class-version
+                          :unsupported-class-version nil)
+     :export (report nil nil nil nil)}))
+
 (deftest isolated-consumer-test
   ;; Resolve the packaged contract, never the build-test JVM classpath.
   (with-project
@@ -302,19 +318,19 @@
               (is (seq runtime-paths))
               (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
                           classpath)))
-            (doseq [[java options expected-value?]
+            (doseq [[java options expected-value? label]
                     [[(str (System/getProperty "java.home") "/bin/java")
                       ["--enable-preview"
                        "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
-                       "-Dconsumer.arrays=true"] true]
+                       "-Dconsumer.arrays=true"] true :export]
                      [(str (System/getProperty "java.home") "/bin/java")
-                      [] false]
+                      [] false :no-options]
                      [(str (System/getProperty "java.home") "/bin/java")
                       ["--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
-                       "-Dconsumer.inspection=true"] false]
+                       "-Dconsumer.inspection=true"] false :export-only]
                      [(or (System/getenv "VALUE_TYPE_BASELINE_JAVA")
                           "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/bin/java")
-                      [] nil]]]
+                      [] nil :java8]]]
               (testing (str "the artifact supplies a working macro on " java)
                 (let [result (run-process
                               directory
@@ -327,7 +343,8 @@
                               {})]
                   (is (= 0 (:exit result)) result)
                   (when (zero? (:exit result))
-                    (is (= {:value-class? expected-value?
+                    (is (= {:report (consumer-reports label)
+                            :value-class? expected-value?
                             :equal-copy? (boolean expected-value?)
                             :factory-class? true :fields [3 7 11 13]
                             :diagnostic-control (when-not expected-value? :checked)

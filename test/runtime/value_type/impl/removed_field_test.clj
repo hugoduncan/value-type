@@ -4,8 +4,8 @@
   (:require
    [clojure.test :refer [deftest is testing]]
    [value-type.core :as vt]
+   [value-type.impl.capability :as capability]
    [value-type.impl.loader :as loader]
-   [value-type.impl.runtime :as runtime]
    [value-type.test-support :as support
     :refer [binary-name record-tail with-temp-dir]])
   (:import
@@ -54,7 +54,7 @@
   (set (map #(.stringValue (.fieldName ^FieldModel %))
             (.fields ^ClassModel (.parse (ClassFile/of) bs)))))
 
-(def ^:private value-output? #(:available? (runtime/capability)))
+(def ^:private value-output? #(:available? (capability/capability)))
 
 ;;; Compiler path
 

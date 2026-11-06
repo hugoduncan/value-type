@@ -39,6 +39,9 @@
 - State: the adapter owns delayed capability results and method handles or
   reflective methods, scoped to one loaded library runtime. Startup
   configuration is fixed; runtime module-access changes are unsupported.
+  Readers use the adapter accessors (`allocation-capability`,
+  `inspection-capability`): the array functions and
+  `value-type.capability/report`, which reads the same cached results.
 - Boundary: only the adapter calls `jdk.internal.value`. Discover allocation
   and inspection capabilities separately. Missing diagnostics must not disable
   allocation. Do not create a public SPI or reuse the class-format detector

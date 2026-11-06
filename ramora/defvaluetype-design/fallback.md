@@ -57,7 +57,8 @@ section records the implemented contract and accepted evidence limits.
   format, with an unavailable reason for diagnostics. It must cover
   missing support, required API availability and disabled preview.
   `Class::isValue` presence alone is insufficient.
-- Boundary: the public namespace and fallback path must load without
+- Boundary: the public namespaces `value-type.core` and
+  `value-type.capability` and the fallback path must load without
   JEP 401, preview flags or `java.lang.classfile`. Load the value-class
   machinery only after the initial capability checks permit it. Identity
   definitions with enabled non-nil fields use a baseline-safe bytecode backend;
@@ -81,7 +82,8 @@ section records the implemented contract and accepted evidence limits.
 ## D13. Fallback lifecycle
 
 - Subject: state ownership, warning frequency and AOT representation.
-- Choice: the policy/capability responsibility owns cached capability,
+- Choice: the probe namespaces (`impl.capability`, `impl.field-capability`,
+  `impl.array`) own the cached capability results. `impl.runtime` owns the
   initialized policy and an atomic warning-once flag. Scope is one loaded
   library runtime, not each type or namespace. Concurrent fallback
   attempts produce at most one warning. Warn on actual fallback, not
@@ -101,8 +103,10 @@ section records the implemented contract and accepted evidence limits.
   bypasses evaluation of the guarded form.
 - Rejected: a process-wide cross-class-loader registry; resetting strict
   policy after an error; automatic conversion of compiled artifacts.
-- Rationale: one small state owner is enough; application policy must
-  not be bypassed by dependencies compiled under another policy.
+- Rationale: each probe owner caches its own result, so readers that do
+  not need policy (the capability report) never read it; application
+  policy must not be bypassed by dependencies compiled under another
+  policy.
 - Qualities: bounded diagnostics and predictable deployment; AOT adds a
   guard at form evaluation, not per-instance overhead.
 - Commitment: firm. Transfer, concurrent-warning and source-free AOT tests
@@ -112,7 +116,8 @@ section records the implemented contract and accepted evidence limits.
 
 D11 requires isolated JVM tests:
 
-- Public namespace and packaged source JAR load without optional APIs.
+- Public namespaces `value-type.core` and `value-type.capability` and the
+  packaged source JAR load without optional APIs.
 - All policies on a non-value JVM and Valhalla with preview disabled.
 - Value classes on supported Valhalla with preview enabled, for all policies.
 - No output in silent mode; one warning across types, namespaces and

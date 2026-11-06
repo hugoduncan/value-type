@@ -3,7 +3,7 @@
    cell thread, and defines or expands in that namespace."
   (:require [value-type.cell-registry :as registry]
             [value-type.core]
-            [value-type.impl.runtime :as runtime]
+            [value-type.impl.capability :as capability]
             [value-type.transfer-checks :as transfer]))
 
 (defn- on-thread
@@ -88,14 +88,14 @@
   "Check each expand of transfer/expands with real bound and unbound threads.
    :loader-bound? is the Compiler/LOADER binding observed on each thread."
   ([expand bound?]
-   (if (:available? (runtime/capability))
+   (if (:available? (capability/capability))
      :value-mode
      (let [cell-ns *ns*
            {:keys [loader-bound? result]}
            (on-thread bound? #(warning-timing cell-ns expand))]
        (assoc result :loader-bound? loader-bound?))))
   ([]
-   (if (:available? (runtime/capability))
+   (if (:available? (capability/capability))
      :value-mode
      (let [cell-ns *ns*
            unbound (on-thread false #(expansion-attempts cell-ns false))
@@ -111,7 +111,7 @@
 (defn- discarded
   [cell-ns expand]
   (binding [*ns* cell-ns]
-    {:detail (:detail (runtime/capability))
+    {:detail (:detail (capability/capability))
      :attempts
      (registry/attempts
       (fn [index]

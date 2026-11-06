@@ -1,10 +1,13 @@
 ## Selected fallback interfaces
 
-`impl.runtime/capability` returns the cached capability map (`:available?`,
+`impl.capability/capability` returns the cached capability map (`:available?`,
 and `:reason` plus `:detail` when unavailable). `enforce-fallback!` takes a
 diagnostic context and returns nil or throws Error. Initial selection passes
 unavailable-capability context; later guards pass fixed-representation context.
-All calls share policy and the atomic warning flag. Requiring alone is silent.
+All `enforce-fallback!` calls share the policy and the atomic warning flag
+in `impl.runtime`. The native-field guard
+`impl.field-capability/require-field-capability!` reads only the cached
+field result, not the policy. Requiring alone is silent.
 
 The fallback expansion is a `do` containing `impl.runtime/guarded-deftype`.
 The barrier preserves this analysis macro through both macroexpand entry

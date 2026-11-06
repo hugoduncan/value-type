@@ -11,7 +11,7 @@ of exhaustive JVM coverage.
 | A-31 | observed | warn policy | enforces | at most one warning per loaded library runtime, then ordinary deftype | D10 D13 | high |
 | A-32 | observed | fallback boundary | forbids | eager loading of optional value-class APIs | D12 | high |
 | A-33 | intended | fallback path | constrainedBy | no additional JDK minimum beyond supported Clojure | D12 | high |
-| A-34 | observed | capability/policy responsibility | owns | cached capability, initialized policy and atomic warning flag | D13 | high |
+| A-34 | observed | probe namespaces; impl.runtime | own | cached capability results (impl.capability, impl.field-capability, impl.array); initialized policy and atomic warning flag (impl.runtime) | D13 | high |
 | A-35 | observed | fallback selection | forbids | treating transformation or loader defects as capability absence | D12 | high |
 | A-36 | observed | AOT fallback form-evaluation guard | enforces | application policy during initialization for top-level forms and on invocation for forms inside functions, without changing compiled representation | D13 | medium |
 | A-37 | observed | D10 configuration | chooses | value-type.fallback JVM property; silent default | D10 | high |

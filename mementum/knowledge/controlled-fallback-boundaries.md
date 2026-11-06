@@ -122,13 +122,14 @@ defective transform with the other backend.
 Call the lazy native probe only when some validated tag is a value class.
 Otherwise a probe defect fails declarations that need only generated checks.
 Test this without a stub: in a fresh child JVM, check `realized?` of
-`runtime/detected-field-capability` after each declaration.
+`impl.field-capability/detected-field-capability` after each declaration.
 
 For controlled native absence, `with-redefs` only the accessor
-`runtime/field-capability` to an unavailable result, not the detector behind
-its cached delay. Do this in isolated child JVMs, because Var redefinition is
-process-wide. Keep compilation, loaders and constructors real. Label the
-result as controlled-capability evidence, not support for a new JVM.
+`impl.field-capability/capability` to an unavailable result, not the detector
+behind its cached delay. Do this in isolated child JVMs, because Var
+redefinition is process-wide. Keep compilation, loaders and constructors
+real. Label the result as controlled-capability evidence, not support for a
+new JVM.
 
 Choose capability messages by `:reason`. Java 8–23 lack both
 `java.lang.classfile` and `Class::isValue`: "no value classes" is correct.

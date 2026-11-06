@@ -1,6 +1,7 @@
 (ns value-type.runtime-test
   (:require [clojure.set :as set]
             [clojure.test :refer [deftest]]
+            [value-type.capability-rows :as rows]
             [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
             [value-type.expansion-checks :as expansion]
@@ -32,10 +33,10 @@
     (harness/run-cells
      [(child nil
              [{:context []
-               :form (list 'do '(require '[value-type.impl.runtime :as r])
-                           (list 'let '[a (r/capability)]
+               :form (list 'do '(require '[value-type.impl.capability :as capability])
+                           (list 'let '[a (capability/capability)]
                                  {:capability 'a
-                                  :cached '(identical? a (r/capability))
+                                  :cached '(identical? a (capability/capability))
                                   :optional-loaded optional-loaded-form}))
                :expected (harness/described
                           (harness/keyed
@@ -104,9 +105,9 @@
      (for [policy config/policies]
        (child policy
               [{:context [(policy-context policy)]
-                :form '(do (require 'value-type.core 'value-type.impl.runtime
+                :form '(do (require 'value-type.core 'value-type.impl.capability
                                     'value-type.cell-registry)
-                           (let [available? (:available? (value-type.impl.runtime/capability))
+                           (let [available? (:available? (value-type.impl.capability/capability))
                                  cell-ns *ns*]
                              {:available? available?
                               :outcome
@@ -299,8 +300,8 @@
     (harness/run-cells
      [(child "silent"
              [{:context []
-               :form '(do (require '[value-type.impl.runtime :as r])
-                          (if (:available? (r/capability))
+               :form '(do (require '[value-type.impl.capability :as capability])
+                          (if (:available? (capability/capability))
                             :value-mode
                             (do (require 'value-type.source-checks)
                                 ((resolve 'value-type.source-checks/compatibility)))))
@@ -476,3 +477,17 @@
                               :valid (discarded available? rejected? {})}))
                  :fallback? (not available?)
                  :warning :any}))))))
+
+(deftest invalid-policy-report-test
+  ;; Acceptance 2: report reads no policy and loads neither core nor runtime.
+  (let [{:keys [baseline? available?]} (config/configuration)
+        label (cond baseline? :java8 available? :no-export :else :no-options)]
+    (harness/run-cells
+     (for [policy ["" "WARN" "unknown"]]
+       (child policy
+              [{:context [(policy-context (pr-str policy)) (str label)]
+                :form '(do (require 'value-type.capability)
+                           {:report (value-type.capability/report)
+                            :loaded (vec (keep find-ns '[value-type.core
+                                                         value-type.impl.runtime]))})
+                :expected {:report (rows/report label) :loaded []}}])))))

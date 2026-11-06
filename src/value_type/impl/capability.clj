@@ -107,3 +107,11 @@
   []
   (let [apis (required-apis)]
     (if (contains? apis :available?) apis (probe apis))))
+
+(def ^:private detected-capability (delay (detect)))
+
+(defn capability
+  "The cached value-class capability result of this runtime.
+   Every reader reads through this var; tests replace it with `with-redefs`."
+  []
+  @detected-capability)
