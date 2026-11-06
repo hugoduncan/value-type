@@ -128,3 +128,11 @@ namespace loading remains safe on Java 8. A nil loader retains JDK defaults.
 Source: task 016's public method fixture exposed the failure (`425010f`);
 `c50f247` consolidated the configuration in `impl.class-file/configured`.
 Runtime methods, captured-receiver reads and source-free AOT verify the paths.
+
+The loader cannot resolve the class in transform or its owner: neither is
+defined yet. A concrete field read that merges with `this`, a `reify`/`fn`
+receiver or a new owner then fails with "Could not resolve class X". Give
+`configured` a map of these classes: `hierarchy-info` reads the class from
+its own `ClassModel`, and `owner-hierarchy-info` uses Object as the
+`deftype*` owner superclass. The resolver checks the map first, then the loader.
+Tests: `unloaded-class-merge-test`, `public-value-record-merge-test`.
