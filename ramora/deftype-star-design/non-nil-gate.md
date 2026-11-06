@@ -4,9 +4,9 @@ Environment: Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`, macOS aarch64,
 `--enable-preview -Xverify:all`. The result applies to this build and this
 fixture only.
 
-[Reproduction instructions](../../spike/record-value-type/README.md#non-nil-gate).
+[Reproduction instructions](../../dev/spike/record-value-type/README.md#non-nil-gate).
 [Raw result](evidence/non-nil-gate-ea3-preview.edn). Source hash of
-`spike/record-value-type/non-nil-gate.clj` at the run (SHA-256):
+`dev/spike/record-value-type/non-nil-gate.clj` at the run (SHA-256):
 `bcea76312b49271165503e9412b135ca43520dd8e2b2e88321bb91a77cb613d7`.
 
 ## Method

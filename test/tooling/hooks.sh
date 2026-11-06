@@ -101,7 +101,7 @@ printf '(ns hook-probe)\n(missing-hook-symbol)\n' > test/runtime/hook_probe.clj
 git add test/runtime/hook_probe.clj
 
 # Historical and generated paths do not trigger either hook.
-for path in spike/excluded.clj target/excluded.clj .clj-kondo/imports/excluded.clj; do
+for path in dev/spike/excluded.clj target/excluded.clj .clj-kondo/imports/excluded.clj; do
   run_hook --files "$path"
   test "$(grep -c 'Skipped' "$tmp/hook.log")" = 2
 done

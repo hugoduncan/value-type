@@ -4,9 +4,9 @@ Environment: Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`, macOS aarch64,
 `--enable-preview -Xverify:all`. The result applies to this build and this
 fixture only.
 
-[Reproduction instructions](../../spike/record-value-type/README.md).
+[Reproduction instructions](../../dev/spike/record-value-type/README.md).
 [Raw result](evidence/gate-ea3-preview.edn). Source hash of
-`spike/record-value-type/gate.clj` at the run (SHA-256):
+`dev/spike/record-value-type/gate.clj` at the run (SHA-256):
 `42d2284d1f8be4151c6a40c729db4b03d32074ac5971dd2d617b3685a80e2457`.
 
 ## Method

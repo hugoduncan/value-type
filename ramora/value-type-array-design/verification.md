@@ -21,7 +21,7 @@ the sequence constructor, which adds temporary storage.
 
 ## Semantic observations
 
-The [semantic report](semantic-verification.md), [reproduction instructions](../../spike/value-array-semantics/README.md)
+The [semantic report](semantic-verification.md), [reproduction instructions](../../dev/spike/value-array-semantics/README.md)
 and [retained matrix](evidence/matrix-selected-slots/validation.edn) describe the
 native JVM boundary.
 Valid seeds permit lengths 0, 1 and 3 for zero-field, one-long, two-long and

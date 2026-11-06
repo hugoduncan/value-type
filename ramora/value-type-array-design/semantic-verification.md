@@ -4,7 +4,7 @@ The semantic probes use Valhalla `27-jep401ea3+1-1`, Clojure `1.12.6`, macOS
 aarch64. Java `1.8.0_492-b09` is an unsupported-runtime control. These results
 apply to the recorded build and fixtures, not all value classes or future JDKs.
 
-[Reproduction instructions](../../spike/value-array-semantics/README.md) describe
+[Reproduction instructions](../../dev/spike/value-array-semantics/README.md) describe
 the bounded matrix. The [aggregate result](evidence/matrix-selected-slots/validation.edn)
 records coverage and unresolved dependencies. Exact commands, versions,
 environment, raw output and source hashes are retained in
@@ -38,7 +38,7 @@ fixture was available. Cause chains are in the individual startup EDN files.
 
 ## 2. Empty arrays and seeds
 
-[Allocation cases](../../spike/value-array-semantics/allocation.clj) and
+[Allocation cases](../../dev/spike/value-array-semantics/allocation.clj) and
 [results](evidence/matrix-selected-slots/semantics/default/stores/allocation.edn) use identifiers
 such as `:allocation/long-0-valid` and `:allocation/long-0-null`.
 Valid seeds permit lengths 0, 1 and 3. Null and incompatible seeds reject even
@@ -79,10 +79,10 @@ selection. That mechanism remains unresolved.
 
 ## 4. Contents and stores
 
-[Store cases](../../spike/value-array-semantics/stores.clj) use fresh arrays
+[Store cases](../../dev/spike/value-array-semantics/stores.clj) use fresh arrays
 for each access path, fixture, length, write kind and selected index. For example,
 `:store/long-clojure-3-valid-1` checks Clojure access; the corresponding `java`
-case uses [ordinary Java Object[] bytecode](../../spike/value-array-semantics/ArrayAccess.java).
+case uses [ordinary Java Object[] bytecode](../../dev/spike/value-array-semantics/ArrayAccess.java).
 [Results](evidence/matrix-selected-slots/semantics/default/stores/stores.edn) contain 120 checks.
 
 Clojure `alength`, `aget`, `aset` and Java length/read/store operations preserve

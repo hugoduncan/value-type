@@ -102,7 +102,7 @@ value-class semantics.
   scoped observations, intended qualities, tests and unresolved assumptions.
 - [Semantic verification](value-type-array-design/semantic-verification.md):
   six-question report, including fatal null diagnostics and capability limits.
-- [Runnable instructions](../spike/value-array-semantics/README.md) and
+- [Runnable instructions](../dev/spike/value-array-semantics/README.md) and
   [retained matrix evidence](value-type-array-design/evidence/matrix-selected-slots/).
 - [Typed-array investigation](defvaluetype-design/typed-array.md): retained
   measurements and reproduction instructions.

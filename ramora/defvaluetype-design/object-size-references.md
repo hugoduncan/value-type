@@ -48,15 +48,15 @@ or types of fields, uncompressed references, or another JDK build.
 
 ## Verification and reproduction
 
-`bash spike/object-size/run.sh` runs all three configurations. It
+`bash dev/spike/object-size/run.sh` runs all three configurations. It
 measures Clojure `deftype`/`defvaluetype` pairs and plain Java identity/value
 pairs through the locally built instrumentation agent. VM layout reports
 agree with `Instrumentation.getObjectSize` in each case. Each reference
 class is measured with null fields and with non-null fields. The existing
 Criterium long-field checks also pass in all three configurations.
 
-Sources: `spike/object-size/references.clj` and
-`spike/object-size/SizeControl.java`.
+Sources: `dev/spike/object-size/references.clj` and
+`dev/spike/object-size/SizeControl.java`.
 Retained [reference evidence](object-size-investigation/references/) contains
 complete target-class layouts and measurement rows for Clojure and Java,
 under `default/`, `no-nullable-non-atomic/` and `no-nullable-layouts/`.

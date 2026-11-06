@@ -50,7 +50,7 @@
   requires the internal package export above; ordinary arrays do not require
   preview. Atomicity does not guarantee compound updates or safe publication.
 
-- Add experimental [value-array JVM probes and validation commands](spike/value-array-semantics/README.md).
+- Add experimental [value-array JVM probes and validation commands](dev/spike/value-array-semantics/README.md).
   These verify JVM behavior; they do not add a public array API. Reproduction
   deliberately crashes isolated JVMs for null diagnostic inputs.
 

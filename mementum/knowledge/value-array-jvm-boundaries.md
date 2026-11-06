@@ -134,7 +134,7 @@ Flat status alone proves no size or speed benefit.
 ## Evidence and reproduction
 
 - Report: `ramora/value-type-array-design/semantic-verification.md`.
-- Instructions: `spike/value-array-semantics/README.md`.
+- Instructions: `dev/spike/value-array-semantics/README.md`.
 - Retained selected-slot matrix:
   `ramora/value-type-array-design/evidence/matrix-selected-slots/`.
 

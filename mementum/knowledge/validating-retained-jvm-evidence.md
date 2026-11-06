@@ -68,5 +68,5 @@ Require each invalid copy to fail while an unchanged copy passes. Compare
 file paths and content hashes before and after validation on both success
 and failure. Never repair historical evidence as a side effect of checking it.
 
-Reusable examples: `spike/value-array-semantics/validate_matrix.clj`,
+Reusable examples: `dev/spike/value-array-semantics/validate_matrix.clj`,
 `validate_startup.clj`, `validate_isolated.clj` and `check_validation.clj`.

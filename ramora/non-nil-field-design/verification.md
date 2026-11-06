@@ -87,7 +87,7 @@ requirements.
 
 ## Evidence boundary
 
-The [native experiment](../../spike/null-restricted-fields/report.md) covers the
+The [native experiment](../../dev/spike/null-restricted-fields/report.md) covers the
 native prototype only. It does not establish the baseline backend, the `:non-nil`
 keyword or portable enforcement. [Embodiment](embodiment.md) records that evidence.
 Revalidate internal native mechanisms on each supported EA build. Do not infer

@@ -95,8 +95,8 @@ Atomic nullable layout and payload alignment matter in that case.
 
 ## Reproduction and evidence
 
-Run `bash spike/object-size/run.sh` from the repository root.
-See [probe instructions](../../spike/object-size/README.md).
+Run `bash dev/spike/object-size/run.sh` from the repository root.
+See [probe instructions](../../dev/spike/object-size/README.md).
 
 Retained evidence is in [object-size-investigation](object-size-investigation/):
 `default/` and `no-nullable-non-atomic/` each contain full raw allocation

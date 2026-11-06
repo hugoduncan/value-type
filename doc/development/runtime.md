@@ -289,8 +289,8 @@ fixtures include `PlainNonNil` and `RecNonNil`.
 Limits: interpreter (`-Xint`) runs cover only the value artifact consumers of
 the AOT test. Reflective access to `__hash` and `__hasheq` is not checked.
 The feasibility gate for record-shaped value classes and the non-nil gate
-(`spike/record-value-type/non-nil-gate.clj`) have their own commands in
-[`spike/record-value-type/README.md`](../../spike/record-value-type/README.md).
+(`dev/spike/record-value-type/non-nil-gate.clj`) have their own commands in
+[`dev/spike/record-value-type/README.md`](../../dev/spike/record-value-type/README.md).
 The non-nil gate needs
 `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
 

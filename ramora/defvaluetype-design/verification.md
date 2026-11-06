@@ -1,6 +1,6 @@
 # Verification (spike)
 
-Date: 2026-10-20. Code: `spike/valhalla/`.
+Date: 2026-10-20. Code: `dev/spike/valhalla/`.
 
 Environment:
 

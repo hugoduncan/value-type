@@ -216,10 +216,10 @@ name.
 ## Record-shaped `deftype*` fixtures
 
 Source: task `019-deftype-star-support` (spike
-`spike/record-value-type/gate.clj`,
+`dev/spike/record-value-type/gate.clj`,
 `test/runtime/value_type/deftype_star_record_test.clj`) and task
 `020-deftype-star-non-nil-fields` (non-nil record paths,
-`spike/record-value-type/non-nil-gate.clj`). Verified on
+`dev/spike/record-value-type/non-nil-gate.clj`). Verified on
 Clojure 1.12.6 and EA3. The compiler rules are in
 `ramora/deftype-star-design.md`; these are the test traps.
 

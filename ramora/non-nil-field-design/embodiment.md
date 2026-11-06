@@ -74,9 +74,9 @@ flat layout or performance guarantee follows from these results.
 
 ## Separate historical experiments
 
-The [native experiment](../../spike/null-restricted-fields/report.md) retains its
+The [native experiment](../../dev/spike/null-restricted-fields/report.md) retains its
 layout observations and prototype limits. It is not the production transform.
-The portable experiment in `spike/portable-fields/verify.sh` established the backend
+The portable experiment in `dev/spike/portable-fields/verify.sh` established the backend
 feasibility gate: checked identity output on baseline JVMs and generated checks
 in EA3 value constructors with native annotations deliberately absent. That is
 controlled generated-only evidence, not a new JVM capability configuration.

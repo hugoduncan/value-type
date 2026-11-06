@@ -18,12 +18,12 @@ Measured 2026-10-24 UTC on Apple M5 Max, macOS `27.0.1`, Valhalla
 Production baseline: `f3a5b1b`. No production or existing benchmark code changed.
 JVM options match `:bench`: preview, experimental options, compiler blackhole.
 
-Source: `spike/interface-call/`. Run from the repository root:
+Source: `dev/spike/interface-call/`. Run from the repository root:
 
 ```sh
-bash spike/interface-call/run.sh
-bash spike/interface-call/diagnose.sh
-python3 spike/interface-call/extract-jit.py
+bash dev/spike/interface-call/run.sh
+bash dev/spike/interface-call/diagnose.sh
+python3 dev/spike/interface-call/extract-jit.py
 ```
 
 The timing matrix has four fresh JVMs for each language and array length:

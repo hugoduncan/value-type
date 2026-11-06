@@ -30,7 +30,7 @@ limits; they do not report feature delivery status.
 - [Value-type array design](value-type-array-design.md): native,
   null-restricted atomic allocation, sequence construction and diagnostics.
   [Semantic report](value-type-array-design/semantic-verification.md),
-  [runnable instructions](../spike/value-array-semantics/README.md) and
+  [runnable instructions](../dev/spike/value-array-semantics/README.md) and
   [retained evidence](value-type-array-design/evidence/matrix-selected-slots/)
   describe the JVM boundary.
 

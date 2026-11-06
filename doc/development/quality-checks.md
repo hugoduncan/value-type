@@ -64,7 +64,7 @@ checkout is needed. Downloads and imports are ignored by Git.
 Formatting and code lint cover `src/`, all test directories listed in the
 [test layout](runtime.md#test-layout), `bench/`, `dev/release/`, `bb/`,
 `.clj-kondo/hooks/`,
-`build.clj`, `bb.edn` and `deps.edn`. They exclude historical `spike/`
+`build.clj`, `bb.edn` and `deps.edn`. They exclude historical `dev/spike/`
 code, generated output, caches and dependency imports.
 
 Vale checks `README.md`, prose in `AGENTS.md`, `doc/API.md`, `doc/usage.md`, and the
