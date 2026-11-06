@@ -85,7 +85,7 @@
         agents (io/file dir "AGENTS.md")]
     (try
       (doseq [path ["bb.edn" "bb/value_type/quality.clj" "bb/value_type/prose.clj"
-                    ".vale.ini" "styles/config/vocabularies/ValueType/accept.txt"]]
+                    ".vale.ini" "dev/styles/config/vocabularies/ValueType/accept.txt"]]
         (let [destination (io/file dir path)]
           (io/make-parents destination)
           (io/copy (io/file path) destination)))

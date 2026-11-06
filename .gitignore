@@ -11,5 +11,5 @@
 /.clj-kondo/imports/
 /.clj-kondo/.cache/
 /.mise/
-/styles/proselint/
-/styles/vale/
+/dev/styles/proselint/
+/dev/styles/vale/
