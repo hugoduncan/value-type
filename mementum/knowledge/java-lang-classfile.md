@@ -99,6 +99,23 @@ Source: task `003-capture-loader` (`super-before-write-class` in
 - Load slots: `long` and `double` take two slots; `boolean` loads as
   `int` (`TypeKind/asLoadable`).
 
+## A branch before the strict field writes
+
+A value-class constructor that `constructor-code` emits has no branch, so
+it has no stack map frame. A check before the field writes (`aload`,
+`ifnull` label, `new_`/`dup`/`ldc`/`invokespecial`/`athrow`,
+`labelBinding`) adds the first frame: `uninitializedThis`, all strict
+fields unset. With frames from `java.lang.classfile`, EA3 accepts it with
+`-Xverify:all` (closed gate, `dev/spike/record-value-type/closed-gate.clj`).
+Put such a check before the `requireNonNull` checks when its error must
+come first.
+
+Clojure trap: `(.ldc cb ^ConstantDesc "text")` is a reader error
+(metadata on a string literal). Hint a non-literal form:
+`(.ldc cb ^java.lang.constant.ConstantDesc (identity "text"))`, or a local.
+
+Source: task `022-closed-record-shape` (Slice 1 gate, Slice 4).
+
 ## Retype strict storage and its writes in one build
 
 When changing an Object field to concrete native storage, compose the field
