@@ -82,10 +82,36 @@ guard. That guard applies policy during analysis and emits a runtime check.
 Test transfer to fresh receivers, including capable receivers: they must
 apply their own policy to the fixed identity representation.
 
-`impl.runtime` holds startup policy, the warning flag and the fallback
+`impl.runtime` holds the policy, the warning flag and the fallback
 guards. All phases share it. Use atomic compare-and-set only for warn-once
 emission; strict policy must reject on every call. Requiring the namespace
 alone is not a fallback attempt.
+
+## The fallback policy is fixed at the first read, not at load
+
+Task `024-fallback-policy-first-read` (D10, D13, D14; `d547a33a`). A
+load-time read gave `silent`, with no message, to an application that set
+`error` with `System/setProperty` after a dependency loaded value-type.
+
+- One owner: public `impl.runtime/fallback-policy` over a private delay.
+  Only the delay reads `value-type.fallback` and maps it to `:silent`,
+  `:warn` or `:error`. Every reader (`enforce-fallback!`, thus all guards,
+  and `report`) calls the accessor; tests `with-redefs` it.
+- Only a fallback decision or a `report` call reads the policy. Loading
+  library namespaces, capable-JVM definitions, non-nil field enforcement
+  and array functions do not.
+- The delay keeps an invalid-value exception: each later read throws the
+  `identical?` instance, and a later property fix has no effect.
+- `report` reads the policy first, before any probe, and returns it under
+  `:fallback-policy`. An invalid value makes `report` throw (no partial
+  report). `value-type.capability` depends on `impl.runtime`; it holds no
+  policy logic.
+- A top-level fallback definition (source on an incapable JVM, or an AOT
+  fallback form on any JVM) reads the policy when its namespace loads. A
+  `setProperty` in `-main` can be too late; docs keep the JVM option as the
+  main advice.
+- Policy state is per JVM. Test first-read behaviour in fresh child JVMs
+  (`value-type.fallback-policy-test`, cross-JVM).
 
 ## Each capability result has one owner accessor
 
@@ -94,8 +120,8 @@ Task `021-capability-report` moved the cached capability results out of
 private `detected-*` delay and one public accessor
 (`impl.capability/capability`, `impl.field-capability/capability`,
 `impl.array/allocation-capability`, `impl.array/inspection-capability`).
-Then a reader of a capability result does not load policy, and an invalid
-`value-type.fallback` value has no effect on `value-type.capability/report`.
+Then a reader of a capability result does not read the policy. Only
+`report` reads both (see the first-read section above).
 
 - Every reader calls the accessor var: `value-type.core`, guards, the
   array `require-*` functions, `report` and the dependent probes. The field
