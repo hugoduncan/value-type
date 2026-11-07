@@ -1,5 +1,7 @@
 (ns value-type.identity-backend-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.java.io :as io]
+            [clojure.test :refer [deftest is testing]]
+            [value-type.cell-registry :as registry]
             [value-type.consumer-aot-checks :as checks]
             [value-type.identity-backend.fixture]
             [value-type.impl.identity-backend]
@@ -67,7 +69,7 @@
 (deftest unsupported-storage-references
   ;; Feed real class bytes to the backend and inspect its structured failures.
   (let [transforms (value-type.impl.identity-backend/prepare
-                    "Shape" [{:field 'label :type String :enforcement :generated}] nil)]
+                    "Shape" [{:field 'label :type String :enforcement :generated}] nil :plain)]
     (testing "owner storage must exist"
       (let [{error :value-type/error message :message}
             (shape-failure (:owner transforms) (field-reference-bytes false nil nil))]
@@ -135,7 +137,7 @@
 (deftest constructor-coverage
   ;; Unsupported constructors must fail before unchecked classes can be installed.
   (let [transform (:owner (value-type.impl.identity-backend/prepare
-                           "Shape" [{:field 'label :type String :enforcement :generated}] nil))]
+                           "Shape" [{:field 'label :type String :enforcement :generated}] nil :plain))]
     (testing "straight-line writes cover the selected field"
       (is (bytes? (transform (constructor-bytes 1 false)))))
     (testing "missing constructors, missing or repeated writes and branches fail"
@@ -147,7 +149,7 @@
                ["two writes" (constructor-bytes 2 false)
                 "repeated non-nil constructor write"]
                ["branch" (constructor-bytes 1 true)
-                "unsupported non-nil constructor control flow"]
+                "unsupported constructor control flow"]
                ["extra constructor" (constructor-bytes 1 false super-call)
                 "incomplete non-nil constructor writes"]]]
         (testing case-name
@@ -222,7 +224,7 @@
 (deftest unrelated-attributes-survive
   ;; Load real transformed bytes so reflection checks retained JVM attributes.
   (let [transform (:owner (value-type.impl.identity-backend/prepare
-                           "Shape" [{:field 'label :type String :enforcement :generated}] nil))
+                           "Shape" [{:field 'label :type String :enforcement :generated}] nil :plain))
         bytes (transform (annotated-constructor-bytes))
         loader (clojure.lang.DynamicClassLoader.)
         cls (.defineClass loader "Shape" bytes nil)
@@ -253,7 +255,7 @@
 (deftest unsupported-identity-storage-and-writes
   ;; Reject malformed storage and mutation paths before defining JVM classes.
   (let [transforms (value-type.impl.identity-backend/prepare
-                    "Shape" [{:field 'label :type String :enforcement :generated}] nil)]
+                    "Shape" [{:field 'label :type String :enforcement :generated}] nil :plain)]
     (testing "selected storage must be final, non-static and Object-typed"
       (doseq [[case-name access descriptor]
               [["not final" clojure.asm.Opcodes/ACC_PUBLIC "Ljava/lang/Object;"]
@@ -339,7 +341,7 @@
 (deftest constructor-delegation-rule
   ;; D8: delegation is a call to a target constructor; shape-independent.
   (let [transform (:owner (value-type.impl.identity-backend/prepare
-                           "Shape" [{:field 'label :type String :enforcement :generated}] nil))]
+                           "Shape" [{:field 'label :type String :enforcement :generated}] nil :plain))]
     (testing "a delegating constructor that writes no field is accepted and loads"
       (let [bytes (transform (constructor-bytes 1 false delegate-to-main))
             cls (.defineClass (clojure.lang.DynamicClassLoader.) "Shape" bytes nil)]
@@ -367,9 +369,202 @@
                                     "Shape" "<init>" "(Ljava/lang/Object;)V" false)
                   (.visitFieldInsn m clojure.asm.Opcodes/PUTFIELD
                                    "Shape" "label" "Ljava/lang/Object;"))
-                "non-nil constructor both creates and calls the target"]]]
+                "constructor both creates and calls the target"]]]
         (testing case-name
           (let [{error :value-type/error message :message}
                 (shape-failure transform (constructor-bytes 1 false body))]
             (is (= :unsupported-shape error))
             (is (message-names? message (shape-parts part)) message)))))))
+
+(def ^:private closed-main
+  "Main constructor descriptor of the synthetic closed class: a `long`
+  field (two slots), then `__meta`, `__extmap`, `__hash`, `__hasheq`."
+  "(JLjava/lang/Object;Ljava/lang/Object;II)V")
+
+(defn- closed-class-bytes
+  "Class `Closed` without enabled fields. `constructors` is a sequence of
+  `[descriptor body max-stack]`; `body` emits the code before `RETURN`."
+  [constructors]
+  (let [writer (clojure.asm.ClassWriter. 0)
+        op clojure.asm.Opcodes/ACC_PUBLIC]
+    (.visit writer clojure.asm.Opcodes/V1_8 op "Closed" nil "java/lang/Object" nil)
+    (doseq [[desc body max-stack] constructors]
+      (let [m (.visitMethod writer op "<init>" desc nil nil)
+            locals (inc (reduce + (map #(.getSize ^clojure.asm.Type %)
+                                       (clojure.asm.Type/getArgumentTypes ^String desc))))]
+        (.visitCode m)
+        (body m)
+        (.visitInsn m clojure.asm.Opcodes/RETURN)
+        (.visitMaxs m max-stack locals)
+        (.visitEnd m)))
+    (.visitEnd writer)
+    (.toByteArray writer)))
+
+(defn- delegate-to-closed-main
+  "Emit `this(x, nil, nil, 0, 0)` from a constructor `(J)V`."
+  [^clojure.asm.MethodVisitor m]
+  (.visitVarInsn m clojure.asm.Opcodes/ALOAD 0)
+  (.visitVarInsn m clojure.asm.Opcodes/LLOAD 1)
+  (.visitInsn m clojure.asm.Opcodes/ACONST_NULL)
+  (.visitInsn m clojure.asm.Opcodes/ACONST_NULL)
+  (.visitInsn m clojure.asm.Opcodes/ICONST_0)
+  (.visitInsn m clojure.asm.Opcodes/ICONST_0)
+  (.visitMethodInsn m clojure.asm.Opcodes/INVOKESPECIAL
+                    "Closed" "<init>" closed-main false))
+
+(defn- class-structure
+  "Field names in order, and per constructor descriptor the ordered
+  markers `:iae` (`new IllegalArgumentException`) and `:nn` (a
+  `requireNonNull` call)."
+  [bytes]
+  (let [fields (volatile! [])
+        ctors (volatile! {})]
+    (.accept (clojure.asm.ClassReader. ^bytes bytes)
+             (proxy [clojure.asm.ClassVisitor] [clojure.asm.Opcodes/ASM6]
+               (visitField [_access field _desc _signature _value]
+                 (vswap! fields conj field)
+                 nil)
+               (visitMethod [_access method desc _signature _exceptions]
+                 (when (= method "<init>")
+                   (vswap! ctors assoc desc [])
+                   (proxy [clojure.asm.MethodVisitor] [clojure.asm.Opcodes/ASM6]
+                     (visitTypeInsn [opcode type]
+                       (when (and (= opcode clojure.asm.Opcodes/NEW)
+                                  (= type "java/lang/IllegalArgumentException"))
+                         (vswap! ctors update desc conj :iae)))
+                     (visitMethodInsn [_opcode _owner method-name _desc _itf]
+                       (when (= method-name "requireNonNull")
+                         (vswap! ctors update desc conj :nn)))))))
+             0)
+    {:fields @fields :ctors @ctors}))
+
+(defn- checked-constructors
+  "Descriptor to markers of the constructors of `structure` (from
+  `class-structure`) whose markers contain `:iae`."
+  [structure]
+  (into {} (filter (comp #(some #{:iae} %) val)) (:ctors structure)))
+
+(deftest closed-identity-entry-check
+  ;; D10: the identity backend checks __meta and __extmap by parameter position.
+  (let [transform (:owner (value-type.impl.identity-backend/prepare
+                           "Closed" [] nil :closed))
+        delegating ["(J)V" delegate-to-closed-main 7]
+        main [closed-main super-call 1]
+        checked (comp keys checked-constructors class-structure)]
+    (testing "check in the non-delegating constructor only; class verifies"
+      (let [bytes (transform (closed-class-bytes [main delegating]))
+            cls (.defineClass (clojure.lang.DynamicClassLoader.) "Closed" bytes nil)
+            ctor (.getConstructor cls (into-array Class [Long/TYPE Object Object
+                                                         Integer/TYPE Integer/TYPE]))
+            build (fn [meta extmap]
+                    (try
+                      (.newInstance ctor (object-array [7 meta extmap (int 0) (int 0)]))
+                      (catch Exception e (class (registry/root e)))))]
+        (is (= [closed-main] (checked bytes)))
+        (is (= cls (class (build nil nil))))
+        (is (= IllegalArgumentException (build {} nil)))
+        (is (= IllegalArgumentException (build nil {:k 1})))
+        (is (= cls (class (.newInstance (.getConstructor cls (into-array Class [Long/TYPE]))
+                                        (object-array [7])))))))
+    (testing "companions get no check"
+      ;; One specification, so that the companion transform rewrites the bytes.
+      (let [input (closed-class-bytes [main delegating])
+            output ((:companion (value-type.impl.identity-backend/prepare
+                                 "Closed"
+                                 [{:field 'label :type String :enforcement :generated}]
+                                 nil :closed))
+                    input)]
+        (is (not (identical? input output)))
+        (is (empty? (checked output)))))
+    (testing "closed unsupported shapes"
+      (doseq [[case-name constructors part]
+              [["fewer than four parameters"
+                [["(Ljava/lang/Object;)V" super-call 1]]
+                "closed constructor without Object __meta and __extmap parameters"]
+               ["non-Object __meta parameter"
+                [["(Ljava/lang/Object;ILjava/lang/Object;II)V" super-call 1]]
+                "closed constructor without Object __meta and __extmap parameters"]
+               ["non-Object __extmap parameter"
+                [["(Ljava/lang/Object;Ljava/lang/Object;III)V" super-call 1]]
+                "closed constructor without Object __meta and __extmap parameters"]
+               ["no non-delegating constructor"
+                [["(J)V" delegate-to-closed-main 7]]
+                "closed class without non-delegating constructor"]
+               ["constructor creates and calls the target"
+                [main
+                 ["(Ljava/lang/Object;)V"
+                  (fn [^clojure.asm.MethodVisitor m]
+                    (super-call m)
+                    (.visitTypeInsn m clojure.asm.Opcodes/NEW "Closed")
+                    (.visitInsn m clojure.asm.Opcodes/DUP)
+                    (.visitInsn m clojure.asm.Opcodes/LCONST_0)
+                    (.visitInsn m clojure.asm.Opcodes/ACONST_NULL)
+                    (.visitInsn m clojure.asm.Opcodes/ACONST_NULL)
+                    (.visitInsn m clojure.asm.Opcodes/ICONST_0)
+                    (.visitInsn m clojure.asm.Opcodes/ICONST_0)
+                    (.visitMethodInsn m clojure.asm.Opcodes/INVOKESPECIAL
+                                      "Closed" "<init>" closed-main false)
+                    (.visitInsn m clojure.asm.Opcodes/POP))
+                  8]]
+                "constructor both creates and calls the target"]
+               ["constructor with a jump"
+                [[closed-main
+                  (fn [^clojure.asm.MethodVisitor m]
+                    (super-call m)
+                    (let [label (clojure.asm.Label.)]
+                      (.visitJumpInsn m clojure.asm.Opcodes/GOTO label)
+                      (.visitLabel m label)))
+                  1]]
+                "unsupported constructor control flow"]]]
+        (testing case-name
+          (let [{error :value-type/error message :message}
+                (shape-failure transform (closed-class-bytes constructors))]
+            (is (= :unsupported-shape error))
+            (is (message-names? message ["Closed" part "use Clojure 1.12"])
+                message)))))))
+
+;;; Closed identity output of real compiler output (Acceptance 4)
+
+(defn- compiled-record-bytes
+  "Compile a record-shaped `deftype*` with `declared` fields to a new temp
+  directory. Return the class file bytes."
+  [declared]
+  (let [dir (.toFile (java.nio.file.Files/createTempDirectory
+                      "vt-closed" (make-array java.nio.file.attribute.FileAttribute 0)))
+        n (gensym "ClosedOwner")
+        cname (str "value_type.identity_backend_test." n)
+        fields (into declared '[__meta __extmap ^int __hash ^int __hasheq])]
+    (binding [*ns* (the-ns 'value-type.identity-backend-test)
+              *compile-files* true
+              *compile-path* (str dir)]
+      (eval (list 'deftype* n (symbol cname) fields
+                  :implements ['clojure.lang.IRecord])))
+    (let [file (io/file dir (str (.replace cname \. \/) ".class"))
+          bytes (java.nio.file.Files/readAllBytes (.toPath file))]
+      (run! #(.deleteOnExit ^java.io.File %) (reverse (file-seq dir)))
+      {:bytes bytes :owner cname})))
+
+(deftest closed-identity-compiler-output-bytes
+  (doseq [[case-name declared specs]
+          [["no enabled field" '[^long x y] []]
+           ["one enabled field" '[^long x ^String y]
+            [{:field 'y :type String :enforcement :generated}]]]]
+    (testing case-name
+      (let [{:keys [bytes owner]} (compiled-record-bytes declared)
+            main "(JLjava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;II)V"
+            out (class-structure
+                 ((:owner (value-type.impl.identity-backend/prepare
+                           owner specs nil :closed))
+                  bytes))
+            checked (checked-constructors out)]
+        (testing "all four hidden fields are kept"
+          (is (= ["x" "y" "__meta" "__extmap" "__hash" "__hasheq"] (:fields out))))
+        (testing "constructor descriptors unchanged"
+          (is (= (set (keys (:ctors (class-structure bytes))))
+                 (set (keys (:ctors out))))))
+        (testing "only the main constructor has the check, before null checks"
+          (is (= [main] (keys checked)))
+          (when (seq specs)
+            (let [markers (get checked main)]
+              (is (< (.indexOf ^java.util.List markers :iae)
+                     (.indexOf ^java.util.List markers :nn))))))))))

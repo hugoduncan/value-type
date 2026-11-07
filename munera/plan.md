@@ -1,3 +1,3 @@
 # Plan
 
-No tasks are currently ordered.
+No open tasks.

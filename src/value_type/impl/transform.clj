@@ -64,11 +64,16 @@
 
 ;;; Input check
 
+(defn- binary-name
+  "Return the binary name of the class of `cm`."
+  ^String [^ClassModel cm]
+  (.replace (.asInternalName (.thisClass cm)) \/ \.))
+
 (defn- unexpected-constructor!
   "Throw `:unexpected-constructor` for `cm`; `:class-name` is its binary
   name."
   [^ClassModel cm ^String part]
-  (let [class-name (.replace (.asInternalName (.thisClass cm)) \/ \.)]
+  (let [class-name (binary-name cm)]
     (throw
      (ex-info
       (str "Cannot make a value class from " class-name
@@ -179,16 +184,42 @@
 
 ;;; Transform
 
+(def ^:private ^ClassDesc illegal-argument
+  (ClassDesc/of "java.lang.IllegalArgumentException"))
+
+(def ^:private ^MethodTypeDesc string-constructor
+  (MethodTypeDesc/of ConstantDescs/CD_void
+                     ^"[Ljava.lang.constant.ClassDesc;"
+                     (into-array ClassDesc [ConstantDescs/CD_String])))
+
+(defn- require-nil!
+  "Emit the D10 check: throw `IllegalArgumentException` with `message` when
+  the reference in one of `slots` is not null."
+  [^CodeBuilder cb slots ^String message]
+  (doseq [slot slots]
+    (let [^Label done (.newLabel cb)]
+      (.aload cb (int slot))
+      (.ifnull cb done)
+      (.new_ cb illegal-argument)
+      (.dup cb)
+      (.ldc cb ^java.lang.constant.ConstantDesc message)
+      (.invokespecial cb illegal-argument "<init>" string-constructor)
+      (.athrow cb)
+      (.labelBinding cb done))))
+
 (defn- constructor-code
-  "Emit writes of the fields that `keep-field?` selects, from their argument
-   slots over all `fields`, with optional concrete storage, then call
-   `Object.<init>`. `storage` maps emitted field names to
-   `{:storage-type :native?}`. Casts enforce type compatibility; non-native
-   fields get explicit null checks."
-  ^Consumer [^ClassDesc this fields keep-field? storage]
+  "Emit the D10 check `check` (nil or `[slots message]`, see
+  `require-nil!`), then writes of the fields that `keep-field?` selects,
+  from their argument slots over all `fields`, with optional concrete
+  storage, then call `Object.<init>`. `storage` maps emitted field names to
+  `{:storage-type :native?}`. Casts enforce type compatibility; non-native
+  fields get explicit non-null checks."
+  ^Consumer [^ClassDesc this fields keep-field? storage check]
   (reify Consumer
     (accept [_ cb]
       (let [^CodeBuilder cb cb]
+        (when-let [[slots message] check]
+          (require-nil! cb slots message))
         (doseq [[^FieldModel f slot] (map vector fields (field-slots fields))
                 :when (keep-field? f)]
           (let [n (field-name f)
@@ -279,7 +310,7 @@
 
   Input: the class file bytes of a `deftype` class. storage maps
   emitted field names to `{:storage-type ClassDesc :native? boolean}` for
-  concrete storage. `:native? false` selects constructor null checks
+  concrete storage. `:native? false` selects constructor non-null checks
   instead of native annotations. Stack-map generation resolves the class
   itself from its bytes, because it is not loadable yet; class-loader (or
   nil) resolves the other types.
@@ -310,20 +341,33 @@
     (.transformClass
      cf cm
      (with-storage this storage
-       (let [code (constructor-code this fields (constantly true) storage)]
+       (let [code (constructor-code this fields (constantly true) storage nil)]
          (value-class-transform (constantly true) (constantly code)))))))
 
 ;;; Record path
 
-(def hash-field-names
+(def ^:private hash-field-names
   "Hash fields that the record path removes, in report order: the
   `fields/record-hidden-fields` entries with tag `int`."
   (into [] (keep (fn [[n tag]] (when (= 'int tag) n)))
         fields/record-hidden-fields))
 
-(def hash-field?
+(def ^:private hash-field?
   "True for a name in `hash-field-names`."
   (set hash-field-names))
+
+(def ^:private closed-field-names
+  "Fields that the closed record path removes, in report order (D4)."
+  (mapv first fields/record-hidden-fields))
+
+(defn removed-field-names
+  "Return the hidden fields that the record path removes for `shape`, in
+  report order (D4): all four for `:closed`, the hash fields for
+  `:record`."
+  [shape]
+  (case shape
+    :record hash-field-names
+    :closed closed-field-names))
 
 (defn- opcode? [e op]
   (and (instance? Instruction e) (= op (.opcode ^Instruction e))))
@@ -386,12 +430,27 @@
          (main-constructor-part main owner fields))
        main-descriptor])))
 
+(defn- closed-check
+  "Return the D10 check `[slots message]` of `__meta` and `__extmap` (the
+  closed fields that are not hash fields) in `fields` for the class with
+  binary name `class-name`."
+  [class-name fields]
+  (let [slot-of (zipmap (map field-name fields) (field-slots fields))]
+    [(mapv slot-of (remove hash-field? closed-field-names))
+     (fields/closed-check-message class-name)]))
+
 (defn- record-value-class-transform
-  "Drop the hash fields and rewrite only the main constructor, with the
-  concrete `storage` of `constructor-code`."
-  ^ClassTransform [this fields ^String main-descriptor storage]
-  (let [keep-field? #(not (hash-field? (field-name %)))
-        code (constructor-code this fields keep-field? storage)]
+  "Drop the `removed-field-names` of `shape` and rewrite only the main
+  constructor, with the concrete `storage` of `constructor-code` and, for
+  `:closed`, the D10 check that `__meta` and `__extmap` are nil (message
+  from the binary `class-name`) first."
+  ^ClassTransform
+  [this class-name fields ^String main-descriptor storage shape]
+  (let [removed? (set (removed-field-names shape))
+        keep-field? #(not (removed? (field-name %)))
+        code (constructor-code this fields keep-field? storage
+                               (when (= :closed shape)
+                                 (closed-check class-name fields)))]
     (value-class-transform
      keep-field?
      #(when (= main-descriptor (.stringValue (.methodType ^MethodModel %)))
@@ -408,20 +467,24 @@
   as for `->value-class`.
   Output: new class file bytes, as for `->value-class` with `storage`,
   except: the class has no `__hash` and `__hasheq` fields; only the main
-  constructor (all fields) is rewritten (casts, null checks and concrete
+  constructor (all fields) is rewritten (casts, non-null checks and concrete
   writes), and it ignores the two hash arguments; the two delegating
   constructors, `create`, `getBasis` and all constructor descriptors are
-  unchanged.
+  unchanged. shape is `:record` or `:closed`. For `:closed` (D10), the
+  class also has no `__meta` and `__extmap` fields, and the main
+  constructor first throws `IllegalArgumentException` for a non-nil
+  `__meta` or `__extmap` argument, before its non-null checks.
 
   Errors: when the constructors are not the compiler record shape,
   throws `ex-info` with `:value-type/error :unexpected-constructor` and
   `:class-name`, before any bytes change. The message part is
   `count of constructors`, `parameters`, `delegating constructor`,
   `super call` or `field writes`."
-  ^bytes [^bytes bs storage class-loader]
+  ^bytes [^bytes bs storage class-loader shape]
   (let [cm (.parse (ClassFile/of) bs)
         cf (class-file/configured class-loader (into {} [(class-file/hierarchy-info cm)]))
         this (.asSymbol (.thisClass cm))
+        class-name (binary-name cm)
         fields (filterv instance-field? (.fields cm))
         [part main-descriptor] (record-constructor-difference cm fields)]
     (when part
@@ -429,4 +492,5 @@
     (.transformClass
      cf cm
      (with-storage this storage
-       (record-value-class-transform this fields main-descriptor storage)))))
+       (record-value-class-transform this class-name fields main-descriptor
+                                     storage shape)))))

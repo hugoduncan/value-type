@@ -13,11 +13,12 @@
 (def ^:private class-name "value_type.deftype_star_test.T")
 
 (defn- expansion-error
-  "Macroexpand `(defvaluetype* T value_type.deftype_star_test.T fields)`.
-  Return :no-error, or the `ex-data` of the thrown error."
-  [fields]
+  "Macroexpand `(defvaluetype* T value_type.deftype_star_test.T fields)` with
+  the option pairs `opts`. Return :no-error, or the `ex-data` of the thrown
+  error."
+  [fields & opts]
   (support/thrown-data
-   #(macroexpand-1 (list `vt/defvaluetype* 'T (symbol class-name) fields))))
+   #(macroexpand-1 (list* `vt/defvaluetype* 'T (symbol class-name) fields opts))))
 
 (defn- evaluation-error
   "Evaluate a `defvaluetype*` form of a new class with `fields`. Return the
@@ -223,3 +224,79 @@
     (is (instance? clojure.lang.Compiler$CompilerException t) (str "result: " t))
     (is (= {:value-type/error :not-installed :class-name (str cn)}
            (ex-data (ex-cause t))))))
+
+;;; The :value-type/closed option
+
+(defn- option-data [reason value]
+  {:value-type/error :invalid-option
+   :class-name       class-name
+   :option           :value-type/closed
+   :value            value
+   :reason           reason})
+
+(deftest closed-option-error-test
+  (testing "a value other than true, false or nil gives :invalid-value"
+    (doseq [v [:yes 1 "true" 'true?]]
+      (is (= (option-data :invalid-value v)
+             (expansion-error (into '[a] record-tail) :value-type/closed v)))))
+  (testing "true on a plain shape gives :record-shape-required"
+    (is (= (option-data :record-shape-required true)
+           (expansion-error '[a] :value-type/closed true))))
+  (testing "false and nil on a plain shape are accepted"
+    (doseq [v [false nil]]
+      (is (= :no-error (expansion-error '[a] :value-type/closed v)))))
+  (testing "the last occurrence applies"
+    (is (= (option-data :invalid-value :x)
+           (expansion-error (into '[a] record-tail)
+                            :value-type/closed true :value-type/closed :x)))
+    (is (= :no-error
+           (expansion-error '[a] :value-type/closed true :value-type/closed false)))
+    (is (= (option-data :record-shape-required true)
+           (expansion-error '[a] :value-type/closed false :value-type/closed true)))))
+
+(deftest closed-option-order-test
+  (testing ":record-shape before :invalid-option"
+    (is (= {:value-type/error :invalid-field :reason :record-shape}
+           (support/error-keys
+            (expansion-error '[x __meta] :value-type/closed :x)))))
+  (testing ":invalid-option before metadata keys"
+    (is (= {:value-type/error :invalid-option :reason :invalid-value}
+           (support/error-keys
+            (expansion-error (into [(with-meta 'a {:non-nil :x})] record-tail)
+                             :value-type/closed :x))))))
+
+(defn- closed-option? [form]
+  (boolean (some #{:value-type/closed} (tree-seq coll? seq form))))
+
+(deftest closed-option-removal-test
+  (doseq [fields ['[a] (into '[a] record-tail)]
+          opts   [[:value-type/closed false]
+                  [:value-type/closed nil]
+                  [:value-type/closed true :value-type/closed nil]]]
+    (testing (str fields " " opts)
+      (let [expansion (binding [*ns* (the-ns 'value-type.deftype-star-test)]
+                        (macroexpand-1
+                         (list* `vt/defvaluetype* 'T (symbol class-name)
+                                fields (concat opts [:implements []]))))]
+        (is (not (closed-option? expansion)))
+        (is (some #{:implements} (tree-seq coll? seq expansion)))))))
+
+(deftest receiving-closed-option-removal-test
+  ;; The value receiver needs value capability; the identity receiver not.
+  (doseq [receiver (cond-> [`vt/identity-field-deftype*]
+                     (:available? (capability/capability))
+                     (conj `vt/value-field-deftype*))
+          opts     [[:value-type/closed true]
+                    [:value-type/closed false]
+                    [:value-type/closed nil]
+                    [:value-type/closed nil :value-type/closed true]]]
+    (testing (str receiver " " opts)
+      (let [expansion (with-bindings {#'*ns* (the-ns 'value-type.deftype-star-test)
+                                      clojure.lang.Compiler/LOADER
+                                      (clojure.lang.DynamicClassLoader.)}
+                        (macroexpand-1
+                         (list* receiver 'T (symbol class-name) []
+                                (into '[a] record-tail)
+                                (concat opts [:implements []]))))]
+        (is (not (closed-option? expansion)))
+        (is (some #{:implements} (tree-seq coll? seq expansion)))))))

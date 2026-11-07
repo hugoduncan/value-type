@@ -6,31 +6,31 @@ assumptions, commitment⟩. Commitment: `firm` or `provisional`
 
 ## D1. Expand to `clojure.core/deftype` (abstraction, interface)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/compiler-and-capture.md).
 
 ## D2. Change compiler output, do not generate the class (responsibility)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/compiler-and-capture.md).
 
 ## D3. Catch the bytes with a capture loader (connection, boundary)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/compiler-and-capture.md).
 
 ## D4. Capture loader shape (technology)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/compiler-and-capture.md).
 
 ## D5. Transformation with `java.lang.classfile` (technology)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/transform-and-aot.md).
 
 ## D6. Make a new constructor from the field list (data model)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/transform-and-aot.md).
 
 ## D7. AOT output (deployment)
 
-See [decision details](decisions/compiler-and-transform.md).
+See [decision details](decisions/transform-and-aot.md).
 
 ## D8. Validation at macroexpansion (failure handling)
 
@@ -63,11 +63,11 @@ Fallback verification extends D11; see [verification](fallback.md#verification).
 
 ## D12. Capability boundary (dependencies and failure handling)
 
-See [capability boundary](fallback.md#d12-capability-boundary).
+See [capability boundary](fallback/capability-boundary.md).
 
 ## D13. Fallback lifecycle (state and deployment)
 
-See [fallback lifecycle](fallback.md#d13-fallback-lifecycle).
+See [fallback lifecycle](fallback/lifecycle.md).
 
 ## D14. Public capability report (interface and state)
 

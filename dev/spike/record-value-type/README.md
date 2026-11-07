@@ -58,3 +58,32 @@ Path cases: each of the three constructors (direct and by reflection),
 and with `nil` and wrong-type values for the native and the generated
 field. A rejection case passes only when the expected exception class is
 in the cause chain.
+
+## Closed gate
+
+Task 022, Slice 1 (D7 closed gate). `closed-gate.clj` transforms a
+record-shaped `deftype*` class with the fields `[^long x __meta __extmap
+^int __hash ^int __hasheq]` into a value class with a spike-local
+transform. The transform removes all four hidden fields and adds the D10
+check at the start of the main constructor: a non-nil `__meta` or
+`__extmap` argument throws `IllegalArgumentException`. `gate.clj` and
+`non-nil-gate.clj` do not change.
+
+```sh
+JDK="$HOME/.local/jdks/jdk-27.jdk/Contents/Home"
+"$JDK/bin/java" --enable-preview -Xverify:all \
+  --add-exports=java.base/jdk.internal.value=ALL-UNNAMED \
+  -cp "$(JAVA_CMD="$JDK/bin/java" clojure -Spath)" \
+  clojure.main dev/spike/record-value-type/closed-gate.clj
+```
+
+The script prints one EDN map (`:results`, `:failed`) and exits 0 only when
+no case fails. Structure cases: value class, single field `x`, three
+constructors. Path cases: each constructor (direct and by reflection),
+`create`, the map literal, the positional literal and a compiled record
+constant with valid arguments. Rejection cases: non-nil `__meta` and
+`__extmap` for the main and the meta-and-extmap constructor (direct and by
+reflection), `create` and the map literal (`load-string` and `read-string`)
+with an undeclared key. A rejection case passes only when
+`IllegalArgumentException` is in the cause chain. Layout case:
+`ValueClass.isFlatArray` of a null-restricted atomic array.

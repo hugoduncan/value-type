@@ -3,7 +3,7 @@
             [value-type.array :as array]
             [value-type.array-test-support :as fixtures])
   (:import (jdk.internal.value ValueClass)
-           (value_type.array_test_support ArrayPoint ArrayPair)))
+           (value_type.array_test_support ArrayClosed ArrayPoint ArrayPair)))
 
 (defn- direct-info
   [value]
@@ -84,3 +84,12 @@
       (check-info wide true)
       (is (= (not (flattening-disabled?)) (:flat? (array/array-info narrow))))
       (is (false? (:flat? (array/array-info wide)))))))
+
+(deftest closed-record-layout-test
+  ;; EA3 evidence, not contract: a closed record with one long field keeps
+  ;; only that field, so its restricted array can be flat.
+  (doseq [length [0 1 3]]
+    (let [closed (array/make-array ArrayClosed length
+                                   (ArrayClosed. 7 nil nil))]
+      (check-info closed true)
+      (is (= (not (flattening-disabled?)) (:flat? (array/array-info closed)))))))

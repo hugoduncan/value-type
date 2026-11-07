@@ -8,7 +8,7 @@ fallback policy. Required, typed fields retain their constraints in either
 representation.
 
 Libraries that emit `deftype*`, such as closed-record, can use
-`defvaluetype*` for plain and `defrecord`-shaped classes. See
+`defvaluetype*` for plain, `defrecord`-shaped and closed record classes. See
 [`deftype*` forms](doc/usage.md#deftype-forms).
 
 For collections of value objects, `value-type.array` creates native arrays

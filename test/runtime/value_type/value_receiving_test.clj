@@ -249,13 +249,13 @@
 (def ^:private star-class "value_type.value_receiving_test.StarHolder")
 
 (defn- star-error
-  "Macroexpand a `value-field-deftype*` form with `modes` and `fields`;
-  return :no-error or the `ex-data` of the cause."
-  [modes fields]
+  "Macroexpand a `value-field-deftype*` form with `modes`, `fields` and the
+  option pairs `opts`; return :no-error or the `ex-data` of the cause."
+  [modes fields & opts]
   (support/thrown-data
    #(binding [*ns* (the-ns 'value-type.value-receiving-test)]
-      (macroexpand-1 (list 'value-type.core/value-field-deftype* 'StarHolder
-                           (symbol star-class) modes fields)))))
+      (macroexpand-1 (list* 'value-type.core/value-field-deftype* 'StarHolder
+                            (symbol star-class) modes fields opts)))))
 
 (deftest receiving-star-order-test
   (let [nn #(with-meta % {:non-nil true})
@@ -284,3 +284,19 @@
           :class-name star-class
           :modes []}
          (star-error [] [(with-meta 'a {:tag 'String :non-nil true})]))))
+
+(deftest receiving-star-closed-option-test
+  (let [tail support/record-tail]
+    (testing ":invalid-value and the last occurrence"
+      (is (= {:value-type/error :invalid-option :class-name star-class
+              :option :value-type/closed :value :x :reason :invalid-value}
+             (star-error [] (into '[a] tail)
+                         :value-type/closed true :value-type/closed :x))))
+    (testing ":record-shape-required"
+      (is (= {:value-type/error :invalid-option :reason :record-shape-required}
+             (support/error-keys
+              (star-error [] '[a] :value-type/closed true)))))
+    (testing ":record-shape before :invalid-option"
+      (is (= {:value-type/error :invalid-field :reason :record-shape}
+             (support/error-keys
+              (star-error [] '[x __meta] :value-type/closed :x)))))))

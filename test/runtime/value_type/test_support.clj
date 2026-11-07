@@ -40,6 +40,21 @@
   (some #(when (instance? clojure.lang.ExceptionInfo %) (ex-data %))
         (take-while some? (iterate ex-cause t))))
 
+(defn- cause-chain-classes
+  "Classes of the cause chain of the exception that `f` throws, or
+  `:returned`."
+  [f]
+  (try (f) :returned
+       (catch Throwable t
+         (set (map class (take-while some? (iterate ex-cause t)))))))
+
+(defn rejection
+  "`expected` if the cause chain of the exception that `f` throws has it,
+  else `:returned` or the classes of the cause chain."
+  [expected f]
+  (let [r (cause-chain-classes f)]
+    (if (and (set? r) (contains? r expected)) expected r)))
+
 (defn thrown-data
   "Call `f`. Return :no-error, or the `ex-data` of the first
   `ExceptionInfo` in the cause chain of the thrown exception. Rethrow when

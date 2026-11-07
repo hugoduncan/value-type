@@ -1,6 +1,7 @@
 (ns value-type.impl.value-backend
   "Optional value-class transforms for a capture loader."
-  (:require [value-type.impl.class-file :as class-file]
+  (:require [clojure.string :as str]
+            [value-type.impl.class-file :as class-file]
             [value-type.impl.field-access :as field-access]
             [value-type.impl.fields :as fields]
             [value-type.impl.transform :as transform])
@@ -13,9 +14,9 @@
 ;;; Removed-field access check
 
 (defn- removed-field-accesses
-  "Return the set of removed field names that `bs` reads or writes on
-   the class `target`."
-  [^bytes bs ^String target]
+  "Return the set of names that `removed?` selects among the fields that
+   `bs` reads or writes on the class `target`."
+  [^bytes bs ^String target removed?]
   (let [^ClassModel model (.parse (class-file/configured nil) bs)
         owner (ClassDesc/of target)]
     (into #{}
@@ -24,22 +25,29 @@
                 e (.elementList code)
                 :when (field-access/owner-field-access? owner e)
                 :let [field (.stringValue (.name ^FieldInstruction e))]
-                :when (transform/hash-field? field)]
+                :when (removed? field)]
             field))))
 
 (defn- check-removed-fields
   "Return `bs` unchanged, or throw `:invalid-field` with
    `:reason :removed-field-access` when `bs` reads or writes a removed
-   hash field of `target`."
-  ^bytes [^bytes bs ^String target]
-  (let [accessed (removed-field-accesses bs target)]
-    (when-let [field (some accessed transform/hash-field-names)]
+   field of `target`. The removed fields are
+   `transform/removed-field-names` of `shape` (`:record` or `:closed`);
+   `:field` is the first one that `bs` accesses (D4)."
+  ^bytes [^bytes bs ^String target shape]
+  (let [removed (transform/removed-field-names shape)
+        accessed (removed-field-accesses bs target (set removed))
+        names (str/join ", " removed)]
+    (when-let [field (some accessed removed)]
       (throw
        (ex-info
         (str "Invalid access to removed field " target "/" field
-             ": value output of defvaluetype* removes __hash and __hasheq."
-             " Fix: compute hashes from entries and do not read or write"
-             " __hash or __hasheq.")
+             ": value output of defvaluetype* removes " names "."
+             " Fix: do not read or write " names
+             "; compute hashes from entries"
+             (when (= :closed shape)
+               "; a closed record has no metadata and no extension map")
+             ".")
         {:value-type/error :invalid-field
          :class-name target
          :field (symbol field)
@@ -48,12 +56,14 @@
 
 (defn prepare
   "Return owner and companion transforms for ordered field specifications.
-   `shape` is `:plain` (a `deftype` class) or `:record` (a record-shaped
-   `deftype*` class). Both shapes give concrete storage, constructor checks
-   and concrete field references for the specified fields. For `:record`,
-   owner (after the transform) and companion bytes that read or write
-   `__hash`/`__hasheq` of `target` throw `:invalid-field` with
-   `:reason :removed-field-access`.
+   `shape` is `:plain` (a `deftype` class), `:record` (a record-shaped
+   `deftype*` class) or `:closed` (the closed record shape). All shapes give
+   concrete storage, constructor checks and concrete field references for
+   the specified fields. For `:record`, owner (after the transform) and
+   companion bytes that read or write `__hash`/`__hasheq` of `target`
+   throw `:invalid-field` with `:reason :removed-field-access`; for
+   `:closed`, also `__meta`/`__extmap`, and the main constructor rejects a
+   non-nil `__meta` or `__extmap` argument (D10).
    Load this namespace only after selecting value output."
   [target specifications delegate shape]
   (let [storage (into {} (map (juxt fields/emitted-name
@@ -66,10 +76,11 @@
                    %
                    (field-access/rewrite-class % target storage delegate))]
     (case shape
-      :record
+      (:record :closed)
       {:owner #(check-removed-fields
-                (transform/->record-value-class % storage delegate) target)
-       :companion #(check-removed-fields (rewrite %) target)}
+                (transform/->record-value-class % storage delegate shape)
+                target shape)
+       :companion #(check-removed-fields (rewrite %) target shape)}
       :plain
       {:owner #(transform/->value-class % storage delegate)
        :companion rewrite})))

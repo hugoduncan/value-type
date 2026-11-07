@@ -258,10 +258,13 @@ JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:test -m scry.cli \
   --namespace value-type.impl.transform-test
 ```
 
-These checks cover declaration errors and their order, plain and record
-shapes in both outputs, non-nil fields (both shapes, both outputs), the
+These checks cover declaration errors and their order, plain, record and
+closed shapes in both outputs, non-nil fields (all shapes, both outputs), the
 record transform, the record storage bytecode, the removed-field access
-check and the receiving order and errors of `value-field-deftype*`.
+check and the receiving order and errors of `value-field-deftype*`. For the
+closed shape, they also cover `:value-type/closed` option errors and their
+order, construction and rejection in both outputs, the closed bytes and
+removed-field access for `__meta`, `__extmap`, `__hash` and `__hasheq`.
 
 Run the policy and transfer checks on the three JVMs:
 
@@ -281,18 +284,24 @@ JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
 `value-type.deftype-star-transfer-test` is in `test/compatibility/`, so it
 runs with `:fallback-test`. These checks cover the fallback policies with
 non-nil fields, the transfer of enabled fields, the receiving order and errors
-of `identity-field-deftype*` and the D8 delegation rule of the identity
-backend. The AOT test fixes the representation and enforcement at compile
-time and checks source-free consumers and incompatible receivers. Its
-fixtures include `PlainNonNil` and `RecNonNil`.
+of `identity-field-deftype*`, the D8 delegation rule of the identity
+backend, the closed transfer cells and the closed identity backend cases.
+The AOT test fixes the representation and enforcement at compile time and
+checks source-free consumers and incompatible receivers. Its fixtures
+include `PlainNonNil`, `RecNonNil`, `Closed` and `ClosedNonNil`.
 
 Limits: interpreter (`-Xint`) runs cover only the value artifact consumers of
-the AOT test. Reflective access to `__hash` and `__hasheq` is not checked.
-The feasibility gate for record-shaped value classes and the non-nil gate
-(`dev/spike/record-value-type/non-nil-gate.clj`) have their own commands in
+the AOT test. Reflective access to `__hash` and `__hasheq`, and to `__meta`
+and `__extmap` of closed value output, is not checked. The feasibility gate
+for record-shaped value classes, the non-nil gate
+(`dev/spike/record-value-type/non-nil-gate.clj`) and the closed gate
+(`dev/spike/record-value-type/closed-gate.clj`) have their own commands in
 [`dev/spike/record-value-type/README.md`](../../dev/spike/record-value-type/README.md).
-The non-nil gate needs
-`--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
+The non-nil gate and the closed gate need
+`--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. The EA3 flat-array
+evidence for closed records (`closed-record-layout-test` in
+`value-type.array-info-test`) runs with the runtime array checks in "Verify
+array diagnostics", which add this export.
 
 ## Verify array allocation
 

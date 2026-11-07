@@ -3,6 +3,7 @@
             [value-type.cell-registry :as registry]
             [value-type.consumer-aot-checks :as checks]
             [value-type.core]
+            [value-type.impl.capability :as capability]
             [value-type.message-checks :refer [message-names?]]
             [value-type.transfer-checks :as transfer])
   (:import (java.lang.reflect Constructor Modifier)))
@@ -170,17 +171,21 @@
   [data]
   (if (map? data) (select-keys data [:value-type/error :reason]) data))
 
-(defn- star-error
-  "Macroexpand an `identity-field-deftype*` form with `modes` and `fields`;
-  return :no-error or the `ex-data` of the cause."
-  [modes fields]
+(defn- macro-error
+  "Macroexpand a `macro` form with `modes`, `fields` and the option pairs
+  `opts`; return :no-error or the `ex-data` of the cause."
+  [macro modes fields & opts]
   (try
     (binding [*ns* (the-ns 'value-type.identity-receiving-test)]
-      (macroexpand-1 (list 'value-type.core/identity-field-deftype* 'StarHolder
-                           (symbol star-class) modes fields)))
+      (macroexpand-1 (list* macro 'StarHolder (symbol star-class) modes fields
+                            opts)))
     :no-error
     (catch clojure.lang.Compiler$CompilerException thrown
       (ex-data (.getCause thrown)))))
+
+(def ^:private star-error
+  "`macro-error` of `identity-field-deftype*`."
+  (partial macro-error 'value-type.core/identity-field-deftype*))
 
 (deftest receiving-star-order-test
   (let [nn #(with-meta % {:non-nil true})]
@@ -208,3 +213,35 @@
           :class-name star-class
           :modes [:native]}
          (star-error [:native] [(with-meta 'a {:tag 'String :non-nil true})]))))
+
+(deftest receiving-star-closed-option-test
+  (testing ":invalid-value and the last occurrence"
+    (is (= {:value-type/error :invalid-option :class-name star-class
+            :option :value-type/closed :value :x :reason :invalid-value}
+           (star-error [] (into '[a] registry/record-tail)
+                       :value-type/closed true :value-type/closed :x))))
+  (testing ":record-shape-required"
+    (is (= {:value-type/error :invalid-option :reason :record-shape-required}
+           (error-keys (star-error [] '[a] :value-type/closed true)))))
+  (testing ":record-shape before :invalid-option"
+    (is (= {:value-type/error :invalid-field :reason :record-shape}
+           (error-keys (star-error [] '[x __meta] :value-type/closed :x)))))
+  (testing ":invalid-option before metadata keys"
+    (is (= {:value-type/error :invalid-option :reason :invalid-value}
+           (error-keys (star-error [:generated]
+                                   (into [(with-meta 'a {:non-nil :x})]
+                                         registry/record-tail)
+                                   :value-type/closed :x))))))
+
+(deftest value-receiving-star-closed-option-order-test
+  ;; Only a JVM without value capability gives the capability error.
+  (when-not (:available? (capability/capability))
+    (let [fields (into '[a] registry/record-tail)
+          value-error (partial macro-error
+                               'value-type.core/value-field-deftype* [] fields)]
+      (testing "the fixture without the option gives the capability error"
+        (is (= :value-capability-unavailable
+               (:value-type/error (value-error)))))
+      (testing ":invalid-option before value capability"
+        (is (= {:value-type/error :invalid-option :reason :invalid-value}
+               (error-keys (value-error :value-type/closed :x))))))))

@@ -23,6 +23,11 @@ Its API is not stable.
   Same fallback policy; `:non-nil` fields in both shapes (main constructor
   checks; receiving macros `value-field-deftype*`/`identity-field-deftype*`). See
   [deftype* design](../ramora/deftype-star-design.md) and the usage guide.
+  Closed record shape (`:value-type/closed true`, D9, D10): value output
+  removes all four hidden fields (flat arrays on EA3 for small records);
+  identity output keeps them nil. The main constructor rejects non-nil
+  `__meta`/`__extmap` with `IllegalArgumentException` before the non-nil
+  checks; closed forms always use the receiving expansion.
 - `value-type.array/make-array` allocates native null-restricted atomic arrays
   with an explicit seed. `into-array` constructs them from finite sequences.
   `array-info` inspects reference-array properties. Allocation has no fallback.

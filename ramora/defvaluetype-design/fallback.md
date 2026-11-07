@@ -51,66 +51,11 @@ section records the implemented contract and accepted evidence limits.
 
 ## D12. Capability boundary
 
-- Subject: deciding availability without loading unsupported APIs.
-- Choice: separate JVM capability from application policy. Capability
-  answers whether this library can define its supported value-class
-  format, with an unavailable reason for diagnostics. It must cover
-  missing support, required API availability and disabled preview.
-  `Class::isValue` presence alone is insufficient.
-- Boundary: the public namespaces `value-type.core` and
-  `value-type.capability` and the fallback path must load without
-  JEP 401, preview flags or `java.lang.classfile`. Load the value-class
-  machinery only after the initial capability checks permit it. Identity
-  definitions with enabled non-nil fields use a baseline-safe bytecode backend;
-  ordinary fallback needs no transform.
-  Capability detection must use APIs safe on the fallback runtime.
-- Failure classification: only established capability absence permits
-  fallback. Invalid forms, unexpected constructor shapes, loader defects
-  and transformation defects remain errors. Do not catch all definition
-  failures and retry the user's type as an identity class.
-- Rejected: eager transformer loading; detecting availability by failing
-  to define each user type; treating every `LinkageError` as absence.
-- Rationale: missing optional APIs must not prevent fallback. A defect
-  must remain visible, including on a supported JVM.
-- Qualities: improves portability and fault isolation. Adds a capability
-  check and its verification burden.
-- Commitment: firm boundary. Use API checks followed by the isolated strict-field format probe
-  specified below. No new
-  minimum fallback JDK is imposed beyond the supported Clojure runtime;
-  the tested JDK matrix is a separate verification decision.
+See [capability boundary](fallback/capability-boundary.md).
 
 ## D13. Fallback lifecycle
 
-- Subject: state ownership, warning frequency and AOT representation.
-- Choice: the probe namespaces (`impl.capability`, `impl.field-capability`,
-  `impl.array`) own the cached capability results. `impl.runtime` owns the
-  initialized policy and an atomic warning-once flag. Scope is one loaded
-  library runtime, not each type or namespace. Concurrent fallback
-  attempts produce at most one warning. Warn on actual fallback, not
-  merely on requiring the public namespace. Independent JVMs or isolated
-  library copies have separate state. No persistent storage is needed.
-- AOT: compilation fixes representation. Value-class files cannot fall
-  back on an unsupported JVM. Identity-class files do not become value
-  classes on a capable JVM. The emitted fallback expansion enforces
-  application policy during compilation and where the form is evaluated.
-  Top-level forms enforce policy during namespace initialization. Forms inside
-  functions permit namespace loading, even under `error`, and enforce policy
-  on invocation. Strict calls each throw plain Error, even on a capable JVM;
-  `warn` reports the fallback representation once. Diagnostics distinguish
-  this case from unavailable JVM support. Failed namespace initialization
-  retries can throw NoClassDefFoundError without guard re-entry. The guard
-  cannot prevent prior class loading or protect direct class access that
-  bypasses evaluation of the guarded form.
-- Rejected: a process-wide cross-class-loader registry; resetting strict
-  policy after an error; automatic conversion of compiled artifacts.
-- Rationale: each probe owner caches its own result, so readers that do
-  not need policy (the capability report) never read it; application
-  policy must not be bypassed by dependencies compiled under another
-  policy.
-- Qualities: bounded diagnostics and predictable deployment; AOT adds a
-  guard at form evaluation, not per-instance overhead.
-- Commitment: firm. Transfer, concurrent-warning and source-free AOT tests
-  must verify the do barrier, analysis macro and runtime guard.
+See [fallback lifecycle](fallback/lifecycle.md).
 
 ## Verification
 

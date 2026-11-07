@@ -4,12 +4,12 @@
    identity fact, factory symbols, cell namespace names, failure maps (of
    an error: thrown, failure, root-data and root-failure; of a failed type
    definition), rejection maps, call outcomes, failed, guarded and rejected calls,
-   runtime facts, child call forms, the hash-field count and the record
-   tail of `deftype*`.
+   runtime facts, child call forms, the hash-field count, the closed
+   meta rejection and the record tail of `deftype*`.
 
    Requires only clojure.core and uses Java 8 APIs, so a child JVM loads it
    without test support."
-  (:import (clojure.lang RT)
+  (:import (clojure.lang Reflector RT)
            (java.util Collections IdentityHashMap Set)))
 
 (defonce ^:private ^Set classes
@@ -194,6 +194,23 @@
   [^Class c]
   (count (filter #(#{"__hash" "__hasheq"} (.getName ^java.lang.reflect.Field %))
                  (.getDeclaredFields c))))
+
+(defn meta-rejected?
+  "For a record-shaped Class c with one declared field that accepts 42 (the
+   transfer and AOT fixtures), return true when the meta-and-extmap
+   constructor rejects a non-nil __meta with IllegalArgumentException (in
+   the cause chain). Find that constructor by parameter count 3 and call it
+   with [42 {:m 1} nil]. For a plain-shaped c, or a c with another field
+   count, return nil."
+  [^Class c]
+  (when (some #(= 3 (alength (.getParameterTypes ^java.lang.reflect.Constructor %)))
+              (.getConstructors c))
+    (try
+      (Reflector/invokeConstructor c (object-array [42 {:m 1} nil]))
+      false
+      (catch Throwable thrown
+        (boolean (some #(instance? IllegalArgumentException %)
+                       (chain thrown)))))))
 
 (defn factory-symbol
   "Return the factory symbol ->simple-name; with ns-or-name (a namespace or

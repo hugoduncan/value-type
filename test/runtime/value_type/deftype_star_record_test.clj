@@ -16,7 +16,7 @@
    [value-type.impl.fields :as fields]
    [value-type.impl.loader :as loader]
    [value-type.impl.runtime :as runtime]
-   [value-type.test-support :refer [record-tail]])
+   [value-type.test-support :refer [record-tail rejection]])
   (:import
    (clojure.lang Reflector)
    (java.lang.reflect Field Modifier)))
@@ -218,21 +218,6 @@
   [(with-meta 'p {:tag pt-tag :non-nil true})
    (with-meta 's {:tag 'java.lang.String :non-nil true})])
 
-(defn- cause-chain-classes
-  "Classes of the cause chain of the exception that `f` throws, or
-  `:returned`."
-  [f]
-  (try (f) :returned
-       (catch Throwable t
-         (set (map class (take-while some? (iterate #(.getCause ^Throwable %) t)))))))
-
-(defn- rejection
-  "`expected` if the cause chain of the exception that `f` throws has it,
-  else `:returned` or the classes of the cause chain."
-  [expected f]
-  (let [r (cause-chain-classes f)]
-    (if (and (set? r) (contains? r expected)) expected r)))
-
 (def ^:private expected-rejections
   {:nil-p NullPointerException :nil-s NullPointerException
    :wrong-p ClassCastException :wrong-s ClassCastException})
@@ -359,8 +344,9 @@
 ;;; Non-nil fields through the public form and the receiving macros
 
 (defmacro identity-receiving*
-  "Expand as the `defvaluetype*` fallback expansion with enabled fields:
-  `vt/identity-field-deftype*` with one `:generated` mode per enabled field."
+  "Expand as the `defvaluetype*` fallback expansion with enabled fields or
+  the closed shape: `vt/identity-field-deftype*` with one `:generated` mode
+  per enabled field (none when no field is enabled)."
   [tagname classname fields & opts+specs]
   (let [modes (mapv (constantly :generated)
                     (fields/enabled-fields (str classname) fields))]
@@ -395,3 +381,152 @@
         ^java.util.function.Function r (construct c [p "a" nil nil])]
     (is (= p (.apply r true)))
     (is (identical? r (.apply r false)))))
+
+;;; Closed record shape (D9, D10)
+
+(defn- closed-form
+  "A closed record-shaped definition form under `definer`. Its methods
+  never touch `__meta` or `__extmap`: entries are the declared fields and
+  the metadata is nil."
+  [definer classname declared]
+  (let [entries (into {} (map (fn [f] [(keyword (name f)) f])) declared)]
+    (list* definer (symbol (name classname)) classname
+           (into (vec declared) record-tail)
+           :value-type/closed true
+           :implements ['clojure.lang.IRecord 'java.util.Map
+                        'clojure.lang.ILookup 'clojure.lang.IObj
+                        'clojure.lang.IHashEq]
+           [(list 'valAt '[this k] '(.valAt this k nil))
+            (list 'valAt '[this k nf]
+                  `(case ~'k
+                     ~@(mapcat (fn [f] [(keyword (name f)) f]) declared)
+                     ~'nf))
+            (list 'entrySet '[this]
+                  `(.entrySet ~(with-meta entries {:tag 'java.util.Map})))
+            (list 'meta '[this] nil)
+            (list 'withMeta '[this m] 'this)
+            (list 'hasheq '[this] `(hash ~entries))
+            (list 'hashCode '[this]
+                  `(.hashCode ~(with-meta entries {:tag 'Object})))])))
+
+(defn- closed-definers
+  "Identity always (receiving macro), value when capable (public form)."
+  []
+  (cond-> [[:identity `identity-receiving*]]
+    (:available? (capability/capability)) (conj [:value `vt/defvaluetype*])))
+
+(def ^:private closed-variants
+  "Name suffix, declared fields, valid values, a form for each value."
+  [["Plain" [(with-meta 'l {:tag 'long}) 'a] [7 :k]]
+   ["NonNil" [(with-meta 'l {:tag 'long})
+              (with-meta 's {:tag 'java.lang.String :non-nil true})]
+    [7 "s"]]])
+
+(defn- define-closed [rep definer suffix declared]
+  (eval (closed-form definer
+                     (symbol (str "value_type.deftype_star_record_test.Closed"
+                                  (name rep) suffix))
+                     declared)))
+
+(defn- closed-paths
+  "Construction paths of closed class `c`: name -> function of the full
+  constructor argument vector `[v… meta extmap]`, or of an entry map for
+  the map paths. Each path builds through the named entry point."
+  [^Class c n]
+  (let [cname (.getName c)
+        newn (direct-constructor c n)
+        new2 (direct-constructor c (+ n 2))
+        new4 (direct-constructor c (+ n 4))
+        lit (fn [m] (binding [*read-eval* true]
+                      (load-string (str "#" cname (pr-str m)))))]
+    {:declared {:args (fn [vs _ _] (construct c vs))}
+     :declared-direct {:args (fn [vs _ _] (apply newn vs))}
+     :meta-extmap {:args (fn [vs m e] (construct c (concat vs [m e])))}
+     :meta-extmap-direct {:args (fn [vs m e] (apply new2 (concat vs [m e])))}
+     :main {:args (fn [vs m e] (construct c (concat vs [m e (int 0) (int 0)])))}
+     :main-direct {:args (fn [vs m e]
+                           (apply new4 (concat vs [m e (int 0) (int 0)])))}
+     :create {:map #(Reflector/invokeStaticMethod c "create" (object-array [%]))}
+     :map-literal {:map lit}
+     :positional-literal
+     {:args (fn [vs _ _] (binding [*read-eval* true]
+                           (load-string (str "#" cname (pr-str (vec vs))))))}}))
+
+(defn- instance-field-names [^Class c]
+  (set (keep #(when-not (Modifier/isStatic (.getModifiers ^Field %))
+                (.getName ^Field %))
+             (.getDeclaredFields c))))
+
+(defn- hidden-values
+  "Values of `__meta` and `__extmap` in identity output, or `:removed`."
+  [^Class c r]
+  (if (contains? (field-names c) "__meta")
+    (mapv #(.get (.getDeclaredField c %) r) ["__meta" "__extmap"])
+    :removed))
+
+(defn- check-closed [rep ^Class c declared values]
+  (let [ks (mapv (comp keyword name) declared)
+        entries (zipmap ks values)
+        n (count declared)
+        value? (= rep :value)
+        expected-hidden (if value? :removed [nil nil])]
+    (testing "field set"
+      (is (= (into (set (map name declared))
+                   (when-not value? ["__meta" "__extmap" "__hash" "__hasheq"]))
+             (instance-field-names c)))
+      (is (= value? (capability/value-class? c))))
+    (testing "getBasis lists the declared fields"
+      (is (= declared
+             (clojure.lang.Reflector/invokeStaticMethod
+              c "getBasis" (object-array 0)))))
+    (doseq [[path {:keys [args map]}] (closed-paths c n)]
+      (testing (str rep " " path)
+        (if args
+          (let [r (args values nil nil)]
+            (is (= {:entries entries :meta nil} (view r)))
+            (is (= expected-hidden (hidden-values c r)))
+            (when-not (#{:declared :declared-direct :positional-literal} path)
+              (is (= IllegalArgumentException
+                     (rejection IllegalArgumentException
+                                #(args values {:m 1} nil))))
+              (is (= IllegalArgumentException
+                     (rejection IllegalArgumentException
+                                #(args values nil {:x 1}))))))
+          (let [r (map entries)]
+            (is (= {:entries entries :meta nil} (view r)))
+            (is (= expected-hidden (hidden-values c r)))
+            (is (= IllegalArgumentException
+                   (rejection IllegalArgumentException
+                              #(map (assoc entries :x 9)))))))))
+    (testing "compiled record constant"
+      (let [r (eval `(identity ~(construct c values)))]
+        (is (= {:entries entries :meta nil} (view r)))
+        (is (= expected-hidden (hidden-values c r)))))
+    (testing "caller assoc through the declared constructor"
+      (let [r (construct c values)
+            f (eval `(fn [~'r v#] (new ~(symbol (.getName c))
+                                       v# ~@(map (fn [k] `(~k ~'r)) (rest ks)))))]
+        (is (= (assoc entries (first ks) 8) (:entries (view (f r 8)))))))))
+
+(deftest closed-construction-test
+  (doseq [[rep definer] (closed-definers)
+          [suffix declared values] closed-variants]
+    (testing (str rep " " suffix)
+      (check-closed rep (define-closed rep definer suffix declared)
+                    declared values))))
+
+(deftest closed-check-before-non-nil-test
+  ;; An undeclared key and a nil enabled field: the D10 check runs first.
+  (doseq [[rep definer] (closed-definers)]
+    (testing (str rep)
+      (let [[suffix declared] (second closed-variants)
+            ^Class c (define-closed rep definer (str suffix "Order") declared)]
+        (is (= IllegalArgumentException
+               (rejection IllegalArgumentException
+                          #(Reflector/invokeStaticMethod
+                            c "create" (object-array [{:l 1 :x 9}])))))
+        (is (= IllegalArgumentException
+               (rejection IllegalArgumentException
+                          #(construct c [1 nil {:m 1} nil]))))
+        (is (= NullPointerException
+               (rejection NullPointerException #(construct c [1 nil]))))))))

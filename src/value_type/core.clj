@@ -120,6 +120,15 @@
          (nil? (namespace field))
          (= (second (fields/record-hidden-fields k)) (:tag (meta field))))))
 
+(def ^:private hidden-fields-fix
+  "Fix text that names the hidden fields of the record shape."
+  (str "end the fields with "
+       (->> fields/record-hidden-fields
+            (map (fn [[n tag]] (str (when tag (str "^" tag " ")) n)))
+            (interpose " ")
+            (apply str))
+       "."))
+
 (defn- record-shape
   "Return `:plain` or `:record` for `fields`. Throw `ex-info` with
   `:value-type/error` `:invalid-field`, `:reason :record-shape`,
@@ -136,13 +145,59 @@
           (let [field (second (or (first misplaced) (first hidden)))]
             (throw (ex-info (str "Cannot define class " class-name
                                  ": unsupported record shape at field " field
-                                 ". Fix: use no hidden field names, or end the "
-                                 "fields with __meta __extmap ^int __hash "
-                                 "^int __hasheq.")
+                                 ". Fix: use no hidden field names, or "
+                                 hidden-fields-fix)
                             {:value-type/error :invalid-field
                              :class-name       class-name
                              :field            field
                              :reason           :record-shape}))))))))
+
+(defn- option-pairs
+  "Leading keyword/value pairs of `opts+specs`, as `deftype*` reads them."
+  [opts+specs]
+  (->> (partition-all 2 opts+specs)
+       (take-while #(and (= 2 (count %)) (keyword? (first %))))))
+
+(defn- remove-closed-option
+  "`opts+specs` with each `:value-type/closed` option pair removed."
+  [opts+specs]
+  (let [pairs (option-pairs opts+specs)]
+    (concat (mapcat identity (remove #(= :value-type/closed (first %)) pairs))
+            (drop (* 2 (count pairs)) opts+specs))))
+
+(defn- closed-shape
+  "Return `shape`, or `:closed` when the last `:value-type/closed` option of
+  `opts+specs` is `true`. Throw `ex-info` with `:value-type/error`
+  `:invalid-option`, `:reason` `:invalid-value` (a value other than `true`,
+  `false` or nil) or `:record-shape-required` (`true` with a plain `shape`),
+  `:option`, `:value` and `:class-name`."
+  [class-name shape opts+specs]
+  (let [pair  (last (filter #(= :value-type/closed (first %))
+                            (option-pairs opts+specs)))
+        value (second pair)
+        fail  (fn [reason fix]
+                (throw (ex-info (str "Cannot define class " class-name
+                                     ": invalid :value-type/closed option "
+                                     (pr-str value) ". Fix: " fix)
+                                {:value-type/error :invalid-option
+                                 :class-name       class-name
+                                 :option           :value-type/closed
+                                 :value            value
+                                 :reason           reason})))]
+    (cond
+      (or (nil? value) (false? value)) shape
+      (not (true? value))
+      (fail :invalid-value "use true, false or nil.")
+      (not= :record shape)
+      (fail :record-shape-required hidden-fields-fix)
+      :else :closed)))
+
+(defn- declared-shape
+  "Check `fields` and the closed option of `opts+specs` in the
+  public-contract order; return `:plain`, `:record` or `:closed`."
+  [class-name fields opts+specs]
+  (check-fields class-name fields)
+  (closed-shape class-name (record-shape class-name fields) opts+specs))
 
 (defn- not-installed-message [kind class-name]
   (str "Cannot define class " class-name ": " kind " field capture requires "
@@ -215,22 +270,24 @@
   specifications; return the expansion. The caller validates the declaration
   first. `value-form` and `identity-form` take the enforcement modes and
   return a receiving form; `definition` is the plain definition and
-  `guarded` its fallback form. A receiving form is wrapped in `let` to keep
-  receiving analysis checks through both macroexpand forms."
+  `guarded` its fallback form. The expansion is a receiving form when there
+  are enabled fields or the shape is closed. A receiving form is wrapped in
+  `let` to keep receiving analysis checks through both macroexpand forms."
   [class-name shape validated value-form identity-form definition guarded]
   (let [{:keys [available? detail]} (capability/capability)
         specifications (fields/select-enforcement
                         validated
                         #(and available?
                               (:available? (field-capability/capability))))
-        modes (mapv :enforcement specifications)]
+        modes (mapv :enforcement specifications)
+        receiving? (or (seq specifications) (= :closed shape))]
     (if available?
-      (if (seq specifications)
+      (if receiving?
         `(let [] ~(value-form modes))
         (value-expansion class-name shape definition))
       (do
         (runtime/enforce-fallback! detail)
-        (if (seq specifications)
+        (if receiving?
           `(let [] ~(identity-form modes))
           `(do ~guarded))))))
 
@@ -256,10 +313,11 @@
   enforcement modes. Derive the shape from `fields`."
   [tagname classname modes fields & opts+specs]
   (let [class-name (str classname)]
-    (check-fields class-name fields)
-    (value-receiving class-name fields modes (record-shape class-name fields)
+    (value-receiving class-name fields modes
+                     (declared-shape class-name fields opts+specs)
                      {:hidden-field? true}
-                     `(deftype* ~tagname ~classname ~fields ~@opts+specs))))
+                     `(deftype* ~tagname ~classname ~fields
+                        ~@(remove-closed-option opts+specs)))))
 
 (defmacro identity-field-deftype*
   "Internal `defvaluetype*` receiving boundary for fixed generated identity
@@ -267,10 +325,11 @@
   policy during analysis and evaluation."
   [tagname classname modes fields & opts+specs]
   (let [class-name (str classname)]
-    (check-fields class-name fields)
     (identity-receiving class-name fields modes
-                        (record-shape class-name fields) {:hidden-field? true}
-                        `(deftype* ~tagname ~classname ~fields ~@opts+specs))))
+                        (declared-shape class-name fields opts+specs)
+                        {:hidden-field? true}
+                        `(deftype* ~tagname ~classname ~fields
+                           ~@(remove-closed-option opts+specs)))))
 
 (defmacro defvaluetype
   "As `deftype` (see its docstring for syntax, options, specs, the
@@ -396,12 +455,27 @@
   - Record: the fields end with `__meta __extmap ^int __hash ^int __hasheq`,
     unqualified, with no tag on `__meta` and `__extmap`.
   Other shapes give `:invalid-field` with `:reason :record-shape`.
+  Option `:value-type/closed true` selects the closed record shape and
+  requires the record shape; `false`, `nil` and an absent option do not
+  select it. The last occurrence applies. `defvaluetype*` removes each
+  occurrence from the `deftype*` call.
 
   Caller obligations for record shapes: do not read or write `__hash` or
   `__hasheq`, and pass 0 for both hash arguments in explicit constructor
   calls. Value output removes both fields and ignores those arguments.
   Identity output keeps both fields; they hold 0 when callers meet these
   obligations. value-type does not validate the hash arguments.
+
+  Closed shape: also do not read or write `__meta` or `__extmap`, pass nil
+  for both in explicit constructor calls, and do not give the type
+  metadata or extension keys through these fields. Value output removes
+  all four hidden fields; constructors keep their descriptors. Identity
+  output keeps all four; `__meta` and `__extmap` hold nil. In both
+  outputs the main constructor throws `IllegalArgumentException` for a
+  non-nil `__meta` or `__extmap` argument, before the non-nil field
+  checks, so `create` and the map literal reject an undeclared key. The
+  compiler, the reader and reflection can wrap the exception. Error text
+  is not specified.
 
   Non-nil fields: `:non-nil` metadata as for `defvaluetype`, in both
   shapes. Hidden-name fields cannot be non-nil. The main constructor checks
@@ -410,8 +484,8 @@
   `NullPointerException` and wrong types with `ClassCastException`. The
   compiler, class initialization and reflection can wrap these exceptions;
   find the exception in the cause chain. Error text is not specified.
-  With enabled fields, the expansion is a receiving form, also on
-  fallback, and receivers repeat the declaration checks.
+  With enabled fields or the closed shape, the expansion is a receiving
+  form, also on fallback, and receivers repeat the declaration checks.
 
   Restrictions: no mutable fields and no `:nil-restricted` field metadata.
 
@@ -419,44 +493,47 @@
   macroexpansion before representation policy, in this order:
   - `:mutable-field` (data `:fields`).
   - `:invalid-field` `:reason :record-shape` (data `:field`).
+  - `:invalid-option` `:reason :invalid-value` or `:record-shape-required`
+    (data `:option`, `:value`).
   - `:invalid-field` `:reason :removed-nil-restricted` or `:invalid-non-nil`
     (data `:field`, `:value`).
   - `:invalid-field` `:reason :hidden-field` (data `:field`): a hidden-name
     field with `:non-nil true`.
   - The `defvaluetype` tag and type reasons of enabled fields.
   Errors of value output, when the capture loader defines the class:
-  - `:unexpected-constructor`: the constructors are
-    not the plain or the record shape.
+  - `:unexpected-constructor`: the constructors are not the plain or the
+    record shape.
   - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
-    captured class reads or writes `__hash` or `__hasheq`.
-  Errors of identity output with enabled fields, when the capture loader
-  defines the class:
+    captured class reads or writes a removed field: `__hash` or
+    `__hasheq`, and for the closed shape also `__meta` or `__extmap`.
+  Errors of identity output with enabled fields or the closed shape, when
+  the capture loader defines the class:
   - `:unsupported-shape`: a delegating constructor writes an enabled field,
     or a constructor both creates and calls the target.
   Other policy, capability, receiving, loader and run time errors are as for
-  `defvaluetype`. A value expansion without enabled fields
-  evaluated apart from its macroexpansion fails with `:not-installed` or
-  `:not-value-class`; it never selects fallback. With enabled fields,
-  separate `eval` of the expansion works, and only a full expansion
-  outside compilation (for example `clojure.walk/macroexpand-all`) gives
-  `:not-installed`; see doc/usage.md.
+  `defvaluetype`. A value expansion with neither enabled fields nor the
+  closed shape evaluated apart from its macroexpansion fails with
+  `:not-installed` or `:not-value-class`; it never selects fallback. With
+  enabled fields or the closed shape, separate `eval` of the expansion
+  works, and only a full expansion outside compilation (for example
+  `clojure.walk/macroexpand-all`) gives `:not-installed`; see doc/usage.md.
 
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md."
   {:arglists '([tagname classname [& fields] & opts+specs])}
   [tagname classname fields & opts+specs]
-  (let [class-name (str classname)]
-    (check-fields class-name fields)
-    (let [shape (record-shape class-name fields)]
-      (policy-expansion
-       class-name shape
-       (fields/specifications *ns* class-name fields {:hidden-field? true})
-       (fn [modes]
-         `(value-field-deftype* ~tagname ~classname ~modes ~fields
-                                ~@opts+specs))
-       (fn [modes]
-         `(identity-field-deftype* ~tagname ~classname ~modes ~fields
-                                   ~@opts+specs))
-       `(deftype* ~tagname ~classname ~fields ~@opts+specs)
-       `(runtime/guarded-deftype* ~tagname ~classname ~fields ~@opts+specs)))))
+  (let [class-name (str classname)
+        shape      (declared-shape class-name fields opts+specs)
+        stripped   (remove-closed-option opts+specs)]
+    (policy-expansion
+     class-name shape
+     (fields/specifications *ns* class-name fields {:hidden-field? true})
+     (fn [modes]
+       `(value-field-deftype* ~tagname ~classname ~modes ~fields
+                              ~@opts+specs))
+     (fn [modes]
+       `(identity-field-deftype* ~tagname ~classname ~modes ~fields
+                                 ~@opts+specs))
+     `(deftype* ~tagname ~classname ~fields ~@stripped)
+     `(runtime/guarded-deftype* ~tagname ~classname ~fields ~@stripped))))

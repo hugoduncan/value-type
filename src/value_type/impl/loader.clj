@@ -50,7 +50,7 @@
           :value ((requiring-resolve 'value-type.impl.value-backend/prepare)
                   target specifications delegate shape)
           :identity ((requiring-resolve 'value-type.impl.identity-backend/prepare)
-                     target specifications delegate))]
+                     target specifications delegate shape))]
     (proxy [DynamicClassLoader] [parent]
       (defineClass [^String class-name ^bytes bs src]
         (if (= class-name target)
@@ -73,8 +73,9 @@
   contain `:field`, exact `:type` Class and `:enforcement`.
   `:generated` selects constructor checks; `:native` selects native enforcement.
   `representation` is :value or :identity. Identity output requires
-  generated enforcement. `shape` is `:plain` or `:record`; only value
-  output reads it.
+  generated enforcement. `shape` is `:plain`, `:record` or `:closed`
+  (a record shape with the `:value-type/closed true` option); both
+  backends get it.
   A resolved Class identity mismatch gives `:invalid-field` with reason
   `:field-class-mismatch` before target definition.
   Output: `true` when `Compiler/LOADER` has a thread binding. Then the
@@ -85,21 +86,21 @@
   contains the `deftype`. `Compiler.eval` and AOT compilation push a
   new `LOADER` binding for each top-level form before macroexpansion.
 
-  The capture loader defines each class through one delegate loader.
-  For `class-name` only, it changes the bytes with the owner transform of
-  the selected backend (errors pass through): `:value` uses
+  The capture loader defines each class through one delegate loader. For
+  `class-name` only, it changes the bytes with the owner transform of the
+  selected backend (errors pass through): `:value` uses
   `value-type.impl.transform/->value-class` for `:plain` and
-  `value-type.impl.transform/->record-value-class` for `:record`; `:identity` uses
-  `value-type.impl.identity-backend` constructor checks. It writes the bytes
-  to the class file when `*compile-files*` is true, it defines them and links
-  the class. With field specifications, it also rewrites
-  references to non-nil target fields in every other captured class and writes
-  those bytes during AOT compilation. Companion classes keep their class kind.
-  A `LinkageError` of the target define or
-  link gives `ex-info` with `:value-type/error :jvm-rejected`,
-  `:class-name`, and the error as cause. The compiler wraps these
-  errors in a `CompilerException`. `install!` throws no error of its
-  own."
+  `value-type.impl.transform/->record-value-class` for `:record` and
+  `:closed`; `:identity` uses `value-type.impl.identity-backend`
+  constructor checks. It writes the bytes to the class file when
+  `*compile-files*` is true, it defines them and links the class. With
+  field specifications, it also rewrites references to non-nil target
+  fields in every other captured class and writes those bytes during AOT
+  compilation. Companion classes keep their class kind. A `LinkageError`
+  of the target define or link gives `ex-info` with `:value-type/error
+  :jvm-rejected`, `:class-name`, and the error as cause. The compiler
+  wraps these errors in a `CompilerException`. `install!` throws no error
+  of its own."
   [^String class-name specifications representation shape]
   (if (.isBound Compiler/LOADER)
     (do (.set Compiler/LOADER (capture-loader class-name @Compiler/LOADER

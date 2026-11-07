@@ -10,12 +10,21 @@
 
 (def record-hidden-fields
   "Hidden field names of the `deftype*` record shape, in place order, each
-  with its required tag. Value output removes the fields with tag `int`."
+  with its required tag. Value output of the record shape removes the fields
+  with tag `int`; value output of the closed shape removes all four."
   [["__meta" nil] ["__extmap" nil] ["__hash" 'int] ["__hasheq" 'int]])
 
 (def direct-fix
   "Fix text for receiving boundary errors."
   "Fix: evaluate the defvaluetype form directly.")
+
+(defn closed-check-message
+  "Return the message of the closed-shape constructor check of the class
+  `class-name`. The text is not contract."
+  [class-name]
+  (str "Invalid constructor argument of closed record " class-name
+       ": __meta and __extmap must be nil."
+       " Fix: pass nil for __meta and __extmap, and use only declared keys."))
 
 (defn removed-nil-restricted!
   "Throw `ex-info` with `:value-type/error` `:invalid-field`, `:class-name`,

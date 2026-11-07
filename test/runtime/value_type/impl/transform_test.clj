@@ -7,7 +7,7 @@
    [value-type.annotation-support :as annotation-support]
    [value-type.impl.identity-backend :as identity-backend]
    [value-type.impl.transform :as transform]
-   [value-type.test-support :refer [record-tail value?]])
+   [value-type.test-support :refer [record-tail rejection value?]])
   (:import
    (clojure.lang DynamicClassLoader ExceptionInfo Reflector)
    (java.io File)
@@ -610,7 +610,7 @@
   "Return `[message data]` of the ex-info that `->record-value-class`
   throws for `bs`."
   [bs]
-  (thrown-data #(transform/->record-value-class % nil nil) bs))
+  (thrown-data #(transform/->record-value-class % nil nil :record) bs))
 
 (defn- check-error
   "Check that `failure` of `bs` gives `:unexpected-constructor` for
@@ -736,7 +736,8 @@
                         (.methodTypeSymbol (ctor original)) ClassFile/ACC_PUBLIC
                         ^Consumer (#'transform/constructor-code
                                    this fields (constantly true)
-                                   {"e" {:storage-type storage-type :native? true}}))))))
+                                   {"e" {:storage-type storage-type :native? true}}
+                                   nil))))))
           elements (ctor-elements result)
           writes (into {}
                        (comp (filter #(and (instance? FieldInstruction %)
@@ -868,9 +869,13 @@
   (and (instance? InvokeInstruction e)
        (= "requireNonNull" (.stringValue (.name ^InvokeInstruction e)))))
 
-(defn- record-value-class ^Class [{:keys [^Class class bytes dir]}]
+(defn- record-value-class
+  "Load the `->record-value-class` output of fixture fx with `storage` and
+  `shape`."
+  ^Class [{:keys [^Class class bytes dir]} storage shape]
   (.loadClass (round-trip-loader (.getName class)
-                                 (transform/->record-value-class bytes nil nil)
+                                 (transform/->record-value-class
+                                  bytes storage nil shape)
                                  dir)
               (.getName class)))
 
@@ -878,7 +883,7 @@
   (doseq [[k {:keys [declared bytes]}] @compiled-records]
     (testing (str k)
       (let [in (parse bytes)
-            out (parse (transform/->record-value-class bytes nil nil))
+            out (parse (transform/->record-value-class bytes nil nil :record))
             names (fn [^ClassModel cm]
                     (mapv #(.stringValue (.fieldName ^FieldModel %)) (.fields cm)))
             main (main-descriptor in)]
@@ -916,7 +921,7 @@
         in (parse bytes)
         storage {"a" {:storage-type (ClassDesc/of "storage.Value") :native? true}
                  "b" {:storage-type ConstantDescs/CD_String :native? false}}
-        out (parse (transform/->record-value-class bytes storage nil))
+        out (parse (transform/->record-value-class bytes storage nil :record))
         fields (filterv (complement static?) (.fields out))
         by-name (into {} (map (juxt #(.stringValue (.fieldName ^FieldModel %)) identity))
                       fields)
@@ -949,7 +954,7 @@
         in (parse bytes)
         specs [{:field 'a :type String :enforcement :generated}
                {:field 'b :type Long :enforcement :generated}]
-        out (parse ((:owner (identity-backend/prepare (.getName class) specs nil))
+        out (parse ((:owner (identity-backend/prepare (.getName class) specs nil :plain))
                     bytes))
         main (main-descriptor in)
         null-checks #(count (filter null-check? (code-elements %)))]
@@ -974,7 +979,7 @@
 (deftest record-round-trip-test
   (doseq [[k {:keys [declared args] :as fx}] @compiled-records]
     (testing (str k)
-      (let [vc (record-value-class fx)
+      (let [vc (record-value-class fx nil :record)
             field (fn [o f] (.get (.getField vc (name f)) o))
             kept (fn [o] (mapv #(field o %) (into declared ['__meta '__extmap])))]
         (is (value? vc))
@@ -1070,7 +1075,7 @@
 (deftest record-built-accepted-test
   (testing "the built record class is accepted"
     (is (bytes? (transform/->record-value-class
-                 (build-record-class (built-name) standard-main! nil) nil nil)))))
+                 (build-record-class (built-name) standard-main! nil) nil nil :record)))))
 
 (deftest record-constructor-set-error-test
   (testing "plain deftype bytes: one constructor"
@@ -1134,3 +1139,70 @@
                         (.return_ c))
                     nil)
                    n "super call"))))
+
+;;; Closed record path: `->record-value-class` with `:closed`
+
+(defn- iae-new? [e]
+  (and (instance? java.lang.classfile.instruction.NewObjectInstruction e)
+       (= "java/lang/IllegalArgumentException"
+          (.asInternalName
+           (.className ^java.lang.classfile.instruction.NewObjectInstruction e)))))
+
+(deftest closed-record-structure-test
+  (doseq [[k {:keys [declared bytes]}] @compiled-records]
+    (testing (str k)
+      (let [in (parse bytes)
+            out (parse (transform/->record-value-class bytes nil nil :closed))
+            main (main-descriptor in)]
+        (testing "all four hidden fields are removed"
+          (is (= (mapv name declared)
+                 (mapv #(.stringValue (.fieldName ^FieldModel %)) (.fields out)))))
+        (testing "constructor descriptors and delegating constructors unchanged"
+          (is (= (ctor-descriptors in) (ctor-descriptors out)))
+          (is (= (dissoc (ctor-code-by-descriptor in) main)
+                 (dissoc (ctor-code-by-descriptor out) main))))
+        (testing "only the main constructor has the check"
+          (is (= #{main}
+                 (set (keys (filter val (ctor-code-by-descriptor
+                                         out #(some iae-new? (code-elements %)))))))))))))
+
+(deftest closed-record-check-before-null-checks-test
+  (let [{:keys [bytes]} (:reference-fields @compiled-records)
+        storage {"a" {:storage-type ConstantDescs/CD_String :native? false}}
+        out (parse (transform/->record-value-class bytes storage nil :closed))
+        elements (vec (method-elements out (main-descriptor (parse bytes))))
+        index #(first (keep-indexed (fn [i e] (when (% e) i)) elements))]
+    (is (< (index iae-new?) (index null-check?)))))
+
+(deftest closed-record-round-trip-test
+  (doseq [[k {:keys [declared args] :as fx}] @compiled-records]
+    (testing (str k)
+      (let [vc (record-value-class fx nil :closed)
+            fields (fn [o] (mapv #(.get (.getField vc (name %)) o) declared))]
+        (is (value? vc))
+        (testing "valid input constructs with each constructor"
+          (is (= (vec args) (fields (new-instance vc args))))
+          (is (= (vec args) (fields (new-instance vc (into (vec args) [nil nil])))))
+          (is (= (vec args)
+                 (fields (new-instance vc (into (vec args) [nil nil (int 1) (int 2)]))))))
+        (testing "non-nil __meta or __extmap gives IllegalArgumentException"
+          (doseq [tail [[{:m 1} nil] [nil {:x 2}]]]
+            (is (= IllegalArgumentException
+                   (rejection IllegalArgumentException
+                              #(new-instance vc (into (vec args) tail)))))
+            (is (= IllegalArgumentException
+                   (rejection IllegalArgumentException
+                              #(new-instance vc (into (vec args)
+                                                      (conj tail (int 0) (int 0)))))))))))))
+
+(deftest closed-record-check-order-test
+  (testing "the closed check runs before the null checks"
+    (let [fx (:reference-fields @compiled-records)
+          storage {"a" {:storage-type ConstantDescs/CD_Object :native? false}}
+          vc (record-value-class fx storage :closed)]
+      (is (= NullPointerException
+             (rejection NullPointerException
+                        #(new-instance vc [nil "y" nil nil]))))
+      (is (= IllegalArgumentException
+             (rejection IllegalArgumentException
+                        #(new-instance vc [nil "y" nil {:x 1}])))))))

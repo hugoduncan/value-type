@@ -125,6 +125,41 @@
             (is (every? (field-names (Files/readAllBytes (.toPath f)))
                         ["__hash" "__hasheq"]))))))))
 
+;;; Closed shape
+
+(defn- closed-form
+  "As `record-form` with `vt/defvaluetype*`, with `:value-type/closed true`."
+  [n body]
+  (let [[head n' cname fields & more] (record-form `vt/defvaluetype* n body)]
+    (list* head n' cname fields :value-type/closed true more)))
+
+(deftest closed-owner-access-test
+  (when (value-output?)
+    (doseq [[body field] [['__meta '__meta]
+                          ['__extmap '__extmap]
+                          ['__hash '__hash]
+                          ['(do __hasheq __extmap) '__extmap]
+                          ['(do __hash __extmap __meta) '__meta]]]
+      (testing (str "an owner body " body " gives " field)
+        (let [n (gensym "Closed")]
+          (is (= (removed-access n field)
+                 (support/thrown-data #(eval-here (closed-form n body))))))))
+    (testing "a fn class that reads __meta of the target"
+      (let [n (gensym "Closed")]
+        (is (= (removed-access n '__meta)
+               (support/thrown-data
+                #(eval-here
+                  (closed-form n (list (list 'fn []
+                                             (list '.-__meta
+                                                   (with-meta 'this {:tag n})))))))))))
+    (testing "no access is accepted; the class has only the declared field"
+      (let [n (gensym "Closed")
+            ^Class c (eval-here (closed-form n 0))]
+        (is (= ["a"] (map #(.getName ^java.lang.reflect.Field %)
+                          (remove #(java.lang.reflect.Modifier/isStatic
+                                    (.getModifiers ^java.lang.reflect.Field %))
+                                  (.getDeclaredFields c)))))))))
+
 ;;; Companion bytes
 
 (defn- companion-bytes

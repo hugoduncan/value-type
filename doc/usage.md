@@ -443,6 +443,13 @@ Two field shapes are accepted:
   unqualified, with no tag on `__meta` and `__extmap`. This is the shape that
   the Clojure compiler gives `defrecord`.
 
+The option `:value-type/closed true`, in the `deftype*` option position,
+selects the closed record shape. `false`, `nil` and an absent option do not
+select it; the form keeps the plain or record shape. The option requires the
+record shape. When the option occurs more than once, the last occurrence
+applies, as in `deftype*`. `defvaluetype*` removes each occurrence of the
+option from the `deftype*` call.
+
 Fields can be non-nil, as in
 [portable non-nil fields](#portable-non-nil-fields), in both shapes. A
 hidden-name field cannot be non-nil. The main constructor checks each enabled
@@ -458,14 +465,19 @@ in this order; the first failure wins:
 
 1. Mutable fields give `:mutable-field`.
 2. Other shapes give `:invalid-field` with `:reason :record-shape`.
-3. `:nil-restricted` metadata gives `:removed-nil-restricted`; a `:non-nil`
+3. A `:value-type/closed` value other than true, false or nil gives
+   `:invalid-option` with `:reason :invalid-value`; `:value-type/closed true`
+   on a plain-shape form gives `:reason :record-shape-required` (data
+   `:option`, `:value`).
+4. `:nil-restricted` metadata gives `:removed-nil-restricted`; a `:non-nil`
    value other than true, false or nil gives `:invalid-non-nil`.
-4. A hidden-name field with `:non-nil true` gives `:reason :hidden-field`.
-5. The tag and type reasons of `defvaluetype` for enabled fields.
+5. A hidden-name field with `:non-nil true` gives `:reason :hidden-field`.
+6. The tag and type reasons of `defvaluetype` for enabled fields.
 
-An invalid form never selects fallback. Identity output with enabled fields
-gives `:unsupported-shape` when a delegating constructor writes an enabled
-field, or when a constructor both creates and calls the target.
+An invalid form never selects fallback. Identity output with enabled fields or
+the closed shape gives `:unsupported-shape` when a delegating constructor
+writes an enabled field, or when a constructor both creates and calls the
+target.
 
 Caller obligations for record shapes:
 
@@ -477,6 +489,13 @@ Caller obligations for record shapes:
   `defrecord` does) rejects nil for an enabled field. Code that builds
   records from partial maps must supply each enabled field.
 
+Caller obligations for closed shapes, in addition:
+
+- Do not read or write `__meta` or `__extmap`.
+- Pass nil for both in explicit constructor calls.
+- Do not give the type metadata or extension keys through these fields, for
+  example with `withMeta` or `assoc` methods that use them.
+
 Value output removes both hash fields and ignores those arguments. The
 compiler-generated constructors, `create` and `getBasis` keep their
 contracts, so record literals and compiled record constants work. Methods
@@ -486,17 +505,29 @@ Reflective access is not checked. Identity output keeps both fields; they hold
 0 when callers meet these obligations. value-type does not validate the
 hash arguments.
 
+For a closed form, value output removes `__meta`, `__extmap`, `__hash` and
+`__hasheq`; constructors keep their descriptors, and owner or companion
+access to any of the four fields gives `:removed-field-access`. Identity
+output keeps all four fields; `__meta` and `__extmap` hold nil. In both
+outputs, the main constructor throws `IllegalArgumentException` for a
+non-nil `__meta` or `__extmap` argument, before the non-nil field checks.
+Thus `create` and the map literal reject an undeclared key. The positional
+literal, the constructor with only the declared fields and compiled record
+constants are not affected. The compiler, the reader and reflection can wrap
+the exception. The error text is not specified.
+
 Representation policy, fallback and AOT behave as for `defvaluetype`. The
-fallback expansion without enabled fields is guarded `deftype*` output with
-no transform. With enabled fields, the value and fallback expansions are
-receiving forms that repeat the declaration checks; the fallback receiver
-gives identity output with generated checks. Receivers of a transferred
-fallback expansion apply their own policy. A value expansion without enabled
-fields evaluated apart from its macroexpansion fails with `:not-installed` or
-`:not-value-class`; it never selects fallback. With enabled fields, see the
-receiving boundary paragraph in
-[Differences from `deftype`](#differences-from-deftype): separate `eval` of the
-expansion works, and only a full expansion outside compilation (for example
+fallback expansion with neither enabled fields nor the closed shape is guarded
+`deftype*` output with no transform. With enabled fields or the closed shape,
+the value and fallback expansions are receiving forms that repeat the
+declaration checks; the fallback receiver gives identity output with generated
+checks. Receivers of a transferred fallback expansion apply their own policy.
+A value expansion with neither enabled fields nor the closed shape evaluated
+apart from its macroexpansion fails with `:not-installed` or
+`:not-value-class`; it never selects fallback. With enabled fields or the
+closed shape, see the receiving boundary paragraph in [Differences from
+`deftype`](#differences-from-deftype): separate `eval` of the expansion works,
+and only a full expansion outside compilation (for example
 `clojure.walk/macroexpand-all`) gives `:not-installed`. An unexpected
 constructor shape gives `:unexpected-constructor`.
 

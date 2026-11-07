@@ -7,19 +7,21 @@
             [value-type.jvm-config :as config]
             [value-type.transfer-checks :as transfer]))
 
-(def ^:private cells
-  "Receiving mode, expansion and shape of each cell."
-  (vec (for [mode transfer/modes expand transfer/expands shape checks/shapes]
+(defn- shape-cells
+  "Receiving mode, expansion and shape of each cell, for each of shapes."
+  [shapes]
+  (vec (for [mode transfer/modes expand transfer/expands shape shapes]
          [mode expand shape])))
 
 (defn- transfer-cells
-  "Produce the expansion of each cell with producer (a function of the
-   configuration), the first field non-nil with enabled?. Consume each
+  "Produce the expansion of each cell of shapes with producer (a function
+   of the configuration), the first field non-nil with enabled?. Consume each
    expansion with the check function symbol consume, under each policy.
    (expected configuration policy shape ns-name) gives the expected value
    of a cell; cell-keys add to each cell."
-  [producer enabled? consume expected & {:as cell-keys}]
+  [shapes producer enabled? consume expected & {:as cell-keys}]
   (let [{:keys [selected] :as configuration} (config/configuration)
+        cells (shape-cells shapes)
         specs (mapv (fn [[ns-name [_ expand shape]]]
                       [ns-name expand shape enabled?])
                     (harness/cell-specs cells))]
@@ -43,18 +45,27 @@
   "Cell keys of a fixed fallback expansion."
   {:fallback? true :warning harness/fallback-context})
 
+(defn- meta-rejected?
+  "Expected rejection of a non-nil __meta argument for shape: nil for the
+   plain shape (no such constructor), true only for the closed shape."
+  [shape]
+  (case shape :plain nil :record false :closed true))
+
 (defn- identity-output
   "Facts of identity output of shape, merged with extra."
   [shape extra]
   (merge {:named? true :value? false :new-class? true
-          :hash-fields (if (= :record shape) 2 0)}
+          :hash-fields (if (= :plain shape) 0 2)
+          :meta-rejected? (meta-rejected? shape)}
          extra))
 
 (deftest deftype*-transferred-expansion-test
-  ;; Fixed fallback expansions of a real incapable producer enforce
-  ;; receiving policy in each mode; they keep the hash fields.
+  ;; Fallback expansions of a real incapable producer enforce receiving
+  ;; policy in each mode; they keep the hash fields. Plain and record cells
+  ;; are fixed fallback expansions; closed cells are identity receiving
+  ;; expansions (`identity-field-deftype*`) that keep the D10 check.
   (transfer-cells
-   config/identity-producer false
+   checks/shapes config/identity-producer false
    'value-type.deftype-star-transfer-checks/consume
    (fn [_ policy shape _]
      (registry/each-attempt
@@ -67,7 +78,7 @@
   ;; Identity receiving expansions of an incapable producer keep the
   ;; generated checks in each mode, and enforce receiving policy.
   (transfer-cells
-   config/identity-producer true
+   checks/shapes config/identity-producer true
    'value-type.deftype-star-transfer-checks/consume-enabled
    (fn [_ policy shape _]
      (registry/each-attempt
@@ -90,16 +101,33 @@
               :class-name (harness/fixed class-name)})}))))
 
 (deftest deftype*-enabled-value-transfer-test
-  ;; Value receiving expansions keep native checks and remove the hash
-  ;; fields on a capable receiver (the receiver passes the :record shape to
-  ;; the capture loader), and fail without value capability.
+  ;; Value receiving expansions on a capable receiver give value classes
+  ;; with native checks and no hash fields; closed cells also reject a
+  ;; non-nil __meta (D10 check). A receiver without value capability
+  ;; rejects them.
   (transfer-cells
-   config/value-producer true
+   checks/shapes config/value-producer true
    'value-type.deftype-star-transfer-checks/consume-enabled
-   (fn [{:keys [available?]} _ _ ns-name]
+   (fn [{:keys [available?]} _ shape ns-name]
      (if available?
        (registry/each-attempt
-        (merge {:named? true :value? true :new-class? true :hash-fields 0}
+        (merge {:named? true :value? true :new-class? true :hash-fields 0
+                :meta-rejected? (meta-rejected? shape)}
                (aot-checks/enabled-expected true)))
        (capability-unavailable
         (registry/class-name ns-name 'Transferred))))))
+
+(deftest deftype*-closed-value-transfer-test
+  ;; A closed form without enabled fields has a value receiving expansion:
+  ;; a capable receiver gives a value class with no hash fields that rejects
+  ;; a non-nil __meta (D10 check); a receiver without value capability
+  ;; rejects it.
+  (transfer-cells
+   [:closed] config/value-producer false
+   'value-type.deftype-star-transfer-checks/consume-data
+   (fn [{:keys [available?]} _ _ ns-name]
+     (if available?
+       (registry/each-attempt
+        {:named? true :value? true :new-class? true :hash-fields 0
+         :meta-rejected? true})
+       (capability-unavailable (registry/class-name ns-name 'Transferred))))))

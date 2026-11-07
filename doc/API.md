@@ -252,7 +252,7 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L275-L385">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L327-L437">Source</a></sub></p>
 
 ## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
 ``` clojure
@@ -271,12 +271,27 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   - Record: the fields end with `__meta __extmap ^int __hash ^int __hasheq`,
     unqualified, with no tag on `__meta` and `__extmap`.
   Other shapes give `:invalid-field` with `:reason :record-shape`.
+  Option `:value-type/closed true` selects the closed record shape and
+  requires the record shape; `false`, `nil` and an absent option do not
+  select it. The last occurrence applies. [`defvaluetype*`](#value-type.core/defvaluetype*) removes each
+  occurrence from the `deftype*` call.
 
   Caller obligations for record shapes: do not read or write `__hash` or
   `__hasheq`, and pass 0 for both hash arguments in explicit constructor
   calls. Value output removes both fields and ignores those arguments.
   Identity output keeps both fields; they hold 0 when callers meet these
   obligations. value-type does not validate the hash arguments.
+
+  Closed shape: also do not read or write `__meta` or `__extmap`, pass nil
+  for both in explicit constructor calls, and do not give the type
+  metadata or extension keys through these fields. Value output removes
+  all four hidden fields; constructors keep their descriptors. Identity
+  output keeps all four; `__meta` and `__extmap` hold nil. In both
+  outputs the main constructor throws `IllegalArgumentException` for a
+  non-nil `__meta` or `__extmap` argument, before the non-nil field
+  checks, so `create` and the map literal reject an undeclared key. The
+  compiler, the reader and reflection can wrap the exception. Error text
+  is not specified.
 
   Non-nil fields: `:non-nil` metadata as for [`defvaluetype`](#value-type.core/defvaluetype), in both
   shapes. Hidden-name fields cannot be non-nil. The main constructor checks
@@ -285,8 +300,8 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   `NullPointerException` and wrong types with `ClassCastException`. The
   compiler, class initialization and reflection can wrap these exceptions;
   find the exception in the cause chain. Error text is not specified.
-  With enabled fields, the expansion is a receiving form, also on
-  fallback, and receivers repeat the declaration checks.
+  With enabled fields or the closed shape, the expansion is a receiving
+  form, also on fallback, and receivers repeat the declaration checks.
 
   Restrictions: no mutable fields and no `:nil-restricted` field metadata.
 
@@ -294,29 +309,32 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   macroexpansion before representation policy, in this order:
   - `:mutable-field` (data `:fields`).
   - `:invalid-field` `:reason :record-shape` (data `:field`).
+  - `:invalid-option` `:reason :invalid-value` or `:record-shape-required`
+    (data `:option`, `:value`).
   - `:invalid-field` `:reason :removed-nil-restricted` or `:invalid-non-nil`
     (data `:field`, `:value`).
   - `:invalid-field` `:reason :hidden-field` (data `:field`): a hidden-name
     field with `:non-nil true`.
   - The [`defvaluetype`](#value-type.core/defvaluetype) tag and type reasons of enabled fields.
   Errors of value output, when the capture loader defines the class:
-  - `:unexpected-constructor`: the constructors are
-    not the plain or the record shape.
+  - `:unexpected-constructor`: the constructors are not the plain or the
+    record shape.
   - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
-    captured class reads or writes `__hash` or `__hasheq`.
-  Errors of identity output with enabled fields, when the capture loader
-  defines the class:
+    captured class reads or writes a removed field: `__hash` or
+    `__hasheq`, and for the closed shape also `__meta` or `__extmap`.
+  Errors of identity output with enabled fields or the closed shape, when
+  the capture loader defines the class:
   - `:unsupported-shape`: a delegating constructor writes an enabled field,
     or a constructor both creates and calls the target.
   Other policy, capability, receiving, loader and run time errors are as for
-  [`defvaluetype`](#value-type.core/defvaluetype). A value expansion without enabled fields
-  evaluated apart from its macroexpansion fails with `:not-installed` or
-  `:not-value-class`; it never selects fallback. With enabled fields,
-  separate `eval` of the expansion works, and only a full expansion
-  outside compilation (for example `clojure.walk/macroexpand-all`) gives
-  `:not-installed`; see doc/usage.md.
+  [`defvaluetype`](#value-type.core/defvaluetype). A value expansion with neither enabled fields nor the
+  closed shape evaluated apart from its macroexpansion fails with
+  `:not-installed` or `:not-value-class`; it never selects fallback. With
+  enabled fields or the closed shape, separate `eval` of the expansion
+  works, and only a full expansion outside compilation (for example
+  `clojure.walk/macroexpand-all`) gives `:not-installed`; see doc/usage.md.
 
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L387-L462">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L439-L532">Source</a></sub></p>

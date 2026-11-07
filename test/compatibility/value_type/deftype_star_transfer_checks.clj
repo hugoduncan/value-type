@@ -11,7 +11,7 @@
 
 (def shapes
   "Field shapes, in cell order."
-  [:plain :record])
+  [:plain :record :closed])
 
 (defn- first-field
   "Return the first field: x, with enabled? a non-nil Long field."
@@ -21,12 +21,14 @@
 (defn- fields [shape enabled?]
   (case shape
     :plain [(first-field enabled?)]
-    :record (into [(first-field enabled?)] registry/record-tail)))
+    (:record :closed) (into [(first-field enabled?)] registry/record-tail)))
 
 (defn- form [namespace-name shape enabled?]
-  (list 'value-type.core/defvaluetype* 'Transferred
-        (symbol (registry/class-name namespace-name 'Transferred))
-        (fields shape enabled?)))
+  (cond-> (list 'value-type.core/defvaluetype* 'Transferred
+                (symbol (registry/class-name namespace-name 'Transferred))
+                (fields shape enabled?))
+    (= :closed shape) (concat [:value-type/closed true])
+    true seq))
 
 (defn produce
   "Expand the defvaluetype* form of shape for each spec [namespace-name
@@ -42,14 +44,14 @@
 (defn- construct
   "Call the one-argument constructor of Class c with x by reflection: the
    main constructor of the plain shape, the declared-fields constructor of
-   the record shape."
+   the record and closed shapes."
   [^Class c x]
   (Reflector/invokeConstructor c (object-array [x])))
 
 (defn- evaluate-twice
   "Evaluate serialized twice in the current namespace in mode. Return per
-   attempt {:named? :value? :hash-fields :new-class?} merged with
-   (extra-facts c), or (failure e)."
+   attempt {:named? :value? :hash-fields :meta-rejected? :new-class?}
+   merged with (extra-facts c), or (failure e)."
   [serialized mode failure extra-facts]
   (let [class-name (registry/class-name *ns* 'Transferred)]
     (registry/twice
@@ -60,15 +62,22 @@
                            (merge {:named? (= class-name (.getName c))
                                    :value? (capability/value-class? c)
                                    :hash-fields (registry/hash-field-count c)
+                                   :meta-rejected? (registry/meta-rejected? c)
                                    :new-class? (registry/new-class! c)}
                                   (extra-facts c))))))))
 
 (defn consume
   "Evaluate serialized twice in the current namespace in mode (see
    transfer-checks/evaluate). Return per attempt {:named? :value?
-   :hash-fields :new-class?} or the root failure."
+   :hash-fields :meta-rejected? :new-class?} or the root failure."
   [serialized mode]
   (evaluate-twice serialized mode registry/failure (constantly nil)))
+
+(defn consume-data
+  "As consume, but a failure keeps the root ex-data under :data
+   (cell-registry/root-failure)."
+  [serialized mode]
+  (evaluate-twice serialized mode registry/root-failure (constantly nil)))
 
 (defn consume-enabled
   "Evaluate serialized, an expansion with the non-nil field x, twice in
