@@ -139,6 +139,32 @@ Then a reader of a capability result does not read the policy. Only
 - A Clojure `delay` keeps a thrown exception and throws it again on each
   deref, so a probe defect propagates the same way from every reader (D12).
 
+## A configuration switch is the first check inside the owner delay
+
+Task `025-value-class-switch` (D18; `value-type.value-classes`, `auto` or
+`off`). Put a switch that disables a capability inside the owner
+`detect`, before the API checks and the probe:
+
+- Then `off` defines no probe class, and both the `off` result
+  (`:disabled`) and the invalid-value failure are the same on every JVM.
+  A switch read after the API checks gives a JVM-dependent reason (for
+  example `:missing-value-predicate` on Java 8).
+- Do not add a separate cache for the switch. The owner delay keeps the
+  switch result with the capability result, and readers do not read the
+  property.
+- Dependent results (field capability, array allocation) return the
+  unavailable value-class result as-is, so `:reason` and `:detail` flow to
+  them and to `enforce-fallback!` text with no reader change. Only a
+  message that selects text by `:reason` needs a change
+  (`impl.array/require-allocation`).
+- Read order differs by entry point: a definition reads the capability
+  before the policy (`policy-expansion`); `report` reads the policy first.
+  Thus with two invalid properties, `report` throws the policy error.
+- Under `off`, `:non-nil` fields select generated enforcement, so
+  `require-field-capability!` does not run at definition. AOT output reads
+  the switch only where its init calls a capability accessor; output that
+  calls only `check-value-class` reads `isValue`, not the cached result.
+
 ## AOT policy runs where the form is evaluated
 
 A top-level fallback form enforces runtime policy during namespace
