@@ -38,7 +38,20 @@ limits; they do not report feature delivery status.
   capability boundary, warning and Error behaviour, AOT limits and tests.
 
 - [Capability report](defvaluetype-design/decisions/capability-report.md):
-  D14, the public `value-type.capability/report` and the cache owners.
+  D14, the public `value-type.capability/report`, the policy in effect and the
+  cache owners.
+
+- [Probe and format decisions](defvaluetype-design/decisions/probe-and-format.md):
+  D15 JVM format table, D16 probes built with `java.lang.classfile`, D17
+  semantic self-check, D18 value-class switch.
+
+- [Compiler boundary decisions](defvaluetype-design/decisions/compiler-boundary.md):
+  D19 one owner of compiler coupling, D20 receiving expansion for all
+  definitions.
+
+- [Verification and release decisions](defvaluetype-design/decisions/verification-and-release.md):
+  D21 supported-JVM facts, D22 test tiers, D23 disassembly snapshots, D24
+  install tested releases.
 
 - [Library packaging](defvaluetype-design/embodiment.md#library-packaging):
   source-only JAR, build artifacts, consumer requirements and development commands.

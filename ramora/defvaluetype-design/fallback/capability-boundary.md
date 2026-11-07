@@ -18,7 +18,13 @@ Part of [controlled fallback](../fallback.md).
   ordinary fallback needs no transform.
   Capability detection must use APIs safe on the fallback runtime.
 - Failure classification: only established capability absence permits
-  fallback. Invalid forms, unexpected constructor shapes, loader defects
+  fallback. Established absence: missing required APIs; probe class version
+  rejection; a probe class that is defined but is not a value class
+  (`:probe-not-value-class`); a failed semantic self-check
+  (`:failed-self-check`, D17); the value-class switch set to `off`
+  (`:disabled`, D18). For native-field capability only: the JVM accepts null
+  in the `NullRestricted` probe field (`:native-restriction-ignored`); generated
+  enforcement then applies. Invalid forms, unexpected constructor shapes, loader defects
   and transformation defects remain errors. Do not catch all definition
   failures and retry the user's type as an identity class.
 - Rejected: eager transformer loading; detecting availability by failing

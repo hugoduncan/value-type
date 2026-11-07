@@ -60,6 +60,7 @@ See [fallback policy](fallback.md#d10-controlled-fallback).
 - Commitment: firm.
 
 Fallback verification extends D11; see [verification](fallback.md#verification).
+D22 and D23 also extend D11.
 
 ## D12. Capability boundary (dependencies and failure handling)
 
@@ -72,3 +73,43 @@ See [fallback lifecycle](fallback/lifecycle.md).
 ## D14. Public capability report (interface and state)
 
 See [capability report](decisions/capability-report.md).
+
+## D15. JVM format table (data model, boundary)
+
+See [probe and format decisions](decisions/probe-and-format.md).
+
+## D16. Probes built with `java.lang.classfile` (technology, dependency)
+
+See [probe and format decisions](decisions/probe-and-format.md).
+
+## D17. Semantic self-check (failure handling)
+
+See [probe and format decisions](decisions/probe-and-format.md).
+
+## D18. Value-class switch (configuration)
+
+See [probe and format decisions](decisions/probe-and-format.md).
+
+## D19. Compiler boundary (boundary)
+
+See [compiler boundary decisions](decisions/compiler-boundary.md).
+
+## D20. Receiving expansion for all definitions (interface)
+
+See [compiler boundary decisions](decisions/compiler-boundary.md).
+
+## D21. Supported-JVM facts (data model)
+
+See [verification and release decisions](decisions/verification-and-release.md).
+
+## D22. Test tiers (verification)
+
+See [verification and release decisions](decisions/verification-and-release.md).
+
+## D23. Disassembly snapshots (verification)
+
+See [verification and release decisions](decisions/verification-and-release.md).
+
+## D24. Install tested releases (deployment)
+
+See [verification and release decisions](decisions/verification-and-release.md).

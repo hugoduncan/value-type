@@ -75,7 +75,9 @@ still follow the selected class representation, not a cross-JVM emulation.
 
 Requiring the public namespace stays safe on unsupported JVMs. Invalid declarations
 produce structured definition errors naming class, field where applicable and
-reason. Unexpected probe, loader or transformation defects remain errors.
+reason. Unexpected probe, loader or transformation defects remain errors. A JVM
+that accepts null in the native-restriction probe field has no native support
+(defvaluetype D12); generated enforcement applies.
 
 ## Architectural decisions
 

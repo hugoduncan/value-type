@@ -16,6 +16,8 @@ follow the [portable field contract](../../non-nil-field-design.md).
   2. Class flags: remove `ACC_SUPER`/`ACC_IDENTITY`. Keep the others.
   3. Instance fields: add `ACC_STRICT_INIT`.
   4. Constructor: replace the code (D6).
+  The flag values, the version rule and the constructor order come from the
+  D15 format table.
   Ordinary non-constructor methods and unrelated attributes pass through.
   Non-nil fields also get concrete descriptors. Native enforcement adds a
   merged `NullRestricted` annotation; generated enforcement adds constructor nil

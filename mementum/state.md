@@ -43,6 +43,14 @@ Its API is not stable.
 - Source-only JAR builds, quality checks, API generation and release tooling
   are available. Hosted Actions and live publication remain unverified.
 
+## Decided design changes
+
+The defvaluetype design adds D15–D24 (probe and format, compiler boundary,
+verification and release) and changes D1, D3, D5, D9, D10, D12, D13 and D14.
+They come from a residual (stressor) analysis. No code realizes them yet; the
+[embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented)
+lists each gap. No Munera task exists for them yet.
+
 ## Non-nil fields
 
 Task 017 is complete and closed. Public `:non-nil` field metadata replaces

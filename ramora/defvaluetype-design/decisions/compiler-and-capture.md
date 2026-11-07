@@ -3,6 +3,8 @@
 Scope: the value-class path unless stated otherwise. Ordinary definitions have
 no enabled non-nil fields. Definitions with enabled non-nil fields also
 follow the [portable field contract](../../non-nil-field-design.md).
+[D19 and D20](compiler-boundary.md) change D1, D3 and D4: one compiler boundary
+owns class definition, and all definitions use a receiving expansion.
 
 ## D1. Expand to `clojure.core/deftype` (abstraction, interface)
 
@@ -22,6 +24,8 @@ follow the [portable field contract](../../non-nil-field-design.md).
   - `<installed>` is the boolean result of `loader/install!`, as a
     literal.
   - `check-value-class` is D9.
+  - Changed by D20: ordinary value definitions also expand to a receiving
+    macro. The `<installed>` literal is removed.
 - Non-nil field choice: selection validates fields, selects representation
   through application policy, and selects enforcement per field. A receiving
   macro resolves exact field Classes and installs a local capture loader before

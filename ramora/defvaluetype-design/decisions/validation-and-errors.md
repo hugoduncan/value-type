@@ -19,6 +19,11 @@
 
 ## D9. Runtime check of the result (failure handling)
 
+Changed by [D20](compiler-boundary.md): all value definitions use a receiving
+macro. `:not-installed` comes from receiving analysis without a `LOADER`
+binding, and `check-value-class` has no `installed` argument. Where the text
+below names the ordinary expansion or the `installed` argument, D20 governs.
+
 - Choice: the value-class expansion calls the public function
   `value-type.core/check-value-class` with the fully qualified class
   symbol and the `install!` result. It throws `ex-info` when the class

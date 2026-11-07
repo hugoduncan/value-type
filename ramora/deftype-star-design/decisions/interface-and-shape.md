@@ -17,7 +17,10 @@ requires it). The [decision index](../decisions.md) lists all decisions.
   capture loader during analysis (D5, D10). Each expansion evaluates to the
   class. Its `deftype*` call gets the macro arguments with no change, except
   the removal of each `:value-type/closed` occurrence (D9), so field
-  metadata stays.
+  metadata stays. Changed by defvaluetype
+  [D20](../../defvaluetype-design/decisions/compiler-boundary.md): value
+  output without enabled fields also expands to a receiving macro, with no
+  `<installed>` literal.
 - Rejected:
   - A `defvaluetype` option. `deftype` rejects the hidden record names and
     does not emit the record constructors.

@@ -28,10 +28,13 @@ section records the implemented contract and accepted evidence limits.
   policy. There are no per-type overrides in this design.
 - Configuration: JVM property `value-type.fallback`, with
   values `silent`, `warn`, `error`; default `silent`. Read and validate
-  it once per loaded library runtime. Invalid values fail clearly.
-  Changing it after initialization is not supported. This gives source
-  libraries silent fallback by default and lets applications set policy
-  before dependency loading.
+  it at the first read: the first fallback decision or the first call of
+  `value-type.capability/report` (D14). The first read fixes it for the
+  loaded library runtime. Invalid values fail clearly at the first read.
+  Changing it after the first read is not supported. This gives source
+  libraries silent fallback by default. An application that sets the
+  property after value-type loads, but before the first read, gets its policy.
+  The capability report shows the policy in effect.
 - Semantics: fallback has ordinary identity semantics, not value-semantics
   emulation. Enabled non-nil fields retain concrete storage and generated checks.
   Identity, default equality, hashing and identity-sensitive
@@ -67,7 +70,9 @@ D11 requires isolated JVM tests:
 - Value classes on supported Valhalla with preview enabled, for all policies.
 - No output in silent mode; one warning across types, namespaces and
   concurrent attempts; repeated strict attempts fail without defining types.
-- Error cause and compiler-wrapper behaviour; invalid policy rejection.
+- Error cause and compiler-wrapper behaviour; invalid policy rejection at the
+  first read; a policy set after load and before the first read applies; the
+  report shows the policy in effect.
 - Same field validation in both modes; no fallback for implementation defects.
 - Fallback protocols, factories, type hints and ordinary identity semantics.
 - AOT compilation and fresh-JVM namespace loading under different policies

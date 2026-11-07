@@ -35,7 +35,10 @@ with cancellation disabled. Maintainer-controlled master code is trusted.
 
 Both modes run quality and tooling checks, value tests on Valhalla, Java 8 and
 Valhalla preview-off/on fallback tests, cross-JVM tests, isolated JAR consumers and release tests.
-Tooling runs on Java 21; runtime JVMs are selected explicitly. Build tests run
+Tooling runs on Java 21; runtime JVMs come from the supported-JVM facts file
+([D21](defvaluetype-design/decisions/verification-and-release.md)), with the test
+tiers of D22. Consumers install the release tags that this workflow creates
+(D24), not `master`. Build tests run
 on Valhalla and launch both consumer JVMs. Each suite preserves Scry failures
 before another suite can clear them. No benchmarks run.
 
@@ -54,6 +57,9 @@ Pure tests cover notes; isolated real Git/process tests cover preparation,
 selection, output preservation and partial failures. Credential tests reject
 missing or blank values before effects and validate good values without uploads.
 Artifact tests retain POM-derived classpaths and exact-JAR resource checks.
+
+Not yet implemented: D21 (the workflow names the JVM URLs and SHA-256 values
+directly), D22 and D24 (the README installs from a clone).
 
 Hosted execution, permissions and live publication remain unverified.
 Local emulation and actionlint do not prove these properties. Tests perform

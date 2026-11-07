@@ -2,14 +2,17 @@
 
 The baseline-safe `impl.capability/detect` checks ClassFile by name and
 Class.isValue by reflection. Only ClassNotFoundException for ClassFile and
-NoSuchMethodException for isValue select API absence. After these checks,
-use ClassFile.latestMajorVersion and preview minor 65535 for the known
-strict-field probe. Define it with a unique name in a fresh loader, construct
-it, check the value predicate and read back its field. Only
-UnsupportedClassVersionError from that definition permits format fallback.
-Other failures, including invariant failures, remain errors. Do not parse
-exception messages or catch user-definition errors to select fallback.
+NoSuchMethodException for isValue select API absence. Then it reads the
+value-class switch (D18). After these checks, the probe builder (D16) makes the
+known strict-field probe with the D15 format row. Define it with a unique name
+in a fresh loader through the compiler boundary (D19), construct it, check the
+value predicate, read back its field and run the semantic self-check (D17).
+Only these results permit format fallback: UnsupportedClassVersionError from
+the definition, a probe class that is not a value class, and a failed
+self-check (D12). Other failures remain errors. Do not parse exception
+messages or catch user-definition errors to select fallback.
 
-This matches the transformer version rule. It verifies the selected EA
-build, not future class formats. Missing later API members remain visible
+This uses the same format row as the transformer. It verifies the claimed EA
+build. A future build with no row uses the default row; the probe then shows
+whether the default is correct. Missing later API members remain visible
 errors rather than an untested absence classification.
