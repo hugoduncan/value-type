@@ -337,8 +337,9 @@
   when supported, or an ordinary identity class under fallback policy when
   identity fallback is permitted.
 
-  Uses value classes on a supported JEP 401 JDK with `--enable-preview`.
-  Otherwise uses identity storage with generated checks for enabled fields.
+  Uses value classes on a supported JEP 401 JDK with `--enable-preview`,
+  unless JVM property `value-type.value-classes` is `off`. Otherwise uses
+  identity storage with generated checks for enabled fields.
   Representation policy is independent of field enforcement. JVM property
   `value-type.fallback` sets the policy: silent (default), warn (once per
   library runtime), or error (reject with Java Error). Compiler operations

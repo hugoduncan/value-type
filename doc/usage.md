@@ -38,6 +38,7 @@ The first read fixes the policy for the loaded library runtime. An invalid
 value fails at the first read, not at load, and each later read throws the
 same exception. A property change after the first read has no effect. There
 are no per-type overrides.
+
 All policies use value classes when supported. Requiring the library alone
 does not warn. Concurrent attempts across types and namespaces share one
 warning flag; independent library runtimes have separate flags.
@@ -50,6 +51,39 @@ Source compiler operations wrap the Error in `Compiler$CompilerException`;
 inspect its cause. A direct runtime policy rejection throws plain Error.
 Invalid forms and loader or transform defects remain failures, not fallback.
 Both representations reject mutable fields.
+
+### Value-class switch
+
+Set `value-type.value-classes=off` to go back to identity semantics after a
+JVM value-class defect, with no code change and with preview kept on:
+
+```sh
+clojure -J-Dvalue-type.value-classes=off -M -m your.application
+```
+
+| `value-type.value-classes` | Behavior |
+|---|---|
+| `auto` (default) | Use value classes when the runtime supports them. |
+| `off` | Do not use value classes. Definitions use fallback. |
+
+With `off`, `report` shows `:disabled` for `:value-class`,
+`:native-non-nil-field` and `:array-allocation`, on every JVM.
+`:array-inspection` does not change. Definitions use the fallback policy:
+under `error` each definition throws, so use `off` with `silent` or `warn`.
+`make-array` and `into-array` throw `:array-unavailable` with
+`:reason :disabled`.
+
+The library reads the property once, with the value-class capability, at the
+first definition or the first `report`, `make-array` or `into-array` call. A
+namespace with a top-level definition makes the first read when it loads.
+Thus the JVM option is the recommended form. A `System/setProperty` call
+applies only if no read occurred before it.
+
+Limit: `off` does not yet apply to all AOT-compiled value output. Saved
+value output with native non-nil fields throws
+`:field-capability-unavailable` with `:reason :disabled` at
+initialization. Other saved value output does not read the property and
+still loads as value classes.
 
 ## AOT limits
 
@@ -66,7 +100,9 @@ that bypasses evaluation of the guarded form.
 
 Value-class AOT output uses the compiling JDK's feature version and preview
 minor version. It requires a compatible preview-enabled JVM; it does not
-convert to identity classes on another JVM.
+convert to identity classes on another JVM. Most saved value output ignores
+`value-type.value-classes=off`; see the
+[value-class switch](#value-class-switch) limit.
 
 ## Differences from `deftype`
 
@@ -367,6 +403,10 @@ effect depends on the key:
 - `:array-allocation`: a failed value-array round trip gives
   `:failed-self-check`. There is no fallback: `make-array` and `into-array`
   throw `:array-unavailable`.
+
+The [value-class switch](#value-class-switch) reason is not a probe reason.
+`value-type.value-classes=off` gives `:disabled` for `:value-class`,
+`:native-non-nil-field` and `:array-allocation`, and no probe runs.
 
 `report` reads the `value-type.fallback` policy before it runs a probe. An
 invalid value makes `report` throw before any probe; no partial report is

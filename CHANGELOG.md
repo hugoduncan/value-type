@@ -24,3 +24,9 @@
   a change after the first read has no effect. An invalid value fails at the
   first read. `report` adds `:fallback-policy` (`:silent`, `:warn` or
   `:error`), the policy in effect.
+- Add the JVM property `value-type.value-classes` (`auto` or `off`). `off`
+  disables value classes with no code change: `report` shows `:disabled`
+  for `:value-class`, `:native-non-nil-field` and `:array-allocation`, and
+  definitions use fallback. An invalid value fails at the first capability
+  read. Saved AOT value output without native non-nil fields does not yet
+  read the property.

@@ -126,6 +126,11 @@
      (catch Throwable thrown
        (failure-of thrown)))))
 
+(defn caught
+  "Call f (no arguments). Return the Throwable that f throws, else nil."
+  [f]
+  (try (f) nil (catch Throwable t t)))
+
 (def unexpected-success
   "The outcome of a call that must throw, when it returns."
   {:status :unexpected-success})

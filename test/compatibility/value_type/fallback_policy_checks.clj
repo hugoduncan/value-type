@@ -32,11 +32,6 @@
 (defn- set-policy! [policy]
   (System/setProperty registry/policy-property policy))
 
-(defn- caught
-  "Call f (no arguments). Return the Throwable that f throws, else nil."
-  [f]
-  (try (f) nil (catch Throwable t t)))
-
 (defn set-after-load-error
   "Require value-type.core, set error with System/setProperty, then define
    an ordinary type. Return the definition outcome."
@@ -77,9 +72,9 @@
    as its cause."
   []
   (require 'value-type.core 'value-type.capability)
-  (let [first-failure (caught report)
+  (let [first-failure (registry/caught report)
         _ (set-policy! "silent")
-        second-failure (caught report)
+        second-failure (registry/caught report)
         failure-of (fn [^Throwable t]
                      {:class (.getName (class t))
                       :cause-identical? (identical? first-failure

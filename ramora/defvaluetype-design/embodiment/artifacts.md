@@ -101,7 +101,8 @@ Source-only library packaging is distinct from
 Consumers can still compile their value types ahead of time; those
 class files require the same JDK feature release used to compile them.
 JAR consumers need runtime dependencies. Value-class creation needs a
-supported JEP 401 Valhalla JDK with `--enable-preview`. Value-array allocation
+supported JEP 401 Valhalla JDK with `--enable-preview` and
+`value-type.value-classes` not `off`. Value-array allocation
 also needs `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
 Allocation has no ordinary-array fallback. Array inspection needs the same
 export and a supported JVM. Ordinary reference-array inspection does not need

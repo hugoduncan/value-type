@@ -52,7 +52,7 @@ Return actual properties of a reference array (experimental Valhalla API).
    Native failures propagate. Inspection does not change or retain the array.
    Flattening is not guaranteed. Atomic access does not provide safe publication,
    compound-update safety or caller synchronization.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L115-L141">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L116-L142">Source</a></sub></p>
 
 ## <a name="value-type.array/into-array">`into-array`</a>
 ``` clojure
@@ -78,7 +78,7 @@ Build a native null-restricted atomic array from finite seqable input.
    a complete array. Non-seqable input uses ordinary Clojure input errors.
    Failure does not promise full input consumption. The caller owns mutable
    slots; flattening is not guaranteed.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L81-L113">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L82-L114">Source</a></sub></p>
 
 ## <a name="value-type.array/make-array">`make-array`</a>
 ``` clojure
@@ -88,8 +88,9 @@ Function.
 
 Allocate a native null-restricted atomic array with every slot set to initial.
 
-   Requires a supported Valhalla JVM, `--enable-preview` and
-   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Checks capability,
+   Requires a supported Valhalla JVM, `--enable-preview`,
+   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED` and JVM property
+   `value-type.value-classes` not `off`. Checks capability,
    component, length and initial value in that order. The component must be a
    non-primitive runtime value class. Length must be an integer from zero
    through Integer/MAX_VALUE. A compatible non-null initial value is required
@@ -97,7 +98,7 @@ Allocate a native null-restricted atomic array with every slot set to initial.
 
    The caller owns the mutable slots. Flattening is not guaranteed. Atomic
    element access does not provide safe publication or compound-update safety.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L38-L55">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/array.clj#L38-L56">Source</a></sub></p>
 
 -----
 # <a name="value-type.capability">value-type.capability</a>
@@ -131,7 +132,7 @@ Return the capability results and the fallback policy in effect of this
   `{:available? false :reason r}`. Reasons:
   - `:value-class`: `:missing-classfile-api`, `:missing-value-predicate`,
     `:unsupported-class-version`, `:probe-not-value-class`,
-    `:failed-self-check`.
+    `:failed-self-check`, `:disabled`.
   - `:native-non-nil-field`: the value-class reasons,
     `:native-restriction-ignored`.
   - `:array-allocation`: the value-class reasons, `:missing-array-api`,
@@ -148,7 +149,15 @@ Return the capability results and the fallback policy in effect of this
   The first read fixes the policy; later property changes have no effect.
   An invalid policy value throws IllegalArgumentException before any probe
   runs; no partial report is returned.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L9-L50">Source</a></sub></p>
+
+  The report reads the `value-type.value-classes` property with the
+  value-class capability, after the policy. Valid values are `auto` and
+  `off`; no property is `auto`. `off` gives `:disabled` for
+  `:value-class`, `:native-non-nil-field` and `:array-allocation`, and
+  runs no value-class probe. An invalid value throws
+  IllegalArgumentException; no partial report is returned. The first
+  read fixes the result; later property changes have no effect.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L9-L58">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>
@@ -171,8 +180,9 @@ As `deftype` (see its docstring for syntax, options, specs, the
   when supported, or an ordinary identity class under fallback policy when
   identity fallback is permitted.
 
-  Uses value classes on a supported JEP 401 JDK with `--enable-preview`.
-  Otherwise uses identity storage with generated checks for enabled fields.
+  Uses value classes on a supported JEP 401 JDK with `--enable-preview`,
+  unless JVM property `value-type.value-classes` is `off`. Otherwise uses
+  identity storage with generated checks for enabled fields.
   Representation policy is independent of field enforcement. JVM property
   `value-type.fallback` sets the policy: silent (default), warn (once per
   library runtime), or error (reject with Java Error). Compiler operations
@@ -269,7 +279,7 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L334-L449">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L334-L450">Source</a></sub></p>
 
 ## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
 ``` clojure
@@ -354,4 +364,4 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L451-L544">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L452-L545">Source</a></sub></p>

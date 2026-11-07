@@ -16,7 +16,10 @@
                  :unsupported-class-version nil]
    :no-export [nil nil :array-access-denied :array-access-denied]
    :export [nil nil nil nil]
-   :no-flattening [nil nil nil nil]})
+   :no-flattening [nil nil nil nil]
+   :export-off [:disabled :disabled :disabled nil]
+   :java8-off [:disabled :disabled :disabled :missing-array-api]
+   :export-auto [nil nil nil nil]})
 
 (defn report
   "Return the expected report of runtime label."

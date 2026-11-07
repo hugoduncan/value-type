@@ -3,9 +3,9 @@
 Clojure's `deftype` creates objects with identity. value-type provides
 `defvaluetype` to define [JEP 401 value objects](https://openjdk.org/jeps/401)
 with familiar `deftype` syntax. It uses value classes on a supported
-Valhalla JVM and ordinary identity classes otherwise, subject to application
-fallback policy. Required, typed fields retain their constraints in either
-representation.
+Valhalla JVM, unless `value-type.value-classes` is `off`, and ordinary
+identity classes otherwise, subject to application fallback policy.
+Required, typed fields retain their constraints in either representation.
 
 Libraries that emit `deftype*`, such as closed-record, can use
 `defvaluetype*` for plain, `defrecord`-shaped and closed record classes. See
@@ -103,8 +103,9 @@ errors and deployment limits.
 
 ### Value arrays
 
-Array construction needs a supported Valhalla JVM, preview and access to an
-internal JVM package. With `JAVA_CMD` set as above, start a new REPL:
+Array construction needs a supported Valhalla JVM, preview, access to an
+internal JVM package and `value-type.value-classes` not `off`. With
+`JAVA_CMD` set as above, start a new REPL:
 
 ```sh
 clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:dev
@@ -183,8 +184,11 @@ A `System/setProperty` call, for example in `-main`, applies only if no policy
 read occurred before it. `report` shows the policy in effect in
 `:fallback-policy`.
 
+Set `value-type.value-classes=off` to go back to identity semantics with no
+code change, for example after a JVM value-class defect.
+
 See the [usage guide](doc/usage.md) for field comparison rules, fallback
-policy, AOT limits and error handling.
+policy, value-class switch, AOT limits and error handling.
 
 ## Performance
 

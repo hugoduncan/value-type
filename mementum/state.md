@@ -56,9 +56,12 @@ format, `impl.probe-builder` builds probes on `java.lang.classfile` (lazy
 `requiring-resolve`). The value-class probe and the value-array round trip
 run semantic self-checks (classified absences `:probe-not-value-class` and
 `:failed-self-check`). The field probe checks nil rejection (classified
-absence `:native-restriction-ignored`). The
+absence `:native-restriction-ignored`). Closed task 025 realizes D18 except AOT:
+`impl.capability/detect` reads `value-type.value-classes` (`auto`/`off`) first,
+before the API checks; `off` gives `:disabled`, an invalid value an IAE cached
+in the delay. Tests: `value-type.value-class-switch-test`. The
 [embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented)
-lists each gap. Open Munera tasks 025–028 realize the rest; `munera/plan.md` gives the order.
+lists each gap. Open Munera tasks 026–028 realize the rest; `munera/plan.md` gives the order.
 
 ## Non-nil fields
 

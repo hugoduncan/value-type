@@ -100,15 +100,36 @@
       klass
       (classify klass))))
 
+(def ^:private switch-property "value-type.value-classes")
+
+(def ^:private disabled-detail
+  "Value classes are disabled by value-type.value-classes=off.")
+
+(defn- switch
+  "Read the value-class switch. Absent or `auto` gives nil; `off` gives the
+   `:disabled` result; other values throw IllegalArgumentException."
+  []
+  (let [value (System/getProperty switch-property "auto")]
+    (case value
+      "auto" nil
+      "off" {:available? false :reason :disabled :detail disabled-detail}
+      (throw (IllegalArgumentException.
+              (str "Invalid " switch-property ": " (pr-str value)
+                   "; expected auto or off"))))))
+
 (defn detect
   "Return capability and an unavailable reason, without applying policy.
-   Only missing required APIs, known-probe version rejection and the D12
-   classified probe observations permit absence. All other failures propagate.
+   The `value-type.value-classes` switch is read first: `off` gives
+   `:disabled` and defines no probe class; an invalid value throws
+   IllegalArgumentException. Only the switch, missing required APIs,
+   known-probe version rejection and the D12 classified probe observations
+   permit absence. All other failures propagate.
    No user class is defined by this check. An available result holds the probe
    Class as `:probe-class`."
   []
-  (let [apis (required-apis)]
-    (if (contains? apis :available?) apis (probe))))
+  (or (switch)
+      (let [apis (required-apis)]
+        (if (contains? apis :available?) apis (probe)))))
 
 (def ^:private detected-capability (delay (detect)))
 

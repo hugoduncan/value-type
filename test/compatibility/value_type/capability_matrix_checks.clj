@@ -49,7 +49,11 @@
   (array-call #(do ((resolve 'value-type.array/make-array) component 1 seed) :allocated)
               :array-unavailable))
 
-(defn- inspection []
+(defn inspection
+  "Call array-info on (object-array 1). Return :inspected, or the
+   :value-type/error and :reason of an :array-inspection-unavailable
+   rejection. Other exceptions propagate."
+  []
   (array-call #(do ((resolve 'value-type.array/array-info) (object-array 1)) :inspected)
               :array-inspection-unavailable))
 

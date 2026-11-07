@@ -7,7 +7,7 @@
 | `value-type.core` | Public macro `defvaluetype` and runtime check `check-value-class`. Validate, select representation, lazily install the value loader, expand and check. | D1 D8 D9 D10 D12 |
 | `value-type.capability` | Public `report` of the four cached capability results and the policy in effect (`impl.runtime/fallback-policy`, read before the probes). | D14 |
 | `value-type.impl.runtime` | Policy fixed at the first read (`fallback-policy`), warning flag and fallback guards. | D10 D13 |
-| `value-type.impl.capability` | Baseline-safe API checks, lazy resolution of the probe builder, classification with the semantic self-check (`classify`, `passes-self-check?`) and the cached value-class result with the probe Class (`capability`). | D12 D13 D16 D17 |
+| `value-type.impl.capability` | The `value-type.value-classes` switch read (first, before the API checks), baseline-safe API checks, lazy resolution of the probe builder, classification with the semantic self-check (`classify`, `passes-self-check?`) and the cached value-class result with the probe Class (`capability`). | D12 D13 D16 D17 D18 |
 | `value-type.impl.jvm-format` | The format row (`row`): major and minor version, identity-class and strict-field flags, constructor order. Owns format data only. | D15 |
 | `value-type.impl.probe-builder` | Probe class bytes (`probe-bytes`) on `java.lang.classfile`, from the format row. | D16 |
 | `value-type.impl.field-capability` | Native-field probe, its cached result (`capability`) and the native-field guard. | D12 D13 |

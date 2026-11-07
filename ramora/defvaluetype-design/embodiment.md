@@ -30,7 +30,7 @@ The implementation does not yet realize these decisions:
 | Decision | Gap in the current implementation |
 |---|---|
 | D17 self-check | No AOT initialization check. |
-| D18 switch | No `value-type.value-classes` property. |
+| D18 switch | No AOT initialization check of the switch for value output without native non-nil fields (task 026). |
 | D19 compiler boundary | Shape assumptions are in `loader`, `transform`, `identity-backend` and `core`; each probe makes its own `DynamicClassLoader`. |
 | D20 receiving expansion | Ordinary value definitions expand to `check-value-class <class> <installed>`. |
 | D21 facts file | `release.yml` and the runtime guide name the JVM builds directly. |

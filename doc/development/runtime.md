@@ -475,6 +475,41 @@ This namespace runs 11 children:
 See the [fallback policy guide](../usage.md#fallback-policy) for the public
 contract.
 
+## Verify the value-class switch
+
+Use the explicit executable paths from "Verify array allocation". Run the
+switch checks in disposable JVMs:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.value-class-switch-test
+```
+
+This namespace runs these children:
+
+- Report children on `:export-off`, `:java8-off` and `:export-auto`, each
+  fallback policy (9). Under `off` the rows are `:disabled` and the
+  definition falls back by policy with the `:disabled` detail. Under `auto`
+  the rows equal the export rows.
+- Allocation messages: `make-array` and `into-array` on `:export-off` and
+  `:java8-off` (2).
+- Invalid values `OFF`, ` off` and the empty string on EA3 without the
+  export and on Java 8 (6). Each entry point except `array-info` throws the
+  same exception.
+- The policy-first child: an invalid policy and an invalid switch value on
+  Java 8 (1). `report` throws the policy exception.
+- Probe loads: no probe class loads on `:export-off`, and a probe class
+  loads on `:export-auto` (2).
+- The fixed read: a property change after a `report` call has no effect on
+  `:export-off` (1).
+- AOT children: saved value output from an EA3 producer, run source-free on
+  Valhalla. Native-field output under `off` throws `:disabled` under each
+  policy (3), and under `OFF` throws the invalid-value exception (1). Other
+  value output keeps value classes under `off` (1).
+
+See the [value-class switch guide](../usage.md#value-class-switch) for the
+public contract.
+
 ## Build a local JAR
 
 Run these commands from the repository root with the Clojure CLI and

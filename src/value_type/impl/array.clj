@@ -87,7 +87,7 @@
   (let [{:keys [available? cause reason detail] :as result} (allocation-capability)]
     (when-not available?
       (throw (ex-info
-              (if (= :failed-self-check reason)
+              (if (#{:failed-self-check :disabled} reason)
                 (str "Value-array allocation is unavailable. " detail)
                 (str "Value-array allocation requires a supported Valhalla JVM, "
                      "--enable-preview and "

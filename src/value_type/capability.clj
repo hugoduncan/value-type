@@ -23,7 +23,7 @@
   `{:available? false :reason r}`. Reasons:
   - `:value-class`: `:missing-classfile-api`, `:missing-value-predicate`,
     `:unsupported-class-version`, `:probe-not-value-class`,
-    `:failed-self-check`.
+    `:failed-self-check`, `:disabled`.
   - `:native-non-nil-field`: the value-class reasons,
     `:native-restriction-ignored`.
   - `:array-allocation`: the value-class reasons, `:missing-array-api`,
@@ -39,7 +39,15 @@
   The report reads the `value-type.fallback` policy before it runs a probe.
   The first read fixes the policy; later property changes have no effect.
   An invalid policy value throws IllegalArgumentException before any probe
-  runs; no partial report is returned."
+  runs; no partial report is returned.
+
+  The report reads the `value-type.value-classes` property with the
+  value-class capability, after the policy. Valid values are `auto` and
+  `off`; no property is `auto`. `off` gives `:disabled` for
+  `:value-class`, `:native-non-nil-field` and `:array-allocation`, and
+  runs no value-class probe. An invalid value throws
+  IllegalArgumentException; no partial report is returned. The first
+  read fixes the result; later property changes have no effect."
   []
   (let [fallback-policy (runtime/fallback-policy)
         public #(select-keys % [:available? :reason])]

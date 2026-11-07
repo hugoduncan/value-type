@@ -38,8 +38,9 @@
 (defn make-array
   "Allocate a native null-restricted atomic array with every slot set to initial.
 
-   Requires a supported Valhalla JVM, `--enable-preview` and
-   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`. Checks capability,
+   Requires a supported Valhalla JVM, `--enable-preview`,
+   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED` and JVM property
+   `value-type.value-classes` not `off`. Checks capability,
    component, length and initial value in that order. The component must be a
    non-primitive runtime value class. Length must be an integer from zero
    through Integer/MAX_VALUE. A compatible non-null initial value is required

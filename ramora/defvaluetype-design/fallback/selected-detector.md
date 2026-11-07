@@ -1,9 +1,10 @@
 ## Selected detector
 
-The baseline-safe `impl.capability/detect` checks ClassFile by name and
-Class.isValue by reflection. Only ClassNotFoundException for ClassFile and
-NoSuchMethodException for isValue select API absence. Then it reads the
-value-class switch (D18). After these checks, the probe builder (D16) makes the
+The baseline-safe `impl.capability/detect` first reads the value-class switch
+(D18), so `off` and an invalid value give the same result on every JVM. Then it
+checks ClassFile by name and Class.isValue by reflection. Only
+ClassNotFoundException for ClassFile and NoSuchMethodException for isValue
+select API absence. After these checks, the probe builder (D16) makes the
 known strict-field probe with the D15 format row. Define it with a unique name
 in a fresh loader through the compiler boundary (D19), construct it, check the
 value predicate, read back its field and run the semantic self-check (D17).
