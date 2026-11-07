@@ -173,10 +173,13 @@
 
 (defn- macro-error
   "Macroexpand a `macro` form with `modes`, `fields` and the option pairs
-  `opts`; return :no-error or the `ex-data` of the cause."
+  `opts`; return :no-error or the `ex-data` of the cause. Bind a new
+  Compiler/LOADER, as eval of a top-level form does: a receiving expansion
+  on a value-capable JVM installs capture in that loader frame."
   [macro modes fields & opts]
   (try
-    (binding [*ns* (the-ns 'value-type.identity-receiving-test)]
+    (with-bindings {#'*ns* (the-ns 'value-type.identity-receiving-test)
+                    clojure.lang.Compiler/LOADER (clojure.lang.RT/makeClassLoader)}
       (macroexpand-1 (list* macro 'StarHolder (symbol star-class) modes fields
                             opts)))
     :no-error
@@ -234,14 +237,16 @@
                                    :value-type/closed :x))))))
 
 (deftest value-receiving-star-closed-option-order-test
-  ;; Only a JVM without value capability gives the capability error.
-  (when-not (:available? (capability/capability))
-    (let [fields (into '[a] registry/record-tail)
-          value-error (partial macro-error
-                               'value-type.core/value-field-deftype* [] fields)]
-      (testing "the fixture without the option gives the capability error"
-        (is (= :value-capability-unavailable
-               (:value-type/error (value-error)))))
-      (testing ":invalid-option before value capability"
-        (is (= {:value-type/error :invalid-option :reason :invalid-value}
-               (error-keys (value-error :value-type/closed :x))))))))
+  ;; Assert on every JVM: a test without assertions has status unknown.
+  (let [fields (into '[a] registry/record-tail)
+        value-error (partial macro-error
+                             'value-type.core/value-field-deftype* [] fields)]
+    (testing "the fixture without the option expands only with value capability"
+      (is (= (if (:available? (capability/capability))
+               :no-error
+               :value-capability-unavailable)
+             (let [data (value-error)]
+               (if (map? data) (:value-type/error data) data)))))
+    (testing ":invalid-option before value capability"
+      (is (= {:value-type/error :invalid-option :reason :invalid-value}
+             (error-keys (value-error :value-type/closed :x)))))))
