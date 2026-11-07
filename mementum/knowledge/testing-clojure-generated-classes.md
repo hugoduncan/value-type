@@ -176,6 +176,11 @@ AOT in a new JVM (the class loads from the `.class` files only):
   `(= 0 exit)`, not `zero?` (`ClassCastException` on a keyword).
 - `prn` a map with one key for each check, and compare with `=` to
   the expected map. A positional vector hides which check failed.
+- A Class in a child result prints as its name and reads back as a
+  symbol (`(edn/read-string (pr-str {:a String}))` gives
+  `{:a java.lang.String}`, a symbol). It does not throw, but `=` with
+  the parent's Class is false. `select-keys` the plain-data keys of a
+  result that holds a Class (for example `:probe-class`). Task 023.
 - `clojure.main -e` reads and evaluates one top-level form at a time,
   so separate forms keep their order. When a check must see a state
   before a load (for example "the namespace is not loaded yet", as
