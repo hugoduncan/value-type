@@ -47,9 +47,15 @@ Its API is not stable.
 
 The defvaluetype design adds D15–D24 (probe and format, compiler boundary,
 verification and release) and changes D1, D3, D5, D9, D10, D12, D13 and D14.
-They come from a residual (stressor) analysis. No code realizes them yet; the
+They come from a residual (stressor) analysis. Closed task 023 realizes D12, D15,
+D16 and the non-AOT part of D17: `impl.jvm-format/row` owns the class file
+format, `impl.probe-builder` builds probes on `java.lang.classfile` (lazy
+`requiring-resolve`). The value-class probe and the value-array round trip
+run semantic self-checks (classified absences `:probe-not-value-class` and
+`:failed-self-check`). The field probe checks nil rejection (classified
+absence `:native-restriction-ignored`). The
 [embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented)
-lists each gap. Munera tasks 023–028 realize them; `munera/plan.md` gives the order.
+lists each gap. Open Munera tasks 024–028 realize the rest; `munera/plan.md` gives the order.
 
 ## Non-nil fields
 

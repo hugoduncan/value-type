@@ -35,7 +35,7 @@
              [{:context []
                :form (list 'do '(require '[value-type.impl.capability :as capability])
                            (list 'let '[a (capability/capability)]
-                                 {:capability 'a
+                                 {:capability '(dissoc a :probe-class)
                                   :cached '(identical? a (capability/capability))
                                   :optional-loaded optional-loaded-form}))
                :expected (harness/described

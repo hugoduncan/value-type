@@ -1,9 +1,7 @@
 (ns value-type.impl.capability
   "Baseline-safe checks for the value-class bytecode contract."
-  (:import (clojure.asm ClassWriter Opcodes)
-           (clojure.lang DynamicClassLoader)
-           (java.lang.reflect Method)
-           (java.util UUID)))
+  (:import (clojure.lang DynamicClassLoader)
+           (java.lang.reflect InvocationTargetException Method)))
 
 (set! *warn-on-reflection* true)
 
@@ -38,75 +36,79 @@
         (unavailable :missing-value-predicate
                      (NoSuchMethodException. "java.lang.Class.isValue()"))))))
 
-(defn latest-major-version
-  "The latest class-file major version of the running JDK.
-   Call only when `java.lang.classfile.ClassFile` exists."
-  []
-  (let [classfile (Class/forName "java.lang.classfile.ClassFile" false
-                                 (.getClassLoader Class))]
-    (.invoke (.getMethod classfile "latestMajorVersion" (make-array Class 0))
-             nil (object-array 0))))
+(def ^:private not-value-class-detail
+  "The JVM defined the probe class, but the probe class is not a value class.")
 
-(defn probe-bytes
-  "Return preview class bytes for owner with one strict final field `value`.
-   descriptor is the field descriptor. The constructor takes the field value and
-   assigns it before the super constructor, as JEP 401 strict fields require.
-   restricted? adds the `NullRestricted` annotation to the field."
-  [major owner descriptor restricted?]
-  (let [writer (ClassWriter. 0)
-        primitive? (= "J" descriptor)]
-    (.visit writer (unchecked-int (bit-or 0xffff0000 major))
-            (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL)
-            owner nil "java/lang/Object" nil)
-    (let [field (.visitField writer
-                             (bit-or Opcodes/ACC_PUBLIC Opcodes/ACC_FINAL 0x800)
-                             "value" descriptor nil nil)]
-      (when restricted?
-        (.visitEnd (.visitAnnotation field
-                                     "Ljdk/internal/vm/annotation/NullRestricted;" true)))
-      (.visitEnd field))
-    (let [ctor (.visitMethod writer Opcodes/ACC_PUBLIC "<init>"
-                             (str "(" descriptor ")V") nil nil)]
-      (.visitCode ctor)
-      (.visitVarInsn ctor Opcodes/ALOAD 0)
-      (.visitVarInsn ctor (if primitive? Opcodes/LLOAD Opcodes/ALOAD) 1)
-      (.visitFieldInsn ctor Opcodes/PUTFIELD owner "value" descriptor)
-      (.visitVarInsn ctor Opcodes/ALOAD 0)
-      (.visitMethodInsn ctor Opcodes/INVOKESPECIAL "java/lang/Object" "<init>" "()V" false)
-      (.visitInsn ctor Opcodes/RETURN)
-      (.visitMaxs ctor 3 3)
-      (.visitEnd ctor))
-    (.visitEnd writer)
-    (.toByteArray writer)))
+(def ^:private self-check-detail
+  "The value-class probe failed the semantic self-check.")
+
+(defn probe-instance-fn
+  "Return a fn of a `long` that makes an instance of cls with its public
+   `(long)` constructor. The fn removes `InvocationTargetException` and throws
+   its cause."
+  [^Class cls]
+  (let [ctor (.getConstructor cls (into-array Class [Long/TYPE]))]
+    (fn [n]
+      (try
+        (.newInstance ctor (object-array [(long n)]))
+        (catch InvocationTargetException error
+          (throw (.getCause error)))))))
+
+(defn passes-self-check?
+  "True when instances 42, 43 and 42 of cls have their own `value`, 42 and 43
+   are not `identical?`, the two 42 instances are `identical?` and no instance
+   is `identical?` to nil. cls has a public `long` field `value` and a public
+   `(long)` constructor. Does not read the value predicate."
+  [^Class cls]
+  (let [make (probe-instance-fn cls)
+        field (.getField cls "value")
+        a (make 42)
+        b (make 43)
+        c (make 42)]
+    (and (= 42 (.getLong field a))
+         (= 43 (.getLong field b))
+         (= 42 (.getLong field c))
+         (not (identical? a b))
+         (identical? a c)
+         (not-any? nil? [a b c]))))
+
+(defn classify
+  "Classify the defined probe Class cls. Not a value class gives
+   `:probe-not-value-class`; a failed `passes-self-check?` gives
+   `:failed-self-check`; else `{:available? true :probe-class cls}`."
+  [^Class cls]
+  (cond
+    (not (value-class? cls))
+    {:available? false :reason :probe-not-value-class
+     :detail not-value-class-detail}
+
+    (not (passes-self-check? cls))
+    {:available? false :reason :failed-self-check :detail self-check-detail}
+
+    :else
+    {:available? true :probe-class cls}))
 
 (defn- probe
-  [{:keys [^Method predicate]}]
-  (let [major (latest-major-version)
-        ;; DynamicClassLoader caches classes across loaders. Never reuse a name.
-        simple-name (str "CapabilityProbe_" (.replace (str (UUID/randomUUID)) "-" "_"))
-        bytes (probe-bytes major (str "value_type/probe/" simple-name) "J" false)
+  []
+  (let [define-probe-class (requiring-resolve
+                            'value-type.impl.probe-builder/define-probe-class)
         klass (try
-                (.defineClass (DynamicClassLoader.)
-                              (str "value_type.probe." simple-name) bytes nil)
+                (define-probe-class (DynamicClassLoader.) "CapabilityProbe" Long/TYPE false)
                 (catch UnsupportedClassVersionError error
                   (unavailable :unsupported-class-version error)))]
     (if (map? klass)
       klass
-      (let [^Class probe-class klass
-            instance (.newInstance (.getConstructor probe-class (into-array Class [Long/TYPE]))
-                                   (object-array [(long 42)]))]
-        (when-not (and (true? (.invoke predicate probe-class (object-array 0)))
-                       (= 42 (.getLong (.getField probe-class "value") instance)))
-          (throw (IllegalStateException. "Value-class capability probe invariant failed")))
-        {:available? true}))))
+      (classify klass))))
 
 (defn detect
   "Return capability and an unavailable reason, without applying policy.
-   Only missing required APIs and known-probe version rejection permit absence.
-   All other failures propagate. No user class is defined by this check."
+   Only missing required APIs, known-probe version rejection and the D12
+   classified probe observations permit absence. All other failures propagate.
+   No user class is defined by this check. An available result holds the probe
+   Class as `:probe-class`."
   []
   (let [apis (required-apis)]
-    (if (contains? apis :available?) apis (probe apis))))
+    (if (contains? apis :available?) apis (probe))))
 
 (def ^:private detected-capability (delay (detect)))
 

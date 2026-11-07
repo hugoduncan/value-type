@@ -35,7 +35,8 @@
       (let [denied {:available? false
                     :reason :array-access-denied
                     :cause (IllegalAccessException. "not exported")}]
-        (with-redefs [capability/capability (constantly {:available? true})
+        (with-redefs [capability/capability (constantly {:available? true
+                                                         :probe-class String})
                       field-capability/capability (constantly {:available? true})
                       adapter/allocation-capability (constantly denied)
                       adapter/inspection-capability (constantly denied)]

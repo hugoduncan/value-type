@@ -41,9 +41,10 @@
 
 (defn consume
   "Receive each serialized expansion twice in mode (transfer-checks/evaluate).
-   Return the receiver :capability and the :attempts of each expansion."
+   Return the receiver :capability (only :available? and :reason, so the
+   cell value stays plain data) and the :attempts of each expansion."
   [expansions mode]
-  {:capability (capability/capability)
+  {:capability (select-keys (capability/capability) [:available? :reason])
    :attempts (mapv (fn [serialized]
                      (registry/twice (fn [] (attempt serialized mode))))
                    expansions)})

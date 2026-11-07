@@ -2,21 +2,24 @@
   "Baseline-safe probe of native non-nil field enforcement."
   (:require [value-type.impl.capability :as capability])
   (:import (clojure.lang DynamicClassLoader)
-           (java.lang.reflect InvocationTargetException)
-           (java.util UUID)))
+           (java.lang.reflect InvocationTargetException)))
 
 (set! *warn-on-reflection* true)
 
+(def ^:private restriction-ignored-detail
+  "The JVM accepted nil in a NullRestricted probe field.")
+
 (defn- verify-enforcement
   [^Class leaf ^Class holder]
-  (let [value (.newInstance (.getConstructor leaf (into-array Class [Long/TYPE]))
-                            (object-array [(long 42)]))
+  (let [value ((capability/probe-instance-fn leaf) 42)
         ctor (.getConstructor holder (into-array Class [leaf]))
+        holder-field (.getField holder "value")
+        leaf-field (.getField leaf "value")
         instance (.newInstance ctor (object-array [value]))
-        readback (.get (.getField holder "value") instance)]
-    (when-not (and (= leaf (.getType (.getField holder "value")))
+        readback (.get holder-field instance)]
+    (when-not (and (= leaf (.getType holder-field))
                    (= value readback)
-                   (= 42 (.getLong (.getField leaf "value") readback)))
+                   (= 42 (.getLong leaf-field readback)))
       (throw (IllegalStateException. "Non-nil field probe readback invariant failed")))
     (let [rejected? (try
                       (.newInstance ctor (object-array [nil]))
@@ -25,30 +28,26 @@
                         (if (instance? NullPointerException (.getCause error))
                           true
                           (throw error))))]
-      (when-not rejected?
-        (throw (IllegalStateException. "Non-nil field probe accepted null"))))
-    {:available? true}))
+      (if rejected?
+        {:available? true}
+        {:available? false
+         :reason :native-restriction-ignored
+         :detail restriction-ignored-detail}))))
 
 (defn- probe
   []
-  (let [major (capability/latest-major-version)
-        prefix (str "value_type/probe/Fields_"
-                    (.replace (str (UUID/randomUUID)) "-" "_"))
-        leaf-name (str prefix "Leaf")
-        holder-name (str prefix "Holder")
+  (let [define-probe-class (requiring-resolve
+                            'value-type.impl.probe-builder/define-probe-class)
         loader (DynamicClassLoader.)
-        leaf (.defineClass loader (.replace leaf-name "/" ".")
-                           (capability/probe-bytes major leaf-name "J" false) nil)
-        holder (.defineClass loader (.replace holder-name "/" ".")
-                             (capability/probe-bytes major holder-name
-                                                     (str "L" leaf-name ";") true)
-                             nil)]
+        leaf (define-probe-class loader "FieldsLeaf" Long/TYPE false)
+        holder (define-probe-class loader "FieldsHolder" leaf true)]
     (verify-enforcement leaf holder)))
 
 (defn detect
   "Prove valid nested construction and native null rejection without exports.
-   Inherit only the value probe's narrow API/version absence classifications.
-   Field linkage, verification and enforcement failures remain errors."
+   Inherit the value probe's classified absences. A JVM that accepts nil in a
+   NullRestricted field gives :native-restriction-ignored. Field linkage and
+   verification failures remain errors."
   []
   (let [prerequisites (capability/capability)]
     (if (:available? prerequisites)

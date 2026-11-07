@@ -50,8 +50,11 @@ below names the ordinary expansion or the `installed` argument, D20 governs.
   See the [field contract](../../non-nil-field-design.md).
 - For ordinary definitions, `value-type.impl.capability` checks the optional ClassFile API and
   `Class.isValue`, then defines and instantiates an isolated strict-field
-  probe. Only missing required APIs or an unsupported probe class version
-  select fallback. Other failures propagate. `value-type.impl.capability`
+  probe made by the probe builder (D16) and runs the semantic self-check
+  (D17). Only missing required APIs, the value-class switch set to `off`
+  (D18) and the D12 classified absences (probe class version, probe class
+  not a value class, failed self-check) select fallback; see the [selected detector](../fallback/selected-detector.md).
+  Other failures propagate. `value-type.impl.capability`
   caches the result (`capability`); `core` selects the representation
   before loading the optional loader. Both the detector and the value-path
   result check use the value-class predicate.

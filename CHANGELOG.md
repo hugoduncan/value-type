@@ -11,3 +11,10 @@
   and the map literal reject undeclared keys.
 - Add `value-type.capability/report`, a read-only EDN report of value-class,
   native non-nil field, array allocation and array inspection capability.
+- The value-class probe runs a semantic self-check, and the value-array
+  probe does an allocation round trip. The native field probe checks nil
+  rejection. New report reasons: `:probe-not-value-class`,
+  `:failed-self-check` and `:native-restriction-ignored`. A probe class that
+  is not a value class, and a JVM that accepts nil in a `NullRestricted`
+  field, now give classified absences, not invariant errors. The probes use
+  `java.lang.classfile`, not `clojure.asm`.

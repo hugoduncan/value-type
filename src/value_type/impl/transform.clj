@@ -9,7 +9,8 @@
    [value-type.impl.class-file :as class-file]
    [value-type.impl.field-access :as field-access]
    [value-type.impl.field-storage :as field-storage]
-   [value-type.impl.fields :as fields])
+   [value-type.impl.fields :as fields]
+   [value-type.impl.jvm-format :as jvm-format])
   (:import
    (java.lang.classfile AccessFlags ClassBuilder ClassElement ClassFile
                         ClassFileVersion ClassModel ClassTransform CodeBuilder
@@ -24,9 +25,6 @@
    (java.util.function Consumer)))
 
 (set! *warn-on-reflection* true)
-
-(def ^:private ACC_IDENTITY 0x20)
-(def ^:private ACC_STRICT_INIT 0x800)
 
 (def ^:private ^ClassDesc objects-class (ClassDesc/of "java.util.Objects"))
 
@@ -215,6 +213,7 @@
   `{:storage-type :native?}`. Casts enforce type compatibility; non-native
   fields get explicit non-null checks."
   ^Consumer [^ClassDesc this fields keep-field? storage check]
+  (jvm-format/require-constructor-order! (jvm-format/row))
   (reify Consumer
     (accept [_ cb]
       (let [^CodeBuilder cb cb]
@@ -246,42 +245,45 @@
           (.withCode mb code)
           (.with mb ^MethodElement e))))))
 
-(def ^:private strict-init-transform
+(defn- strict-init-transform
+  ^FieldTransform [strict-field-flag]
   (reify FieldTransform
     (accept [_ fb e]
       (let [^FieldBuilder fb fb]
         (if (instance? AccessFlags e)
           (.withFlags fb (int (bit-or (.flagsMask ^AccessFlags e)
-                                      (long ACC_STRICT_INIT))))
+                                      (long strict-field-flag))))
           (.with fb ^FieldElement e))))))
 
 (defn- value-class-transform
-  "Set the preview version, clear `ACC_IDENTITY`, keep the instance fields
-  that `keep-field?` selects with `ACC_STRICT_INIT`, and replace the body
-  of each constructor for which `ctor-code` returns a code `Consumer`."
+  "Set the format-row version, clear the `:identity-class-flag`, keep the
+  instance fields that `keep-field?` selects with the `:strict-field-flag`,
+  and replace the body of each constructor for which `ctor-code` returns a
+  code `Consumer`."
   ^ClassTransform [keep-field? ctor-code]
-  (reify ClassTransform
-    (accept [_ b e]
-      (let [^ClassBuilder b b]
-        (cond
-          (instance? ClassFileVersion e)
-          (.withVersion b (ClassFile/latestMajorVersion)
-                        ClassFile/PREVIEW_MINOR_VERSION)
+  (let [{:keys [major minor identity-class-flag strict-field-flag]} (jvm-format/row)
+        field-transform (strict-init-transform strict-field-flag)]
+    (reify ClassTransform
+      (accept [_ b e]
+        (let [^ClassBuilder b b]
+          (cond
+            (instance? ClassFileVersion e)
+            (.withVersion b (int major) (int minor))
 
-          (instance? AccessFlags e)
-          (.withFlags b (int (bit-and-not (.flagsMask ^AccessFlags e)
-                                          (long ACC_IDENTITY))))
+            (instance? AccessFlags e)
+            (.withFlags b (int (bit-and-not (.flagsMask ^AccessFlags e)
+                                            (long identity-class-flag))))
 
-          (and (instance? FieldModel e) (instance-field? e))
-          (when (keep-field? e)
-            (.transformField b ^FieldModel e strict-init-transform))
+            (and (instance? FieldModel e) (instance-field? e))
+            (when (keep-field? e)
+              (.transformField b ^FieldModel e field-transform))
 
-          (and (instance? MethodModel e) (constructor? e))
-          (if-let [code (ctor-code e)]
-            (.transformMethod b ^MethodModel e (constructor-transform code))
-            (.with b ^ClassElement e))
+            (and (instance? MethodModel e) (constructor? e))
+            (if-let [code (ctor-code e)]
+              (.transformMethod b ^MethodModel e (constructor-transform code))
+              (.with b ^ClassElement e))
 
-          :else (.with b ^ClassElement e))))))
+            :else (.with b ^ClassElement e)))))))
 
 (defn- storage-transform
   ^ClassTransform [storage]
@@ -316,7 +318,7 @@
   nil) resolves the other types.
   Output: new class file bytes. The version is the latest version of
   the running JDK with the preview minor version. The class has no
-  `ACC_IDENTITY` flag. Each instance field has `ACC_STRICT_INIT`. The
+  `:identity-class-flag`. Each instance field has the `:strict-field-flag`. The
   constructor writes the fields, then calls `Object.<init>`. Selected fields
   use concrete storage and constructor casts. Non-native fields get
   `Objects.requireNonNull` checks and no native annotation; native fields

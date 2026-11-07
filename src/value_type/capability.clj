@@ -16,10 +16,14 @@
 
   Each value is `{:available? true}` or `{:available? false :reason r}`.
   Reasons:
-  - `:value-class`, `:native-non-nil-field`: `:missing-classfile-api`,
-    `:missing-value-predicate`, `:unsupported-class-version`.
+  - `:value-class`: `:missing-classfile-api`, `:missing-value-predicate`,
+    `:unsupported-class-version`, `:probe-not-value-class`,
+    `:failed-self-check`.
+  - `:native-non-nil-field`: the value-class reasons,
+    `:native-restriction-ignored`.
   - `:array-allocation`: the value-class reasons, `:missing-array-api`,
-    `:missing-array-signature`, `:array-access-denied`.
+    `:missing-array-signature`, `:array-access-denied`,
+    `:failed-self-check`.
   - `:array-inspection`: `:missing-array-api`, `:missing-array-signature`,
     `:array-access-denied`.
 

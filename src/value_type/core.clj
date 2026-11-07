@@ -501,8 +501,8 @@
     field with `:non-nil true`.
   - The `defvaluetype` tag and type reasons of enabled fields.
   Errors of value output, when the capture loader defines the class:
-  - `:unexpected-constructor`: the constructors are not the plain or the
-    record shape.
+  - `:unexpected-constructor`: the constructors are
+    not the plain or the record shape.
   - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
     captured class reads or writes a removed field: `__hash` or
     `__hasheq`, and for the closed shape also `__meta` or `__extmap`.

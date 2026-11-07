@@ -6,6 +6,7 @@
    [clojure.test :refer [deftest is testing]]
    [value-type.annotation-support :as annotation-support]
    [value-type.impl.identity-backend :as identity-backend]
+   [value-type.impl.jvm-format :as jvm-format]
    [value-type.impl.transform :as transform]
    [value-type.test-support :refer [record-tail rejection value?]])
   (:import
@@ -115,7 +116,7 @@
                (accept [_ cb]
                  (let [^ClassBuilder cb cb]
                    (.withFlags cb (int (bit-or ClassFile/ACC_PUBLIC ClassFile/ACC_FINAL
-                                               @#'transform/ACC_IDENTITY)))
+                                               (:identity-class-flag (jvm-format/row)))))
                    (.withSuperclass cb super)
                    (doseq [[^String fname ^ClassDesc ftype] fields]
                      (.withField cb fname ftype
@@ -419,8 +420,8 @@
           (is (= (ClassFile/latestMajorVersion) (.majorVersion out)))
           (is (= ClassFile/PREVIEW_MINOR_VERSION (.minorVersion out))))
         (testing "class flags lose ACC_IDENTITY"
-          (is (not (zero? (bit-and (flags in) @#'transform/ACC_IDENTITY))))
-          (is (= (bit-and-not (flags in) @#'transform/ACC_IDENTITY) (flags out))))
+          (is (not (zero? (bit-and (flags in) (:identity-class-flag (jvm-format/row))))))
+          (is (= (bit-and-not (flags in) (:identity-class-flag (jvm-format/row))) (flags out))))
         (testing "fields"
           (when (= :static-constants k)
             (testing "guard: the input has a static field"
@@ -430,7 +431,7 @@
             (if (static? fi)
               (is (= (field-view fi) (field-view fo)))
               (is (= (update (field-view fi) :flags
-                             bit-or @#'transform/ACC_STRICT_INIT)
+                             bit-or (:strict-field-flag (jvm-format/row)))
                      (field-view fo))))))
         (testing "pass-through"
           (is (= (.asInternalName (.thisClass in)) (.asInternalName (.thisClass out))))
@@ -448,6 +449,13 @@
             (is (= (others in) (others out)))))
         (testing "constructor code is the value class shape"
           (is (= (value-ctor-code in) (ctor-code-view out))))))))
+
+(deftest constructor-order-assertion-test
+  (let [row (assoc (jvm-format/row) :constructor-order :super-before-fields)]
+    (with-redefs [jvm-format/row (constantly row)]
+      (is (thrown-with-msg? IllegalStateException
+                            #"Unsupported value-constructor order"
+                            (transform/->value-class (:bytes (fixture :five-fields)) {} nil))))))
 
 (deftest five-fields-load-test
   (testing "literal load slots and kinds (design Verification 1)"
@@ -890,10 +898,10 @@
         (testing "hash fields are removed, other fields kept in order"
           (is (= (into (mapv name declared) ["__meta" "__extmap"]) (names out))))
         (testing "kept fields get ACC_STRICT_INIT"
-          (is (every? #(pos? (bit-and (flags %) @#'transform/ACC_STRICT_INIT))
+          (is (every? #(pos? (bit-and (flags %) (:strict-field-flag (jvm-format/row))))
                       (.fields out))))
         (testing "no ACC_IDENTITY"
-          (is (zero? (bit-and (flags out) @#'transform/ACC_IDENTITY))))
+          (is (zero? (bit-and (flags out) (:identity-class-flag (jvm-format/row))))))
         (testing "constructor descriptors are unchanged"
           (is (= 3 (count (ctor-descriptors out))))
           (is (= (ctor-descriptors in) (ctor-descriptors out))))
@@ -1039,7 +1047,7 @@
               (accept [_ cb]
                 (let [^ClassBuilder cb cb]
                   (.withFlags cb (int (bit-or ClassFile/ACC_PUBLIC ClassFile/ACC_FINAL
-                                              @#'transform/ACC_IDENTITY)))
+                                              (:identity-class-flag (jvm-format/row)))))
                   (.withSuperclass cb ConstantDescs/CD_Object)
                   (doseq [[^String fname ^ClassDesc ftype] built-record-fields]
                     (.withField cb fname ftype

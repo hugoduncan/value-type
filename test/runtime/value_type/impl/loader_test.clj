@@ -4,8 +4,8 @@
   (:require
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
+   [value-type.impl.jvm-format :as jvm-format]
    [value-type.impl.loader :as loader]
-   [value-type.impl.transform :as transform]
    [value-type.test-support :as support
     :refer [binary-name compile-cause message-names? value? vt-type
             with-temp-dir]])
@@ -176,7 +176,7 @@
         (when (.isFile f)
           (let [^ClassModel cm (.parse (ClassFile/of) (Files/readAllBytes (.toPath f)))]
             (is (zero? (bit-and (.flagsMask ^AccessFlags (.flags cm))
-                                @#'transform/ACC_IDENTITY)))))))))
+                                (:identity-class-flag (jvm-format/row)))))))))))
 
 (deftest no-aot-write-test
   (testing "with *compile-files* false, no file is written"
@@ -226,7 +226,7 @@
                   (.withSuperclass cb ConstantDescs/CD_Object)
                   (.withField cb "v" ConstantDescs/CD_long
                               (int (bit-or ClassFile/ACC_PUBLIC ClassFile/ACC_FINAL
-                                           @#'transform/ACC_STRICT_INIT)))
+                                           (:strict-field-flag (jvm-format/row)))))
                   (.withMethodBody
                    cb "<init>" (MethodTypeDesc/ofDescriptor "(J)V")
                    (int ClassFile/ACC_PUBLIC)

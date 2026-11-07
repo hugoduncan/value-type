@@ -1,7 +1,8 @@
 ## Selected fallback interfaces
 
 `impl.capability/capability` returns the cached capability map (`:available?`,
-and `:reason` plus `:detail` when unavailable). `enforce-fallback!` takes a
+`:probe-class` (the value probe Class) when available, and `:reason` plus
+`:detail` when unavailable). `enforce-fallback!` takes a
 diagnostic context and returns nil or throws Error. Initial selection passes
 unavailable-capability context; later guards pass fixed-representation context.
 All `enforce-fallback!` calls share the policy and the atomic warning flag

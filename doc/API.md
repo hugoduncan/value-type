@@ -125,10 +125,14 @@ Return the capability results of this runtime as an EDN-printable map.
 
   Each value is `{:available? true}` or `{:available? false :reason r}`.
   Reasons:
-  - `:value-class`, `:native-non-nil-field`: `:missing-classfile-api`,
-    `:missing-value-predicate`, `:unsupported-class-version`.
+  - `:value-class`: `:missing-classfile-api`, `:missing-value-predicate`,
+    `:unsupported-class-version`, `:probe-not-value-class`,
+    `:failed-self-check`.
+  - `:native-non-nil-field`: the value-class reasons,
+    `:native-restriction-ignored`.
   - `:array-allocation`: the value-class reasons, `:missing-array-api`,
-    `:missing-array-signature`, `:array-access-denied`.
+    `:missing-array-signature`, `:array-access-denied`,
+    `:failed-self-check`.
   - `:array-inspection`: `:missing-array-api`, `:missing-array-signature`,
     `:array-access-denied`.
 
@@ -136,7 +140,7 @@ Return the capability results of this runtime as an EDN-printable map.
   result that definitions and array functions use. Probes that have not run
   yet run now; a probe defect propagates and no partial report is returned.
   The report does not read the `value-type.fallback` policy.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L7-L35">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L7-L39">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>
@@ -252,7 +256,7 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L327-L437">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L334-L444">Source</a></sub></p>
 
 ## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
 ``` clojure
@@ -317,8 +321,8 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
     field with `:non-nil true`.
   - The [`defvaluetype`](#value-type.core/defvaluetype) tag and type reasons of enabled fields.
   Errors of value output, when the capture loader defines the class:
-  - `:unexpected-constructor`: the constructors are not the plain or the
-    record shape.
+  - `:unexpected-constructor`: the constructors are
+    not the plain or the record shape.
   - `:invalid-field` `:reason :removed-field-access` (data `:field`): a
     captured class reads or writes a removed field: `__hash` or
     `__hasheq`, and for the closed shape also `__meta` or `__extmap`.
@@ -337,4 +341,4 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L439-L532">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L446-L539">Source</a></sub></p>

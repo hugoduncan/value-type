@@ -45,25 +45,30 @@
         (config/child-configuration valhalla execution policy)
         [{:context [(pr-str [policy execution])]
           :form '(do
-                   (require 'value-type.impl.field-capability 'value-type.cell-registry)
-                   (let [emit value-type.impl.capability/probe-bytes
+                   (require 'value-type.impl.field-capability 'value-type.impl.probe-builder
+                            'value-type.cell-registry)
+                   (let [emit value-type.impl.probe-builder/probe-bytes
                          verify @#'value-type.impl.field-capability/verify-enforcement
-                         major (java.lang.classfile.ClassFile/latestMajorVersion)
                          loader (clojure.lang.DynamicClassLoader.)
                          define (fn [name descriptor restricted?]
-                                  (.defineClass loader name (emit major name descriptor restricted?) nil))
-                         outcome #(value-type.cell-registry/failed-call
-                                   (fn [e] (symbol (.getName (class e))))
-                                   %)
+                                  (value-type.impl.probe-builder/define-probe
+                                    loader name (emit name descriptor restricted?)))
+                         failure (fn [e] (symbol (.getName (class e))))
+                         failed #(value-type.cell-registry/failed-call failure %)
                          leaf (define "FieldProbeLeaf" "J" false)
                          holder (define "FieldProbeNullable" "LFieldProbeLeaf;" false)]
-                     [(outcome #(verify leaf holder))
-                      (outcome #(define "FieldProbePrimitive" "J" true))
-                      (outcome #(let [c (define "FieldProbeBadSlots" "I" false)]
-                                  (.getConstructors c)))
-                      (outcome #(let [c (define "FieldProbeIdentity" "Ljava/lang/String;" true)]
-                                  (.getConstructors c)))]))
-          :expected '[java.lang.IllegalStateException
+                     [(value-type.cell-registry/outcome
+                       failure
+                       #(verify leaf holder)
+                       identity)
+                      (failed #(define "FieldProbePrimitive" "J" true))
+                      (failed #(let [c (define "FieldProbeBadSlots" "I" false)]
+                                 (.getConstructors c)))
+                      (failed #(let [c (define "FieldProbeIdentity" "Ljava/lang/String;" true)]
+                                 (.getConstructors c)))]))
+          :expected '[{:available? false
+                       :reason :native-restriction-ignored
+                       :detail "The JVM accepted nil in a NullRestricted probe field."}
                       java.lang.ClassFormatError
                       java.lang.VerifyError
                       java.lang.IncompatibleClassChangeError]}])))))

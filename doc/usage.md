@@ -336,6 +336,23 @@ reason keywords are in the [API reference](API.md). Each value equals the
 array functions use. `report` runs the probes that have not run yet. A probe
 defect propagates; no partial report is returned.
 
+The value-class, native field and array allocation probes check real
+instances before they report a capability. The array inspection probe checks
+only the JDK API and access. The probe reasons below are classified absences. Their
+effect depends on the key:
+
+- `:value-class`: a probe class that is not a value class gives
+  `:probe-not-value-class`. A failed semantic self-check gives
+  `:failed-self-check`. Definitions use fallback, as for other reasons.
+- `:native-non-nil-field`: a JVM that accepts nil in a `NullRestricted`
+  probe field gives `:native-restriction-ignored`. Value classes use
+  generated enforcement for eligible `:non-nil` fields. Only a transferred
+  expansion with fixed `:native` modes fails, with
+  `:field-capability-unavailable`.
+- `:array-allocation`: a failed value-array round trip gives
+  `:failed-self-check`. There is no fallback: `make-array` and `into-array`
+  throw `:array-unavailable`.
+
 `report` does not read the `value-type.fallback` policy. Loading
 `value-type.capability` does not load `value-type.core` and needs no JEP 401
 support, preview flag, export or `java.lang.classfile`. Results are cached per

@@ -30,11 +30,8 @@ The implementation does not yet realize these decisions:
 | Decision | Gap in the current implementation |
 |---|---|
 | D10 policy at first read | `impl.runtime` reads and validates the policy at namespace load. |
-| D12 classified absences | A probe class that is not a value class, and a JVM that ignores `NullRestricted`, throw invariant errors. |
 | D14 `:fallback-policy` | `report` does not read the policy; `invalid-policy-report-test` expects that. |
-| D15 format table | Flag values and the version rule are in `impl.capability` and `impl.transform`. |
-| D16 probe builder | `impl.capability/probe-bytes` uses `clojure.asm`, imported at namespace load. |
-| D17 self-check | The probe checks only the value predicate and one field read. No array round trip; no AOT initialization check. |
+| D17 self-check | No AOT initialization check. |
 | D18 switch | No `value-type.value-classes` property. |
 | D19 compiler boundary | Shape assumptions are in `loader`, `transform`, `identity-backend` and `core`; each probe makes its own `DynamicClassLoader`. |
 | D20 receiving expansion | Ordinary value definitions expand to `check-value-class <class> <installed>`. |

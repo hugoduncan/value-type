@@ -18,6 +18,12 @@ both `into-array` arities and `array-info [array]`.
 The adapter lazily resolves the allocator and value predicate, checks access
 with a method handle, and invokes through reflection. It caches capability,
 not arrays or seeds. Diagnostics are not allocation prerequisites.
+Allocation discovery invokes the allocator once, in a round trip with the
+probe Class from the value-class result: it allocates a null-restricted array
+of length 2, writes one element and reads both. The round trip is the D17
+semantic check of the allocated array. A failed round trip gives
+`:failed-self-check`; an exception in it propagates. Discovery does not use
+the class-format detector as proof of array support (D3 boundary).
 Inspection has its own lazy discovery and access checks, independent of the
 class capability detector. It reads the component value predicate and all three
 JDK array properties directly. It does not change or retain the caller array.
