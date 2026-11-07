@@ -3,7 +3,8 @@
             [value-type.capability :refer [report]]
             [value-type.impl.array :as adapter]
             [value-type.impl.capability :as capability]
-            [value-type.impl.field-capability :as field-capability]))
+            [value-type.impl.field-capability :as field-capability]
+            [value-type.impl.runtime :as runtime]))
 
 (def ^:private predicate
   (.getMethod Object "equals" (into-array Class [Object])))
@@ -14,7 +15,8 @@
       (let [unavailable {:available? false
                          :reason :unsupported-class-version
                          :detail "class version 69"}]
-        (with-redefs [capability/capability (constantly unavailable)
+        (with-redefs [runtime/fallback-policy (constantly :warn)
+                      capability/capability (constantly unavailable)
                       field-capability/capability (constantly unavailable)
                       adapter/allocation-capability (constantly unavailable)
                       adapter/inspection-capability
@@ -23,7 +25,8 @@
                                    :null-restricted? predicate
                                    :atomic? predicate
                                    :flat? predicate})]
-          (is (= {:value-class {:available? false
+          (is (= {:fallback-policy :warn
+                  :value-class {:available? false
                                 :reason :unsupported-class-version}
                   :native-non-nil-field {:available? false
                                          :reason :unsupported-class-version}
@@ -35,12 +38,14 @@
       (let [denied {:available? false
                     :reason :array-access-denied
                     :cause (IllegalAccessException. "not exported")}]
-        (with-redefs [capability/capability (constantly {:available? true
+        (with-redefs [runtime/fallback-policy (constantly :error)
+                      capability/capability (constantly {:available? true
                                                          :probe-class String})
                       field-capability/capability (constantly {:available? true})
                       adapter/allocation-capability (constantly denied)
                       adapter/inspection-capability (constantly denied)]
-          (is (= {:value-class {:available? true}
+          (is (= {:fallback-policy :error
+                  :value-class {:available? true}
                   :native-non-nil-field {:available? true}
                   :array-allocation {:available? false
                                      :reason :array-access-denied}

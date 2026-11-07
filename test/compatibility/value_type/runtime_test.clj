@@ -1,7 +1,6 @@
 (ns value-type.runtime-test
   (:require [clojure.set :as set]
             [clojure.test :refer [deftest]]
-            [value-type.capability-rows :as rows]
             [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
             [value-type.expansion-checks :as expansion]
@@ -50,7 +49,8 @@
                                             :detail (harness/detail)}))}))}])])))
 
 (deftest policy-test
-  ;; Independent processes own configuration; later property changes have no effect.
+  ;; Independent processes own configuration; property changes after the
+  ;; first read have no effect.
   ;; The direct enforce-fallback! call is a fallback cell with context "test".
   (let [context "test"]
     (harness/run-cells
@@ -58,6 +58,7 @@
        (child policy
               [{:context [(policy-context policy)]
                 :form `(do (require 'value-type.impl.runtime 'value-type.cell-registry)
+                           (value-type.impl.runtime/fallback-policy)
                            (System/setProperty value-type.cell-registry/policy-property
                                                "invalid-later")
                            (value-type.cell-registry/twice
@@ -74,20 +75,16 @@
                 :warning context}])))))
 
 (deftest invalid-policy-test
-  ;; Invalid startup values fail clearly rather than silently selecting a policy.
+  ;; Invalid launch values do not fail at load: the requires succeed.
+  ;; invalid-policy-report-test shows the throw at the first read.
   (harness/run-cells
    (for [policy ["" "WARN" "unknown"]]
      (child policy
             [{:context [(policy-context (pr-str policy))]
-              :form '(do (require 'value-type.impl.runtime) :unexpected)
-              :expected (harness/described
-                         (harness/keyed
-                          {:thrown (harness/including
-                                    (update-vals
-                                     {:class "java.lang.IllegalArgumentException"
-                                      :message (str "Invalid value-type.fallback: " (pr-str policy)
-                                                    "; expected silent, warn or error")}
-                                     harness/fixed))}))}]))))
+              :form '(do (require 'value-type.core 'value-type.capability
+                                  'value-type.impl.runtime)
+                         :loaded)
+              :expected :loaded}]))))
 
 (deftest public-require-test
   ;; Public loading must not load optional implementation APIs or warn.
@@ -479,15 +476,24 @@
                  :warning :any}))))))
 
 (deftest invalid-policy-report-test
-  ;; Acceptance 2: report reads no policy and loads neither core nor runtime.
-  (let [{:keys [baseline? available?]} (config/configuration)
-        label (cond baseline? :java8 available? :no-export :else :no-options)]
-    (harness/run-cells
-     (for [policy ["" "WARN" "unknown"]]
-       (child policy
-              [{:context [(policy-context (pr-str policy)) (str label)]
-                :form '(do (require 'value-type.capability)
-                           {:report (value-type.capability/report)
-                            :loaded (vec (keep find-ns '[value-type.core
-                                                         value-type.impl.runtime]))})
-                :expected {:report (rows/report label) :loaded []}}])))))
+  ;; report reads the policy first: an invalid value throws plain
+  ;; IllegalArgumentException before any probe; report does not load core.
+  (harness/run-cells
+   (for [policy ["" "WARN" "unknown"]]
+     (child policy
+            [{:context [(policy-context (pr-str policy))]
+              :form '(do (require 'value-type.capability 'value-type.cell-registry)
+                         {:thrown (value-type.cell-registry/failed-call
+                                   value-type.cell-registry/thrown
+                                   value-type.capability/report)
+                          :probes (mapv #(realized? @(find-var %))
+                                        '[value-type.impl.capability/detected-capability
+                                          value-type.impl.field-capability/detected-field-capability
+                                          value-type.impl.array/detected-allocation-capability
+                                          value-type.impl.array/detected-inspection-capability])
+                          :core-loaded? (some? (find-ns 'value-type.core))})
+              :expected {:thrown {:class "java.lang.IllegalArgumentException"
+                                  :message (registry/invalid-policy-message policy)
+                                  :chain ["java.lang.IllegalArgumentException"]}
+                         :probes [false false false false]
+                         :core-loaded? false}}]))))

@@ -12,7 +12,7 @@ non-nil fields. See the [field contract](#portable-non-nil-fields).
 Fallback does not emulate value equality or identity. Libraries
 that allow fallback must work with both representations.
 
-Set the JVM property before dependencies load, not in `-main`:
+Set the policy with the JVM option:
 
 ```sh
 clojure -J-Dvalue-type.fallback=error -M -m your.application
@@ -24,8 +24,20 @@ clojure -J-Dvalue-type.fallback=error -M -m your.application
 | `warn` | Warn on standard error once per loaded library runtime. |
 | `error` | Reject every attempt with `java.lang.Error`. |
 
-Configuration is read and validated once. Invalid values fail at load time;
-later property changes are unsupported. There are no per-type overrides.
+The policy applies if it is set before the first read: the first fallback
+decision or the first `value-type.capability/report` call. Loading the library
+does not read the policy. A namespace that evaluates a fallback definition at
+top level makes the first read when it loads. Examples: a source definition on
+a runtime without value-class support, or an AOT-compiled fallback definition
+on any runtime. Thus the JVM option stays the recommended form. A
+`System/setProperty` call, for example in `-main`, applies only if no policy
+read occurred before it. `report` shows the policy in effect in
+`:fallback-policy`; call it to check the policy.
+
+The first read fixes the policy for the loaded library runtime. An invalid
+value fails at the first read, not at load, and each later read throws the
+same exception. A property change after the first read has no effect. There
+are no per-type overrides.
 All policies use value classes when supported. Requiring the library alone
 does not warn. Concurrent attempts across types and namespaces share one
 warning flag; independent library runtimes have separate flags.
@@ -307,14 +319,15 @@ native diagnostic calls with null can crash the tested JVM. See the
 
 ## Capability report
 
-`value-type.capability/report` returns the optional JVM capabilities of the
-loaded runtime as an EDN map. Use it to check a deployment before you define
-types or allocate arrays.
+`value-type.capability/report` returns the optional JVM capabilities and the
+fallback policy in effect of the loaded runtime as an EDN map. Use it to check
+a deployment before you define types or allocate arrays.
 
 ```clojure
 (require '[value-type.capability :as capability])
 (capability/report)
-;=> {:value-class {:available? true},
+;=> {:fallback-policy :silent,
+;    :value-class {:available? true},
 ;    :native-non-nil-field {:available? true},
 ;    :array-allocation {:available? false, :reason :array-access-denied},
 ;    :array-inspection {:available? false, :reason :array-access-denied}}
@@ -329,12 +342,14 @@ The example result is from Valhalla `27-jep401ea3+1-1` with
 | `:native-non-nil-field` | Eligible `:non-nil` fields use native restriction. |
 | `:array-allocation` | `make-array` and `into-array` can allocate. |
 | `:array-inspection` | `array-info` can inspect. |
+| `:fallback-policy` | The [fallback policy](#fallback-policy) in effect: `:silent`, `:warn` or `:error`. |
 
-Each value is `{:available? true}` or `{:available? false :reason r}`. The
-reason keywords are in the [API reference](API.md). Each value equals the
-`:available?` and `:reason` entries of the cached result that definitions and
-array functions use. `report` runs the probes that have not run yet. A probe
-defect propagates; no partial report is returned.
+Each capability value is `{:available? true}` or
+`{:available? false :reason r}`. The reason keywords are in the
+[API reference](API.md). Each value equals the `:available?` and `:reason`
+entries of the cached result that definitions and array functions use.
+`report` runs the probes that have not run yet. A probe defect propagates; no
+partial report is returned.
 
 The value-class, native field and array allocation probes check real
 instances before they report a capability. The array inspection probe checks
@@ -353,10 +368,11 @@ effect depends on the key:
   `:failed-self-check`. There is no fallback: `make-array` and `into-array`
   throw `:array-unavailable`.
 
-`report` does not read the `value-type.fallback` policy. Loading
-`value-type.capability` does not load `value-type.core` and needs no JEP 401
-support, preview flag, export or `java.lang.classfile`. Results are cached per
-loaded runtime; set JVM flags before startup.
+`report` reads the `value-type.fallback` policy before it runs a probe. An
+invalid value makes `report` throw before any probe; no partial report is
+returned. Loading `value-type.capability` does not load `value-type.core` and
+needs no JEP 401 support, preview flag, export or `java.lang.classfile`.
+Results are cached per loaded runtime; set JVM flags before startup.
 
 ## Portable non-nil fields
 

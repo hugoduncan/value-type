@@ -18,3 +18,9 @@
   is not a value class, and a JVM that accepts nil in a `NullRestricted`
   field, now give classified absences, not invariant errors. The probes use
   `java.lang.classfile`, not `clojure.asm`.
+- The `value-type.fallback` policy is read and validated at the first read
+  (the first fallback decision or the first `report` call), not at namespace
+  load. A policy set with `System/setProperty` before the first read applies;
+  a change after the first read has no effect. An invalid value fails at the
+  first read. `report` adds `:fallback-policy` (`:silent`, `:warn` or
+  `:error`), the policy in effect.

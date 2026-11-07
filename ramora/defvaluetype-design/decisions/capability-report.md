@@ -40,5 +40,5 @@
   (`report-translation-test`, `report-defect-propagation-test`),
   `value-type.capability-matrix-test`,
   `value-type.controlled-value-capability-test`,
-  `value-type.runtime-test/invalid-policy-report-test` and the isolated
-  source-JAR consumer.
+  `value-type.runtime-test/invalid-policy-report-test`,
+  `value-type.fallback-policy-test` and the isolated source-JAR consumer.

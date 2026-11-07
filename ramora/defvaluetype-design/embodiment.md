@@ -29,8 +29,6 @@ The implementation does not yet realize these decisions:
 
 | Decision | Gap in the current implementation |
 |---|---|
-| D10 policy at first read | `impl.runtime` reads and validates the policy at namespace load. |
-| D14 `:fallback-policy` | `report` does not read the policy; `invalid-policy-report-test` expects that. |
 | D17 self-check | No AOT initialization check. |
 | D18 switch | No `value-type.value-classes` property. |
 | D19 compiler boundary | Shape assumptions are in `loader`, `transform`, `identity-backend` and `core`; each probe makes its own `DynamicClassLoader`. |

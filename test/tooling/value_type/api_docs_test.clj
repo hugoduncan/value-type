@@ -24,7 +24,9 @@
       (doseq [text ["(defvaluetype name [& fields] & opts+specs)"
                     "Macro." "JEP 401 JDK with `--enable-preview`"
                     "`value-type.fallback`" "silent (default), warn (once per"
-                    "error (reject with Java Error)" "AOT fixes representation"
+                    "error (reject with Java Error)" "before the first read"
+                    "changes after the first read have no effect"
+                    "AOT fixes representation"
                     "policy on invocation" "direct class access"
                     "Value artifacts do not convert" "no mutable fields"
                     "`:volatile-mutable`" "`:unsynchronized-mutable`"
@@ -76,7 +78,8 @@
                     ":unsupported-class-version" ":missing-array-api"
                     ":missing-array-signature" ":array-access-denied"
                     "{:available? false :reason r}" "EDN-printable"
-                    "does not read the `value-type.fallback` policy"
+                    ":fallback-policy" "fallback policy in effect"
+                    "reads the `value-type.fallback` policy before it runs a probe"
                     "no partial report"]]
         (is (str/includes? markdown text) text)))
     (testing "generation instructions and navigation are present"

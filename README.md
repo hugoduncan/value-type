@@ -160,7 +160,7 @@ handling.
   Value-class output requires a compatible preview-enabled JVM; it does not
   convert to fallback. Identity output retains its constructor checks.
 
-The startup property `value-type.fallback` controls identity fallback, including
+The property `value-type.fallback` controls identity fallback, including
 definitions with non-nil fields. Missing native field enforcement alone does not
 trigger fallback, warnings or strict-policy rejection:
 
@@ -170,11 +170,18 @@ trigger fallback, warnings or strict-policy rejection:
 | `warn` | Warn once per loaded library runtime, then use `deftype`. |
 | `error` | Reject with `java.lang.Error`. |
 
-Set the property before the library loads. For example, to reject fallback:
+The policy applies if it is set before the first read: the first fallback
+decision or the first `value-type.capability/report` call. A namespace with a
+top-level fallback definition makes the first read when it loads, so the JVM
+option is the recommended form. For example, to reject fallback:
 
 ```sh
 clojure -J-Dvalue-type.fallback=error -M:dev
 ```
+
+A `System/setProperty` call, for example in `-main`, applies only if no policy
+read occurred before it. `report` shows the policy in effect in
+`:fallback-policy`.
 
 See the [usage guide](doc/usage.md) for field comparison rules, fallback
 policy, AOT limits and error handling.

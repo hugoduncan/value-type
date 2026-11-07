@@ -34,7 +34,8 @@
        (assoc runtime :policy "silent")
        [{:context ["export silent"]
          :form cell-form
-         :expected {:report {:value-class absent
+         :expected {:report {:fallback-policy :silent
+                             :value-class absent
                              :native-non-nil-field absent
                              :array-allocation absent
                              :array-inspection {:available? true}}

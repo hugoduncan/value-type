@@ -13,8 +13,10 @@ Its API is not stable.
 - `value-type.core/defvaluetype` provides `deftype`-style syntax for JEP 401
   value objects. It transforms generated class bytes through a capture loader.
   Value output uses `java.lang.classfile`; identity output uses bundled ASM.
-- On unsupported JVMs, the macro uses ordinary `deftype` semantics. The startup
+- On unsupported JVMs, the macro uses ordinary `deftype` semantics. The
   property `value-type.fallback` selects `silent` (default), `warn` or `error`.
+  `impl.runtime/fallback-policy` (a delay) reads and fixes it at the first
+  read (first fallback decision or first `report`), not at load (D10, D13).
   AOT compilation and expansion transfer fix the representation; value-class
   output cannot fall back.
 - `value-type.core/defvaluetype*` takes `deftype*` arguments (plain or
@@ -33,12 +35,12 @@ Its API is not stable.
   `array-info` inspects reference-array properties. Allocation has no fallback.
 - `value-type.capability/report` returns the `:available?` and `:reason`
   entries of the four cached capability results (`:value-class`,
-  `:native-non-nil-field`, `:array-allocation`, `:array-inspection`) as EDN.
-  It reads no fallback policy. The probe namespaces (`impl.capability`,
-  `impl.field-capability`, `impl.array`) own the cached results through
-  zero-arity accessors; `impl.runtime` owns only policy, the warning flag
-  and the fallback guards (`enforce-fallback!`, `guarded-deftype`,
-  `guarded-deftype*`).
+  `:native-non-nil-field`, `:array-allocation`, `:array-inspection`) and
+  `:fallback-policy` (the policy in effect, read before the probes) as EDN.
+  The probe namespaces (`impl.capability`, `impl.field-capability`,
+  `impl.array`) own the cached results through zero-arity accessors;
+  `impl.runtime` owns only policy, the warning flag and the fallback guards
+  (`enforce-fallback!`, `guarded-deftype`, `guarded-deftype*`).
   See D14 in the defvaluetype decisions.
 - Source-only JAR builds, quality checks, API generation and release tooling
   are available. Hosted Actions and live publication remain unverified.
@@ -47,7 +49,8 @@ Its API is not stable.
 
 The defvaluetype design adds D15–D24 (probe and format, compiler boundary,
 verification and release) and changes D1, D3, D5, D9, D10, D12, D13 and D14.
-They come from a residual (stressor) analysis. Closed task 023 realizes D12, D15,
+They come from a residual (stressor) analysis. Closed task 024 realizes D10 (first
+read) and D14 (`:fallback-policy`). Closed task 023 realizes D12, D15,
 D16 and the non-AOT part of D17: `impl.jvm-format/row` owns the class file
 format, `impl.probe-builder` builds probes on `java.lang.classfile` (lazy
 `requiring-resolve`). The value-class probe and the value-array round trip
@@ -55,7 +58,7 @@ run semantic self-checks (classified absences `:probe-not-value-class` and
 `:failed-self-check`). The field probe checks nil rejection (classified
 absence `:native-restriction-ignored`). The
 [embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented)
-lists each gap. Open Munera tasks 024–028 realize the rest; `munera/plan.md` gives the order.
+lists each gap. Open Munera tasks 025–028 realize the rest; `munera/plan.md` gives the order.
 
 ## Non-nil fields
 

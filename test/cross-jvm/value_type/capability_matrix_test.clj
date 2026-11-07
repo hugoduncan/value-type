@@ -25,7 +25,7 @@
   (let [{:keys [value-class native-non-nil-field array-allocation
                 array-inspection]
          :as report}
-        (rows/report label)
+        (assoc (rows/report label) :fallback-policy (keyword policy))
         rejected? (and (not (:available? value-class)) (= "error" policy))
         context (harness/rejection-context {:baseline? (= :java8 label)})]
     (harness/described

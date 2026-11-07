@@ -9,10 +9,11 @@
 
 (defn- owner-report
   "Return the report that the owner accessors give (:available? and
-   :reason only)."
+   :reason only) and the policy accessor."
   []
   (let [public #(select-keys ((resolve %)) [:available? :reason])]
-    {:value-class (public 'value-type.impl.capability/capability)
+    {:fallback-policy ((resolve 'value-type.impl.runtime/fallback-policy))
+     :value-class (public 'value-type.impl.capability/capability)
      :native-non-nil-field (public 'value-type.impl.field-capability/capability)
      :array-allocation (public 'value-type.impl.array/allocation-capability)
      :array-inspection (public 'value-type.impl.array/inspection-capability)}))

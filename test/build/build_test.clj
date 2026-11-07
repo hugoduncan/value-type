@@ -277,9 +277,10 @@
 (def ^:private consumer-reports
   (let [result #(if % {:available? false :reason %} {:available? true})
         report (fn [& reasons]
-                 (zipmap [:value-class :native-non-nil-field
-                          :array-allocation :array-inspection]
-                         (map result reasons)))]
+                 (assoc (zipmap [:value-class :native-non-nil-field
+                                 :array-allocation :array-inspection]
+                                (map result reasons))
+                        :fallback-policy :silent))]
     {:java8 (report :missing-classfile-api :missing-classfile-api
                     :missing-classfile-api :missing-array-api)
      :no-options (report :unsupported-class-version :unsupported-class-version

@@ -364,16 +364,22 @@
                                                "[^\\r\\n]*\\r?\\n"))
                               %)))])
 
+(defn expected-warning
+  "Return the described expected *err* text (see described) of one fallback
+   warning of context: any-warning-line for :any, else the warning line of
+   context."
+  [context]
+  (if (= :any context) (any-warning-line) (fixed (warning-line context))))
+
 (defn- expected-err
   "Return the described expected *err* of the cell at index (see
    described): the warning line of the first fallback cell of a warn
-   child (any-warning-line for warning :any), else \"\"."
+   child (see expected-warning), else \"\"."
   [{:keys [policy cells]} index]
   (let [first-fallback (first (keep-indexed (fn [i c] (when (:fallback? c) i)) cells))]
     (described
      (if (and (= "warn" policy) (= index first-fallback))
-       (let [{:keys [warning]} (nth cells index)]
-         (if (= :any warning) (any-warning-line) (fixed (warning-line warning))))
+       (expected-warning (:warning (nth cells index)))
        (fixed "")))))
 
 (def ^:private expected-out

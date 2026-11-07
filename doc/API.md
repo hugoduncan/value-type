@@ -13,8 +13,8 @@ Regenerate from the repository root with `bb api-docs`. Check without writing wi
     -  [`array-info`](#value-type.array/array-info) - Return actual properties of a reference array (experimental Valhalla API).
     -  [`into-array`](#value-type.array/into-array) - Build a native null-restricted atomic array from finite seqable input.
     -  [`make-array`](#value-type.array/make-array) - Allocate a native null-restricted atomic array with every slot set to initial.
--  [`value-type.capability`](#value-type.capability)  - Read-only report of the optional JVM capabilities that value-type uses.
-    -  [`report`](#value-type.capability/report) - Return the capability results of this runtime as an EDN-printable map.
+-  [`value-type.capability`](#value-type.capability)  - Read-only report of the optional JVM capabilities that value-type uses and of the fallback policy in effect.
+    -  [`report`](#value-type.capability/report) - Return the capability results and the fallback policy in effect of this runtime as an EDN-printable map.
 -  [`value-type.core`](#value-type.core)  - Define JEP 401 value classes with [<code>defvaluetype</code>](#value-type.core/defvaluetype), a <code>deftype</code> compatible macro.
     -  [`defvaluetype`](#value-type.core/defvaluetype) - As <code>deftype</code> (see its docstring for syntax, options, specs, the <code>-&gt;name</code> factory and the import).
     -  [`defvaluetype*`](#value-type.core/defvaluetype*) - As <code>deftype*</code>, with the same arguments.
@@ -103,7 +103,8 @@ Allocate a native null-restricted atomic array with every slot set to initial.
 # <a name="value-type.capability">value-type.capability</a>
 
 
-Read-only report of the optional JVM capabilities that value-type uses.
+Read-only report of the optional JVM capabilities that value-type uses
+  and of the fallback policy in effect.
 
 
 
@@ -114,7 +115,8 @@ Read-only report of the optional JVM capabilities that value-type uses.
 ```
 Function.
 
-Return the capability results of this runtime as an EDN-printable map.
+Return the capability results and the fallback policy in effect of this
+  runtime as an EDN-printable map.
 
   Keys:
   - `:value-class`: this runtime can define value classes.
@@ -122,9 +124,11 @@ Return the capability results of this runtime as an EDN-printable map.
     eligible `:non-nil` fields.
   - `:array-allocation`: `make-array` and `into-array` can allocate.
   - `:array-inspection`: `array-info` can inspect.
+  - `:fallback-policy`: the fallback policy in effect, `:silent`, `:warn` or
+    `:error`.
 
-  Each value is `{:available? true}` or `{:available? false :reason r}`.
-  Reasons:
+  Each capability value is `{:available? true}` or
+  `{:available? false :reason r}`. Reasons:
   - `:value-class`: `:missing-classfile-api`, `:missing-value-predicate`,
     `:unsupported-class-version`, `:probe-not-value-class`,
     `:failed-self-check`.
@@ -139,8 +143,12 @@ Return the capability results of this runtime as an EDN-printable map.
   Each value equals the `:available?` and `:reason` entries of the cached
   result that definitions and array functions use. Probes that have not run
   yet run now; a probe defect propagates and no partial report is returned.
-  The report does not read the `value-type.fallback` policy.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L7-L39">Source</a></sub></p>
+
+  The report reads the `value-type.fallback` policy before it runs a probe.
+  The first read fixes the policy; later property changes have no effect.
+  An invalid policy value throws IllegalArgumentException before any probe
+  runs; no partial report is returned.
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/capability.clj#L9-L50">Source</a></sub></p>
 
 -----
 # <a name="value-type.core">value-type.core</a>
@@ -165,12 +173,17 @@ As `deftype` (see its docstring for syntax, options, specs, the
 
   Uses value classes on a supported JEP 401 JDK with `--enable-preview`.
   Otherwise uses identity storage with generated checks for enabled fields.
-  Representation policy is independent of field enforcement. Set JVM property
-  `value-type.fallback` before loading: silent (default), warn (once per
+  Representation policy is independent of field enforcement. JVM property
+  `value-type.fallback` sets the policy: silent (default), warn (once per
   library runtime), or error (reject with Java Error). Compiler operations
-  wrap that Error in CompilerException. Configuration is read and validated
-  once; invalid values fail and later changes are unsupported. Requiring
-  alone does not warn. Concurrent types and namespaces share warning state.
+  wrap that Error in CompilerException. The policy applies if it is set
+  before the first read: the first fallback decision or the first
+  [`value-type.capability/report`](#value-type.capability/report) call. A namespace that evaluates a fallback
+  definition at top level makes the first read when it loads, so prefer the
+  JVM option `-Dvalue-type.fallback=...`. An invalid value fails at the first
+  read; changes after the first read have no effect. Requiring alone does not
+  read the policy or warn. Concurrent types and namespaces share warning
+  state.
 
   Selecting fallback during macroexpansion applies policy even if the
   expansion is discarded. Returned expansions enforce receiving policy at
@@ -256,7 +269,7 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L334-L444">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L334-L449">Source</a></sub></p>
 
 ## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
 ``` clojure
@@ -341,4 +354,4 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L446-L539">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L451-L544">Source</a></sub></p>

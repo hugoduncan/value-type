@@ -3,9 +3,10 @@
    type definitions, the attempt axis, expected values of an axis, the
    identity fact, factory symbols, cell namespace names, failure maps (of
    an error: thrown, failure, root-data and root-failure; of a failed type
-   definition), rejection maps, call outcomes, failed, guarded and rejected calls,
-   runtime facts, child call forms, the hash-field count, the closed
-   meta rejection and the record tail of `deftype*`.
+   definition), rejection maps, call outcomes, failed, guarded and
+   rejected calls, runtime facts, the invalid-policy message, child call
+   forms, the hash-field count, the closed meta rejection and the record
+   tail of `deftype*`.
 
    Requires only clojure.core and uses Java 8 APIs, so a child JVM loads it
    without test support."
@@ -172,6 +173,13 @@
 (def policy-property
   "Name of the system property that sets the fallback policy."
   "value-type.fallback")
+
+(defn invalid-policy-message
+  "Return the message of the IllegalArgumentException of the invalid
+   policy-property value policy."
+  [policy]
+  (str "Invalid value-type.fallback: " (pr-str policy)
+       "; expected silent, warn or error"))
 
 (defn runtime-facts
   "Return the runtime facts of this JVM after the requires of require-order:

@@ -339,12 +339,17 @@
 
   Uses value classes on a supported JEP 401 JDK with `--enable-preview`.
   Otherwise uses identity storage with generated checks for enabled fields.
-  Representation policy is independent of field enforcement. Set JVM property
-  `value-type.fallback` before loading: silent (default), warn (once per
+  Representation policy is independent of field enforcement. JVM property
+  `value-type.fallback` sets the policy: silent (default), warn (once per
   library runtime), or error (reject with Java Error). Compiler operations
-  wrap that Error in CompilerException. Configuration is read and validated
-  once; invalid values fail and later changes are unsupported. Requiring
-  alone does not warn. Concurrent types and namespaces share warning state.
+  wrap that Error in CompilerException. The policy applies if it is set
+  before the first read: the first fallback decision or the first
+  `value-type.capability/report` call. A namespace that evaluates a fallback
+  definition at top level makes the first read when it loads, so prefer the
+  JVM option `-Dvalue-type.fallback=...`. An invalid value fails at the first
+  read; changes after the first read have no effect. Requiring alone does not
+  read the policy or warn. Concurrent types and namespaces share warning
+  state.
 
   Selecting fallback during macroexpansion applies policy even if the
   expansion is discarded. Returned expansions enforce receiving policy at

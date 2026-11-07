@@ -107,9 +107,9 @@ only when they have the same values for these axes:
 2. Fallback policy.
 3. Producer or consumer role.
 4. AOT artifact (a source-free consumer loads exactly one artifact).
-5. First-event evidence: first capability detection, require order, warning
-   scope across runtimes, or the first load of an AOT namespace. Such a cell
-   has its own child.
+5. First-event evidence: first capability detection, the first policy read,
+   require order, warning scope across runtimes, or the first load of an AOT
+   namespace. Such a cell has its own child.
 
 In a `warn` child, only the first fallback cell writes the warning line. Each
 grouped `warn` fallback cell has a matching `error` fallback cell in the same
@@ -433,8 +433,9 @@ JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
 This namespace checks all six startup configurations, all three fallback
 policies and three require orders (rotations of `value-type.capability`,
 `value-type.core` and `value-type.array`): 54 children. Each report must
-equal the expected row, agree with definition, `:non-nil` field and array
-outcomes, and stay equal on a second call.
+equal the expected row plus `:fallback-policy` of the cell policy, agree
+with definition, `:non-nil` field and array outcomes, and stay equal on a
+second call.
 
 Run the controlled value-class check separately:
 
@@ -449,6 +450,29 @@ It checks that the report (`:value-class`, `:native-non-nil-field` and
 result, and that `:array-inspection` stays available. The "Verified fallback
 matrix" commands include the invalid-policy report check. See the
 [capability report guide](../usage.md#capability-report) for the public
+contract.
+
+## Verify the fallback policy
+
+Use the explicit executable paths from "Verify array allocation". Run the
+first-read checks in disposable JVMs:
+
+```sh
+JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:cross-jvm-test \
+  --namespace value-type.fallback-policy-test
+```
+
+This namespace runs 11 children:
+
+- A policy set after load applies: Java 8 and preview off, `error` and
+  `warn` (4).
+- A property change after a `report` call has no effect: Java 8 and preview
+  off (2).
+- An invalid launch policy throws at the first read: `report` on Java 8,
+  preview off and preview on (3), or a definition on Java 8 and preview off
+  (2). Each later read throws the same exception.
+
+See the [fallback policy guide](../usage.md#fallback-policy) for the public
 contract.
 
 ## Build a local JAR
