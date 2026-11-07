@@ -112,6 +112,10 @@ binding; a top-level `let` (or vector) gives one binding to all forms.
   becomes an `Object` field). Print with `*print-meta*` true.
 - `eval` forms cannot embed an atom ("Can't embed object in code").
   Use a var.
+- A literal macro call inside `binding` expands when the enclosing form
+  compiles, before the binding is in effect. To capture output of
+  macroexpansion (for example a fallback warning on `*err*`), call `eval`
+  on the form inside the `binding` (task 024, `fallback_policy_checks`).
 - No `LOADER` binding: use a raw `Thread` (`support/on-raw-thread` in
   `value-type.test-support`). `future`, `bound-fn` and
   `binding-conveyor-fn` convey the thread bindings, also `LOADER`.
