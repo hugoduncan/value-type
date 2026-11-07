@@ -10,19 +10,40 @@ depends-on: []
 # java.lang.classfile traps
 
 Source: task `002-value-class-transform`
-(`src/value_type/impl/transform.clj` and its tests), and task
-`003-capture-loader` (strict-field verification). Verified on
+(`src/value_type/impl/transform.clj` and its tests), task
+`003-capture-loader` (strict-field verification) and task
+`023-capability-probe-hardening` (format row). Verified on
 JDK 25 and JDK `27-jep401ea3`.
 
 ## Valhalla-only constants stop the namespace from loading
 
 `ClassFile/ACC_IDENTITY` (0x20) and `ClassFile/ACC_STRICT_INIT`
 (0x800) exist only on a Valhalla JDK. A reference to them makes the
-namespace and all its tests fail to load on JDK 25. Use private
-literal vars in one namespace. Tests read them with
-`@#'ns/ACC_IDENTITY`. `ClassFile/latestMajorVersion` and
+namespace and all its tests fail to load on JDK 25. Write them as
+literals in the format row. `ClassFile/latestMajorVersion` and
 `ClassFile/PREVIEW_MINOR_VERSION` exist from JDK 24; they are safe
 within the optional transformer, not in the baseline-loadable path.
+
+## One owner of the format rules: `impl.jvm-format/row`
+
+Task `023-capability-probe-hardening` (D15) moved the flag values, the
+version rule and the value-constructor order into one map,
+`(value-type.impl.jvm-format/row)`: `:major`, `:minor`,
+`:identity-class-flag`, `:strict-field-flag`, `:constructor-order`.
+The transform and the probe builder (`impl.probe-builder`) read it.
+No other namespace holds these constants; the old private vars
+(`transform/ACC_IDENTITY`, `ACC_STRICT_INIT`) are gone. Tests read row
+keys, not private vars.
+
+- A format change edits the row only. The first non-default row adds a
+  lookup and merges over the default row; callers of `row` stay.
+- `:constructor-order` does not select emission. Each emitter calls
+  `jvm-format/require-constructor-order!` and fails on another value.
+- `impl.jvm-format` imports `ClassFile`, so only namespaces behind the
+  capability boundary require it. Baseline probes reach the builder
+  with `requiring-resolve` after the API checks.
+- Check for stray constants with `grep -niE` and a word boundary
+  (`0x20\b`): `0x200`, `0x2000` are other flags.
 
 Task `009-controlled-deftype-fallback` verified loading on Java 8, which
 lacks ClassFile entirely. Keep all eager ClassFile dependencies behind
