@@ -123,6 +123,13 @@ binding; a top-level `let` (or vector) gives one binding to all forms.
   - `Compiler.eval` always binds `LOADER`. A REPL run thus has a
     binding on the test thread, and `-m scry.cli` may not. A wrong
     thread recipe can pass on the CLI and fail at the REPL. Run both.
+- To inspect the expansion of a receiving macro
+  (`value-field-deftype*`, `identity-field-deftype*`) with
+  `macroexpand-1`, bind `Compiler/LOADER` to a new `DynamicClassLoader`
+  and `*ns*` to the test namespace (`with-bindings`). The macro installs
+  capture at expansion; without a bound `LOADER` it throws
+  `:not-installed`, and the result depends on the runner thread (task
+  022, `receiving-closed-option-removal-test`).
 
 AOT without a new JVM or classpath setup:
 
