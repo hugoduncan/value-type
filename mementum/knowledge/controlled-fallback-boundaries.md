@@ -3,7 +3,7 @@ title: Keep capability detection and fallback policy separate across compiler ph
 status: active
 category: architecture
 tags: [fallback, capability, macroexpansion, aot, testing, valhalla, non-nil-fields]
-related: [mementum/knowledge/java-lang-classfile.md, mementum/knowledge/testing-clojure-generated-classes.md, mementum/knowledge/testing-library-artifacts.md, ramora/non-nil-field-design.md]
+related: [mementum/knowledge/java-lang-classfile.md, mementum/memories/reflection-warning-check-new-jvm.md, mementum/knowledge/testing-clojure-generated-classes.md, mementum/knowledge/testing-library-artifacts.md, ramora/non-nil-field-design.md]
 depends-on: []
 ---
 
@@ -43,7 +43,32 @@ Only these narrowly scoped failures establish absence:
 
 Do not catch general linkage errors, parse exception messages, or retry a
 failed user-class definition as an identity class. Missing later API members,
-verification failures, bad probe results and transform defects remain errors.
+verification failures and transform defects remain errors.
+
+## The probe checks value semantics, not only the predicate
+
+Task `023-capability-probe-hardening` (D12, D16, D17) found that a value
+predicate and one field read pass on a JVM with wrong `==`, field values or
+arrays; then every definition is silently wrong. The probe now:
+
+- builds its class with `java.lang.classfile` (`impl.probe-builder`), not
+  `clojure.asm`. A baseline namespace that imports `clojure.asm` stops the
+  public namespaces loading on every JVM if Clojure changes it;
+- checks `long`-field instances 42, 43, 42: own values, 42/43 not
+  `identical?`, the two 42s `identical?`, none `identical?` to nil;
+- round-trips a length-2 null-restricted array in allocation discovery.
+
+A completed check with a false result is a classified absence
+(`:probe-not-value-class`, `:failed-self-check`, and
+`:native-restriction-ignored` when a `NullRestricted` field accepts nil).
+An exception in a check still propagates. Run the check outside the `try`
+that maps the API-lookup exceptions to absence; inside it, a check exception
+can become an absence. Dependent probes inherit the value-class result
+unchanged. Fixed absence texts go in `:detail`.
+
+Keep newer-JDK API calls in namespaces behind the boundary. In a baseline
+namespace, `Class.descriptorString` (Java 12+) reflects on Java 8, and the
+reflection-warning check failed 21 fallback and 29 cross-JVM tests.
 
 ## An expansion fixes representation, not permission
 
