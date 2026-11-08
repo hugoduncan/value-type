@@ -12,8 +12,11 @@ Pattern (task 017 test reviews 4–12, about 30 programs changed):
 - Return the inspected facts as EDN: source absence, `value?`, field type,
   annotations, stored values and outcomes per construction entry point.
 - In the parent, compare the complete result with one expected map.
-- Report a failure as root class and message. Comparing the class alone
-  lets any plain `java.lang.Error` pass a policy-rejection check.
+- Report root class, message and relevant error data. Also retain the outer
+  class or cause chain when the contract names an exception wrapper. Root-only
+  results hide phase errors: AOT initialization wraps guard `ExceptionInfo`
+  in `ExceptionInInitializerError`; a compiled function exposes it directly
+  (task 026, `d87d25d9`).
 
 `with-redefs` of a Var compiles only after its namespace has loaded. Require
 that namespace in a preceding top-level form of the child program.
