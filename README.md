@@ -159,7 +159,10 @@ handling.
   value equality. Code that permits fallback must work with both forms.
 - Ahead-of-time compilation fixes representation and field enforcement.
   Value-class output requires a compatible preview-enabled JVM; it does not
-  convert to fallback. Identity output retains its constructor checks.
+  convert to fallback. Its guard rejects evaluation when value-class capability
+  is unavailable, with `:value-capability-unavailable`, at namespace
+  initialization or function invocation. Identity output retains its constructor
+  checks. See [AOT limits](doc/usage.md#aot-limits).
 
 The property `value-type.fallback` controls identity fallback, including
 definitions with non-nil fields. Missing native field enforcement alone does not
@@ -184,8 +187,10 @@ A `System/setProperty` call, for example in `-main`, applies only if no policy
 read occurred before it. `report` shows the policy in effect in
 `:fallback-policy`.
 
-Set `value-type.value-classes=off` to go back to identity semantics with no
-code change, for example after a JVM value-class defect.
+Set `value-type.value-classes=off` to select identity fallback for new
+definitions, subject to fallback policy, for example after a JVM value-class
+defect. Saved value output cannot convert to identity classes: its guard
+rejects evaluation with `:value-capability-unavailable` and reason `:disabled`.
 
 See the [usage guide](doc/usage.md) for field comparison rules, fallback
 policy, value-class switch, AOT limits and error handling.

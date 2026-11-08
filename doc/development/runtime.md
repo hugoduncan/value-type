@@ -503,9 +503,18 @@ This namespace runs these children:
 - The fixed read: a property change after a `report` call has no effect on
   `:export-off` (1).
 - AOT children: saved value output from an EA3 producer, run source-free on
-  Valhalla. Native-field output under `off` throws `:disabled` under each
-  policy (3), and under `OFF` throws the invalid-value exception (1). Other
-  value output keeps value classes under `off` (1).
+  Valhalla:
+  - Under `off`, output with native fields and output without native fields
+    throw `:value-capability-unavailable` with reason `:disabled` at namespace
+    initialization under each policy (3 per output).
+  - Native-field output under `OFF` throws the invalid-value exception (1).
+  - Saved function output loads under `off`, but each invocation throws
+    `:value-capability-unavailable` with reason `:disabled` under each policy
+    (3).
+  - A controlled failed self-check rejects both saved outputs, with and
+    without native fields, at namespace initialization under each policy
+    (3 per output). The error is `:value-capability-unavailable` with reason
+    `:failed-self-check`.
 
 See the [value-class switch guide](../usage.md#value-class-switch) for the
 public contract.

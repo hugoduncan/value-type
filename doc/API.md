@@ -229,11 +229,14 @@ As `deftype` (see its docstring for syntax, options, specs, the
   reference constructor parameters remain Object, with unchanged order and
   arity. Nested values may contain fields that permit nil. Receiving checks
   also apply to transferred expansions. Both `macroexpand` forms retain
-  receiver-local loader installation for enabled fields, supporting separate
-  `eval`, metadata-preserving source loading and function analysis then
-  invocation. Ordinary value definitions do not support separate
-  expansion/evaluation this way. Value AOT artifacts require the same JDK
-  feature release with preview enabled and have no identity fallback. Identity
+  receiver-local loader installation for every value definition and for
+  identity definitions with enabled fields, supporting separate `eval`,
+  metadata-preserving source loading and function analysis then
+  invocation. Value AOT artifacts require the same JDK feature release with
+  preview enabled and have no identity fallback; each saved value form
+  throws `:value-capability-unavailable` where it is evaluated when the
+  value-class capability is unavailable (for example
+  `value-type.value-classes=off`). Identity
   artifacts retain generated checks on baseline and capable JVMs.
 
   Restriction: no mutable fields (`:volatile-mutable` or
@@ -259,17 +262,23 @@ As `deftype` (see its docstring for syntax, options, specs, the
   - `:invalid-field` (macroexpansion; data `:field`, `:reason`): an invalid
     field declaration.
   - `:mutable-field` (macroexpansion; data `:fields`): a mutable field.
-  - `:not-installed` (run time): an ordinary definition macroexpanded with no
-    compilation loader binding, then evaluated.
-  - `:not-installed` (macroexpansion): a definition with enabled fields fully
-    expanded with no compilation loader binding (for example
-    `clojure.walk/macroexpand-all`).
-  - `:not-value-class` (run time): the class is not a value class.
-  - `:value-capability-unavailable` (receiving boundary; data `:reason`): a
-    transferred value expansion on a JVM that cannot define value classes.
-  - `:field-capability-unavailable` (receiving boundary; data `:reason`): a
-    transferred expansion with fixed `:native` modes on a JVM without native
-    field support.
+  - `:not-installed` (macroexpansion): a value definition, or an identity
+    definition with enabled fields, fully expanded with no compilation
+    loader binding (for example `clojure.walk/macroexpand-all`). One-step
+    `macroexpand` does not throw.
+  - `:not-value-class` (run time): the class is not a value class, for
+    example a [`defvaluetype`](#value-type.core/defvaluetype) nested in a method body.
+  - `:value-capability-unavailable` (receiving boundary or evaluation; data
+    `:reason`): value output on a JVM where the value-class capability is
+    unavailable: a transferred value expansion at analysis, saved AOT
+    output where the form is evaluated.
+  - `:field-capability-unavailable` (receiving boundary or evaluation; data
+    `:reason`): output with fixed `:native` modes on a JVM with value-class
+    capability but without native field support. Transferred expansions fail
+    at analysis; saved AOT output fails at namespace initialization or function
+    invocation. There is no fallback or enforcement reselection. The value-class
+    guard runs first and throws `:value-capability-unavailable` if value-class
+    capability is unavailable.
   - `:invalid-field-enforcement` (receiving boundary; data `:modes`): invalid
     transferred enforcement modes, or identity fields with non-generated modes.
   - `:invalid-field` (loader; data `:field`, `:reason :field-class-mismatch`):
@@ -279,7 +288,7 @@ As `deftype` (see its docstring for syntax, options, specs, the
     supported `deftype` shape.
   - `:unsupported-shape` (loader; identity output): the class or constructor is
     not the supported `deftype` shape for generated checks.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L334-L450">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L284-L408">Source</a></sub></p>
 
 ## <a name="value-type.core/defvaluetype*">`defvaluetype*`</a>
 ``` clojure
@@ -354,14 +363,12 @@ As `deftype*`, with the same arguments. Evaluate to the defined Class.
   - `:unsupported-shape`: a delegating constructor writes an enabled field,
     or a constructor both creates and calls the target.
   Other policy, capability, receiving, loader and run time errors are as for
-  [`defvaluetype`](#value-type.core/defvaluetype). A value expansion with neither enabled fields nor the
-  closed shape evaluated apart from its macroexpansion fails with
-  `:not-installed` or `:not-value-class`; it never selects fallback. With
-  enabled fields or the closed shape, separate `eval` of the expansion
-  works, and only a full expansion outside compilation (for example
-  `clojure.walk/macroexpand-all`) gives `:not-installed`; see doc/usage.md.
+  [`defvaluetype`](#value-type.core/defvaluetype). A value expansion is a receiving form; it
+  never selects fallback. Separate `eval` of the expansion works, and only a full
+  expansion outside compilation (for example `clojure.walk/macroexpand-all`)
+  gives `:not-installed`; see doc/usage.md.
 
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
   Valhalla 27-jep401ea3+1-1 only. See doc/usage.md.
-<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L452-L545">Source</a></sub></p>
+<p><sub><a href="https://github.com/hugoduncan/value-type/blob/master/src/value_type/core.clj#L410-L500">Source</a></sub></p>

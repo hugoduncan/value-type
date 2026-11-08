@@ -1,7 +1,9 @@
 (ns value-type.value-class-switch-test
   "The value-type.value-classes switch: off gives :disabled on every JVM,
    auto changes nothing, and an invalid value throws at the first
-   capability read."
+   capability read. Saved (AOT) value output checks value-class capability
+   where each value form is evaluated: at namespace initialization for
+   top-level forms, at each invocation for forms in functions."
   (:require [clojure.java.io :as io]
             [clojure.test :refer [deftest testing]]
             [value-type.aot-fixture :as fixture]
@@ -10,7 +12,6 @@
             [value-type.capability-rows :as rows]
             [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
-            [value-type.consumer-aot-checks :as checks]
             [value-type.field-aot-test :as field-aot]
             [value-type.jvm-config :as config]
             [value-type.public-field-aot-test :as public-field-aot]
@@ -139,36 +140,52 @@
             :message (registry/invalid-policy-message "unknown")
             :chain ["java.lang.IllegalArgumentException"]})]))
 
-(def ^:private restricted-load
-  (registry/check-form 'value-type.value-class-switch-checks/aot-load
-                       ''restricted.aot-fixture "restricted/aot_fixture.clj"))
+(defn- aot-run
+  "Compile ns-sym from source as value output (no switch property), then
+   run the check function check (a symbol of value-class-switch-checks)
+   with ns-sym, source-path and args source-free on receiver under
+   policies. expected is the map of described results, keyed."
+  [ns-sym source source-path receiver policies check args expected]
+  (let [configuration (config/configuration)]
+    (fixture/source-free-consumers
+     ns-sym source
+     (config/value-producer configuration)
+     [receiver] policies
+     (apply registry/check-form check (list 'quote ns-sym) source-path args)
+     (constantly (harness/described (harness/keyed expected))))))
+
+(defn- aot-consumers
+  "aot-load of ns-sym from source on Valhalla with the switch value under
+   policies. expected is the described :load outcome."
+  [ns-sym source source-path value policies expected]
+  (aot-run ns-sym source source-path
+           (switched (:valhalla (config/configuration)) value) policies
+           'value-type.value-class-switch-checks/aot-load []
+           {:source-absent? (harness/fixed true) :load expected}))
 
 (defn- restricted-consumers
-  "Compile restricted.aot-fixture as value output (no switch property), then
-   run restricted-load source-free on Valhalla with the switch value under
-   policies. expected is the described :load outcome."
+  "aot-consumers of restricted.aot-fixture (native-field value output)."
   [value policies expected]
-  (let [{:keys [valhalla] :as configuration} (config/configuration)]
-    (fixture/source-free-consumers
-     'restricted.aot-fixture field-aot/restricted-source
-     (config/value-producer configuration)
-     [(switched valhalla value)] policies
-     restricted-load
-     (constantly (harness/described
-                  (harness/keyed {:source-absent? (harness/fixed true)
-                                  :load expected}))))))
+  (aot-consumers 'restricted.aot-fixture field-aot/restricted-source
+                 "restricted/aot_fixture.clj" value policies expected))
+
+(defn- disabled-failure
+  "Keyed :value-capability-unavailable :disabled failure with outer-class."
+  [outer-class]
+  (harness/keyed
+   {:outer-class (harness/fixed outer-class)
+    :class (harness/fixed "clojure.lang.ExceptionInfo")
+    :message (harness/contains [disabled-detail])
+    :data (harness/fixed {:value-type/error :value-capability-unavailable
+                          :reason :disabled})}))
 
 (deftest aot-native-field-off-test
-  ;; Contract: value output with native non-nil fields checks the field
-  ;; capability at initialization, so off throws :disabled.
+  ;; Contract: the value-class guard runs first at initialization, so
+  ;; native-field value output under off throws
+  ;; :value-capability-unavailable :disabled.
   (testing "off rejects saved native-field value output under every policy"
-    (restricted-consumers
-     "off" config/policies
-     (harness/keyed
-      {:class (harness/fixed "clojure.lang.ExceptionInfo")
-       :message (harness/contains [disabled-detail])
-       :data (harness/fixed {:value-type/error :field-capability-unavailable
-                             :reason :disabled})}))))
+    (restricted-consumers "off" config/policies
+                          (disabled-failure "java.lang.ExceptionInInitializerError"))))
 
 (deftest aot-native-field-invalid-test
   ;; Contract: initialization of native-field value output reads the switch.
@@ -176,18 +193,56 @@
     (restricted-consumers
      "OFF" ["error"]
      (harness/keyed
-      {:class (harness/fixed "java.lang.IllegalArgumentException")
+      {:outer-class (harness/fixed "java.lang.ExceptionInInitializerError")
+       :class (harness/fixed "java.lang.IllegalArgumentException")
        :message (harness/fixed (invalid-message "OFF"))
        :data (harness/fixed {})}))))
 
 (deftest aot-value-output-off-test
-  ;; Interim limit until task 026: other value output does not read the
-  ;; switch, so off keeps value classes.
-  (testing "off keeps saved value output without native fields"
-    (let [{:keys [valhalla] :as configuration} (config/configuration)]
-      (fixture/source-free-consumers
-       'checked.aot-fixture public-field-aot/identity-source
-       (config/value-producer configuration)
-       [(switched valhalla "off")] ["error"]
-       (checks/holder-consumer-form checks/string-holder)
-       (constantly (checks/string-holder-result true))))))
+  ;; Contract: the value-class guard is the first form of every value
+  ;; expansion, so a top-level form under off throws at initialization.
+  (testing "off rejects saved value output without native fields"
+    (aot-consumers 'checked.aot-fixture public-field-aot/identity-source
+                   "checked/aot_fixture.clj" "off" config/policies
+                   (disabled-failure "java.lang.ExceptionInInitializerError"))))
+
+(deftest aot-value-output-function-off-test
+  ;; Contract: the guard runs where the form is evaluated, so a saved
+  ;; function that defines a value class loads under off and throws
+  ;; :value-capability-unavailable :disabled at each invocation.
+  (testing "off loads saved function output and rejects each invocation"
+    (aot-run 'checked.aot-fixture public-field-aot/function-source
+             "checked/aot_fixture.clj"
+             (switched (:valhalla (config/configuration)) "off")
+             config/policies
+             'value-type.value-class-switch-checks/aot-install []
+             {:source-absent? (harness/fixed true)
+              :load (harness/fixed :accepted)
+              :invocations (harness/entries
+                            (registry/each-attempt
+                             (disabled-failure "clojure.lang.ExceptionInfo")))})))
+
+(def ^:private self-check-detail
+  "Value class self-check failed in test.")
+
+(deftest aot-failed-self-check-test
+  ;; Contract: a failed self-check on a capable JVM rejects saved value
+  ;; output at initialization with :failed-self-check.
+  (testing "a failed self-check rejects saved value output"
+    (doseq [[ns-sym source source-path]
+            [['checked.aot-fixture public-field-aot/identity-source
+              "checked/aot_fixture.clj"]
+             ['restricted.aot-fixture field-aot/restricted-source
+              "restricted/aot_fixture.clj"]]]
+      (aot-run ns-sym source source-path
+               (:valhalla (config/configuration)) config/policies
+               'value-type.value-class-switch-checks/aot-load-failed-self-check
+               [self-check-detail]
+               {:source-absent? (harness/fixed true)
+                :load (harness/keyed
+                       {:outer-class (harness/fixed "java.lang.ExceptionInInitializerError")
+                        :class (harness/fixed "clojure.lang.ExceptionInfo")
+                        :message (harness/contains [self-check-detail])
+                        :data (harness/fixed
+                               {:value-type/error :value-capability-unavailable
+                                :reason :failed-self-check})})}))))

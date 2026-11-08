@@ -117,17 +117,17 @@
        (capability-unavailable
         (registry/class-name ns-name 'Transferred))))))
 
-(deftest deftype*-closed-value-transfer-test
-  ;; A closed form without enabled fields has a value receiving expansion:
-  ;; a capable receiver gives a value class with no hash fields that rejects
-  ;; a non-nil __meta (D10 check); a receiver without value capability
-  ;; rejects it.
+(deftest deftype*-ordinary-value-transfer-test
+  ;; A form without enabled fields has a value receiving expansion (D20): a
+  ;; capable receiver installs capture at analysis and gives a value class
+  ;; with no hash fields (closed cells also reject a non-nil __meta, D10
+  ;; check); a receiver without value capability rejects it at analysis.
   (transfer-cells
-   [:closed] config/value-producer false
+   checks/shapes config/value-producer false
    'value-type.deftype-star-transfer-checks/consume-data
-   (fn [{:keys [available?]} _ _ ns-name]
+   (fn [{:keys [available?]} _ shape ns-name]
      (if available?
        (registry/each-attempt
         {:named? true :value? true :new-class? true :hash-fields 0
-         :meta-rejected? true})
+         :meta-rejected? (meta-rejected? shape)})
        (capability-unavailable (registry/class-name ns-name 'Transferred))))))

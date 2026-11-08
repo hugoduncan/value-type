@@ -43,3 +43,23 @@
   (testing "a constructor exception propagates as its cause"
     (is (thrown-with-msg? UnsupportedOperationException #"probe constructor failed"
                           ((capability/probe-instance-fn support/throwing-class) 42)))))
+
+(deftest require-value-capability-test
+  (testing "an available capability returns nil"
+    (with-redefs [capability/capability (constantly {:available? true})]
+      (is (nil? (capability/require-value-capability! "a.B")))))
+  (testing "an unavailable capability throws with key, class name and reason"
+    (with-redefs [capability/capability
+                  (constantly {:available? false :reason :failed-self-check
+                               :detail "probe detail"})]
+      (let [e (try (capability/require-value-capability! "a.B")
+                   (catch clojure.lang.ExceptionInfo e e))]
+        (is (= {:value-type/error :value-capability-unavailable
+                :class-name "a.B" :reason :failed-self-check}
+               (ex-data e)))
+        (is (= (str "Cannot define value class a.B: fixed value "
+                    "representation is unavailable. "
+                    (if (capability/no-value-classes?)
+                      capability/no-value-classes-message
+                      "probe detail"))
+               (ex-message e)))))))

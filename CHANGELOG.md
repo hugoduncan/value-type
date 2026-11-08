@@ -28,5 +28,16 @@
   disables value classes with no code change: `report` shows `:disabled`
   for `:value-class`, `:native-non-nil-field` and `:array-allocation`, and
   definitions use fallback. An invalid value fails at the first capability
-  read. Saved AOT value output without native non-nil fields does not yet
-  read the property.
+  read.
+- Every value expansion is a receiving form and starts with a value-class
+  guard. A replayed or transferred ordinary value expansion
+  (`(eval (macroexpand form))`) installs at analysis and defines a value
+  class; on a JVM without value classes it throws
+  `:value-capability-unavailable`. Saved AOT value output throws
+  `:value-capability-unavailable` with the reason (for example `:disabled`
+  under `value-type.value-classes=off`) where the form is evaluated, also
+  for native-field output (was `:field-capability-unavailable`).
+  `:not-installed` comes only from the receiving macro at macroexpansion,
+  with a class-capture message. `check-value-class` takes one argument and
+  throws only `:not-value-class`. All compiler code use moves to the
+  internal compiler boundary `value-type.impl.compiler`.

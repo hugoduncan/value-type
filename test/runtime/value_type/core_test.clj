@@ -2,8 +2,11 @@
   "Tests for `value-type.core`: `defvaluetype` and `check-value-class`."
   (:require
    [clojure.test :refer [deftest is testing]]
+   [clojure.string :as str]
    [clojure.walk :as walk]
    [value-type.core :as vt :refer [defvaluetype]]
+   [value-type.impl.capability :as capability]
+   [value-type.impl.runtime :as runtime]
    [value-type.test-support :as support :refer [message-names? value? with-temp-dir]])
   (:import
    (clojure.lang Compiler Compiler$CompilerException ExceptionInfo IDeref RT)))
@@ -42,19 +45,22 @@
 ;;; check-value-class
 
 (deftest check-value-class-test
-  (testing "an identity class"
-    (is (= {:value-type/error :not-value-class
-            :class-name       (.getName IdentityType)}
-           (error-data #(vt/check-value-class IdentityType true)))
-        "installed true gives :not-value-class")
-    (is (= {:value-type/error :not-installed
-            :class-name       (.getName IdentityType)}
-           (error-data #(vt/check-value-class IdentityType false)))
-        "installed false gives :not-installed"))
+  (testing "an identity class gives :not-value-class"
+    (let [e (error-info #(vt/check-value-class IdentityType))]
+      (is (= {:value-type/error :not-value-class
+              :class-name       (.getName IdentityType)}
+             (ex-data e)))
+      (is (not (str/includes? (ex-message e) "macroexpand"))
+          "no replay cause")
+      (when-not (capability/no-value-classes?)
+        (is (message-names? e [(.getName IdentityType)
+                               "a defvaluetype nested in a method body"
+                               "move the inner defvaluetype form to the top level"])
+            (ex-message e)))))
   (testing "a value class gives nil"
     (let [cls (eval-here `(support/vt-type ~(gensym "LoaderVT") [~'a]))]
       (is (value? cls))
-      (is (nil? (vt/check-value-class cls true))))))
+      (is (nil? (vt/check-value-class cls))))))
 
 ;;; defvaluetype basics
 
@@ -213,17 +219,25 @@
                #(eval-here `(defvaluetype ~(gensym "Reserved") [~'__hash])))]
     (is (instance? AssertionError cause) (str "cause: " cause))))
 
+(def ^:private class-capture "class capture requires a compiler loader")
+
 (deftest not-installed-test
-  (let [n         (gensym "NoInstall")
-        form      `(defvaluetype ~n [~'a])
-        expansion (support/on-raw-thread
-                   #(binding [*ns* test-ns] (macroexpand form)))]
-    (is (seq? expansion) (str "expansion: " expansion))
-    (let [e (error-info #(eval-here expansion))]
-      (is (= {:value-type/error :not-installed
-              :class-name       (class-name n)}
-             (ex-data e)))
-      (is (message-names? e [(class-name n) direct-fix]) (ex-message e)))))
+  (let [n    (gensym "NoInstall")
+        form `(defvaluetype ~n [~'a])]
+    (testing "one-step macroexpand stops at the receiving macro"
+      (let [expansion (support/on-raw-thread
+                       #(binding [*ns* test-ns] (macroexpand form)))]
+        (is (seq? expansion) (str "expansion: " expansion))))
+    (testing "full expansion with no compiler loader gives :not-installed"
+      (let [t (support/on-raw-thread
+               #(binding [*ns* test-ns] (walk/macroexpand-all form)))]
+        (is (instance? Compiler$CompilerException t) (str "result: " t))
+        (is (= {:value-type/error :not-installed
+                :class-name       (class-name n)}
+               (ex-data (ex-cause t))))
+        (is (message-names? (ex-cause t)
+                            [(class-name n) class-capture direct-fix])
+            (ex-message (ex-cause t)))))))
 
 (deftest not-installed-enabled-field-test
   ;; Full expansion with no compiler loader binding reaches the receiving
@@ -237,17 +251,35 @@
     (is (= {:value-type/error :not-installed
             :class-name       (class-name n)}
            (ex-data (ex-cause t))))
-    (is (message-names? (ex-cause t) [(class-name n) direct-fix])
+    (is (message-names? (ex-cause t)
+                        [(class-name n) class-capture direct-fix])
         (ex-message (ex-cause t)))))
 
-(deftest not-value-class-test
-  (let [n (gensym "MacroExpanded")
-        e (error-info
-           #(eval-here `(eval (macroexpand '(defvaluetype ~n [~'a])))))]
-    (is (= {:value-type/error :not-value-class
+(deftest not-installed-identity-receiving-test
+  ;; Identity receiving output gives the same :not-installed message as
+  ;; value receiving output. Fixed fallback is permitted (silent policy).
+  (let [n     (gensym "NoInstallIdentity")
+        field (with-meta 'a {:tag 'String :non-nil true})
+        form  `(vt/identity-field-deftype ~(class-name n) [:generated] ~n
+                                          [~field])
+        t     (with-redefs [runtime/fallback-policy (constantly :silent)]
+                (support/on-raw-thread
+                 #(binding [*ns* test-ns] (walk/macroexpand-all form))))]
+    (is (instance? Compiler$CompilerException t) (str "result: " t))
+    (is (= {:value-type/error :not-installed
             :class-name       (class-name n)}
-           (ex-data e)))
-    (is (message-names? e [(class-name n) direct-fix]) (ex-message e))))
+           (ex-data (ex-cause t))))
+    (is (message-names? (ex-cause t)
+                        [(class-name n) class-capture direct-fix])
+        (ex-message (ex-cause t)))))
+
+(deftest replayed-expansion-test
+  ;; An ordinary value expansion installs capture at analysis, so a
+  ;; separate eval of its macroexpansion defines a value class.
+  (let [n   (gensym "MacroExpanded")
+        cls (eval-here `(eval (macroexpand '(defvaluetype ~n [~'a]))))]
+    (is (value? cls))
+    (is (= (class-name n) (.getName ^Class cls)))))
 
 ;;; AOT
 

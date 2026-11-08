@@ -2,11 +2,12 @@
   "Change the bytes of a Clojure `deftype` class into the bytes of a
   JEP 401 value class (`->value-class`), and the bytes of a record-shaped
   `deftype*` class into the bytes of a value class without the hash
-  fields (`->record-value-class`). Uses only JDK classes:
+  fields (`->record-value-class`). Uses only these JDK classes:
   `java.lang.classfile`, `java.lang.constant` and `java.util.function`.
-  No Clojure compiler classes."
+  Reads the shape data from `impl.compiler`; has no compiler code use."
   (:require
    [value-type.impl.class-file :as class-file]
+   [value-type.impl.compiler :as compiler]
    [value-type.impl.field-access :as field-access]
    [value-type.impl.field-storage :as field-storage]
    [value-type.impl.fields :as fields]
@@ -99,7 +100,8 @@
               (= descriptor (.stringValue (.type i)))))))
 
 (defn- object-init? [e]
-  (invoke-init? e "java/lang/Object" "()V"))
+  (let [{:keys [super-owner super-descriptor]} compiler/deftype-constructor]
+    (invoke-init? e super-owner super-descriptor)))
 
 (defn- putfield? [e ^String owner ^FieldModel f]
   (and (instance? FieldInstruction e)
@@ -171,7 +173,7 @@
         ctors (filterv constructor? (.methods cm))
         ^MethodModel ctor (first ctors)]
     (cond
-      (not= 1 (count ctors))
+      (not= (:count compiler/deftype-constructor) (count ctors))
       "count of constructors"
 
       (not= (parameter-descriptors ctor) (field-descriptors fields))
@@ -350,9 +352,9 @@
 
 (def ^:private hash-field-names
   "Hash fields that the record path removes, in report order: the
-  `fields/record-hidden-fields` entries with tag `int`."
-  (into [] (keep (fn [[n tag]] (when (= 'int tag) n)))
-        fields/record-hidden-fields))
+  `compiler/record-hidden-fields` entries with tag `int`."
+  (into [] (keep (fn [[n tag _]] (when (= 'int tag) n)))
+        compiler/record-hidden-fields))
 
 (def ^:private hash-field?
   "True for a name in `hash-field-names`."
@@ -360,7 +362,7 @@
 
 (def ^:private closed-field-names
   "Fields that the closed record path removes, in report order (D4)."
-  (mapv first fields/record-hidden-fields))
+  (mapv first compiler/record-hidden-fields))
 
 (defn removed-field-names
   "Return the hidden fields that the record path removes for `shape`, in
@@ -376,10 +378,11 @@
 
 (defn- delegating-code
   "Return a predicate for each position of a compiler-generated record
-  delegating constructor: load `this` and the declared arguments, the
-  optional meta and extmap arguments (else `null`), two `0` hashes, then
-  call the main constructor."
-  [owner main-descriptor declared meta-extmap?]
+  delegating constructor with `hidden-parameters` hidden-field
+  parameters: load `this` and the declared arguments, load each hidden
+  field with a parameter, push the delegating argument of the others,
+  then call the main constructor."
+  [owner main-descriptor declared hidden-parameters]
   (let [slots (argument-slots declared)
         next-slot (last slots)]
     (concat
@@ -387,12 +390,14 @@
      (map (fn [^FieldModel f slot]
             #(load? % (.asLoadable (field-type-kind f)) slot))
           declared slots)
-     (if meta-extmap?
-       [#(load? % TypeKind/REFERENCE next-slot)
-        #(load? % TypeKind/REFERENCE (inc next-slot))]
-       [#(opcode? % Opcode/ACONST_NULL) #(opcode? % Opcode/ACONST_NULL)])
-     [#(opcode? % Opcode/ICONST_0) #(opcode? % Opcode/ICONST_0)
-      #(invoke-init? % owner main-descriptor)
+     (map-indexed
+      (fn [k [_ _ argument]]
+        (if (< k hidden-parameters)
+          #(load? % TypeKind/REFERENCE (+ next-slot k))
+          (let [op ({nil Opcode/ACONST_NULL 0 Opcode/ICONST_0} argument)]
+            #(opcode? % op))))
+      compiler/record-hidden-fields)
+     [#(invoke-init? % owner main-descriptor)
       void-return?])))
 
 (defn- record-constructor-difference
@@ -400,32 +405,35 @@
   `cm` are not the compiler record shape (`count of constructors`,
   `parameters`, `delegating constructor`, `super call` or `field writes`),
   or is nil; `main-descriptor` is the descriptor of the main constructor
-  (all `fields`), or nil when there is none. Fewer than four `fields`
-  give `parameters`."
+  (all `fields`), or nil when there is none. Fewer `fields` than hidden
+  fields give `parameters`."
   [^ClassModel cm fields]
-  (if (< (count fields) 4)
+  (if (< (count fields) compiler/hidden-field-count)
     ["parameters" nil]
     (let [owner (.asInternalName (.thisClass cm))
           ctors (filterv constructor? (.methods cm))
           types (field-descriptors fields)
-          declared (subvec fields 0 (- (count fields) 4))
+          declared (subvec fields 0 (- (count fields)
+                                       compiler/hidden-field-count))
           by-params (group-by parameter-descriptors ctors)
+          matches (mapv (fn [h] (by-params (subvec types 0 (+ h (count declared)))))
+                        compiler/record-constructors)
+          delegating (remove #(= compiler/hidden-field-count (key %))
+                             (zipmap compiler/record-constructors matches))
           mains (by-params types)
-          shorts (by-params (subvec types 0 (count declared)))
-          metas (by-params (subvec types 0 (+ 2 (count declared))))
           ^MethodModel main (first mains)
           main-descriptor (some-> main .methodType .stringValue)]
       [(cond
-         (not= 3 (count ctors))
+         (not= (count compiler/record-constructors) (count ctors))
          "count of constructors"
 
-         (not (= 1 (count mains) (count shorts) (count metas)))
+         (not (every? #(= 1 (count %)) matches))
          "parameters"
 
-         (or (code-difference (first shorts)
-                              (delegating-code owner main-descriptor declared false))
-             (code-difference (first metas)
-                              (delegating-code owner main-descriptor declared true)))
+         (some (fn [[h ms]]
+                 (code-difference (first ms)
+                                  (delegating-code owner main-descriptor declared h)))
+               delegating)
          "delegating constructor"
 
          :else

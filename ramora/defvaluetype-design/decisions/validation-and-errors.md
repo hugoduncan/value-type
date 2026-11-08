@@ -19,35 +19,32 @@
 
 ## D9. Runtime check of the result (failure handling)
 
-Changed by [D20](compiler-boundary.md): all value definitions use a receiving
-macro. `:not-installed` comes from receiving analysis without a `LOADER`
-binding, and `check-value-class` has no `installed` argument. Where the text
-below names the ordinary expansion or the `installed` argument, D20 governs.
+All value definitions use a receiving macro
+([D20](compiler-boundary.md)).
 
-- Choice: the value-class expansion calls the public function
+- Choice: the receiving macro throws `ex-info` `:not-installed` at
+  macroexpansion when no compiler `LOADER` is bound, for example under
+  `clojure.walk/macroexpand-all`. This applies to all value definitions and
+  to identity definitions with enabled fields or the closed shape; ordinary
+  fallback definitions do not throw it. One-step `macroexpand` of the
+  public form stops at the receiving macro and does not throw. Message:
+  "Cannot define class <name>: class capture requires a compiler loader.
+  The defvaluetype form was macroexpanded outside compilation (no
+  Compiler/LOADER binding). Fix: evaluate the defvaluetype form directly."
+- The value expansion calls the public function
   `value-type.core/check-value-class` with the fully qualified class
-  symbol and the `install!` result. It throws `ex-info` when the class
-  is not a value class:
-  - `:not-installed`: `install!` returned `false`. The form was
-    macroexpanded with no `LOADER` binding, then evaluated on the ordinary
-    path (no enabled non-nil fields). Fix:
-    evaluate the `defvaluetype` form directly.
-  - `:not-value-class`: `install!` returned `true`, but the class is
-    an identity class. Causes and fixes:
-    - An ordinary expansion was evaluated apart from its macroexpansion
-      (`(eval (macroexpand form))`). Fix: evaluate the `defvaluetype`
-      form directly.
-    - A nested `defvaluetype`. Fix: move the inner form out of the
-      method body to the top level.
-  - For ordinary definitions, unavailable capability selects fallback before loader
-    installation (D10 D12), not through this result check.
-- Expansions with enabled non-nil fields use a receiving macro (`value-field-deftype` or
-  `identity-field-deftype`), which installs a receiver-local loader during analysis. Both expansion forms support separate eval,
-  metadata-preserving source loading and function analysis then invocation.
-  Receiving checks preserve selected representation and enforcement; native absence
-  alone does not reject a generated-check definition. Result checks must apply to
-  the selected representation, not require a value class for identity fallback.
-  See the [field contract](../../non-nil-field-design.md).
+  symbol. It throws `ex-info` `:not-value-class` at run time when the class
+  is an identity class. Known cause: a nested `defvaluetype` (the capture
+  loader did not catch the class). Fix: move the inner form out of the
+  method body to the top level. A replayed expansion
+  (`(eval (macroexpand form))`) installs at analysis and is not a cause.
+- Unavailable value-class capability throws `:value-capability-unavailable`
+  from the value-class guard (D14), not from this result check: at analysis
+  in direct evaluation, at evaluation for saved output (D17, D18).
+- Receiving checks preserve selected representation and enforcement; native
+  absence alone does not reject a generated-check definition. Result checks
+  apply to the selected representation, not require a value class for
+  identity fallback. See the [field contract](../../non-nil-field-design.md).
 - For ordinary definitions, `value-type.impl.capability` checks the optional ClassFile API and
   `Class.isValue`, then defines and instantiates an isolated strict-field
   probe made by the probe builder (D16) and runs the semantic self-check
@@ -58,14 +55,8 @@ below names the ordinary expansion or the `installed` argument, D20 governs.
   caches the result (`capability`); `core` selects the representation
   before loading the optional loader. Both the detector and the value-path
   result check use the value-class predicate.
-- Ordinary definitions: throwing `:not-installed` at macroexpansion is
-  rejected. Tools call `macroexpand` with no `LOADER` binding only to show
-  the expansion; the run-time check throws instead.
-- Enabled non-nil fields: the receiving macro throws `:not-installed` at
-  macroexpansion when no compiler `LOADER` is bound, for example under
-  `clojure.walk/macroexpand-all`. One-step `macroexpand` of the public form
-  stops at the receiving macro and does not throw.
-- Define errors: the capture loader (`value-type.impl.loader`) wraps
+- Define errors: `value-type.impl.loader` (the target define it gives the
+  capture loader of the compiler boundary) wraps
   each `LinkageError` of the define (`UnsupportedClassVersionError`,
   `ClassFormatError`, `VerifyError`) in `ex-info` with
   `:value-type/error :jvm-rejected` and `:class-name`. The cause
@@ -74,8 +65,7 @@ below names the ordinary expansion or the `installed` argument, D20 governs.
   links the class (`getDeclaredMethods`) after the define, because
   `DynamicClassLoader.defineClass` does not verify. So `VerifyError`
   comes at define time.
-- Rationale: some ordinary-definition paths skip D3, for example
-  `(eval (macroexpand form))`. On the value-class path, never accept
-  an identity class. These failures do not permit fallback.
+- Rationale: a nested definition skips D3. On the value-class path, never
+  accept an identity class. These failures do not permit fallback.
 - Commitment: firm.
 

@@ -63,11 +63,11 @@ Included:
   ([D6](decisions/policy-and-non-nil.md#d6-support-non-nil-fields-as-defvaluetype-does-scope),
   D8);
 - source compilation, receiving compilation of the fallback expansion, and
-  AOT, with the existing `defvaluetype` limits. As for `defvaluetype`, a
-  value expansion without enabled non-nil fields and without the closed
-  shape, evaluated apart from its macroexpansion, fails with
-  `:not-installed` or `:not-value-class`. An expansion with enabled fields
-  or the closed shape keeps receiving analysis (non-nil D5, D10).
+  AOT, with the existing `defvaluetype` limits. Every value expansion and
+  each identity expansion with enabled fields or the closed shape is a
+  receiving macro, so a replayed expansion installs at analysis (non-nil
+  D5, D10; defvaluetype D20). Full expansion without a `LOADER` binding
+  fails with `:not-installed`.
 
 Excluded:
 

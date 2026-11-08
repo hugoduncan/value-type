@@ -3,71 +3,33 @@
   compatible macro."
   (:require
    [value-type.impl.capability :as capability]
+   [value-type.impl.compiler :as compiler]
    [value-type.impl.field-capability :as field-capability]
    [value-type.impl.fields :as fields]
    [value-type.impl.runtime :as runtime]))
 
 (set! *warn-on-reflection* true)
 
-(def ^:private no-value-classes-message
-  (str "The JVM has no value classes (Class::isValue is missing). "
-       "Use a JEP 401 JDK with --enable-preview."))
-
-(def ^:private macroexpanded-outside-compilation
-  (str "The defvaluetype form was macroexpanded outside compilation "
-       "(no Compiler/LOADER binding)"))
-
-(defn- no-value-classes?
-  "True when the JVM has no `Class::isValue`."
-  []
-  (nil? @capability/value-predicate))
-
-(defn- require-value-capability!
-  "Return nil when the JVM can define value classes. Else throw `ex-info`
-  with `:value-type/error` `:value-capability-unavailable`, `:class-name`
-  and `:reason`."
-  [class-name]
-  (let [{:keys [available? reason detail]} (capability/capability)]
-    (when-not available?
-      (throw (ex-info (str "Cannot define value class " class-name
-                           ": fixed value representation is unavailable. "
-                           (if (no-value-classes?)
-                             no-value-classes-message
-                             detail))
-                      {:value-type/error :value-capability-unavailable
-                       :class-name class-name
-                       :reason reason})))))
-
-(defn- error-message [key class-name]
+(defn- not-value-class-message [class-name]
   (str "Class " class-name " is not a value class. "
-       (if (no-value-classes?)
-         no-value-classes-message
-         (case key
-           :not-installed
-           (str macroexpanded-outside-compilation ", then evaluated. "
-                fields/direct-fix)
-           :not-value-class
-           (str "The capture loader did not catch the class. Known causes: "
-                "the expansion was evaluated apart from its macroexpansion "
-                "(for example (eval (macroexpand form))); fix: evaluate the "
-                "defvaluetype form directly. A defvaluetype nested in a "
-                "method body; fix: move the inner defvaluetype form to the "
-                "top level.")))))
+       (if (capability/no-value-classes?)
+         capability/no-value-classes-message
+         (str "The capture loader did not catch the class. Known cause: "
+              "a defvaluetype nested in a method body; fix: move the inner "
+              "defvaluetype form to the top level."))))
 
 (defn check-value-class
   "Return nil when `cls` is a value class. Else throw `ex-info` with
-  `:value-type/error` `:not-installed` when `installed` is false, or
-  `:not-value-class` when `installed` is true, and `:class-name`.
+  `:value-type/error` `:not-value-class` and `:class-name`.
 
-  The value expansions of `defvaluetype` and `defvaluetype*` call it,
-  with `installed` the result of the capture loader install at
-  macroexpansion."
-  [^Class cls installed]
+  The value expansions of `defvaluetype` and `defvaluetype*` call it at
+  run time, after the definition. The run-time check only; `:not-installed`
+  comes from the receiving macro at macroexpansion."
+  [^Class cls]
   (when-not (capability/value-class? cls)
-    (let [key        (if installed :not-value-class :not-installed)
-          class-name (.getName cls)]
-      (throw (ex-info (error-message key class-name)
-                      {:value-type/error key
+    (let [class-name (.getName cls)]
+      (throw (ex-info (not-value-class-message class-name)
+                      {:value-type/error :not-value-class
                        :class-name       class-name})))))
 
 (defn- field-symbols
@@ -104,27 +66,26 @@
                        :fields           ms})))))
 
 (defn- hidden-index
-  "Index of `field` in `fields/record-hidden-fields` when it is a symbol
+  "Index of `field` in `compiler/record-hidden-fields` when it is a symbol
   with a hidden name (namespace ignored), else nil."
   [field]
   (when (symbol? field)
-    (first (keep-indexed (fn [i [n _]] (when (= n (name field)) i))
-                         fields/record-hidden-fields))))
+    (compiler/hidden-field-position (name field))))
 
 (defn- in-place?
   "True when the hidden-name `field` at index `i` of `n` fields is the
   unqualified symbol at index n - 4 + k with its required tag."
   [n i field]
   (let [k (hidden-index field)]
-    (and (= i (+ (- n 4) k))
+    (and (= i (compiler/hidden-field-index n k))
          (nil? (namespace field))
-         (= (second (fields/record-hidden-fields k)) (:tag (meta field))))))
+         (= (second (compiler/record-hidden-fields k)) (:tag (meta field))))))
 
 (def ^:private hidden-fields-fix
   "Fix text that names the hidden fields of the record shape."
   (str "end the fields with "
-       (->> fields/record-hidden-fields
-            (map (fn [[n tag]] (str (when tag (str "^" tag " ")) n)))
+       (->> compiler/record-hidden-fields
+            (map (fn [[n tag _]] (str (when tag (str "^" tag " ")) n)))
             (interpose " ")
             (apply str))
        "."))
@@ -140,7 +101,7 @@
       :plain
       (let [n         (count fields)
             misplaced (remove (fn [[i f]] (in-place? n i f)) hidden)]
-        (if (and (= 4 (count hidden)) (empty? misplaced))
+        (if (and (= compiler/hidden-field-count (count hidden)) (empty? misplaced))
           :record
           (let [field (second (or (first misplaced) (first hidden)))]
             (throw (ex-info (str "Cannot define class " class-name
@@ -199,10 +160,10 @@
   (check-fields class-name fields)
   (closed-shape class-name (record-shape class-name fields) opts+specs))
 
-(defn- not-installed-message [kind class-name]
-  (str "Cannot define class " class-name ": " kind " field capture requires "
-       "a compiler loader. " macroexpanded-outside-compilation ". "
-       fields/direct-fix))
+(defn- not-installed-message [class-name]
+  (str "Cannot define class " class-name ": class capture requires a "
+       "compiler loader. The defvaluetype form was macroexpanded outside "
+       "compilation (no Compiler/LOADER binding). " fields/direct-fix))
 
 (defn- install-capture!
   "Install class capture; return the loader install result. Resolve the loader
@@ -211,23 +172,12 @@
   ((requiring-resolve 'value-type.impl.loader/install!)
    class-name specifications representation shape))
 
-(defn- value-expansion
-  "Install capture for `class-name` with `shape` at macroexpansion; return
-  the value expansion of `definition`, which evaluates to the Class."
-  [class-name shape definition]
-  (let [installed (install-capture! class-name [] :value shape)
-        cls       (symbol class-name)]
-    `(let []
-       ~definition
-       (check-value-class ~cls ~installed)
-       ~cls)))
-
 (defn- install-receiving!
   "Install capture for a receiving expansion. Throw `:not-installed` when
   `Compiler/LOADER` has no thread binding."
-  [kind class-name specifications representation shape]
+  [class-name specifications representation shape]
   (when-not (install-capture! class-name specifications representation shape)
-    (throw (ex-info (not-installed-message kind class-name)
+    (throw (ex-info (not-installed-message class-name)
                     {:value-type/error :not-installed
                      :class-name class-name}))))
 
@@ -236,18 +186,19 @@
   checks `fields` and derives `shape` first. `opts` is as for
   `fields/receiving-specifications`."
   [class-name fields modes shape opts definition]
-  (require-value-capability! class-name)
+  (capability/require-value-capability! class-name)
   (let [specifications (fields/receiving-specifications
                         *ns* class-name fields modes #{:native :generated}
                         opts)
         native? (some #(= :native (:enforcement %)) specifications)
         cls     (symbol class-name)]
     (when native? (field-capability/require-field-capability! class-name))
-    (install-receiving! "value" class-name specifications :value shape)
+    (install-receiving! class-name specifications :value shape)
     `(let []
+       (capability/require-value-capability! ~class-name)
        ~@(when native? `((field-capability/require-field-capability! ~class-name)))
        ~definition
-       (check-value-class ~cls true)
+       (check-value-class ~cls)
        ~cls)))
 
 (defn- identity-receiving
@@ -259,7 +210,7 @@
   (let [specifications (fields/receiving-specifications
                         *ns* class-name fields modes #{:generated} opts)]
     (runtime/enforce-fixed-fallback!)
-    (install-receiving! "identity" class-name specifications :identity shape)
+    (install-receiving! class-name specifications :identity shape)
     `(let []
        (runtime/enforce-fixed-fallback!)
        ~definition
@@ -269,11 +220,12 @@
   "Select representation and field enforcement for `validated`
   specifications; return the expansion. The caller validates the declaration
   first. `value-form` and `identity-form` take the enforcement modes and
-  return a receiving form; `definition` is the plain definition and
-  `guarded` its fallback form. The expansion is a receiving form when there
-  are enabled fields or the shape is closed. A receiving form is wrapped in
-  `let` to keep receiving analysis checks through both macroexpand forms."
-  [class-name shape validated value-form identity-form definition guarded]
+  return a receiving form; `guarded` is the ordinary fallback form. Every
+  value expansion is a receiving form. A fallback expansion is a receiving
+  form when there are enabled fields or the shape is closed. A receiving
+  form is wrapped in `let` to keep receiving analysis checks through both
+  macroexpand forms."
+  [shape validated value-form identity-form guarded]
   (let [{:keys [available? detail]} (capability/capability)
         specifications (fields/select-enforcement
                         validated
@@ -282,9 +234,7 @@
         modes (mapv :enforcement specifications)
         receiving? (or (seq specifications) (= :closed shape))]
     (if available?
-      (if receiving?
-        `(let [] ~(value-form modes))
-        (value-expansion class-name shape definition))
+      `(let [] ~(value-form modes))
       (do
         (runtime/enforce-fallback! detail)
         (if receiving?
@@ -386,11 +336,14 @@
   reference constructor parameters remain Object, with unchanged order and
   arity. Nested values may contain fields that permit nil. Receiving checks
   also apply to transferred expansions. Both `macroexpand` forms retain
-  receiver-local loader installation for enabled fields, supporting separate
-  `eval`, metadata-preserving source loading and function analysis then
-  invocation. Ordinary value definitions do not support separate
-  expansion/evaluation this way. Value AOT artifacts require the same JDK
-  feature release with preview enabled and have no identity fallback. Identity
+  receiver-local loader installation for every value definition and for
+  identity definitions with enabled fields, supporting separate `eval`,
+  metadata-preserving source loading and function analysis then
+  invocation. Value AOT artifacts require the same JDK feature release with
+  preview enabled and have no identity fallback; each saved value form
+  throws `:value-capability-unavailable` where it is evaluated when the
+  value-class capability is unavailable (for example
+  `value-type.value-classes=off`). Identity
   artifacts retain generated checks on baseline and capable JVMs.
 
   Restriction: no mutable fields (`:volatile-mutable` or
@@ -416,17 +369,23 @@
   - `:invalid-field` (macroexpansion; data `:field`, `:reason`): an invalid
     field declaration.
   - `:mutable-field` (macroexpansion; data `:fields`): a mutable field.
-  - `:not-installed` (run time): an ordinary definition macroexpanded with no
-    compilation loader binding, then evaluated.
-  - `:not-installed` (macroexpansion): a definition with enabled fields fully
-    expanded with no compilation loader binding (for example
-    `clojure.walk/macroexpand-all`).
-  - `:not-value-class` (run time): the class is not a value class.
-  - `:value-capability-unavailable` (receiving boundary; data `:reason`): a
-    transferred value expansion on a JVM that cannot define value classes.
-  - `:field-capability-unavailable` (receiving boundary; data `:reason`): a
-    transferred expansion with fixed `:native` modes on a JVM without native
-    field support.
+  - `:not-installed` (macroexpansion): a value definition, or an identity
+    definition with enabled fields, fully expanded with no compilation
+    loader binding (for example `clojure.walk/macroexpand-all`). One-step
+    `macroexpand` does not throw.
+  - `:not-value-class` (run time): the class is not a value class, for
+    example a `defvaluetype` nested in a method body.
+  - `:value-capability-unavailable` (receiving boundary or evaluation; data
+    `:reason`): value output on a JVM where the value-class capability is
+    unavailable: a transferred value expansion at analysis, saved AOT
+    output where the form is evaluated.
+  - `:field-capability-unavailable` (receiving boundary or evaluation; data
+    `:reason`): output with fixed `:native` modes on a JVM with value-class
+    capability but without native field support. Transferred expansions fail
+    at analysis; saved AOT output fails at namespace initialization or function
+    invocation. There is no fallback or enforcement reselection. The value-class
+    guard runs first and throws `:value-capability-unavailable` if value-class
+    capability is unavailable.
   - `:invalid-field-enforcement` (receiving boundary; data `:modes`): invalid
     transferred enforcement modes, or identity fields with non-generated modes.
   - `:invalid-field` (loader; data `:field`, `:reason :field-class-mismatch`):
@@ -441,12 +400,11 @@
   (let [class-name (str (namespace-munge *ns*) "." name)]
     (check-fields class-name fields)
     (policy-expansion
-     class-name :plain (fields/specifications *ns* class-name fields)
+     :plain (fields/specifications *ns* class-name fields)
      (fn [modes]
        `(value-field-deftype ~class-name ~modes ~name ~fields ~@opts+specs))
      (fn [modes]
        `(identity-field-deftype ~class-name ~modes ~name ~fields ~@opts+specs))
-     `(deftype ~name ~fields ~@opts+specs)
      `(runtime/guarded-deftype ~name ~fields ~@opts+specs))))
 
 (defmacro defvaluetype*
@@ -517,12 +475,10 @@
   - `:unsupported-shape`: a delegating constructor writes an enabled field,
     or a constructor both creates and calls the target.
   Other policy, capability, receiving, loader and run time errors are as for
-  `defvaluetype`. A value expansion with neither enabled fields nor the
-  closed shape evaluated apart from its macroexpansion fails with
-  `:not-installed` or `:not-value-class`; it never selects fallback. With
-  enabled fields or the closed shape, separate `eval` of the expansion
-  works, and only a full expansion outside compilation (for example
-  `clojure.walk/macroexpand-all`) gives `:not-installed`; see doc/usage.md.
+  `defvaluetype`. A value expansion is a receiving form; it
+  never selects fallback. Separate `eval` of the expansion works, and only a full
+  expansion outside compilation (for example `clojure.walk/macroexpand-all`)
+  gives `:not-installed`; see doc/usage.md.
 
   Excluded: mutable caches, value-equality emulation and
   serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
@@ -533,7 +489,7 @@
         shape      (declared-shape class-name fields opts+specs)
         stripped   (remove-closed-option opts+specs)]
     (policy-expansion
-     class-name shape
+     shape
      (fields/specifications *ns* class-name fields {:hidden-field? true})
      (fn [modes]
        `(value-field-deftype* ~tagname ~classname ~modes ~fields
@@ -541,5 +497,4 @@
      (fn [modes]
        `(identity-field-deftype* ~tagname ~classname ~modes ~fields
                                  ~@opts+specs))
-     `(deftype* ~tagname ~classname ~fields ~@stripped)
      `(runtime/guarded-deftype* ~tagname ~classname ~fields ~@stripped))))

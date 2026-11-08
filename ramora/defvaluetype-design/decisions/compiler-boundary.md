@@ -1,8 +1,8 @@
 # Compiler boundary decisions
 
-Scope: the coupling to Clojure compiler output and the expansion forms. These
-decisions change [D1, D3, D4](compiler-and-capture.md) and
-[D9](validation-and-errors.md). Basis: residual (stressor) analysis of commit
+Scope: the coupling to Clojure compiler output and the expansion forms.
+[D1, D3, D4](compiler-and-capture.md) and [D9](validation-and-errors.md)
+include these decisions. Code: `value-type.impl.compiler`. Basis: residual (stressor) analysis of commit
 `5073893f`, recorded in residues-skill `examples/value-type/recommendations.md`.
 
 ## D19. Compiler boundary (boundary)
@@ -10,13 +10,34 @@ decisions change [D1, D3, D4](compiler-and-capture.md) and
 - Subject: the assumptions about Clojure compiler output.
 - Choice: one namespace owns every assumption about compiler output:
   `Compiler/LOADER` capture, constructor shape, field order, record suffix,
-  and all class definition through `DynamicClassLoader` (user classes and
-  probe classes). `loader`, both bytecode backends and the probes use it.
+  all class definition through `DynamicClassLoader` (user classes and probe
+  classes), type tag resolution (`Compiler$HostExpr`), field name munging
+  (`Compiler/munge`) and class file output (`Compiler/writeClassFile`).
+  In `src`, no other namespace has compiler code use: an import of, a
+  reference to or a type hint with `clojure.lang.Compiler`, a nested class
+  of it or `DynamicClassLoader`; a binding or read of `Compiler/LOADER`; a
+  construction or subclass of `DynamicClassLoader`; a `.defineClass` call.
+  Text in docstrings, comments and messages can name these classes. Test
+  and `dev` code is outside this rule. The boundary users are `core`, `impl.fields`,
+  `impl.loader`, `impl.transform`, `impl.identity-backend`, and the probe namespaces `impl.capability`,
+  `impl.field-capability` and `impl.probe-builder`.
+  The boundary holds the constructor shape, field order and record suffix
+  as data (the shape data): the hidden record fields with their tags and
+  delegating arguments, the hidden-field counts of the three record
+  constructors, the constructor count and the super constructor of
+  `deftype*` output, and functions that derive positions from it (the
+  index of each hidden field). The boundary loads on Java 8 and has no
+  `java.lang.classfile` code. Thus the bytecode shape checks stay in
+  `transform` and the identity backend, read the shape data and throw their
+  shape errors.
   An unsupported compiler shape still throws with "Fix: use Clojure 1.12"
   (D6 shape check). It does not select fallback.
 - Rejected:
-  - Shape assumptions in `loader`, `transform`, the identity backend and
-    `core`. A Clojure change then touches more than one boundary.
+  - Shape facts as literals in `loader`, `transform`, the identity backend
+    and `core`. A Clojure change then touches more than one namespace.
+  - Bytecode shape checks in the boundary. `transform` uses
+    `java.lang.classfile`, which a boundary that loads on Java 8 cannot
+    use.
   - A compiler check that converts a shape mismatch into fallback. Under
     `silent`, an unsupported compiler would give identity classes with no
     message.

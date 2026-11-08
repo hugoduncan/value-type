@@ -2,8 +2,8 @@
   "The capture loader. It transforms the class of one `deftype` form, and
   references to its fields in companion classes, when the compiler defines them.
   The selected backend gives value or identity output."
-  (:import
-   (clojure.lang Compiler DynamicClassLoader)))
+  (:require
+   [value-type.impl.compiler :as compiler]))
 
 (set! *warn-on-reflection* true)
 
@@ -12,9 +12,9 @@
   class so that the JVM verifies it now. Return the class. Wrap a
   `LinkageError` as `ex-info` with `:value-type/error :jvm-rejected`.
   Value and identity output both use this check."
-  ^Class [^DynamicClassLoader delegate ^String class-name ^bytes bs src]
+  ^Class [delegate ^String class-name ^bytes bs src]
   (try
-    (let [cls (.defineClass delegate class-name bs src)]
+    (let [cls (compiler/define-class delegate class-name bs src)]
       (.getDeclaredMethods cls)
       cls)
     (catch LinkageError e
@@ -42,28 +42,19 @@
 (defn- capture-loader
   "Carry ordered field specifications to the target transform.
    The exact `:type` Classes serve `check-field-classes!`."
-  ^DynamicClassLoader [^String target ^ClassLoader parent specifications representation shape]
-  (let [delegate (DynamicClassLoader. parent)
-        ;; Resolve only at installation, not when baseline code loads capture support.
-        {:keys [owner companion]}
-        (case representation
-          :value ((requiring-resolve 'value-type.impl.value-backend/prepare)
-                  target specifications delegate shape)
-          :identity ((requiring-resolve 'value-type.impl.identity-backend/prepare)
-                     target specifications delegate shape))]
-    (proxy [DynamicClassLoader] [parent]
-      (defineClass [^String class-name ^bytes bs src]
-        (if (= class-name target)
-          (do
-            (check-field-classes! target delegate specifications)
-            (let [bs' (owner bs)]
-              (when *compile-files*
-                (Compiler/writeClassFile (.replace class-name \. \/) bs'))
-              (define-target-class delegate class-name bs' src)))
-          (let [output (companion bs)]
-            (when (and *compile-files* (seq specifications))
-              (Compiler/writeClassFile (.replace class-name \. \/) output))
-            (.defineClass delegate class-name output src)))))))
+  [^String target ^ClassLoader parent specifications representation shape]
+  (compiler/capture-loader
+   target parent
+   (fn [delegate]
+     ;; Resolve only at installation, not when baseline code loads capture support.
+     (case representation
+       :value ((requiring-resolve 'value-type.impl.value-backend/prepare)
+               target specifications delegate shape)
+       :identity ((requiring-resolve 'value-type.impl.identity-backend/prepare)
+                  target specifications delegate shape)))
+   (fn [delegate] (check-field-classes! target delegate specifications))
+   define-target-class
+   (boolean (seq specifications))))
 
 (defn install!
   "Make the next define of class `class-name` give the selected output.
@@ -102,8 +93,6 @@
   wraps these errors in a `CompilerException`. `install!` throws no error
   of its own."
   [^String class-name specifications representation shape]
-  (if (.isBound Compiler/LOADER)
-    (do (.set Compiler/LOADER (capture-loader class-name @Compiler/LOADER
-                                              specifications representation shape))
-        true)
-    false))
+  (compiler/install-capture!
+   (fn [parent]
+     (capture-loader class-name parent specifications representation shape))))

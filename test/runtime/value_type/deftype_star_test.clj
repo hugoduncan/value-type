@@ -6,6 +6,7 @@
    [clojure.walk :as walk]
    [value-type.core :as vt]
    [value-type.impl.capability :as capability]
+   [value-type.impl.runtime :as runtime]
    [value-type.test-support :as support :refer [record-tail]]))
 
 (set! *warn-on-reflection* true)
@@ -176,8 +177,9 @@
         (is (some? t))
         (is (nil? (support/ex-info-data t)))))))
 
-;;; Receiving: a value expansion evaluated apart from its macroexpansion
-;;; fails; it never gives an identity class and never selects fallback.
+;;; Receiving: every value expansion is a receiving form. It installs
+;;; capture at analysis; with no compiler loader it fails, and it never
+;;; gives an identity class or selects fallback.
 
 (defn- star-form
   "A `defvaluetype*` form of simple name n in this namespace; record shape
@@ -191,24 +193,31 @@
   (when (:available? (capability/capability))
     (doseq [record? [false true]]
       (testing (if record? "record shape" "plain shape")
-        (testing "expansion with no compiler loader gives :not-installed"
-          (let [n         (gensym "StarNoInstall")
+        (testing "one-step macroexpand stops at the receiving macro"
+          (let [n         (gensym "StarOneStep")
                 expansion (support/on-raw-thread
                            #(binding [*ns* (the-ns 'value-type.deftype-star-test)]
                               (macroexpand (star-form n record?))))]
-            (is (seq? expansion) (str "expansion: " expansion))
+            (is (seq? expansion) (str "expansion: " expansion))))
+        (testing "full expansion with no compiler loader gives :not-installed"
+          (let [n (gensym "StarNoInstall")
+                t (support/on-raw-thread
+                   #(binding [*ns* (the-ns 'value-type.deftype-star-test)]
+                      (walk/macroexpand-all (star-form n record?))))]
             (is (= {:value-type/error :not-installed
                     :class-name       (str "value_type.deftype_star_test." n)}
-                   (support/thrown-data #(binding [*ns* (the-ns 'value-type.deftype-star-test)]
-                                           (eval expansion)))))))
-        (testing "expansion evaluated by a later eval gives :not-value-class"
-          (let [n (gensym "StarMacroExpanded")]
-            (is (= {:value-type/error :not-value-class
-                    :class-name       (str "value_type.deftype_star_test." n)}
-                   (support/thrown-data
-                    #(binding [*ns* (the-ns 'value-type.deftype-star-test)]
-                       (eval (list 'eval (list 'macroexpand
-                                               (list 'quote (star-form n record?)))))))))))))))
+                   (ex-data (ex-cause t))))
+            (is (support/message-names?
+                 (ex-cause t) ["class capture requires a compiler loader"])
+                (ex-message (ex-cause t)))))
+        (testing "expansion evaluated by a later eval gives a value class"
+          (let [n   (gensym "StarMacroExpanded")
+                cls (binding [*ns* (the-ns 'value-type.deftype-star-test)]
+                      (eval (list 'eval (list 'macroexpand
+                                              (list 'quote (star-form n record?))))))]
+            (is (support/value? cls))
+            (is (= (str "value_type.deftype_star_test." n)
+                   (.getName ^Class cls)))))))))
 
 (deftest not-installed-enabled-field-test
   ;; Full expansion with no compiler loader binding reaches the receiving
@@ -265,8 +274,16 @@
             (expansion-error (into [(with-meta 'a {:non-nil :x})] record-tail)
                              :value-type/closed :x))))))
 
-(defn- closed-option? [form]
-  (boolean (some #{:value-type/closed} (tree-seq coll? seq form))))
+(defn- closed-option?
+  "True when a `deftype*` call or a fallback definition in `form` keeps
+  the closed option. A value receiving call keeps it; the receiver removes
+  it (receiving-closed-option-removal-test)."
+  [form]
+  (boolean
+   (some #(and (seq? %)
+               (#{'deftype* `runtime/guarded-deftype*} (first %))
+               (some #{:value-type/closed} %))
+         (tree-seq coll? seq form))))
 
 (deftest closed-option-removal-test
   (doseq [fields ['[a] (into '[a] record-tail)]

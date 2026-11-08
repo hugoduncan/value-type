@@ -59,9 +59,14 @@ each early-access build. Basis: residual (stressor) analysis of commit
     nil.
   - Array allocation discovery (`impl.array`) allocates a small
     null-restricted array of the probe class, writes it and reads it back.
-  - Value-class AOT output reads the cached value-class result at namespace
-    initialization. When the result is unavailable, it throws `ex-info` with
-    the reason. Value-class output cannot fall back (D13).
+  - Every value expansion has the value-class guard
+    (`impl.capability/require-value-capability!`) as its first form. It reads
+    the cached value-class result where the form is evaluated: at namespace
+    initialization for a top-level form of AOT output, at each invocation for
+    a form inside a function. When the result is unavailable, it throws
+    `ex-info` `:value-capability-unavailable` with the reason. Value-class
+    output cannot fall back (D13). The guard stops the definition form; it
+    does not stop class loading.
 - Failure: a failed check gives `:failed-self-check`. Value-class capability
   is then unavailable and definitions fall back by policy. A failed array round
   trip makes allocation unavailable; array functions fail clearly.
@@ -70,8 +75,12 @@ each early-access build. Basis: residual (stressor) analysis of commit
 - Rationale: identity fallback has correct semantics. A defective value-class
   implementation does not.
 - Qualities: improves correctness. Cost: once per runtime, three reflective
-  constructions and no new class. The AOT check runs the probe at the start of
-  each AOT application.
+  constructions and no new class. The AOT guard runs the probe at startup
+  only when a top-level value definition is evaluated, capability is not
+  already cached, and the switch and API checks permit the probe. A definition
+  inside a function defers the guard until invocation. The `off` switch rejects
+  the definition without running a probe. Measured (task 026, one machine, EA3): about 11 ms
+  median added to the start of a one-definition AOT application.
 - Commitment: firm. The AOT check is provisional until its startup cost is
   measured.
 
@@ -84,7 +93,8 @@ each early-access build. Basis: residual (stressor) analysis of commit
   unavailable with reason `:disabled`. Native-field and array-allocation
   capability derive from it, so they are also unavailable. Definitions fall
   back by policy. Array allocation fails clearly. Value-class AOT output throws
-  at initialization (D17). The capability report shows `:disabled`.
+  `:value-capability-unavailable` `:disabled` where the form is evaluated
+  (D17), also for native-field output. The capability report shows `:disabled`.
 - Interaction: under policy `error`, `off` throws on each definition (D10). Use
   `off` with `silent` or `warn`.
 - Rejected: start without preview (also disables other preview code); a

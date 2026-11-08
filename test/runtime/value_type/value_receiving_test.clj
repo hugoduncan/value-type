@@ -300,3 +300,31 @@
       (is (= {:value-type/error :invalid-field :reason :record-shape}
              (support/error-keys
               (star-error [] '[x __meta] :value-type/closed :x)))))))
+
+(deftest receiving-native-guard-order-test
+  ;; The value-class guard is the first form of native-field value output,
+  ;; before the native-field guard and the definition.
+  (doseq [receiver ['value-type.core/value-field-deftype
+                    'value-type.core/value-field-deftype*]]
+    (testing (str receiver)
+      (let [receiver-ns (create-ns (gensym "value.guard.receiver"))
+            binary-name (str (ns-name receiver-ns) ".Holder")]
+        (try
+          (binding [*ns* receiver-ns]
+            (clojure.core/refer 'clojure.core)
+            (eval '(value-type.core/defvaluetype Child [payload]))
+            (let [fields [(with-meta 'left {:tag 'Child :non-nil true})]
+                  form (if (= 'value-type.core/value-field-deftype receiver)
+                         (list receiver binary-name [:native] 'Holder fields)
+                         (list receiver 'Holder (symbol binary-name) [:native]
+                               fields))
+                  expansion (with-bindings {clojure.lang.Compiler/LOADER
+                                            (clojure.lang.DynamicClassLoader.)}
+                              (macroexpand-1 form))]
+              (is (= 'clojure.core/let (first expansion)))
+              (is (= [`(value-type.impl.capability/require-value-capability!
+                        ~binary-name)
+                      `(value-type.impl.field-capability/require-field-capability!
+                        ~binary-name)]
+                     (take 2 (drop 2 expansion))))))
+          (finally (remove-ns (ns-name receiver-ns))))))))

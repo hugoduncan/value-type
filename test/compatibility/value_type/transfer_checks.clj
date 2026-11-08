@@ -83,3 +83,20 @@
   [serialized mode]
   (let [n *ns*]
     (registry/twice (fn [] (attempt n mode serialized)))))
+
+(defn compile-only
+  "Compile a function containing serialized without invoking it. Return the
+   outer exception class and its immediate cause data, or :accepted."
+  [serialized]
+  (registry/outcome
+   (fn [^Throwable thrown]
+     {:class (.getName (class thrown))
+      :cause-data (ex-data (.getCause thrown))})
+   #(eval (list 'fn [] (read-string serialized)))))
+
+(defn produce-forms
+  "Serialize each [namespace-name expand form] specification in order."
+  [specs]
+  (mapv (fn [[namespace-name expand form]]
+          (serialize namespace-name expand form))
+        specs))

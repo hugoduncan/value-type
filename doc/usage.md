@@ -79,11 +79,10 @@ namespace with a top-level definition makes the first read when it loads.
 Thus the JVM option is the recommended form. A `System/setProperty` call
 applies only if no read occurred before it.
 
-Limit: `off` does not yet apply to all AOT-compiled value output. Saved
-value output with native non-nil fields throws
-`:field-capability-unavailable` with `:reason :disabled` at
-initialization. Other saved value output does not read the property and
-still loads as value classes.
+Saved value output (AOT) reads the property where the definition form runs.
+With `off`, it throws `:value-capability-unavailable` with `:reason
+:disabled`, with or without native non-nil fields. It does not convert to
+identity classes. See [AOT limits](#aot-limits).
 
 ## AOT limits
 
@@ -100,9 +99,16 @@ that bypasses evaluation of the guarded form.
 
 Value-class AOT output uses the compiling JDK's feature version and preview
 minor version. It requires a compatible preview-enabled JVM; it does not
-convert to identity classes on another JVM. Most saved value output ignores
-`value-type.value-classes=off`; see the
-[value-class switch](#value-class-switch) limit.
+convert to identity classes on another JVM. Each saved value definition
+checks the value-class capability where its form is evaluated. Where the
+capability is unavailable (for example `value-type.value-classes=off` or a
+failed self-check), it throws `:value-capability-unavailable` with the
+reason. A top-level form throws at namespace initialization: `require`
+throws `ExceptionInInitializerError` with the `ex-info` as cause, and a
+retry can throw `NoClassDefFoundError`. A form inside a function permits
+namespace loading and throws the `ex-info` at each invocation. The check
+does not stop JVM class loading; a JVM that rejects the class file can give
+its class-loading error first.
 
 ## Differences from `deftype`
 
@@ -133,23 +139,26 @@ Other differences:
     or a field tag resolves to a different Class in the compilation loader
     (`:reason :field-class-mismatch`, in the loader).
   - `:mutable-field`: a field is mutable (at macroexpansion).
-  - `:not-installed`: an ordinary definition was macroexpanded outside compilation
-    (at run time), or a definition with enabled fields was fully expanded
-    outside compilation, for example with `clojure.walk/macroexpand-all`
-    (at macroexpansion). Evaluate the `defvaluetype` form directly.
-  - `:not-value-class`: the class is an identity class. The causes
-    and fixes:
-    - An ordinary definition without enabled non-nil fields was not
-      compiled directly (for example `(eval (macroexpand form))`).
-      Evaluate the `defvaluetype` form directly.
-    - A `defvaluetype` is inside a method body of another
-      `defvaluetype`. Move the inner form out of the method body to
-      the top level.
-  - `:value-capability-unavailable`: a transferred value expansion reaches a
-    JVM that cannot define value classes (receiving boundary).
-  - `:field-capability-unavailable`: a transferred expansion with fixed
-    `:native` modes reaches a JVM without native field support (receiving
-    boundary).
+  - `:not-installed`: a value definition, or an identity definition with
+    enabled fields or the closed shape, was fully expanded outside
+    compilation, for example with `clojure.walk/macroexpand-all` (at
+    macroexpansion). One-step `macroexpand` does not throw. Evaluate the
+    `defvaluetype` form directly.
+  - `:not-value-class`: the class is an identity class (at run time). Known
+    cause: a `defvaluetype` is inside a method body of another
+    `defvaluetype`. Move the inner form out of the method body to the top
+    level.
+  - `:value-capability-unavailable`: value output reaches a JVM where the
+    value-class capability is unavailable: a transferred value expansion
+    (receiving boundary, at analysis), or saved AOT output (where the form
+    is evaluated, see [AOT limits](#aot-limits)). `:reason` gives the
+    capability reason, for example `:disabled`.
+  - `:field-capability-unavailable`: output with fixed `:native` modes
+    reaches a JVM with value-class capability but without native field
+    support: a transferred expansion at analysis, or saved AOT output at
+    namespace initialization or function invocation. There is no fallback
+    or enforcement reselection. The value-class guard runs first; if value
+    capability is unavailable, it throws `:value-capability-unavailable`.
   - `:invalid-field-enforcement`: transferred enforcement modes are not valid,
     or identity fields have modes that are not `:generated` (receiving boundary).
   - `:jvm-rejected`: the JVM rejected a generated user class, for value or
@@ -164,11 +173,14 @@ Other differences:
   (macroexpansion error). The receiving-boundary errors
   (`:value-capability-unavailable`, `:field-capability-unavailable` and
   `:invalid-field-enforcement`) are the cause of a `CompilerException`
-  (the transferred expansion is macroexpanded in analysis). The loader errors
+  (the transferred expansion is macroexpanded in analysis). In saved AOT
+  output, `:value-capability-unavailable` and `:field-capability-unavailable`
+  come at namespace initialization (cause of `ExceptionInInitializerError`)
+  or directly at function invocation. The loader errors
   (`:invalid-field` `:field-class-mismatch`, `:jvm-rejected`,
   `:unexpected-constructor` and `:unsupported-shape`) are the cause of a
   `CompilerException` (the class is defined in analysis). The run-time
-  `:not-installed` and `:not-value-class` come directly from `eval`, and are
+  `:not-value-class` comes directly from `eval`, and is
   the cause of a `CompilerException` from `load`, `require` and
   `load-string`. Use `ex-cause` to get the `ex-info` from the
   `CompilerException`. A `(catch clojure.lang.ExceptionInfo ...)` does not
@@ -178,8 +190,9 @@ Other differences:
   release with preview enabled. Ordinary fallback output has neither of
   these value-class requirements.
 
-For enabled non-nil fields, both `macroexpand` and `macroexpand-1`
-retain a receiving boundary that installs a receiver-local loader. Their expansions
+Every value expansion, and each identity expansion with enabled non-nil
+fields, retains a receiving boundary that installs a receiver-local loader
+(`macroexpand` and `macroexpand-1`). Their expansions
 support separate `eval` (including `(eval (macroexpand form))`),
 metadata-preserving source loading and function analysis followed by invocation.
 Receiving analysis resolves local field Classes but retains the selected
@@ -396,10 +409,13 @@ effect depends on the key:
   `:probe-not-value-class`. A failed semantic self-check gives
   `:failed-self-check`. Definitions use fallback, as for other reasons.
 - `:native-non-nil-field`: a JVM that accepts nil in a `NullRestricted`
-  probe field gives `:native-restriction-ignored`. Value classes use
-  generated enforcement for eligible `:non-nil` fields. Only a transferred
-  expansion with fixed `:native` modes fails, with
-  `:field-capability-unavailable`.
+  probe field gives `:native-restriction-ignored`. New value definitions use
+  generated enforcement for eligible `:non-nil` fields. If value-class
+  capability is available, output with fixed `:native` modes instead fails
+  with `:field-capability-unavailable`: transferred expansions at analysis,
+  saved AOT output at namespace initialization or function invocation.
+  There is no fallback or enforcement reselection. If value-class capability
+  is unavailable, the first guard throws `:value-capability-unavailable`.
 - `:array-allocation`: a failed value-array round trip gives
   `:failed-self-check`. There is no fallback: `make-array` and `into-array`
   throw `:array-unavailable`.
@@ -595,10 +611,8 @@ fallback expansion with neither enabled fields nor the closed shape is guarded
 the value and fallback expansions are receiving forms that repeat the
 declaration checks; the fallback receiver gives identity output with generated
 checks. Receivers of a transferred fallback expansion apply their own policy.
-A value expansion with neither enabled fields nor the closed shape evaluated
-apart from its macroexpansion fails with `:not-installed` or
-`:not-value-class`; it never selects fallback. With enabled fields or the
-closed shape, see the receiving boundary paragraph in [Differences from
+Every value expansion is a receiving form; it never selects fallback. See
+the receiving boundary paragraph in [Differences from
 `deftype`](#differences-from-deftype): separate `eval` of the expansion works,
 and only a full expansion outside compilation (for example
 `clojure.walk/macroexpand-all`) gives `:not-installed`. An unexpected

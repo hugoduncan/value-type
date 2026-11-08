@@ -2,17 +2,11 @@
   "Baseline-safe declaration handling for non-nil fields and the record
   hidden fields."
   (:require [clojure.string :as str]
-            [value-type.impl.capability :as capability])
-  (:import (clojure.lang Compiler Compiler$HostExpr)
-           (java.lang.reflect Modifier)))
+            [value-type.impl.capability :as capability]
+            [value-type.impl.compiler :as compiler])
+  (:import (java.lang.reflect Modifier)))
 
 (set! *warn-on-reflection* true)
-
-(def record-hidden-fields
-  "Hidden field names of the `deftype*` record shape, in place order, each
-  with its required tag. Value output of the record shape removes the fields
-  with tag `int`; value output of the closed shape removes all four."
-  [["__meta" nil] ["__extmap" nil] ["__hash" 'int] ["__hasheq" 'int]])
 
 (def direct-fix
   "Fix text for receiving boundary errors."
@@ -85,11 +79,7 @@
         resolved (when tag
                    (binding [*ns* defining-ns]
                      (try
-                       (or (when (symbol? tag)
-                             (or (when-not (namespace tag)
-                                   (Compiler$HostExpr/maybeSpecialTag tag))
-                                 (Compiler$HostExpr/maybeArrayClass tag)))
-                           (Compiler$HostExpr/maybeClass tag true))
+                       (compiler/resolve-tag tag)
                        (catch ClassNotFoundException _ nil))))]
     (or resolved
         (throw
@@ -174,7 +164,7 @@
   `:invalid-field`, `:reason :hidden-field` and `:field` for the first
   enabled field with a hidden record field name (namespace ignored)."
   [class-name enabled]
-  (let [hidden (set (map first record-hidden-fields))]
+  (let [hidden (set (map first compiler/record-hidden-fields))]
     (when-let [field (first (filter #(hidden (name %)) enabled))]
       (throw
        (ex-info
@@ -211,7 +201,7 @@
 (defn emitted-name
   "Return the class file field name of specification `spec`."
   ^String [spec]
-  (Compiler/munge (name (:field spec))))
+  (compiler/munge-name (name (:field spec))))
 
 (defn- invalid-enforcement!
   "Throw `ex-info` with `:value-type/error` `:invalid-field-enforcement`,

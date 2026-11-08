@@ -8,19 +8,17 @@ requires it). The [decision index](../decisions.md) lists all decisions.
 
 - Choice: a public macro `value-type.core/defvaluetype*` that takes the
   arguments of the `deftype*` special form. It validates fields and applies
-  capability and policy (D5). Without enabled non-nil fields and without
-  the closed shape, value output installs the capture loader at
-  macroexpansion and expands to
-  `(let [] (deftype* …) (check-value-class <class> <installed>) <class>)`,
-  and fallback expands to a guarded `deftype*`. With enabled fields or the
-  closed shape, the expansion is a receiving macro that installs the
-  capture loader during analysis (D5, D10). Each expansion evaluates to the
-  class. Its `deftype*` call gets the macro arguments with no change, except
-  the removal of each `:value-type/closed` occurrence (D9), so field
-  metadata stays. Changed by defvaluetype
-  [D20](../../defvaluetype-design/decisions/compiler-boundary.md): value
-  output without enabled fields also expands to a receiving macro, with no
-  `<installed>` literal.
+  capability and policy (D5). Value output expands to a receiving macro that
+  checks capability and installs the capture loader during analysis, as
+  `defvaluetype` does (defvaluetype
+  [D1, D20](../../defvaluetype-design/decisions/compiler-boundary.md)); the
+  expansion has no installation literal. Fallback without enabled fields
+  and without the closed shape expands to a guarded `deftype*`; with
+  enabled fields or the closed shape it is an identity receiving macro (D5,
+  D10). Each expansion evaluates to the class. Its `deftype*` call gets the
+  macro arguments with no change, except the removal of each
+  `:value-type/closed` occurrence (D9), so field metadata stays. The record
+  shape data (D2) is in the compiler boundary `impl.compiler`.
 - Rejected:
   - A `defvaluetype` option. `deftype` rejects the hidden record names and
     does not emit the record constructors.

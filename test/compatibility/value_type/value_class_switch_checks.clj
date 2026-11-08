@@ -96,14 +96,41 @@
   (require-public)
   (registry/failed-call registry/thrown report))
 
+(defn- narrowed-failure
+  "Return the outer exception class and registry/root-failure of error
+   with :data narrowed to :value-type/error and :reason."
+  [error]
+  (assoc (update (registry/root-failure error) :data select-keys
+                 [:value-type/error :reason])
+         :outer-class (.getName (class error))))
+
 (defn aot-load
   "Require the saved namespace ns-sym once (no source on the classpath).
    Return source absence and the load outcome: :accepted, or the
-   registry/root-failure with :data narrowed to :value-type/error and
-   :reason."
+   outer exception class and root failure with :data narrowed to
+   :value-type/error and :reason."
   [ns-sym source-path]
   {:source-absent? (nil? (io/resource source-path))
-   :load (registry/outcome
-          #(update (registry/root-failure %) :data select-keys
-                   [:value-type/error :reason])
-          #(require ns-sym))})
+   :load (registry/outcome narrowed-failure #(require ns-sym))})
+
+(defn aot-install
+  "aot-load of ns-sym and source-path, then call ns-sym/install for each
+   attempt (registry/twice). Return :source-absent?, :load and
+   :invocations (each an outcome with the outer class and narrowed root failure)."
+  [ns-sym source-path]
+  (let [loaded (aot-load ns-sym source-path)
+        install (resolve (symbol (name ns-sym) "install"))]
+    (assoc loaded :invocations
+           (registry/twice #(registry/outcome narrowed-failure install)))))
+
+(defn aot-load-failed-self-check
+  "aot-load of ns-sym and source-path while
+   value-type.impl.capability/capability returns a :failed-self-check
+   result with detail."
+  [ns-sym source-path detail]
+  (require 'value-type.impl.capability)
+  (with-redefs-fn {(resolve 'value-type.impl.capability/capability)
+                   (constantly {:available? false
+                                :reason :failed-self-check
+                                :detail detail})}
+    #(aot-load ns-sym source-path)))

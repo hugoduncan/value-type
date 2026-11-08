@@ -3,29 +3,36 @@
 Scope: the value-class path unless stated otherwise. Ordinary definitions have
 no enabled non-nil fields. Definitions with enabled non-nil fields also
 follow the [portable field contract](../../non-nil-field-design.md).
-[D19 and D20](compiler-boundary.md) change D1, D3 and D4: one compiler boundary
-owns class definition, and all definitions use a receiving expansion.
+[D19](compiler-boundary.md) puts all compiler code use (capture loader,
+class definition, class file output) in the compiler boundary
+`impl.compiler`. [D20](compiler-boundary.md) gives all value definitions one
+receiving expansion.
 
 ## D1. Expand to `clojure.core/deftype` (abstraction, interface)
 
 - Choice: `defvaluetype` validates the form in both modes. On the
-  ordinary value-class path it installs the loader and returns
+  value-class path it expands to a receiving macro (`let` wrapper; the
+  modes are `[]` for ordinary definitions). In its own analysis the
+  receiving macro checks capability, installs the loader and returns
 
   ```clojure
   (let []
+    (value-type.impl.capability/require-value-capability! "<class>")
+    ;; native-field output only:
+    (value-type.impl.field-capability/require-field-capability! "<class>")
     (clojure.core/deftype name fields & opts+specs)
-    (value-type.core/check-value-class <class-symbol> <installed>)
+    (value-type.core/check-value-class <class-symbol>)
     <class-symbol>)
   ```
 
   - The `deftype` call has the macro arguments with no change (the
     same objects, so the metadata stays).
   - `<class-symbol>` is fully qualified; analysis precedes the `deftype` import.
-  - `<installed>` is the boolean result of `loader/install!`, as a
-    literal.
+  - The value-class guard is the first form; it runs where the form is
+    evaluated (D17, D18).
   - `check-value-class` is D9.
-  - Changed by D20: ordinary value definitions also expand to a receiving
-    macro. The `<installed>` literal is removed.
+  - The expansion has no installation literal. A replayed or transferred
+    expansion installs where it is analysed.
 - Non-nil field choice: selection validates fields, selects representation
   through application policy, and selects enforcement per field. A receiving
   macro resolves exact field Classes and installs a local capture loader before
@@ -62,10 +69,10 @@ owns class definition, and all definitions use a receiving expansion.
 - Choice: on paths that require transformation, at macroexpansion time, the macro
   replaces the thread-bound
   value of `Compiler/LOADER` with a capture loader. The parent is the
-  old value. Ordinary definitions install during selection and change only the
-  target bytes. Definitions with enabled non-nil fields install in receiving
-  macro analysis and also rewrite selected target-field references in other
-  captured classes. The thread binding ends with the top-level form.
+  old value. All definitions install in receiving macro analysis; there is
+  no installation during selection. Ordinary definitions change only the
+  target bytes. Definitions with enabled non-nil fields also rewrite selected
+  target-field references in other captured classes. The thread binding ends with the top-level form.
 - Rejected:
   - A Java agent with a `ClassFileTransformer`. It needs JVM flags and
     acts on all classes.
@@ -75,19 +82,20 @@ owns class definition, and all definitions use a receiving expansion.
 - Rationale: `Compiler/LOADER` is a public dynamic var. The compiler
   binds it before it macroexpands. The expansion is a `let`, so no new
   loader is pushed between the macro and `deftype*`.
-- Rule: when `Compiler/LOADER` is not thread-bound, do not install.
-  D9 then detects the identity class. An install can also have no
-  effect for ordinary definitions, for example in `(eval (macroexpand form))`.
-  D9 detects this too. Expansions with enabled non-nil fields retain receiving
-  installation and support separate evaluation, metadata-preserving source
-  loading and function analysis followed by invocation.
+- Rule: when `Compiler/LOADER` is not thread-bound, do not install; the
+  receiving macro throws `:not-installed` (D9). Receiving installation
+  supports separate evaluation, replay (`(eval (macroexpand form))`),
+  metadata-preserving source loading and function analysis followed by
+  invocation.
 - Improves: locality, no JVM flags. Degrades: depends on compiler
   evaluation order; verify this with spike and integration tests.
 - Commitment: firm.
 
 ## D4. Capture loader shape (technology)
 
-- Choice: a `proxy` of `clojure.lang.DynamicClassLoader`. It sends each
+- Choice: a `proxy` of `clojure.lang.DynamicClassLoader`, in the compiler
+  boundary (D19). `impl.loader` gives the boundary the byte transforms, the
+  field class check and the target define as functions. It sends each
   `defineClass` call to one delegate `DynamicClassLoader`. It changes
   the bytes for the target name first. With field specifications it also
   rewrites owner-field references in other captured classes; their class kind

@@ -2,9 +2,9 @@
   "Capability probe class bytes on `java.lang.classfile` and the format row.
   Load only after the D12 API checks find `java.lang.classfile`."
   (:require
+   [value-type.impl.compiler :as compiler]
    [value-type.impl.jvm-format :as jvm-format])
   (:import
-   (clojure.lang DynamicClassLoader)
    (java.lang.classfile Annotation ClassBuilder ClassFile CodeBuilder
                         FieldBuilder MethodBuilder)
    (java.lang.classfile.attribute RuntimeVisibleAnnotationsAttribute)
@@ -27,8 +27,8 @@
   "Define bytes as the class with the internal name internal-name in loader.
   Return the Class. Errors, for example `UnsupportedClassVersionError`,
   propagate."
-  ^Class [^DynamicClassLoader loader ^String internal-name ^bytes bytes]
-  (.defineClass loader (.replace internal-name "/" ".") bytes nil))
+  ^Class [loader ^String internal-name ^bytes bytes]
+  (compiler/define-class loader (.replace internal-name "/" ".") bytes nil))
 
 (defn probe-bytes
   "Return preview class bytes for the internal name owner, with one public
@@ -88,7 +88,7 @@
   `define-probe`. field-type is a Class, for example `Long/TYPE` or a probe
   Class. Return the Class. Errors, for example
   `UnsupportedClassVersionError`, propagate."
-  ^Class [^DynamicClassLoader loader prefix ^Class field-type restricted?]
+  ^Class [loader prefix ^Class field-type restricted?]
   (let [owner (unique-probe-name prefix)]
     (define-probe loader owner
       (probe-bytes owner (.descriptorString field-type) restricted?))))

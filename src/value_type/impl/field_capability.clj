@@ -1,8 +1,8 @@
 (ns value-type.impl.field-capability
   "Baseline-safe probe of native non-nil field enforcement."
-  (:require [value-type.impl.capability :as capability])
-  (:import (clojure.lang DynamicClassLoader)
-           (java.lang.reflect InvocationTargetException)))
+  (:require [value-type.impl.capability :as capability]
+            [value-type.impl.compiler :as compiler])
+  (:import (java.lang.reflect InvocationTargetException)))
 
 (set! *warn-on-reflection* true)
 
@@ -38,7 +38,7 @@
   []
   (let [define-probe-class (requiring-resolve
                             'value-type.impl.probe-builder/define-probe-class)
-        loader (DynamicClassLoader.)
+        loader (compiler/probe-loader)
         leaf (define-probe-class loader "FieldsLeaf" Long/TYPE false)
         holder (define-probe-class loader "FieldsHolder" leaf true)]
     (verify-enforcement leaf holder)))

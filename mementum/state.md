@@ -42,6 +42,11 @@ Its API is not stable.
   `impl.runtime` owns only policy, the warning flag and the fallback guards
   (`enforce-fallback!`, `guarded-deftype`, `guarded-deftype*`).
   See D14 in the defvaluetype decisions.
+- Capture support loads lazily for all value definitions and for identity
+  definitions with enabled non-nil fields or the closed shape. Identity
+  capture uses bundled ASM; only value output loads the optional JDK
+  transform. Ordinary fallback does not install capture. See the
+  [runtime boundary](../ramora/defvaluetype-design/embodiment/runtime.md).
 - Source-only JAR builds, quality checks, API generation and release tooling
   are available. Hosted Actions and live publication remain unverified.
 
@@ -61,7 +66,11 @@ absence `:native-restriction-ignored`). Closed task 025 realizes D18 except AOT:
 before the API checks; `off` gives `:disabled`, an invalid value an IAE cached
 in the delay. Tests: `value-type.value-class-switch-test`. The
 [embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented)
-lists each gap. Open Munera tasks 026–028 realize the rest; `munera/plan.md` gives the order.
+lists each gap. Closed task 026 realizes D19 (compiler boundary
+`impl.compiler`: all compiler code use in `src` and the shape data), D20
+(one receiving expansion for all value definitions) and the AOT part of D17
+and D18 (value-class guard `impl.capability/require-value-capability!` as
+the first emitted form). Open Munera tasks 027–028 realize the rest; `munera/plan.md` gives the order.
 
 ## Non-nil fields
 

@@ -1,6 +1,7 @@
 (ns value-type.impl.identity-backend
   "Baseline-safe concrete storage and constructor checks for identity output."
-  (:require [value-type.impl.fields :as fields])
+  (:require [value-type.impl.compiler :as compiler]
+            [value-type.impl.fields :as fields])
   (:import (clojure.asm ClassReader ClassVisitor ClassWriter MethodVisitor Opcodes
                         Type)
            (java.util Objects)))
@@ -152,15 +153,18 @@
     [@constructors @marked]))
 
 (defn- hidden-indexes
-  "Return the parameter indexes of `__meta` (n - 4) and `__extmap` (n - 3)
-  of a constructor with `n` parameters."
+  "Return the parameter indexes of `__meta` and `__extmap` (the hidden
+  fields with no tag) of a constructor with `n` parameters."
   [n]
-  [(- n 4) (- n 3)])
+  (into []
+        (keep-indexed (fn [k [_ tag]]
+                        (when (nil? tag) (compiler/hidden-field-index n k))))
+        compiler/record-hidden-fields))
 
 (defn- closed-checks
   "Return a map of non-delegating constructor descriptor to its D10 check
-  `[slots message]`: the slots of the parameters at n - 4 (`__meta`) and
-  n - 3 (`__extmap`). Reject shapes that the check cannot address."
+  `[slots message]`: the slots of the `__meta` and `__extmap`
+  parameters (`hidden-indexes`). Reject shapes that the check cannot address."
   [bytes owner class-name unsupported!]
   (let [[constructors delegating] (constructor-marks bytes owner)
         checked (remove delegating constructors)
@@ -170,7 +174,7 @@
     (doseq [desc checked
             :let [types (Type/getArgumentTypes ^String desc)
                   n (count types)]]
-      (when (or (< n 4)
+      (when (or (< n compiler/hidden-field-count)
                 (some #(not= object-descriptor
                              (.getDescriptor ^Type (aget types (int %))))
                       (hidden-indexes n)))

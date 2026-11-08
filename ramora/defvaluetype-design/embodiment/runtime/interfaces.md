@@ -28,9 +28,10 @@ Part of the [runtime embodiment](../runtime.md).
   `deftype` error.
 
 ```clojure
-(check-value-class cls installed) ;=> nil, or throws
-;; Called by the defvaluetype expansion. :not-installed when
-;; installed is false, else :not-value-class.
+(check-value-class cls) ;=> nil, or throws
+;; Called by the value expansion. :not-value-class when cls is
+;; not a value class. :not-installed comes from the receiving
+;; macro at macroexpansion, not from this function.
 ```
 
 ## Internal
@@ -48,17 +49,38 @@ Part of the [runtime embodiment](../runtime.md).
 ;; when D6 does not match. Check steps, in order: count of
 ;; constructors, parameters, code (super call, field writes).
 
+;; value-type.impl.capability
+(require-value-capability! class-name) ;=> nil, or throws
+;; ex-info {:value-type/error :value-capability-unavailable
+;;          :class-name "ns.Name" :reason :disabled}
+;; when the cached value-class result is unavailable (example: disabled).
+;; First form of each value expansion.
+
+;; value-type.impl.compiler (requires only Clojure)
+(capture-loader target parent prepare check define-target
+                rewrite-companions?) ;=> ClassLoader
+(install-capture! make-loader) ;=> true, or false when LOADER
+;; is not thread-bound
+(define-class loader class-name bytes src) ;=> Class
+(probe-loader) ;=> ClassLoader
+;; shape data: record-hidden-fields, hidden-field-count,
+;; hidden-field-index, hidden-field-position, record-constructors,
+;; deftype-constructor; tags: resolve-tag; munge-name
+
 ;; value-type.impl.loader
-(install! class-name specifications representation)
+(install! class-name specifications representation shape)
 ;=> true when installed, false when LOADER is not thread-bound
 ;; representation is :value or :identity; :identity requires
 ;; :generated enforcement.
+;; shape is :plain for an ordinary deftype, :record for a record
+;; shape, or :closed for a record shape with :value-type/closed true.
+;; Both backends receive shape.
 ;; Ordered specifications retain :field, exact :type Class and
 ;; :enforcement. Backends derive descriptors from :type.
 ;; :generated selects constructor checks; :native selects native
 ;; enforcement.
 ;; The capture loader throws ex-info {:value-type/error :jvm-rejected
-;; :class-name} with the LinkageError as cause when the JVM rejects
+;; :class-name "ns.Name"} with the LinkageError as cause when the JVM rejects
 ;; the define or the link. Errors of ->value-class pass through.
 ```
 

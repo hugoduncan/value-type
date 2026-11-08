@@ -18,8 +18,9 @@
   accessor is also the test replacement point. `impl.runtime` owns only the
   policy (fixed at its first read), the warning flag (D13) and the fallback guards
   (`enforce-fallback!`, `guarded-deftype`, `guarded-deftype*`). The
-  native-field guard `require-field-capability!` is in
-  `impl.field-capability`.
+  value-class guard `require-value-capability!` is in `impl.capability`
+  and reads the accessor through its var. The native-field guard
+  `require-field-capability!` is in `impl.field-capability`.
 - Boundary: loading `value-type.capability` does not read
   `value-type.fallback`. Calling `report` reads the policy through
   `impl.runtime`; this is a first read and fixes the policy (D10). An invalid

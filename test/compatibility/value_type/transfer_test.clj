@@ -48,6 +48,52 @@
                    :warning harness/fallback-context})
                 transferred-cells expansions)))))))
 
+(defn- value-produce
+  "As produce, with a value producer child (printed with metadata)."
+  [form specs]
+  (harness/produce (config/value-producer (config/configuration))
+                   (registry/check-form 'value-type.transfer-checks/produce
+                                        (list 'quote form) true specs)))
+
+(deftest ordinary-value-transfer-test
+  ;; An ordinary value expansion is a receiving form (D20): a capable
+  ;; receiver installs capture at analysis and gives a value class; a
+  ;; receiver without value capability rejects it at analysis.
+  (let [{:keys [selected available?]} (config/configuration)
+        cells (vec (for [mode transfer/modes expand transfer/expands]
+                     [mode expand]))
+        specs (harness/cell-specs cells)]
+    (when-let [expansions (value-produce
+                           identity-form
+                           (mapv (fn [[ns-name [_ expand]]] [ns-name expand])
+                                 specs))]
+      (harness/run-cells
+       (for [policy config/policies]
+         (harness/cell-child
+          (assoc selected :policy policy)
+          (mapv (fn [[mode expand] serialized [ns-name]]
+                  {:context [policy (name mode) (name expand)]
+                   :form (registry/check-form
+                          'value-type.deftype-star-transfer-checks/consume-data
+                          serialized mode)
+                   :expected
+                   (if available?
+                     (registry/each-attempt
+                      {:named? true :value? true :new-class? true
+                       :hash-fields 0 :meta-rejected? nil})
+                     (harness/described
+                      (harness/repeated
+                       registry/attempt-count
+                       (harness/including
+                        {:class (harness/fixed "clojure.lang.ExceptionInfo")
+                         :data (harness/including
+                                {:value-type/error
+                                 (harness/fixed :value-capability-unavailable)
+                                 :class-name
+                                 (harness/fixed
+                                  (registry/class-name ns-name 'Transferred))})}))))})
+                cells expansions specs)))))))
+
 (defn- concurrent-expected
   "Expected result of a warning-checks concurrent check: worker, the expected
    result of one worker, for each of the warning/worker-count workers."

@@ -161,9 +161,9 @@ Task `025-value-class-switch` (D18; `value-type.value-classes`, `auto` or
   before the policy (`policy-expansion`); `report` reads the policy first.
   Thus with two invalid properties, `report` throws the policy error.
 - Under `off`, `:non-nil` fields select generated enforcement, so
-  `require-field-capability!` does not run at definition. AOT output reads
-  the switch only where its init calls a capability accessor; output that
-  calls only `check-value-class` reads `isValue`, not the cached result.
+  `require-field-capability!` does not run at definition. AOT value output
+  reads the switch through its first emitted form, the value-class guard
+  `impl.capability/require-value-capability!` (task 026).
 
 ## AOT policy runs where the form is evaluated
 

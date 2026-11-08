@@ -1,7 +1,9 @@
 (ns value-type.impl.capability
-  "Baseline-safe checks for the value-class bytecode contract."
-  (:import (clojure.lang DynamicClassLoader)
-           (java.lang.reflect InvocationTargetException Method)))
+  "Baseline-safe checks for the value-class bytecode contract, the cached
+  value-class result (`capability`) and the value-class guard
+  (`require-value-capability!`)."
+  (:require [value-type.impl.compiler :as compiler])
+  (:import (java.lang.reflect InvocationTargetException Method)))
 
 (set! *warn-on-reflection* true)
 
@@ -93,7 +95,7 @@
   (let [define-probe-class (requiring-resolve
                             'value-type.impl.probe-builder/define-probe-class)
         klass (try
-                (define-probe-class (DynamicClassLoader.) "CapabilityProbe" Long/TYPE false)
+                (define-probe-class (compiler/probe-loader) "CapabilityProbe" Long/TYPE false)
                 (catch UnsupportedClassVersionError error
                   (unavailable :unsupported-class-version error)))]
     (if (map? klass)
@@ -138,3 +140,29 @@
    Every reader reads through this var; tests replace it with `with-redefs`."
   []
   @detected-capability)
+
+(def no-value-classes-message
+  "The error text for a JVM with no `Class::isValue`."
+  (str "The JVM has no value classes (Class::isValue is missing). "
+       "Use a JEP 401 JDK with --enable-preview."))
+
+(defn no-value-classes?
+  "True when the JVM has no `Class::isValue`."
+  []
+  (nil? @value-predicate))
+
+(defn require-value-capability!
+  "Return nil when the JVM can define value classes. Else throw `ex-info`
+  with `:value-type/error` `:value-capability-unavailable`, `:class-name`
+  and `:reason`. Reads `capability` through its var."
+  [class-name]
+  (let [{:keys [available? reason detail]} (capability)]
+    (when-not available?
+      (throw (ex-info (str "Cannot define value class " class-name
+                           ": fixed value representation is unavailable. "
+                           (if (no-value-classes?)
+                             no-value-classes-message
+                             detail))
+                      {:value-type/error :value-capability-unavailable
+                       :class-name class-name
+                       :reason reason})))))

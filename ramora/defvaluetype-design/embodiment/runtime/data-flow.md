@@ -2,7 +2,8 @@
 
 Part of the [runtime embodiment](../runtime.md).
 
-Representation selection for definitions without enabled non-nil fields:
+Representation selection for definitions without enabled non-nil fields or
+the closed shape:
 
 ```text
 validate fields → determine capability and application policy
@@ -19,33 +20,39 @@ invocation; repeated strict calls throw plain Error. Direct class access
 that bypasses the guarded form is not protected, and guards cannot prevent
 all prior class loading. Failed initializer retries can throw
 NoClassDefFoundError without guard re-entry.
-Fallback expansions do not install a capture loader or call `check-value-class`.
-The existing value-class flow remains:
+Ordinary fallback without enabled non-nil fields or the closed shape does not
+install a capture loader. Fallback with enabled fields or the closed shape
+uses `identity-receiving`, which installs capture during receiving analysis.
+`loader` selects the baseline-safe identity backend, not the optional JDK
+value transform. No identity expansion calls `check-value-class`.
+The value-class flow (one receiving style for all value definitions, D20):
 
 ```text
 macroexpand defvaluetype
   core: validate fields                 → ex-info :mutable-field
-  core: installed := (loader/install! "ns.Name" [] :value)
-                                        → LOADER := capture loader
-  core: return (let [] (deftype ...)
-                       (check-value-class ns.Name <installed>)
+  core: return (let [] (value-field-deftype "ns.Name" [] Name ...))
+analyze value-field-deftype (receiving macro)
+  core: require-value-capability!       → ex-info :value-capability-unavailable
+  core: loader/install! "ns.Name" [] :value :plain
+        → compiler/install-capture!: LOADER := capture loader
+        → no LOADER binding: ex-info :not-installed
+  core: return (let [] (require-value-capability! "ns.Name")
+                       (deftype ...)
+                       (check-value-class ns.Name)
                        ns.Name)
         ;; fully qualified: the import has not run at analysis time
 analyze (deftype* ...)
   compiler: emit bytes
-  compiler: write .class (AOT only)
   compiler: LOADER.defineClass("ns.Name", bytes)
-    loader: bytes' := transform/->value-class bytes storage delegate
-            ;; value-backend/prepare: storage from [] (empty),
-            ;; delegate resolves stack-map types
-    loader: write bytes' (AOT only)
-    loader: delegate.defineClass("ns.Name", bytes')
-    loader: link (getDeclaredMethods)
-    loader: define or link LinkageError → ex-info :jvm-rejected
-            ;; ClassFormatError: define; VerifyError: link
-runtime
-  check-value-class                     → ex-info :not-installed
-                                          or :not-value-class
+    boundary: bytes' := owner transform (transform/->value-class,
+              storage from [], delegate resolves stack-map types)
+    boundary: write bytes' (AOT only)
+    loader:   define-target: compiler/define-class, link
+              (getDeclaredMethods), LinkageError → ex-info :jvm-rejected
+              ;; ClassFormatError: define; VerifyError: link
+runtime (namespace initialization or invocation)
+  require-value-capability!             → ex-info :value-capability-unavailable
+  check-value-class                     → ex-info :not-value-class
 ```
 
 ## Enabled non-nil fields
