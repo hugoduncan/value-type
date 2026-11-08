@@ -1,22 +1,25 @@
-🔁 A macro can capture `deftype` bytes before JVM definition by setting the
-thread-bound `clojure.lang.Compiler/LOADER`. A `DynamicClassLoader` proxy
-sends definitions to one delegate. A surrounding `let` keeps the loader
-binding; top-level `do` can give forms separate bindings.
+🔁 Capture `deftype` bytes through the thread-bound `Compiler/LOADER`.
+Keep a receiving macro inside an outer `let`: top-level `do` can give
+forms separate loader bindings, and producer loader state cannot cross
+serialized expansion.
 
-Ordinary value-mode definitions install at selection and transform only the target.
-Their `(eval (macroexpand form))` path loses that installation; retain the
-runtime representation check.
+Every value definition installs capture during receiving analysis, not
+selection. Both public macroexpand forms retain the receiving macro, so
+replayed and transferred expansions install in the receiver. Full expansion
+without a loader binding throws `:not-installed`. Identity definitions use
+capture only with enabled non-nil fields or the closed shape; ordinary
+identity fallback keeps its separate policy guards.
 
-Native restricted-field expansions instead retain a receiving macro inside
-`let`. It resolves receiver-local Classes and installs the capture loader
-during receiving analysis. Do not also install at selection. This supports
-transferred expansions; producer loader state cannot cross serialization.
-Retyped owner fields require matching reference changes in companions too.
+`impl.compiler` owns compiler calls and shape data in `src`. It depends
+only on Clojure and loads on Java 8. Bytecode checks stay in the backends;
+`impl.loader` supplies rewrite/check callbacks and owns `:jvm-rejected`.
+Keep the boundary define call unwrapped: probes classify raw
+`UnsupportedClassVersionError`.
 
-AOT writes bytes before definition. Write transformed owner and companion
-bytes again with `Compiler/writeClassFile`. After `deftype`, use the fully
-qualified class symbol; the import has not run at analysis time.
+AOT writes bytes before definition. The compiler boundary overwrites them
+with transformed owner and required companion bytes before definition.
+After `deftype`, use the fully qualified class symbol; the import has not
+run at analysis time.
 
-Verified with Clojure 1.12.6 and EA3. Sources: task 016, `2d2db6d`,
-`54fd484`, `c8408e6`. See
-[mementum compiler boundaries](../knowledge/controlled-fallback-boundaries.md).
+Evidence: task 026, `70393735`, `99bef72d`, `18d487f3`. See
+[compiler boundaries](../knowledge/controlled-fallback-boundaries.md).
