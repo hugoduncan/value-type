@@ -70,8 +70,9 @@ lists each gap. Closed task 026 realizes D19 (compiler boundary
 `impl.compiler`: all compiler code use in `src` and the shape data), D20
 (one receiving expansion for all value definitions) and the AOT part of D17
 and D18 (value-class guard `impl.capability/require-value-capability!` as
-the first emitted form). Closed task 027 realizes D21, D22 and D24. Open task 028 covers D23;
-`munera/plan.md` gives the order.
+the first emitted form). Closed task 027 realizes D21, D22 and D24. Task 028
+is closed as won't do; D23 remains unimplemented. `munera/plan.md` lists
+current work.
 
 ## Non-nil fields
 

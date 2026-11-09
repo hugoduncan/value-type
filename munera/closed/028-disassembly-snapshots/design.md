@@ -1,5 +1,10 @@
 # Disassembly snapshots
 
+## Closure
+
+Closed as won't do at the user's request on 2026-11-08. Acceptance criteria
+were not completed; D23 remains unimplemented.
+
 ## Intent
 
 Make each change of emitted class bytes a reviewable text diff. Realize
