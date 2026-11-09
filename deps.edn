@@ -1,10 +1,16 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.12.6"}}
  :aliases
- {:fallback-test {:extra-paths ["test/compatibility"]
+ {:smoke-test {:extra-paths ["dev/jvm" "test/smoke" "test/compatibility"]
+               :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
+               :main-opts ["-m" "scry.cli" "--dir" "test/smoke"]}
+  :jvm-test {:extra-paths ["dev/jvm" "test/jvm"]
+             :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
+             :main-opts ["-m" "scry.cli" "--dir" "test/jvm"]}
+  :fallback-test {:extra-paths ["dev/jvm" "test/compatibility"]
                   :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
                   :main-opts ["-m" "scry.cli" "--dir" "test/compatibility"]}
-  :cross-jvm-test {:extra-paths ["test/cross-jvm" "test/compatibility"]
+  :cross-jvm-test {:extra-paths ["dev/jvm" "test/cross-jvm" "test/compatibility"]
                    :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}
                    :main-opts ["-m" "scry.cli" "--dir" "test/cross-jvm"]}
   :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.10"}}
@@ -13,7 +19,7 @@
   :release {:extra-paths ["dev/release"]}
   :release-test {:extra-paths ["test/release"]
                  :extra-deps {org.hugoduncan/scry {:mvn/version "0.1.61"}}}
-  :build-test {:extra-paths ["." "test/build"]
+  :build-test {:extra-paths ["." "dev/jvm" "test/build"]
                :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.10"}
                             org.hugoduncan/scry {:mvn/version "0.1.61"}}
                :jvm-opts ["--enable-preview"]}

@@ -1,0 +1,1 @@
+Linux fad045a776df 6.19.7-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux

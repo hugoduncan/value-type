@@ -7,8 +7,8 @@ Run commands from the repository root.
 ## JDK requirement
 
 The value-path tests need a JDK with JEP 401 value classes: the Valhalla
-early-access build `27-jep401ea3+1-1`. Array tests also need its `javac`
-and the internal-package export shown below. Download it from https://jdk.java.net/valhalla/.
+early-access build selected by the [JVM facts](../../dev/jvm/jvms.edn).
+Array tests also need its `javac` and the internal-package export shown below.
 Other JDKs do not have value classes. On another JDK, the environment
 test fails and names the cause.
 
@@ -25,6 +25,54 @@ export JAVA_CMD=<valhalla-jdk-home>/bin/java
 `JAVA_HOME` alone is not sufficient: the `clojure` script uses `java`
 on `PATH` before `JAVA_HOME`.
 
+## Facts-based executable selection
+
+The development-only [JVM facts](../../dev/jvm/jvms.edn) define role builds,
+archives and separate flag profiles. `value-type.jvm-executable/resolve!`
+accepts a selected facts entry, an environment map and a provisioning root.
+It checks the exact `java.runtime.version` of the executable, including overrides.
+It does not add preview or export flags during this check.
+
+The default provisioning root is `~/.cache/value-type/jvms/`. Executables are
+under `<root>/<role>/<build>/<platform>/<archive-java-layout>`. Explicit
+`VALUE_TYPE_BASELINE_JAVA`, `VALUE_TYPE_VALHALLA_JAVA` and
+`VALUE_TYPE_SMOKE_JAVA` paths take precedence for their respective roles.
+Blank overrides use the provisioned path. Missing executables and build
+mismatches fail rather than select another JVM. The supported host platforms
+are Linux x64, Linux ARM64 and macOS ARM64. Linux `aarch64` and `arm64`
+select native ARM64 archives for all three roles. The baseline archive on
+macOS uses x64 and requires Rosetta.
+
+Linux ARM64 supports local release preview without x64 CPU emulation.
+Checked provisioning and the complete staged preview sequence pass on native
+ARM64; [task 027 evidence](../../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md)
+records build identities, commands and results. Hosted CI stays on Linux x64.
+Local ARM64 results do not establish x64 or hosted execution success.
+
+Install the selected builds with checked provisioning:
+
+```sh
+bb jvm:provision baseline
+bb jvm:provision valhalla
+bb jvm:provision ordinary
+```
+
+For a new installation, each command downloads the archive, checks its SHA-256
+before extraction and verifies the exact build before installation. If the
+role/build/platform directory already exists, the command checks only the
+executable and its exact build identity. Repeat calls do not download the
+archive or hash the installed files; this build check does not verify archive
+integrity.
+
+Each command prints the executable path. Optional arguments select
+`PLATFORM` and `ROOT`: `bb jvm:provision ROLE [PLATFORM [ROOT]]`. To request a
+fresh checked installation, select a new `ROOT` with no installation for that
+role, build and platform.
+Provisioning does not use executable overrides. Set `JAVA_CMD` separately
+for the parent CLI process; role overrides select the test consumers.
+Compatibility and build consumers use these verified roles and separate
+profiles, not the parent's flags.
+
 ## Test layout
 
 Tests share one parent directory, but use separate class path roots:
@@ -34,6 +82,8 @@ Tests share one parent directory, but use separate class path roots:
 | `test/runtime/` | Library tests on Valhalla with preview enabled. |
 | `test/compatibility/` | Per-parent fallback, AOT and startup checks, and shared child-JVM test support. |
 | `test/cross-jvm/` | Cross-JVM policy, transfer, AOT, array and capability report matrices. |
+| `test/smoke/` | Ordinary-JDK startup, policy and same-JDK AOT checks. |
+| `test/jvm/` | Facts, executable selection, provisioning and runner configuration. |
 | `test/build/` | Build contracts and isolated JAR consumers. |
 | `test/release/` | Release tooling contracts. |
 | `test/tooling/` | API, lint, prose, Git-hook and CI checks. |
@@ -56,10 +106,52 @@ pass. Failure details go to `.scry-results/`. Each run replaces that directory;
 retain results before the next run. The `:test` alias enables preview, but
 does not add the export. Do not use it for preview-free controls.
 
+## Smoke and forced-JIT tiers
+
+The primary baseline/Valhalla pair retains the full matrix. The ordinary role
+is **smoke-tested**, not full-matrix tested. Run the tooling and smoke suites:
+
+```sh
+clojure -M:jvm-test
+clojure -M:smoke-test
+```
+
+The smoke children use the ordinary role normally, without preview or exports,
+with explicit `value-type.value-classes=auto`. They check warning-free loading,
+the `java.lang.classfile` API, the absent value predicate and `:missing-value-predicate`.
+Fresh silent/warn/error processes check two definitions, identity behavior,
+one warning under warn, and rejected definitions under error. A silent AOT
+producer and separate source-free consumer use the same JDK. There are no
+cross-JVM or interpreter rows for this role.
+
+Run the value and array suites with forced compilation:
+
+```sh
+bb test:forced-jit
+```
+
+The runner selects and verifies this revision's Valhalla role. It adds preview,
+exports, explicit auto and `-Xcomp -Xbatch -XX:-TieredCompilation` to the Scry
+parent: compile on first invocation, wait for compilation, and use the
+optimizing compiler. It discovers only `test/runtime/`. Nonempty
+`JAVA_TOOL_OPTIONS`, `JDK_JAVA_OPTIONS` or `_JAVA_OPTIONS` are rejected.
+
+Forced compilation covers the parent, including AOT production. The runtime AOT
+consumers and fresh-process probes remain normal preview-only children. A pass
+is not forced-JIT child evidence. The runner reports build, flags and duration;
+Scry exit status and failure-file rules apply.
+
+To admit a new EA build, change the primary Valhalla facts entry as a candidate.
+Run this command on that exact candidate configuration, not the previous build.
+Record the command, build identity, flags, duration and result in the change's
+implementation evidence. Accept only after a pass; configuration changes need
+another pass. Failed candidates do not replace the accepted build. Full-matrix
+and release checks still apply. Change the JVM format row too if required.
+
 ## Verified fallback matrix
 
-Tests use Clojure 1.12.6 with Temurin `1.8.0_492-b09` and Valhalla
-`27-jep401ea3+1-1`, with preview disabled and enabled. This is tested
+Tests use Clojure 1.12.6 with the baseline and Valhalla roles in the
+[JVM facts](../../dev/jvm/jvms.edn), with preview disabled and enabled. This is tested
 coverage, not a new minimum JDK or a claim about future EA formats.
 Run the separate fallback suite without inheriting the value-only alias:
 
@@ -72,7 +164,7 @@ JAVA_CMD=<java8-home>/bin/java clojure -M:cross-jvm-test
 
 The cross-JVM tests need both executables. Set `VALUE_TYPE_BASELINE_JAVA`
 and `VALUE_TYPE_VALHALLA_JAVA` to their full executable paths when they are
-not at the local defaults recorded in the task 009 plan. The focused
+not in the provisioning directory described above. The focused
 `:cross-jvm-test` commands below use
 `JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA"`; set this variable before you run
 them. If it is not set, `JAVA_CMD` is empty and the parent uses `java` on
@@ -145,7 +237,7 @@ not set.
 ## Verify portable non-nil fields
 
 Set `VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA` to the Java 8
-and EA3 executable paths. The following checks need no internal-package exports:
+and facts-selected Valhalla executable paths. The following checks need no internal-package exports:
 
 ```sh
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:fallback-test \
@@ -164,7 +256,7 @@ explicitly. These checks cover native capability, declaration errors, repeated
 policy rejection, transferred expansions and source-free AOT consumers. The AOT
 suite deletes and excludes producer sources, compiles separate Clojure and Java
 consumers, and checks incompatible receivers. Java compilation uses the compiler
-in the selected EA3 JDK; a Java runtime alone is not sufficient.
+in the facts-selected Valhalla JDK; a Java runtime alone is not sufficient.
 
 Representation and enforcement are separate. On Java 8 and preview-disabled
 EA3, `silent` and `warn` permit identity output with generated constructor
@@ -246,8 +338,8 @@ are those in the fallback matrix above, not future JVM formats.
 ## Verify `deftype*` forms
 
 Set `VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA` to the Java 8
-and EA3 executable paths. These checks need no internal-package exports.
-Run the value-path checks on EA3 with preview:
+and facts-selected Valhalla executable paths. These checks need no internal-package exports.
+Run the value-path checks on facts-selected Valhalla with preview:
 
 ```sh
 JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -M:test -m scry.cli \
@@ -597,8 +689,8 @@ expected row for its configuration (`:java8`, `:no-options`, `:export-only`
 or `:export`). Nested Point/String non-nil fields also retain concrete
 storage and direct/factory constructor checks on Java 8 and EA3 preview
 off/on under `silent`. These packaging checks do not establish all-policy
-field coverage. Set `VALUE_TYPE_BASELINE_JAVA` explicitly; the supported
-consumer uses `JAVA_CMD`. It selects `test/build/`; it does not replace the
+field coverage. Consumers select the baseline and Valhalla facts roles; use
+`VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA` to override their paths. It selects `test/build/`; it does not replace the
 library test command above. Exit status and failure files follow the same
 Scry rules.
 

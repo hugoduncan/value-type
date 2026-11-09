@@ -1,0 +1,8 @@
+.......................................................................................................................................................................................Note: test/resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+.Note: test/resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+....Note: test/resources/non-nil-fields/ExternalValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+...Assertions: 5233 passed, 0 failed, 0 errored
+Tests: 191 passed, 0 failed, 0 errored

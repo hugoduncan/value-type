@@ -1,0 +1,18 @@
+Downloading: org/clojure/clojure/1.12.6/clojure-1.12.6.pom from central
+Downloading: org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.pom from central
+Downloading: org/clojure/pom.contrib/1.2.0/pom.contrib-1.2.0.pom from central
+Downloading: org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.pom from central
+Downloading: org/hugoduncan/scry/0.1.61/scry-0.1.61.pom from clojars
+Downloading: org/clojure/tools.namespace/1.5.1/tools.namespace-1.5.1.pom from central
+Downloading: org/clojure/pom.contrib/1.4.0/pom.contrib-1.4.0.pom from central
+Downloading: org/clojure/tools.reader/1.6.0/tools.reader-1.6.0.pom from central
+Downloading: org/clojure/java.classpath/1.1.1/java.classpath-1.1.1.pom from central
+Downloading: org/clojure/clojure/1.12.6/clojure-1.12.6.jar from central
+Downloading: org/clojure/java.classpath/1.1.1/java.classpath-1.1.1.jar from central
+Downloading: org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar from central
+Downloading: org/clojure/tools.namespace/1.5.1/tools.namespace-1.5.1.jar from central
+Downloading: org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar from central
+Downloading: org/clojure/tools.reader/1.6.0/tools.reader-1.6.0.jar from central
+Downloading: org/hugoduncan/scry/0.1.61/scry-0.1.61.jar from clojars
+..........Assertions: 70 passed, 0 failed, 0 errored
+Tests: 10 passed, 0 failed, 0 errored

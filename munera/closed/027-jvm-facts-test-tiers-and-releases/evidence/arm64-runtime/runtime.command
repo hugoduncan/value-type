@@ -1,0 +1,1 @@
+env JAVA_CMD=/opt/task027-jvms/valhalla/27-jep401ea3+1-1/linux-aarch64/bin/java clojure -J--enable-preview -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli --dir test/runtime 

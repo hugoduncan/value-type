@@ -25,7 +25,7 @@
     (is (value-class-support?)
         (str "The JVM has no value classes (Class::isValue is missing). "
              "Java " (System/getProperty "java.version") " is in use. "
-             "Fix: use the Valhalla JDK (https://jdk.java.net/valhalla/): "
+             "Fix: select the Valhalla role in dev/jvm/jvms.edn; see doc/development/runtime.md. "
              "export JAVA_CMD=<valhalla-jdk-home>/bin/java"))))
 
 (deftest jvm-has-preview-enabled-test

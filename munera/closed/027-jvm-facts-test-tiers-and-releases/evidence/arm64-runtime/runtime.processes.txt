@@ -1,0 +1,4 @@
+    PID    PPID COMMAND
+      1       0 sleep infinity
+   5790       0 bash /tmp/arm64-runtime.sh
+   6224    5790 ps -eo pid,ppid,args

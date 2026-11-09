@@ -47,18 +47,12 @@ jobs:
       - name: Provision runtime JVMs
         id: provision-runtime-jvms
         run: |
-          mkdir -p "$RUNNER_TEMP/jvms/java8" "$RUNNER_TEMP/jvms/valhalla"
-          cd "$RUNNER_TEMP/jvms"
-          curl --fail --location --output java8.tar.gz 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u492-b09/OpenJDK8U-jdk_x64_linux_hotspot_8u492b09.tar.gz'
-          curl --fail --location --output valhalla.tar.gz 'https://download.java.net/java/early_access/valhalla/27/1/openjdk-27-jep401ea3+1-1_linux-x64_bin.tar.gz'
-          echo 'da257f161d7f8c6ca5b0e5d9e4090f65ac28c5e398072e68b8ae87988b1d1a2e  java8.tar.gz' | sha256sum -c -
-          echo 'b8bdd7b181c6a5ea2dd9959255e222cd9d9a9f42cca4f2400991b9b2ff7ffb7d  valhalla.tar.gz' | sha256sum -c -
-          tar -xzf java8.tar.gz -C java8 --strip-components=1
-          tar -xzf valhalla.tar.gz -C valhalla --strip-components=1
-          "$RUNNER_TEMP/jvms/java8/bin/java" -version
-          "$RUNNER_TEMP/jvms/valhalla/bin/java" -version
-          echo "VALUE_TYPE_BASELINE_JAVA=$RUNNER_TEMP/jvms/java8/bin/java" >> "$GITHUB_ENV"
-          echo "VALUE_TYPE_VALHALLA_JAVA=$RUNNER_TEMP/jvms/valhalla/bin/java" >> "$GITHUB_ENV"
+          baseline=$(bb jvm:provision baseline linux-x64 "$RUNNER_TEMP/jvms")
+          valhalla=$(bb jvm:provision valhalla linux-x64 "$RUNNER_TEMP/jvms")
+          ordinary=$(bb jvm:provision ordinary linux-x64 "$RUNNER_TEMP/jvms")
+          echo "VALUE_TYPE_BASELINE_JAVA=$baseline" >> "$GITHUB_ENV"
+          echo "VALUE_TYPE_VALHALLA_JAVA=$valhalla" >> "$GITHUB_ENV"
+          echo "VALUE_TYPE_SMOKE_JAVA=$ordinary" >> "$GITHUB_ENV"
       - name: Report tooling versions
         id: report-tooling-versions
         run: |
@@ -97,9 +91,51 @@ jobs:
           path: .scry-results/
           include-hidden-files: true
           if-no-files-found: warn
+      - name: Test JVM tooling
+        id: jvm-tooling
+        timeout-minutes: 10
+        run: JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:jvm-test
+      - name: Preserve jvm-tooling failures
+        id: preserve-jvm-tooling-failures
+        if: ${{ failure() && steps['jvm-tooling'].outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-jvm-tooling
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test ordinary JVM smoke
+        id: smoke
+        timeout-minutes: 10
+        run: JAVA_CMD="$VALUE_TYPE_BASELINE_JAVA" clojure -M:smoke-test
+      - name: Preserve smoke failures
+        id: preserve-smoke-failures
+        if: ${{ failure() && steps['smoke'].outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-smoke
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
+      - name: Test forced JIT
+        id: forced-jit
+        timeout-minutes: 10
+        run: bb test:forced-jit
+      - name: Preserve forced-jit failures
+        id: preserve-forced-jit-failures
+        if: ${{ failure() && steps['forced-jit'].outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-scry-forced-jit
+          path: .scry-results/
+          include-hidden-files: true
+          if-no-files-found: warn
       - name: Test runtime
         id: runtime
-        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -J--add-exports=java.base/jdk.internal.value=ALL-UNNAMED -M:test -m scry.cli --dir test/runtime
+        run: |
+          flags=$(bb -e '(require (quote [value-type.jvm-facts :as facts])) (doseq [flag (:jvm-opts (facts/select (facts/read-facts) :valhalla :linux-x64 :preview-export))] (print (str "-J" flag " ")))')
+          read -r -a jvm_flags <<< "$flags"
+          JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure "${jvm_flags[@]}" -M:test -m scry.cli --dir test/runtime
       - name: Preserve runtime failures
         id: preserve-runtime-failures
         if: ${{ failure() && steps.runtime.outcome == 'failure' }}
@@ -135,7 +171,10 @@ jobs:
           if-no-files-found: warn
       - name: Test fallback-preview-on
         id: fallback-preview-on
-        run: JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure -J--enable-preview -M:fallback-test
+        run: |
+          flags=$(bb -e '(require (quote [value-type.jvm-facts :as facts])) (doseq [flag (:jvm-opts (facts/select (facts/read-facts) :valhalla :linux-x64 :preview))] (print (str "-J" flag " ")))')
+          read -r -a jvm_flags <<< "$flags"
+          JAVA_CMD="$VALUE_TYPE_VALHALLA_JAVA" clojure "${jvm_flags[@]}" -M:fallback-test
       - name: Preserve fallback-preview-on failures
         id: preserve-fallback-preview-on-failures
         if: ${{ failure() && steps.fallback-preview-on.outcome == 'failure' }}

@@ -1,0 +1,4 @@
+    PID    PPID COMMAND
+      1       0 sleep infinity
+  58386       0 bash /tmp/run-artifacts.sh
+  60210   58386 ps -eo pid,ppid,args

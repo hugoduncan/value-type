@@ -10,7 +10,7 @@ and the [release workflow](../../release-workflow.md). Basis: residual
 
 - Subject: the facts about each tested JVM.
 - Choice: one data file in the repository lists each tested JVM: role
-  (baseline or Valhalla), build ID, download URL for each platform, SHA-256,
+  (baseline, Valhalla or ordinary smoke), build ID, download URL for each platform, SHA-256,
   required flags and test tier (D22). `release.yml`, the test harness and the
   build tests read it. Documents link to it and do not repeat build IDs. The
   project follows the current EA build: a new build replaces the old row.

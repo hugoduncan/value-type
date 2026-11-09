@@ -1,0 +1,7 @@
+    PID    PPID COMMAND
+      1       0 sleep infinity
+   6230       0 bash -c bash /tmp/arm64-compatibility.sh > /evidence/arm64-compatibility-driver.log 2>&1; echo $? > /evidence/arm64-compatibility-driver.exit
+   6231    6230 bash /tmp/arm64-compatibility.sh
+   7704       0 bash -c while [ ! -f /evidence/arm64-compatibility-driver.exit ]; do sleep 10; done; cat /evidence/arm64-compatibility-driver.exit /evidence/arm64-compatibility-driver.log
+  20697    7704 sleep 10
+  21955    6231 ps -eo pid,ppid,args

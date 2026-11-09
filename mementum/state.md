@@ -70,7 +70,8 @@ lists each gap. Closed task 026 realizes D19 (compiler boundary
 `impl.compiler`: all compiler code use in `src` and the shape data), D20
 (one receiving expansion for all value definitions) and the AOT part of D17
 and D18 (value-class guard `impl.capability/require-value-capability!` as
-the first emitted form). Open Munera tasks 027–028 realize the rest; `munera/plan.md` gives the order.
+the first emitted form). Closed task 027 realizes D21, D22 and D24. Open task 028 covers D23;
+`munera/plan.md` gives the order.
 
 ## Non-nil fields
 
@@ -95,6 +96,48 @@ or performance. See the
 its linked per-criterion audits and the
 [implementation record](../munera/closed/017-portable-non-nil-fields/implementation.md).
 The [field design](../ramora/non-nil-field-design.md) is the contract.
+
+Current installation and public API guidance link the JVM facts or runtime
+guide; exact build IDs in usage examples are historical evidence.
+Development JVM facts now live in `dev/jvm/jvms.edn`, with a Java-8-safe
+validated reader, exact-build executable selection and `:jvm-test`. Selection
+uses role overrides or `~/.cache/value-type/jvms/<role>/<build>/<platform>/`.
+Checked provisioning is available through `bb jvm:provision ROLE [PLATFORM [ROOT]]`.
+It checks SHA-256 before extraction and the exact JVM build before installation.
+Facts and installation paths reject unsafe role/build/platform components;
+canonical destination checks reject paths outside the provisioning root.
+Executable build checks have a 30-second default timeout, bounded termination
+waits and captured-output diagnostics; they remain Java-8-safe.
+Compatibility matrix selection and isolated build consumers now use verified
+facts roles and profiles. The isolated `:smoke-test` alias now checks ordinary-JDK startup under all
+three fallback policies. Definition-policy and source-free same-JDK AOT checks
+also pass in fresh processes on the ordinary facts role (Temurin 25.0.5+8-LTS).
+This is bounded smoke evidence, not full-matrix coverage. The facts-selected `bb test:forced-jit` row passes on EA3, including a real
+parent/child argument check. Forced compilation applies only to the Scry parent
+(including AOT production); runtime AOT consumers and fresh-process probes remain
+normal preview-only children. Task 027 retains admission evidence. Release workflow provisioning now uses checked facts for all three roles,
+with JVM-tooling, smoke and forced-JIT gates before publication. Runtime and preview-enabled fallback launch flags now use facts profiles.
+Runtime and release guides describe facts selection, bounded tiers and candidate
+admission. Architecture documentation now matches facts, tiers and two-file preparation.
+The complete local JVM suite sequence passes on macOS. Staged Linux x64
+preview gates pass except for the full cross-JVM gate, whose emulated runs
+timed out without a complete passing summary. Task 027 retains those results
+and diagnostics; their cause remains unresolved.
+
+Local Linux preview uses native ARM64 in an ARM64 VM. Checked provisioning
+verifies all three pinned builds and native architectures. The complete staged
+ARM64 preview sequence passes, including notes selection and JAR build.
+Hosted CI and its facts remain Linux x64. No further x64-emulated full-matrix
+diagnosis is required for local acceptance; ARM64 results cannot establish
+x64 or hosted success.
+
+The maintained-source JVM-fact duplication and release-order audit passes. Release
+preparation validates README and changelog before writing and commits both
+with one version. Success also requires a clean final worktree/index and exact
+committed document contents. The release commit must have the original HEAD as
+its only parent and change exactly README.md and CHANGELOG.md. Real-Git tests cover first preparation, replacement,
+hook-induced dirty output, amended coordinates, extra paths, changed ancestry
+and retained failure state. Publication remains separate.
 
 ## Runtime and verification limits
 
@@ -141,3 +184,13 @@ The [field design](../ramora/non-nil-field-design.md) is the contract.
   only in embodiment sections; task and acceptance records belong in Munera.
 - `mementum/knowledge/`: reusable lessons on JVM boundaries, testing,
   benchmarking and release behavior.
+
+## Closed task 027 — Verification limits
+
+Implementation, review and knowledge extraction are complete. The five design
+criteria have local verification evidence in the
+[closed task record](../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md). Native ARM64 evidence includes checked downloads,
+all preview gates, notes and JAR output, with finite bounds and no surviving
+JVM descendants. No preparation or publication was run. Historical x64
+emulation timeouts remain unresolved; hosted Actions and live publication
+remain unverified. Do not treat local ARM64 passes as x64 evidence.

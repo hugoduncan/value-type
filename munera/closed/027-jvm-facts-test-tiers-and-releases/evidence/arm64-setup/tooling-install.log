@@ -1,0 +1,45 @@
+mise plugin:clojure             clone https://github.com/mise-plugins/mise-clojure.git
+mise plugin:clojure           ✓ https://github.com/mise-plugins/mise-clojure.git#790f4f9
+mise babashka@1.13.225          [1/3] install
+mise github:clj-kondo/clj-kondo@2026.04.15 [1/3] install
+mise github:weavejester/cljfmt@0.16.4 [1/3] install
+mise pre-commit@4.6.0           [1/2] install
+mise vale@3.17.1                [1/3] install
+mise java@temurin-21.0.10+7.0.LTS [1/3] install
+mise java@temurin-21.0.10+7.0.LTS [1/3] download OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.10_7.tar.gz
+mise clojure@1.12.6.1673        [1/3] install
+mise clojure@1.12.6.1673        [1/3] bin/install
+mise clojure@1.12.6.1673        [1/3] ~/.local/share/mise/plugins/clojure/bin/install
+mise pre-commit@4.6.0           [1/2] download pre-commit-4.6.0.pyz
+mise babashka@1.13.225          [1/3] download babashka-1.13.225-linux-aarch64-static.tar.gz
+mise github:clj-kondo/clj-kondo@2026.04.15 [1/3] download clj-kondo-2026.04.15-linux-aarch64.zip
+mise vale@3.17.1                [1/3] download vale_3.17.1_Linux_arm64.tar.gz
+mise github:weavejester/cljfmt@0.16.4 [1/3] download cljfmt-0.16.4-linux-aarch64.tar.gz
+mise clojure@1.12.6.1673      ✓ installed
+mise pre-commit@4.6.0           [2/2] checksum pre-commit-4.6.0.pyz
+mise pre-commit@4.6.0           [2/2] extract pre-commit-4.6.0.pyz
+mise pre-commit@4.6.0         ✓ installed
+mise github:weavejester/cljfmt@0.16.4 [2/3] checksum cljfmt-0.16.4-linux-aarch64.tar.gz
+mise vale@3.17.1                [2/3] checksum vale_3.17.1_Linux_arm64.tar.gz
+mise github:weavejester/cljfmt@0.16.4 [2/3] verify GitHub artifact attestations
+mise vale@3.17.1                [3/3] extract vale_3.17.1_Linux_arm64.tar.gz
+mise vale@3.17.1              ✓ installed
+mise github:clj-kondo/clj-kondo@2026.04.15 [2/3] checksum clj-kondo-2026.04.15-linux-aarch64.zip
+mise github:clj-kondo/clj-kondo@2026.04.15 [2/3] verify GitHub artifact attestations
+mise github:weavejester/cljfmt@0.16.4 [2/3] verify SLSA provenance
+mise github:weavejester/cljfmt@0.16.4 [3/3] extract cljfmt-0.16.4-linux-aarch64.tar.gz
+mise github:weavejester/cljfmt@0.16.4 ✓ installed
+mise babashka@1.13.225          [2/3] checksum babashka-1.13.225-linux-aarch64-static.tar.gz
+mise babashka@1.13.225          [2/3] verify GitHub artifact attestations
+mise github:clj-kondo/clj-kondo@2026.04.15 [2/3] verify SLSA provenance
+mise github:clj-kondo/clj-kondo@2026.04.15 ✓ installed
+mise babashka@1.13.225          [2/3] verify SLSA provenance
+mise babashka@1.13.225          [3/3] extract babashka-1.13.225-linux-aarch64-static.tar.gz
+mise babashka@1.13.225        ✓ installed
+mise java@temurin-21.0.10+7.0.LTS [1/3] checksum OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.10_7.tar.gz
+mise java@temurin-21.0.10+7.0.LTS [2/3] extract OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.10_7.tar.gz
+mise java@temurin-21.0.10+7.0.LTS [3/3] java -version
+openjdk version "21.0.10" 2026-01-20 LTS
+OpenJDK Runtime Environment Temurin-21.0.10+7 (build 21.0.10+7-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.10+7 (build 21.0.10+7-LTS, mixed mode, sharing)
+mise java@temurin-21.0.10+7.0.LTS ✓ installed

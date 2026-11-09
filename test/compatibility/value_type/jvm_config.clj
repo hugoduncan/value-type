@@ -1,15 +1,21 @@
 (ns value-type.jvm-config
   "Baseline-safe configuration for the documented fallback test matrix."
-  (:require [clojure.string :as str]
-            [value-type.cell-registry :as registry]))
+  (:require [value-type.cell-registry :as registry]
+            [value-type.jvm-facts :as facts]
+            [value-type.jvm-executable :as executable]))
 
-(def baseline-version-prefix
-  "The java.version prefix of the Java 8 baseline runtime."
-  "1.8.")
-
-(def valhalla-version-prefix
-  "The java.version prefix of the Valhalla 27 JEP 401 EA runtime."
-  "27-jep401ea")
+(defn parent-role
+  "Select a primary role by exact runtime build, independent of capabilities."
+  [entries build flags]
+  (or (some (fn [{:keys [role] expected :build}]
+              (when (and (#{:baseline :valhalla} role)
+                         (= expected build)
+                         (or (= role :valhalla)
+                             (not (some #{"--enable-preview"} flags))))
+                role))
+            entries)
+      (throw (ex-info "Unsupported fallback test configuration: use the primary pair in dev/jvm/jvms.edn"
+                      {:build build :jvm-opts flags}))))
 
 (def preview-option
   "The JVM option that enables preview features."
@@ -22,35 +28,43 @@
   {:java (str (System/getProperty "java.home") "/bin/java")
    :classpath (System/getProperty "java.class.path")})
 
-(defn configuration
-  "Return explicit runner configurations and independent host expectations.
+(defn role-runtime
+  "Resolve one facts role/profile to a verified child runtime."
+  [entries role platform profile environment root classpath]
+  (let [selection (facts/select entries role platform profile)]
+    {:java (executable/resolve! selection environment root)
+     :classpath classpath
+     :jvm-opts (:jvm-opts selection)}))
 
-   Only Java 8 without preview and Valhalla 27 EA with preview off/on are
-   test matrix entries. :preview-off is the :valhalla runtime with no JVM
-   options. :selected is the current-runtime with its preview option.
-   Producer executable overrides retain their roles."
+(defn configuration
+  "Return the primary-pair matrix and independent capability expectations.
+
+   Executables and launch profiles come from facts. The selected parent must
+   match a primary build exactly; smoke roles never become matrix entries."
   []
-  (let [{version :runtime flags :flags} (registry/jvm-facts)
+  (let [entries (facts/read-facts)
+        platform (executable/platform (System/getProperty "os.name")
+                                      (System/getProperty "os.arch"))
+        environment (System/getenv)
+        root (executable/default-root (System/getProperty "user.home"))
+        {flags :flags} (registry/jvm-facts)
         options (filterv #{preview-option} flags)
-        baseline? (str/starts-with? version baseline-version-prefix)
-        valhalla? (str/starts-with? version valhalla-version-prefix)
+        role (parent-role entries (System/getProperty "java.runtime.version") options)
+        baseline? (= role :baseline)
+        valhalla? (= role :valhalla)
         {:keys [classpath] :as current} (current-runtime)
-        valhalla {:java (or (System/getenv "VALUE_TYPE_VALHALLA_JAVA")
-                            (str (System/getProperty "user.home")
-                                 "/.local/jdks/jdk-27.jdk/Contents/Home/bin/java"))
-                  :classpath classpath :jvm-opts [preview-option]}]
-    (when-not (or (and baseline? (empty? options)) valhalla?)
-      (throw (ex-info "Unsupported fallback test configuration: use Java 8 or Valhalla 27 JEP 401 EA"
-                      {:version version :jvm-opts options})))
+        runtime (fn [role profile]
+                  (role-runtime entries role platform profile environment root classpath))]
+    (executable/verify! (facts/select entries (if baseline? :baseline :valhalla)
+                                      platform :plain)
+                        (:java current))
     {:available? (and valhalla? (boolean (seq options)))
      :baseline? baseline?
      :unavailable-reason (if baseline? :missing-classfile-api :unsupported-class-version)
      :selected (assoc current :jvm-opts options)
-     :baseline {:java (or (System/getenv "VALUE_TYPE_BASELINE_JAVA")
-                          "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/bin/java")
-                :classpath classpath :jvm-opts []}
-     :valhalla valhalla
-     :preview-off (assoc valhalla :jvm-opts [])}))
+     :baseline (runtime :baseline :plain)
+     :valhalla (runtime :valhalla :preview)
+     :preview-off (runtime :valhalla :plain)}))
 
 (defn receivers
   "Return the receiver runtime axis of configuration: baseline, preview off

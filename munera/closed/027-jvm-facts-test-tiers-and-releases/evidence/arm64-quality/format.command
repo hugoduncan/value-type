@@ -1,0 +1,1 @@
+bb clj-fmt:check 

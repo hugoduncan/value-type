@@ -481,8 +481,9 @@
   gives `:not-installed`; see doc/usage.md.
 
   Excluded: mutable caches, value-equality emulation and
-  serialization guarantees. Evidence covers Clojure 1.12.6, Java 8 and
-  Valhalla 27-jep401ea3+1-1 only. See doc/usage.md."
+  serialization guarantees. Evidence covers Clojure 1.12.6 and the primary
+  Java 8 and Valhalla builds in [the JVM facts](../dev/jvm/jvms.edn).
+  See [the runtime guide](development/runtime.md) for selection and support limits."
   {:arglists '([tagname classname [& fields] & opts+specs])}
   [tagname classname fields & opts+specs]
   (let [class-name (str classname)

@@ -62,7 +62,7 @@ checkout is needed. Downloads and imports are ignored by Git.
 | `bb api-docs --check` | Fail on missing or stale API output without writing it. |
 
 Formatting and code lint cover `src/`, all test directories listed in the
-[test layout](runtime.md#test-layout), `dev/bench/`, `dev/release/`, `bb/`,
+[test layout](runtime.md#test-layout), `dev/bench/`, `dev/jvm/`, `dev/release/`, `bb/`,
 `.clj-kondo/hooks/`,
 `build.clj`, `bb.edn` and `deps.edn`. They exclude historical `dev/spike/`
 code, generated output, caches and dependency imports.

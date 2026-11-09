@@ -272,12 +272,12 @@
 (def ^:private late-marker "cell-runner-late-marker")
 
 (def ^:private past-timeout-ms
-  "Sleep of the timed-out cell before late-marker: above :timeout-ms
-   (2000) from cell start, below the wait (12000) from process start."
+  "Sleep before late-marker: longer than the base timeout (2000 ms).
+   Six cells allow 52000 ms from process start, including emulated startup."
   4000)
 
 (deftest timed-out-child-outcome-test
-  ;; Acceptance 5: a child past 2000 + 10000 × (2 − 1) ms is destroyed and
+  ;; Acceptance 5: a child past 2000 + 10000 × (6 − 1) ms is destroyed and
   ;; gives no result for any cell. The cell prints late-marker after
   ;; past-timeout-ms, so late-marker shows that the wait is wait-ms, not
   ;; :timeout-ms. The cell writes file after its last sleep, so a file that
@@ -296,7 +296,7 @@
                                (.println System/out ~late-marker) (.flush System/out)
                                (Thread/sleep 60000)
                                (spit ~(str file) "done"))
-                          :ok])
+                          :ok :ok :ok :ok :ok])
                   [run] (runner/run-jvms [child])]
               [child run (.exists file)])))]
     (harness/assert-child-stderr child run)
@@ -308,12 +308,14 @@
       (assert-no-result child run))))
 
 (def ^:private sleep-ms
-  "Run time of each limit child after its start."
-  6000)
+  "Work interval of each limit child; exceeds the startup allowance so a
+   queued child's wait plus work exceeds its process timeout."
+  60000)
 
 (def ^:private start-ms
-  "Upper bound of the JVM start of a limit child (about 3000 ms alone)."
-  6000)
+  "Startup allowance, including Linux x64 emulation (measured at 6–9 s).
+   Must remain below sleep-ms to retain the permit-wait check."
+  30000)
 
 (def ^:private limit-form
   "Sleep sleep-ms, then print the [start end] wall-clock ms of the sleep."

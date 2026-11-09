@@ -3,7 +3,8 @@
   (:require [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [value-type.notes :as notes])
+            [value-type.notes :as notes]
+            [value-type.readme :as readme])
   (:import [java.time LocalDate ZoneOffset]))
 
 (defn- git [directory & args]
@@ -17,7 +18,7 @@
   (Long/parseLong (git directory "rev-list" "--count" "HEAD")))
 
 (defn prepare
-  "Stamp and commit CHANGELOG.md on clean master with full history.
+  "Stamp and commit README.md and CHANGELOG.md on clean master with full history.
    Failures after writing leave local changes for inspection. Return version and SHA."
   [directory]
   (when-not (= "master" (git directory "symbolic-ref" "--short" "HEAD"))
@@ -26,14 +27,32 @@
     (throw (ex-info "Preparation requires complete history" {})))
   (when-not (str/blank? (git directory "status" "--porcelain" "--untracked-files=all"))
     (throw (ex-info "Preparation requires a clean worktree and index" {})))
-  (let [version (str "0.1." (inc (commit-count directory)))
+  (let [original-head (git directory "rev-parse" "HEAD")
+        version (str "0.1." (inc (commit-count directory)))
         changelog (io/file directory "CHANGELOG.md")
-        stamped (notes/stamp (slurp changelog) version (LocalDate/now ZoneOffset/UTC))]
+        stamped (notes/stamp (slurp changelog) version (LocalDate/now ZoneOffset/UTC))
+        readme-file (io/file directory "README.md")
+        rendered (readme/render (slurp readme-file) version)]
     (spit changelog stamped)
-    (git directory "add" "--" "CHANGELOG.md")
-    (git directory "commit" "--only" "-m" (str "Release v" version) "--" "CHANGELOG.md")
+    (spit readme-file rendered)
+    (git directory "add" "--" "CHANGELOG.md" "README.md")
+    (git directory "commit" "--only" "-m" (str "Release v" version) "--" "CHANGELOG.md" "README.md")
     (when-not (= version (str "0.1." (commit-count directory)))
       (throw (ex-info "Release commit count changed; inspect local state" {:version version})))
+    (when-not (= original-head (git directory "show" "-s" "--format=%P" "HEAD"))
+      (throw (ex-info "Release history changed; inspect local state" {:version version})))
+    (let [paths (set (str/split (git directory "diff" "--name-only" "--no-renames" "-z"
+                                     original-head "HEAD" "--") #"\u0000"))]
+      (when-not (= #{"README.md" "CHANGELOG.md"} paths)
+        (throw (ex-info "Release changed paths differ; inspect local state"
+                        {:version version :paths paths}))))
+    (when-not (str/blank? (git directory "status" "--porcelain" "--untracked-files=all"))
+      (throw (ex-info "Release worktree or index changed; inspect local state" {:version version})))
+    (doseq [[path expected] [["README.md" rendered] ["CHANGELOG.md" stamped]]]
+      (let [{:keys [exit out]} (shell/sh "git" "show" (str "HEAD:" path) :dir directory)]
+        (when-not (and (zero? exit) (= expected out))
+          (throw (ex-info "Release committed document changed; inspect local state"
+                          {:version version :path path})))))
     {:version version :sha (git directory "rev-parse" "HEAD")}))
 
 (defn write-notes

@@ -18,17 +18,28 @@ references. This storage layout is called flattening; it is not guaranteed.
 
 ## Project status
 
-The project is experimental and has no published release. Use it to
-experiment with value classes in Clojure; do not assume a stable API or
-production readiness. Value-class support depends on an early-access JVM.
+The project is experimental. Do not assume a stable API or production
+readiness. Value-class support depends on an early-access JVM.
 
-Tests cover Clojure 1.12.6 on Java 8 and Valhalla `27-jep401ea3+1-1`,
+<!-- release-status:start -->
+No release is published.
+<!-- release-status:end -->
+
+Tests cover Clojure 1.12.6 on the primary Java 8 and Valhalla builds in
+[the JVM facts](dev/jvm/jvms.edn),
 with preview disabled and enabled on Valhalla. This is tested coverage,
 not a guarantee for future JVM versions. See the
 [verification commands](doc/development/runtime.md#verified-fallback-matrix).
 
 ## Installation and quick start
 
+<!-- release-install:start -->
+No release coordinates are available yet.
+<!-- release-install:end -->
+
+### Development only
+
+Cloning and `:local/root` installation are for development only.
 Install the Clojure CLI and clone this repository:
 
 ```sh
@@ -144,7 +155,7 @@ Unlike non-nil fields, array construction has **no ordinary-JVM fallback**.
 `into-array` buffers the input before allocation; it is not a streaming
 constructor. `array-info` also accepts ordinary reference arrays. It needs
 the export flag, but ordinary-array inspection does not need preview on the
-tested EA3 build.
+facts-selected Valhalla build.
 
 See the [API reference](doc/API.md) for all three functions and the
 [usage guide](doc/usage.md#value-array-allocation) for validation and error

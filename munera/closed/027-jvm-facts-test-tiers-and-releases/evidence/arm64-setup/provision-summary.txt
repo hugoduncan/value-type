@@ -1,0 +1,3 @@
+baseline exit=0 seconds=5
+valhalla exit=0 seconds=14
+ordinary exit=0 seconds=6

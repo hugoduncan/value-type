@@ -1,0 +1,11 @@
+{:java "/opt/task027-jvms/valhalla/27-jep401ea3+1-1/linux-aarch64/bin/java", :build "27-jep401ea3+1-1", :parent-flags ["--enable-preview" "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED" "-Dvalue-type.value-classes=auto" "-Xcomp" "-Xbatch" "-XX:-TieredCompilation"], :child-flags ["--enable-preview"]}
+Forced compilation applies only to the Scry parent; runtime children remain normal.
+.............................................................................Note: test/resources/non-nil-fields/ExternalValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+..............Note: test/resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+.Note: test/resources/value-array/IndependentValue.java uses preview features of Java SE 27.
+Note: Recompile with -Xlint:preview for details.
+...................................................................................................Assertions: 5237 passed, 0 failed, 0 errored
+Tests: 191 passed, 0 failed, 0 errored
+{:exit 0, :elapsed-seconds 23.956322404}

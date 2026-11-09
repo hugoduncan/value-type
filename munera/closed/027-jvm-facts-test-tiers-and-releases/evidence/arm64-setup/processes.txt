@@ -1,0 +1,4 @@
+    PID    PPID COMMAND
+      1       0 sleep infinity
+   2660       0 bash -c export PATH=/root/.local/bin:$PATH; cd /checkout; eval "$(mise env -s bash)"; start=$SECONDS; timeout -k 10 300 env JAVA_CMD="$(cat /evidence/baseline.path)" clojure -M:jvm-test > /evidence/jvm-test.log 2>&1; code=$?; echo "jvm-test exit=$code seconds=$((SECONDS-start))" | tee /evidence/jvm-test-summary.txt; if test -d .scry-results; then cp -r .scry-results /evidence/jvm-test-scry; fi; ps -eo pid,ppid,args > /evidence/processes.txt; git status --porcelain > /evidence/git-status.txt; git rev-parse HEAD > /evidence/revision.txt; git rev-parse --is-shallow-repository >> /evidence/revision.txt; exit $code
+   2885    2660 ps -eo pid,ppid,args

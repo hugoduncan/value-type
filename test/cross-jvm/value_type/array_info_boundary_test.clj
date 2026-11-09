@@ -4,7 +4,8 @@
             [value-type.capability-rows :as rows]
             [value-type.cell-harness :as harness]
             [value-type.cell-registry :as registry]
-            [value-type.jvm-config :as config]))
+            [value-type.jvm-config :as config]
+            [value-type.jvm-facts :as facts]))
 
 (def ^:private invalid-inputs
   "Input forms that array-info rejects as :not-reference-array."
@@ -28,6 +29,7 @@
      (require 'value-type.array-info-observation)
      (assoc
       (value-type.cell-registry/runtime-facts '~require-order)
+      :runtime (System/getProperty "java.runtime.version")
       :native (value-type.array-info-observation/observe)
       :outcomes
       (mapv (fn [input#]
@@ -97,16 +99,17 @@
     [{:info supported-info} (partial = {:info supported-info})]
     (unavailable-expected reason cause)))
 
-(defn- runtime-prefix [java8?]
-  (if java8? config/baseline-version-prefix config/valhalla-version-prefix))
+(defn- runtime-build [java8?]
+  (:build (facts/select (facts/read-facts)
+                        (if java8? :baseline :valhalla) :linux-x64 :plain)))
 
 (defn- control-expected
   [configuration java8? supported? reason cause policy require-order]
-  (let [prefix (runtime-prefix java8?)]
+  (let [build (runtime-build java8?)]
     (harness/described
      (harness/keyed
       (assoc (capability/runtime-expected
-              (harness/starts-with prefix)
+              (harness/fixed build)
               configuration policy require-order)
              :native (harness/including (update-vals (native-expected java8? supported?)
                                                      harness/fixed))

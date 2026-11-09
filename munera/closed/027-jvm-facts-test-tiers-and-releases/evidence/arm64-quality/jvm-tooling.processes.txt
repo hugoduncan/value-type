@@ -1,0 +1,4 @@
+    PID    PPID COMMAND
+      1       0 sleep infinity
+   2896       0 bash /tmp/checks.sh
+   5425    2896 ps -eo pid,ppid,args

@@ -17,13 +17,18 @@ empty. The whole document is validated; comments and subheadings count as notes.
 ```sh
 clojure -M:release -m value-type.release prepare
 git show --stat HEAD
-git show HEAD -- CHANGELOG.md
+git show HEAD -- README.md CHANGELOG.md
 git status --short
 ```
 
 Preparation moves nonempty Unreleased notes into the next commit-count version
-with the UTC date. It leaves empty Unreleased and commits only CHANGELOG.md as
-`Release vVERSION`. It checks the resulting count. It does not tag, push,
+with the UTC date. It validates both documents before writing, leaves empty
+Unreleased and updates the README Clojars coordinates to the same version.
+It commits only README.md and CHANGELOG.md together as `Release vVERSION`
+and checks the resulting count. The coordinates are usable only after this
+version is published by the release workflow. Preparation does not claim that
+tests passed or publication occurred. Clone and local-root use remain
+development only. It does not tag, push,
 dispatch or publish. A failed local commit leaves changes for inspection;
 there is no automatic reset. Inspect and resolve the cause before another attempt.
 
@@ -42,11 +47,38 @@ In GitHub Actions, select the Release workflow on `master`. Keep `dry-run` true
 (the default). The workflow checks out the dispatch SHA with complete history;
 later changes to master do not change that checkout. Other branches are rejected.
 
-Both modes run quality, tooling, release, value-path, fallback, cross-JVM and
-isolated JAR consumer tests before notes selection. Preview builds without Clojars secrets or
+Both modes provision the baseline, Valhalla and ordinary roles from the
+[JVM facts](../../dev/jvm/jvms.edn) through checked downloads. SHA-256 mismatch
+fails before extraction. Installations stay in `RUNNER_TEMP/jvms`, outside the
+build's destructive `target/`. The tooling JVM stays separate.
+
+Both modes run quality, tooling, JVM-tooling, release, value-path, fallback,
+cross-JVM, smoke, forced-JIT and isolated JAR consumer tests before notes
+selection and tag creation. The ordinary role is smoke-tested only. The
+[runtime guide](runtime.md#smoke-and-forced-jit-tiers) defines its bounded checks
+and the EA admission rule: a proposed facts entry is not accepted until forced
+JIT passes on that exact candidate configuration. Record build, command, flags,
+duration and result; configuration changes require another pass. Forced
+compilation applies only to the Scry parent, including AOT production. The runtime
+AOT consumers and fresh-process probes remain normal preview-only children.
+A row pass does not establish forced-JIT child coverage or replace full checks. Preview builds without Clojars secrets or
 release writes. Its summary reports SHA, version, tag, notes source and whether
 preparation is required. Nonempty Unreleased is a preview fallback only when no
 matching version exists. Invalid or empty matching notes always fail.
+
+### Local Linux verification
+
+The hosted workflow remains Linux x64. Task 027 selects Linux ARM64 in an
+ARM64 VM for local preview checks on the ARM64 development host. Linux ARM64
+facts, checked provisioning and platform detection are available; see the
+[runtime guide](runtime.md).
+Do not use x64 CPU emulation as the required local acceptance path.
+
+Use the same pinned JVM builds, role profiles
+and complete gate sequence on Linux ARM64. Record architecture, commands,
+durations and structured results. Keep finite bounds and clean up descendant
+processes. Do not use credentials or perform publication writes. Local ARM64
+success does not prove Linux x64 behavior, hosted execution or publication.
 
 For local notes inspection without publication:
 

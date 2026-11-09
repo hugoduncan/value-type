@@ -29,10 +29,26 @@ The implementation does not yet realize these decisions:
 
 | Decision | Gap in the current implementation |
 |---|---|
-| D21 facts file | `release.yml` and the runtime guide name the JVM builds directly. |
-| D22 test tiers | Full matrix for each configured JVM; no forced-JIT row. |
 | D23 snapshots | No disassembly snapshots. |
-| D24 tested releases | The README installs from a clone of the repository. |
+
+
+## JVM and release tooling
+
+D21 uses [JVM facts](../../dev/jvm/jvms.edn), a baseline-safe reader and
+checked provisioning. Workflow, compatibility and isolated build consumers
+select roles and flag profiles from these facts.
+
+D22 provides an ordinary-JDK smoke row and a primary-EA forced-JIT row. The
+full matrix remains on the primary pair. Forced compilation applies to the
+runtime suite parent, not its child JVMs. D24 preparation validates README
+and changelog before writing and commits both with one version; coordinates
+remain conditional on publication. No release is published.
+
+[Task 027 evidence](../../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md)
+records the acceptance checks, bounded smoke and forced-JIT passes, checked
+Linux ARM64 provisioning and complete staged local preview. The hosted runner stays Linux x64;
+local ARM64 results cannot establish x64 coverage. Hosted execution
+and live publication remain unverified.
 
 ## Sections
 

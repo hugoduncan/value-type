@@ -1,0 +1,10 @@
+{:event :start, :var "#'value-type.public-mixed-field-aot-test/source-free-public-mixed-value-test", :time 1794188270155}
+{:event :end, :var "#'value-type.public-mixed-field-aot-test/source-free-public-mixed-value-test", :summary {:test 1, :pass 28, :fail 0, :error 0, :duration-ms 40766.377887, :var-count 1, :fail-var-count 0}, :pass? true}
+{:event :start, :var "#'value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer", :time 1794188311045}
+{:event :end, :var "#'value-type.public-mixed-field-aot-test/incompatible-public-mixed-value-consumer", :summary {:test 1, :pass 52, :fail 0, :error 0, :duration-ms 53106.417925, :var-count 1, :fail-var-count 0}, :pass? true}
+{:event :start, :var "#'value-type.public-mixed-field-aot-test/java-public-mixed-value-consumer", :time 1794188364293}
+{:event :end, :var "#'value-type.public-mixed-field-aot-test/java-public-mixed-value-consumer", :summary {:test 1, :pass 30, :fail 0, :error 0, :duration-ms 43819.832868, :var-count 1, :fail-var-count 0}, :pass? true}
+{:event :start, :var "#'value-type.public-mixed-field-aot-test/function-public-mixed-value-aot-test", :time 1794188408141}
+{:event :end, :var "#'value-type.public-mixed-field-aot-test/function-public-mixed-value-aot-test", :summary {:test 1, :pass 28, :fail 0, :error 0, :duration-ms 37947.432898, :var-count 1, :fail-var-count 0}, :pass? true}
+{:event :start, :var "#'value-type.public-mixed-field-aot-test/persisted-public-mixed-output-test", :time 1794188446110}
+{:event :end, :var "#'value-type.public-mixed-field-aot-test/persisted-public-mixed-output-test", :summary {:test 1, :pass 13, :fail 0, :error 0, :duration-ms 20491.413196, :var-count 1, :fail-var-count 0}, :pass? true}

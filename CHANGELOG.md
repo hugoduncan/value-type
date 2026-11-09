@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+- Centralize development JVM selection in checked facts, with SHA-256
+  verification before archive extraction and exact-build checks. Add an
+  ordinary-JDK smoke tier and a primary-EA forced-JIT runtime row; forced
+  compilation applies to the suite parent, not runtime children.
+- Release preparation now validates and commits README Clojars coordinates
+  with the changelog version in one commit. Coordinates are usable only
+  after publication; preparation does not publish a release.
+
 - Initial release. Add `defvaluetype` and `defvaluetype*` for JEP 401 value
   classes with `deftype` fallback, `:non-nil` fields and experimental
   `value-type.array` functions for null-restricted arrays.

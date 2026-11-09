@@ -1,6 +1,12 @@
-{:paths ["bb"]
+{:paths ["bb" "dev/jvm"]
  :tasks
  {:requires ([value-type.quality :as quality])
+  test:forced-jit {:doc "Run facts-selected runtime suites with parent-only forced compilation."
+                   :requires ([value-type.forced-jit-runner :as forced-jit])
+                   :task (forced-jit/run!)}
+  jvm:provision {:doc "Install a checked JVM: ROLE [PLATFORM [ROOT]]."
+                 :requires ([value-type.jvm-provision :as provision])
+                 :task (provision/run! *command-line-args*)}
   vale {:doc "Sync styles and check maintained prose."
         :requires ([value-type.prose :as prose])
         :task (prose/check! *command-line-args*)}

@@ -6,7 +6,9 @@
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
    [clojure.tools.deps :as deps]
-   [clojure.xml :as xml])
+   [clojure.xml :as xml]
+   [value-type.jvm-facts :as facts]
+   [value-type.jvm-executable :as executable])
   (:import
    [java.nio.file Files]
    [java.nio.file.attribute FileAttribute]
@@ -128,7 +130,8 @@
   (doseq [path ["target/stale.txt" "target/classes/stale.class"
                 "test/runtime/development.clj" "dev/bench/development.clj"
                 "test/resources/value-array/ArrayAccess.java"
-                "dev/release/excluded.clj" "test/release/excluded_test.clj"]]
+                "dev/release/excluded.clj" "test/release/excluded_test.clj"
+                "dev/jvm/excluded.clj" "test/jvm/excluded_test.clj"]]
     (let [file (io/file directory path)]
       (io/make-parents file)
       (spit file "must not be packaged"))))
@@ -319,19 +322,20 @@
               (is (seq runtime-paths))
               (is (every? #(and (.isFile (io/file %)) (str/ends-with? % ".jar"))
                           classpath)))
-            (doseq [[java options expected-value? label]
-                    [[(str (System/getProperty "java.home") "/bin/java")
-                      ["--enable-preview"
-                       "--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
-                       "-Dconsumer.arrays=true"] true :export]
-                     [(str (System/getProperty "java.home") "/bin/java")
-                      [] false :no-options]
-                     [(str (System/getProperty "java.home") "/bin/java")
-                      ["--add-exports=java.base/jdk.internal.value=ALL-UNNAMED"
-                       "-Dconsumer.inspection=true"] false :export-only]
-                     [(or (System/getenv "VALUE_TYPE_BASELINE_JAVA")
-                          "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home/bin/java")
-                      [] nil :java8]]]
+            (doseq [[role profile controls expected-value? label]
+                    [[:valhalla :preview-export ["-Dconsumer.arrays=true"] true :export]
+                     [:valhalla :plain [] false :no-options]
+                     [:valhalla :export ["-Dconsumer.inspection=true"] false :export-only]
+                     [:baseline :plain [] nil :java8]]
+                    :let [selection (facts/select
+                                     (facts/read-facts) role
+                                     (executable/platform (System/getProperty "os.name")
+                                                          (System/getProperty "os.arch"))
+                                     profile)
+                          java (executable/resolve!
+                                selection (System/getenv)
+                                (executable/default-root (System/getProperty "user.home")))
+                          options (into (:jvm-opts selection) controls)]]
               (testing (str "the artifact supplies a working macro on " java)
                 (let [result (run-process
                               directory

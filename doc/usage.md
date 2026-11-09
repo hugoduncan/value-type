@@ -204,9 +204,10 @@ Preserve field metadata when serializing expansions.
 ## Value-array allocation
 
 `value-type.array/make-array` allocates a one-dimensional native,
-null-restricted atomic array. This experimental API is verified on Valhalla
-`27-jep401ea3+1-1` with Clojure 1.12.6. Select that JVM and start with both
-flags:
+null-restricted atomic array. For this experimental API, select the Valhalla
+build in [the JVM facts](../dev/jvm/jvms.edn). See the
+[runtime guide](development/runtime.md) for provisioning and support limits.
+Start with both flags:
 
 ```sh
 export JAVA_CMD=<valhalla-jdk-home>/bin/java
@@ -340,7 +341,7 @@ It returns a complete map with these keys:
 (va/array-info points) ; Inspect the restricted array from the example above.
 ```
 
-The example result is verified on Valhalla `27-jep401ea3+1-1` with Clojure
+Historical example result, verified on Valhalla `27-jep401ea3+1-1` with Clojure
 1.12.6. Inspection requires the export flag shown above. Ordinary reference
 arrays do not require `--enable-preview` for inspection on that build.
 Creating value classes and allocating restricted arrays still require preview.
@@ -382,7 +383,7 @@ a deployment before you define types or allocate arrays.
 ;    :array-inspection {:available? false, :reason :array-access-denied}}
 ```
 
-The example result is from Valhalla `27-jep401ea3+1-1` with
+Historical example result from Valhalla `27-jep401ea3+1-1` with
 `--enable-preview` and without the export flag.
 
 | Key | Meaning |
@@ -476,8 +477,8 @@ remain errors; they do not select weaker output.
 Requiring `value-type.core` is safe on Java 8 and preview-disabled EA3.
 Identity output does not require optional JDK interfaces or preview. Value
 output requires preview; field construction needs no internal-package export.
-Real-JVM evidence covers Java 8 and Valhalla `27-jep401ea3+1-1` with Clojure
-1.12.6. Controlled capability cases do not establish support for other JVMs.
+Real-JVM evidence covers the primary builds in
+[the JVM facts](../dev/jvm/jvms.edn) with Clojure 1.12.6. Controlled capability cases do not establish support for other JVMs.
 See the [runtime instructions](development/runtime.md) for verification
 commands and limits.
 
@@ -620,6 +621,6 @@ constructor shape gives `:unexpected-constructor`.
 
 Exclusions: mutable caches, value-equality emulation,
 changes to `defrecord` and serialization guarantees. Real-JVM evidence covers
-Clojure 1.12.6, Java 8 and Valhalla `27-jep401ea3+1-1` with preview off and
-on. It does not establish other JVMs, Clojure versions, object size or
+Clojure 1.12.6 and the primary Java 8 and Valhalla builds in
+[the JVM facts](../dev/jvm/jvms.edn), with preview off and on for Valhalla. It does not establish other JVMs, Clojure versions, object size or
 performance.
