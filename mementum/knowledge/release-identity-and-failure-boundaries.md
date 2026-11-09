@@ -47,6 +47,34 @@ validation failures for unchanged input/output bytes. After a write or commit
 failure, check the retained local state rather than expecting automatic reset.
 These are different failure contracts.
 
+## Commit count alone does not prove preparation succeeded
+
+Preparation validates and renders README and changelog before writing either.
+Both documents use one predicted version and enter one commit. README
+coordinates remain conditional on publication; preparation is not release-test
+or publication evidence.
+
+A post-commit hook can amend the commit without changing its count. It can
+alter coordinates, add another path or replace ancestry. A hook can also leave
+dirty working files or index entries after a successful Git exit.
+
+Before reporting success, require all of these:
+
+- The actual commit-count version equals the predicted version.
+- The original HEAD is the resulting commit's only parent.
+- The changed paths against that original HEAD are exactly `README.md` and
+  `CHANGELOG.md`.
+- The worktree and index are clean, including untracked files.
+- Both committed documents equal the expected rendered bytes.
+
+Use real hooks in disposable repositories to test each failure independently.
+Count, clean-state and document checks together still miss an extra committed
+path or changed ancestry. Retain failed local state for inspection; do not
+reset automatically. Keep tags and remote refs unchanged during preparation.
+
+Source: task `027-jvm-facts-test-tiers-and-releases`, Slice 4b and review
+follow-ups; `f0f84abd`, `74b103e5` and `df5683a1`.
+
 ## Test credential rejection without publication
 
 Use real child processes for absent, empty and whitespace-only credentials.
