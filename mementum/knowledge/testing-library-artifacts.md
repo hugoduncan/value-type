@@ -64,17 +64,23 @@ The corrected command passed locally; this was not hosted Actions evidence.
 
 This tests the packaged dependency contract as well as the library code.
 
-### Select the build-test JVM itself
+### Select consumer JVMs independently of the test parent
 
-The value-path consumer in `test/build/build_test.clj` uses the test JVM's
-`java.home`, not `VALUE_TYPE_VALHALLA_JAVA`. Run the build suite itself with
-`JAVA_CMD=<Valhalla>/bin/java`; setting the cross-JVM variables alone does not
-select that consumer. Set `VALUE_TYPE_BASELINE_JAVA` for its baseline consumer.
-The fallback suite has a different configuration helper that does use the
-Valhalla override. Check each suite's launcher contract when changing CI.
+Build consumers now select `:baseline` and `:valhalla` roles and named
+profiles from `dev/jvm/jvms.edn`. Executable resolution checks role overrides
+or the provisioning cache against the exact build. `JAVA_CMD` selects the
+Clojure test parent; it no longer selects the value-path consumer through
+`java.home`. Use `VALUE_TYPE_BASELINE_JAVA` and `VALUE_TYPE_VALHALLA_JAVA`
+for explicit consumer overrides.
 
-Source: task `011-release-workflow` plan-review handoff (`1c72284`), artifact
-tests in `0acef33`, and explicit build-suite selection in workflow `0589c16`.
+Keep consumer capability expectations independent of launch facts. Preserve
+plain, export-only and preview-with-export controls; sharing selection must
+not enable missing prerequisites or add development paths to the consumer.
+The facts reader belongs on the build-test classpath, not in the library JAR.
+
+Source: task `027-jvm-facts-test-tiers-and-releases`, Slice 2b and `f9844db3`.
+This replaces the parent-selected consumer guidance from task 011. Check each
+suite's launcher contract rather than assuming all children inherit the parent.
 
 ## Extract consumer programs without expanding the classpath
 
