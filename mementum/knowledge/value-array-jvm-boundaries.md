@@ -44,8 +44,8 @@ Do not infer an array capability from the class fallback detector alone.
 ## Keep optional access lazy and operation-specific
 
 Requiring `value-type.array` must not resolve optional JDK APIs or require
-preview or exports. The adapter caches allocation prerequisites and methods
-per loaded library runtime, never caller arrays or seeds. Inspection has a
+preview or exports. Discovery caches selected direct-call functions per loaded
+library runtime, never caller arrays or seeds. Inspection has a
 separate delay; it must not use the preview-gated class detector. Allocation must
 not depend on diagnostic methods or the class-fallback warning policy.
 There is no ordinary-array fallback.
@@ -64,7 +64,7 @@ near-heap-limit allocation. A zero-length call still checks the seed.
 
 ## Test native failures below public validation
 
-Successful allocation and invalid public inputs do not test reflective
+Successful allocation and invalid public inputs do not test native
 exception propagation. Invoke the real adapter with a valid value component
 and seed but an `int` length of -1. EA3 throws `IllegalArgumentException`.
 Assert that the original exception escapes, not `InvocationTargetException`
@@ -72,9 +72,10 @@ or an unavailable-capability error. Then allocate successfully through the
 public API in the same runtime to check that rejection did not poison the
 capability cache.
 
-The task 013 regression failed when cause unwrapping was removed and passed
-when restored. This gives bounded coverage without mocks or forced memory
-exhaustion. It does not directly test out-of-memory behavior.
+Task 029 replaces reflective invocation with lazy direct calls; no exception
+unwrapping is needed. Keep the rejection/cache regression. See
+[lazy adapter verification](lazy-optional-jdk-adapters.md) for selection and
+deployment checks. This does not test out-of-memory behavior.
 
 ## Empty allocation still validates the seed
 
