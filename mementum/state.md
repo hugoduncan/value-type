@@ -1,219 +1,82 @@
 # Current project state
 
-Keep this file as a current-state summary. Replace stale facts; do not append
-history, task progress, review notes or test-run records. Task planning belongs
-in `munera/plan.md`; detailed guidance and evidence belong in the linked documents.
-Git keeps earlier versions of this file.
+This file summarizes the current project. Keep task planning in
+`munera/plan.md`, contracts in the design and usage documents, and verification
+records in Munera. Replace stale facts; do not append development history,
+task progress or test-run records.
 
 ## Library
 
 value-type is an experimental Clojure library with no published release.
-Its API is not stable.
+Its API is not stable. It provides:
 
-- `value-type.core/defvaluetype` provides `deftype`-style syntax for JEP 401
-  value objects. It transforms generated class bytes through a capture loader.
-  Value output uses `java.lang.classfile`; identity output uses bundled ASM.
-- On unsupported JVMs, the macro uses ordinary `deftype` semantics. The
-  property `value-type.fallback` selects `silent` (default), `warn` or `error`.
-  `impl.runtime/fallback-policy` (a delay) reads and fixes it at the first
-  read (first fallback decision or first `report`), not at load (D10, D13).
-  AOT compilation and expansion transfer fix the representation; value-class
-  output cannot fall back.
-- `value-type.core/defvaluetype*` takes `deftype*` arguments (plain or
-  compiler record shape) and evaluates to the Class. Value output removes
-  `__hash`/`__hasheq` and keeps all three record constructors and `create`.
-  Same fallback policy; `:non-nil` fields in both shapes (main constructor
-  checks; receiving macros `value-field-deftype*`/`identity-field-deftype*`). See
-  [deftype* design](../ramora/deftype-star-design.md) and the usage guide.
-  Closed record shape (`:value-type/closed true`, D9, D10): value output
-  removes all four hidden fields (flat arrays on EA3 for small records);
-  identity output keeps them nil. The main constructor rejects non-nil
-  `__meta`/`__extmap` with `IllegalArgumentException` before the non-nil
-  checks; closed forms always use the receiving expansion.
-- `value-type.array/make-array` allocates native null-restricted atomic arrays
-  with an explicit seed. `into-array` constructs them from finite sequences.
-  `array-info` inspects reference-array properties. Allocation has no fallback.
-- `value-type.capability/report` returns the `:available?` and `:reason`
-  entries of the four cached capability results (`:value-class`,
-  `:native-non-nil-field`, `:array-allocation`, `:array-inspection`) and
-  `:fallback-policy` (the policy in effect, read before the probes) as EDN.
-  The probe namespaces (`impl.capability`, `impl.field-capability`,
-  `impl.array`) own the cached results through zero-arity accessors;
-  `impl.runtime` owns only policy, the warning flag and the fallback guards
-  (`enforce-fallback!`, `guarded-deftype`, `guarded-deftype*`).
-  See D14 in the defvaluetype decisions.
-- Capture support loads lazily for all value definitions and for identity
-  definitions with enabled non-nil fields or the closed shape. Identity
-  capture uses bundled ASM; only value output loads the optional JDK
-  transform. Ordinary fallback does not install capture. See the
-  [runtime boundary](../ramora/defvaluetype-design/embodiment/runtime.md).
-- Source-only JAR builds, quality checks, API generation and release tooling
-  are available. Hosted Actions and live publication remain unverified.
+- `value-type.core/defvaluetype`: `deftype`-style definitions of JEP 401 value
+  classes, with ordinary `deftype` fallback on unsupported JVMs.
+- `value-type.core/defvaluetype*`: low-level definitions using plain or record
+  `deftype*` arguments, including a closed record shape.
+- `:non-nil` fields with concrete identity or value type tags. Native field
+  restrictions or generated constructor checks enforce the constraint,
+  including on identity fallback.
+- `value-type.array/make-array` and `into-array`: native null-restricted atomic
+  arrays. Allocation has no fallback. `array-info` inspects reference arrays.
+- `value-type.capability/report`: cached capability availability and reasons,
+  plus the fallback policy in effect.
 
-## Decided design changes
+## Runtime boundaries
 
-The defvaluetype design adds D15–D24 (probe and format, compiler boundary,
-verification and release) and changes D1, D3, D5, D9, D10, D12, D13 and D14.
-They come from a residual (stressor) analysis. Closed task 024 realizes D10 (first
-read) and D14 (`:fallback-policy`). Closed task 023 realizes D12, D15,
-D16 and the non-AOT part of D17: `impl.jvm-format/row` owns the class file
-format, `impl.probe-builder` builds probes on `java.lang.classfile` (lazy
-`requiring-resolve`). The value-class probe and the value-array round trip
-run semantic self-checks (classified absences `:probe-not-value-class` and
-`:failed-self-check`). The field probe checks nil rejection (classified
-absence `:native-restriction-ignored`). Closed task 025 realizes D18 except AOT:
-`impl.capability/detect` reads `value-type.value-classes` (`auto`/`off`) first,
-before the API checks; `off` gives `:disabled`, an invalid value an IAE cached
-in the delay. Tests: `value-type.value-class-switch-test`. The
-[embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented)
-lists each gap. Closed task 026 realizes D19 (compiler boundary
-`impl.compiler`: all compiler code use in `src` and the shape data), D20
-(one receiving expansion for all value definitions) and the AOT part of D17
-and D18 (value-class guard `impl.capability/require-value-capability!` as
-the first emitted form). Closed task 027 realizes D21, D22 and D24. Task 028
-is closed as won't do; D23 remains unimplemented. `munera/plan.md` lists
-current work.
-
-## Non-nil fields
-
-Task 017 is complete and closed. Public `:non-nil` field metadata replaces
-`:nil-restricted` (no alias). It accepts concrete identity and value tags.
-
-- Selection is per field and fixed at expansion. Native enforcement applies when
-  the owner is a value class, the tag is native-eligible and native support is
-  available. Otherwise generated constructor checks and concrete final storage
-  enforce the constraint, also on identity fallback.
-- Direct, factory and reflective constructors reject nil and wrong-type arguments.
-  Methods, protocols, Object overrides and closures read all fields.
-- Receivers of transferred expansions and AOT artifacts keep the fixed
-  enforcement. Incompatible receivers reject value output without fallback.
-- Field specifications keep exact Class identity across redefinition, sibling
-  loaders and cross-process replacement.
-
-Evidence limits: the evidence is bounded, not an exhaustive cross-product.
-No JVM other than those below is claimed. Semantic tests do not establish layout
-or performance. See the
-[acceptance audit](../munera/closed/017-portable-non-nil-fields/acceptance-audit.md),
-its linked per-criterion audits and the
-[implementation record](../munera/closed/017-portable-non-nil-fields/implementation.md).
-The [field design](../ramora/non-nil-field-design.md) is the contract.
-
-Current installation and public API guidance link the JVM facts or runtime
-guide; exact build IDs in usage examples are historical evidence.
-Development JVM facts now live in `dev/jvm/jvms.edn`, with a Java-8-safe
-validated reader, exact-build executable selection and `:jvm-test`. Selection
-uses role overrides or `~/.cache/value-type/jvms/<role>/<build>/<platform>/`.
-Checked provisioning is available through `bb jvm:provision ROLE [PLATFORM [ROOT]]`.
-It checks SHA-256 before extraction and the exact JVM build before installation.
-Facts and installation paths reject unsafe role/build/platform components;
-canonical destination checks reject paths outside the provisioning root.
-Executable build checks have a 30-second default timeout, bounded termination
-waits and captured-output diagnostics; they remain Java-8-safe.
-Compatibility matrix selection and isolated build consumers now use verified
-facts roles and profiles. The isolated `:smoke-test` alias now checks ordinary-JDK startup under all
-three fallback policies. Definition-policy and source-free same-JDK AOT checks
-also pass in fresh processes on the ordinary facts role (Temurin 25.0.5+8-LTS).
-This is bounded smoke evidence, not full-matrix coverage. The facts-selected `bb test:forced-jit` row passes on EA3, including a real
-parent/child argument check. Forced compilation applies only to the Scry parent
-(including AOT production); runtime AOT consumers and fresh-process probes remain
-normal preview-only children. Task 027 retains admission evidence. Release workflow provisioning now uses checked facts for all three roles,
-with JVM-tooling, smoke and forced-JIT gates before publication. Runtime and preview-enabled fallback launch flags now use facts profiles.
-Runtime and release guides describe facts selection, bounded tiers and candidate
-admission. Architecture documentation now matches facts, tiers and two-file preparation.
-The complete local JVM suite sequence passes on macOS. Staged Linux x64
-preview gates pass except for the full cross-JVM gate, whose emulated runs
-timed out without a complete passing summary. Task 027 retains those results
-and diagnostics; their cause remains unresolved.
-
-Local Linux preview uses native ARM64 in an ARM64 VM. Checked provisioning
-verifies all three pinned builds and native architectures. The complete staged
-ARM64 preview sequence passes, including notes selection and JAR build.
-Hosted CI and its facts remain Linux x64. No further x64-emulated full-matrix
-diagnosis is required for local acceptance; ARM64 results cannot establish
-x64 or hosted success.
-
-The maintained-source JVM-fact duplication and release-order audit passes. Release
-preparation validates README and changelog before writing and commits both
-with one version. Success also requires a clean final worktree/index and exact
-committed document contents. The release commit must have the original HEAD as
-its only parent and change exactly README.md and CHANGELOG.md. Real-Git tests cover first preparation, replacement,
-hook-induced dirty output, amended coordinates, extra paths, changed ancestry
-and retained failure state. Publication remains separate.
-
-## Runtime and verification limits
-
-- Tested coverage: Clojure 1.12.6, Java 8 and Valhalla
-  `27-jep401ea3+1-1` (EA3), with preview off and on, in normal and interpreter
-  execution. Future JVM formats are not verified.
-- Value classes need a supported Valhalla JVM with `--enable-preview`.
-  Array allocation also needs
+- Value classes need a supported Valhalla JVM and `--enable-preview`. Native
+  array operations also need
   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
-  Allocation now selects lazy direct-call functions after access checks and runs
-  its semantic self-check through the selected allocator. Inspection also selects an independent lazy direct-call function after access
-  checks. Discovery isolation and disabled-allocation inspection/report agreement are
-  verified. The focused bytecode gate verifies direct JDK calls in both adapters and no
-  reflective dispatch in the operation wrappers. Separate damaged-artifact tests verify that
-  missing resources, compiler errors and incompatible compiled adapters escape
-  both discovery paths without capability-absence translation. Fresh public requires load no
-  adapters across Java 8 and all four EA3 preview/export profiles; unavailable
-  operations leave their adapters unloaded. Require-only application AOT compilation and source-free loading also leave
-  adapters unloaded and un-emitted across those five profiles. Cross-profile source-free AOT consumers select receiver capabilities and pass
-  repeated allocation, both sequence arities and inspection. Focused array, report and switch cross-JVM regression also passes. Isolated source-only JAR consumers pass repeated operations and unavailable-path
-  adapter loading checks on Java 8 and EA3 supported, plain and export-only profiles.
-  [Closed task 029](../munera/closed/029-lazy-direct-call-array-adapter/implementation.md)
-  retains the measurement comparison: lower warmed times in the measured
-  workload, with about 3–4 ms additional first-use cost from lazy source
-  compilation. These are host-specific results, not performance guarantees.
-  Full runtime regression and both explicit flattening controls pass.
-  Full cross-JVM and all three fallback parent configurations pass.
-  Forced-JIT runtime and ordinary-JDK smoke pass. Forced compilation covers
-  only the runtime parent; ordinary-JDK coverage remains smoke-only.
-  Array architecture documents describe the lazy direct-call boundary and measured
-  limits. Quality checks and the six-criterion implementation acceptance audit pass.
-  Array inspection needs the export; ordinary-array inspection does not need
-  preview on EA3. Public validation rejects null diagnostic inputs because
-  native queries can crash EA3.
-- Tests share `test/`, with separate runtime, compatibility
-  (`:fallback-test`, per parent JVM), cross-JVM (`:cross-jvm-test`,
-  `test/cross-jvm/`, run once under Java 8), build, release and tooling
-  suites and classpaths. Runtime Scry discovery must use
-  `--dir test/runtime`, not all of `test/`.
-- Tooling tests require `-M:quickdoc:tooling-test`. Release tests require
-  `-M:release:release-test`.
-- Matrix cells share child JVMs under the isolation rules in
-  `doc/development/runtime.md`; `VALUE_TYPE_TEST_JVM_LIMIT` (default 4) sets
-  the concurrent children. The four commands (`:cross-jvm-test` and three
-  `:fallback-test` parents) take about 9 minutes in total at limit 4.
-  The [matrix task record](../munera/closed/018-fast-compatibility-matrix/implementation.md)
-  retains the evidence and closure limits. Two review items remain unresolved:
-  label-order agreement and the loader-isolation negative check.
-- Performance depends on the JVM, layout and workload. Recorded tests show
-  larger standalone value objects, no stable interface-call penalty, and
-  storage and traversal benefits for specific flattened arrays. These are
-  not general performance guarantees. The maintained typed-array benchmark
-  is in `dev/bench/typed-array/` and uses the public allocator.
+- `value-type.fallback` selects `silent` (default), `warn` or `error`. The
+  policy is fixed at its first read, including through `report`, not at load.
+  `value-type.value-classes=off` disables value-class support.
+- Expansion and AOT compilation fix the representation and field enforcement.
+  Incompatible receivers reject value-class output; they cannot fall back.
+- Compiler coupling is isolated in `impl.compiler`. Value output uses
+  `java.lang.classfile`; identity output uses bundled ASM. Capture and optional
+  JDK support load lazily. Ordinary fallback does not install capture support.
+- Array allocation and inspection use separate lazy direct-call adapters.
+  Requiring the public namespaces does not load them. First successful
+  discovery compiles the relevant adapter, including discovery through `report`.
+- Performance depends on the JVM, layout and workload. Semantic correctness
+  does not establish flattening or performance benefits.
+
+## Development and verification
+
+- The library ships as a source-only JAR. Quality checks, API generation,
+  isolated consumer tests and release tooling are available.
+- `dev/jvm/jvms.edn` is the source for pinned JVM builds, platforms and launch
+  profiles. `bb jvm:provision ROLE [PLATFORM [ROOT]]` checks archive SHA-256
+  and the exact JVM build before installation.
+- The full compatibility matrix uses Java 8 and Valhalla EA3 with Clojure
+  1.12.6. The ordinary-JDK tier is smoke-only. Forced-JIT testing applies to
+  the runtime suite parent, not its child JVMs. Future JVM formats are not
+  verified.
+- Hosted CI targets Linux x64. Local Linux verification uses native ARM64;
+  its results do not establish x64 or hosted success.
+- Test suites have separate classpaths. Runtime Scry discovery must use
+  `--dir test/runtime`, not all of `test/`. Tooling tests require
+  `-M:quickdoc:tooling-test`; release tests require `-M:release:release-test`.
+  See the runtime guide for the complete suite commands and isolation rules.
+- Release versions use the Git commit count. Preparation commits matching
+  README coordinates and changelog notes together. Preview runs checks and
+  builds without publication. Publication is separate and requires explicit
+  authorization; live publication remains unverified.
+- Current design gaps are listed in the
+  [embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented).
 
 ## Orientation
 
-- `munera/plan.md` and `munera/open/`: current tasks.
-- `README.md`: project overview, value-class, non-nil field and value-array quick starts,
-  JVM flags and performance limits.
-- `doc/usage.md` and `doc/API.md`: public contracts and limits.
-- `doc/development.md`: setup, quality checks, builds and benchmarks.
-- `doc/development/runtime.md`: JVM selection and test commands.
-- `doc/development/release.md`: release operations.
-- `ramora/INDEX.md`: architecture and retained experiment evidence. Design
-  documents contain no project history. Implementation status and gaps belong
-  only in embodiment sections; task and acceptance records belong in Munera.
+- [Task plan](../munera/plan.md): current work.
+- [README](../README.md): overview and quick starts.
+- [Usage guide](../doc/usage.md) and [API](../doc/API.md): public contracts.
+- [Development guide](../doc/development.md): setup, quality checks, builds
+  and benchmarks.
+- [Runtime guide](../doc/development/runtime.md): JVM selection, test tiers
+  and commands.
+- [Release guide](../doc/development/release.md): preparation, preview,
+  publication and failure handling.
+- [Architecture index](../ramora/INDEX.md): designs and implementation boundaries.
 - `mementum/knowledge/`: reusable lessons on JVM boundaries, testing,
   benchmarking and release behavior.
-
-## Closed task 027 — Verification limits
-
-Implementation, review and knowledge extraction are complete. The five design
-criteria have local verification evidence in the
-[closed task record](../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md). Native ARM64 evidence includes checked downloads,
-all preview gates, notes and JAR output, with finite bounds and no surviving
-JVM descendants. No preparation or publication was run. Historical x64
-emulation timeouts remain unresolved; hosted Actions and live publication
-remain unverified. Do not treat local ARM64 passes as x64 evidence.
+- `munera/closed/`: detailed implementation and acceptance evidence.
