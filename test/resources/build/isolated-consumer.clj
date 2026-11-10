@@ -3,7 +3,9 @@
 (defn check-resource-origins!
   []
   (doseq [path ["value_type/core.clj" "value_type/array.clj"
-                "value_type/capability.clj" "value_type/impl/array.clj"]
+                "value_type/capability.clj" "value_type/impl/array.clj"
+                "value_type/impl/array_allocation.clj"
+                "value_type/impl/array_inspection.clj"]
           :let [resource (io/resource path)]]
     (assert (= "jar" (.getProtocol resource)))
     (assert (= (.getCanonicalFile (io/file (System/getProperty "consumer.jar")))
@@ -15,6 +17,14 @@
 (require '[value-type.core :refer [defvaluetype]]
          '[value-type.array :as va]
          '[value-type.capability :as capability])
+
+(defn adapter-state
+  []
+  (mapv #(boolean (find-ns %))
+        '[value-type.impl.array-allocation value-type.impl.array-inspection]))
+
+;; Public requires must not select optional implementations, even from a JAR.
+(assert (= [false false] (adapter-state)))
 
 (defn check-unsupported-diagnostics!
   []
@@ -79,6 +89,10 @@
 (def sequence-result
   (when-not (Boolean/getBoolean "consumer.arrays")
     (unsupported-sequence-results)))
+
+(when-not (Boolean/getBoolean "consumer.arrays")
+  (assert (= [false (Boolean/getBoolean "consumer.inspection")]
+             (adapter-state))))
 
 (defvaluetype Point [^long x ^long y])
 
@@ -155,6 +169,14 @@
 
 (let [a (Point. 3 7)
       b (Point. 11 13)]
+  ;; Repeat real operations before reporting, which itself forces discovery.
+  (when (Boolean/getBoolean "consumer.arrays")
+    (let [expected-allocation (allocation-results a b)
+          expected-sequences (sequence-results a b)]
+      (dotimes [_ 3]
+        (assert (= expected-allocation (allocation-results a b)))
+        (assert (= expected-sequences (sequence-results a b)))))
+    (assert (= [true true] (adapter-state))))
   (prn {:report (capability/report)
         :value-class? (when-let [predicate (first (filterv #(= "isValue" (.getName %))
                                                            (.getMethods Class)))]

@@ -258,7 +258,12 @@ that capability is absent.
 
 Requiring `value-type.array` is safe on Java 8 and on Valhalla without
 preview or exports. Allocation capability is checked lazily and cached per
-loaded library runtime; startup configuration is fixed. Unsupported calls
+loaded library runtime; startup configuration is fixed. Public require alone
+does not load either optional array adapter. After the prerequisites pass,
+first allocation discovery loads and compiles its source adapter and runs the
+allocation self-check. Successful discovery caches direct-call functions.
+Unexpected adapter loading, compilation or linkage failures propagate; they
+are not capability absence. Unsupported calls
 report `:array-unavailable`, even if their inputs are also invalid.
 There is no ordinary-array fallback or warning policy. Array allocation is
 independent of `value-type.fallback`; that property controls ordinary fallback
@@ -347,6 +352,10 @@ arrays do not require `--enable-preview` for inspection on that build.
 Creating value classes and allocating restricted arrays still require preview.
 Inspection capability is separate from allocation capability and class fallback.
 It is checked lazily and cached per loaded runtime; set flags before startup.
+After API and access checks pass, first inspection discovery loads and compiles
+its own source adapter, independently of allocation. Successful discovery
+caches its direct-call function. Unexpected loading, compilation or linkage
+failures propagate.
 
 Validation precedes capability checks, unlike allocation. Null, non-array and
 primitive-array inputs throw `ExceptionInfo` with
@@ -399,12 +408,18 @@ Each capability value is `{:available? true}` or
 [API reference](API.md). Each value equals the `:available?` and `:reason`
 entries of the cached result that definitions and array functions use.
 `report` runs the probes that have not run yet. A probe defect propagates; no
-partial report is returned.
+partial report is returned. Successful first array discovery through `report`
+also loads and compiles the relevant optional source adapters; requiring the
+public namespaces alone does not. The [measured comparison](../munera/closed/029-lazy-direct-call-array-adapter/evidence/comparison.md)
+found about 3–4 ms additional first-use time for this work. This is a bounded
+measurement, not a general speed guarantee.
 
 The value-class, native field and array allocation probes check real
 instances before they report a capability. The array inspection probe checks
-only the JDK API and access. The probe reasons below are classified absences. Their
-effect depends on the key:
+the JDK API and access; its optional adapter must also load and compile
+successfully. Unexpected compilation or linkage failures propagate, rather
+than produce `:available? false`. The probe reasons below are classified
+absences. Their effect depends on the key:
 
 - `:value-class`: a probe class that is not a value class gives
   `:probe-not-value-class`. A failed semantic self-check gives

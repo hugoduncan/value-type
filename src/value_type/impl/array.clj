@@ -2,16 +2,9 @@
   "Lazy, baseline-safe access to the optional native array allocator."
   (:require [value-type.impl.capability :as capability])
   (:import (java.lang.invoke MethodHandles)
-           (java.lang.reflect Array InvocationTargetException Method Modifier)))
+           (java.lang.reflect Array Modifier)))
 
 (set! *warn-on-reflection* true)
-
-(defn- invoke
-  [^Method method target arguments]
-  (try
-    (.invoke method target (object-array arguments))
-    (catch InvocationTargetException error
-      (throw (.getCause error)))))
 
 (defn passes-round-trip?
   "True when a null-restricted array of length 2, allocated by allocator with
@@ -19,12 +12,12 @@
    index 0 and `b` at index 1 with their own `value`. cls has a public `long`
    field `value` and a public `(long)` constructor. Exceptions propagate
    without `InvocationTargetException`."
-  [^Method allocator ^Class cls]
+  [allocator ^Class cls]
   (let [make (capability/probe-instance-fn cls)
         field (.getField cls "value")
         a (make 42)
         b (make 43)
-        array (invoke allocator nil [cls (int 2) a])]
+        array (allocator cls 2 a)]
     (Array/set array 1 b)
     (let [e0 (Array/get array 0)
           e1 (Array/get array 1)]
@@ -36,18 +29,18 @@
 (def ^:private round-trip-detail
   "The value-array round trip failed the semantic self-check.")
 
-(defn- allocation-methods
-  "Resolve the allocator and the value predicate, and check access without
+(defn- check-allocation-access
+  "Check the allocator API, value predicate and access without
    changing module access. Missing APIs, signatures and access give
    classified absences."
   []
   (try
     (let [allocator (.getMethod (Class/forName "jdk.internal.value.ValueClass")
                                 "newNullRestrictedAtomicArray"
-                                (into-array Class [Class Integer/TYPE Object]))
-          predicate @capability/value-predicate]
+                                (into-array Class [Class Integer/TYPE Object]))]
+      @capability/value-predicate
       (.unreflect (MethodHandles/lookup) allocator)
-      {:available? true :allocator allocator :predicate predicate})
+      {:available? true})
     (catch ClassNotFoundException error
       {:available? false :reason :missing-array-api :cause error})
     (catch NoSuchMethodException error
@@ -67,11 +60,14 @@
               "Available value-class capability has no :probe-class."))
 
       :else
-      (let [result (allocation-methods)]
-        (if (and (:available? result)
-                 (not (passes-round-trip? (:allocator result) probe-class)))
-          {:available? false :reason :failed-self-check :detail round-trip-detail}
-          result)))))
+      (let [result (check-allocation-access)]
+        (if-not (:available? result)
+          result
+          (let [allocator (requiring-resolve 'value-type.impl.array-allocation/allocate)
+                predicate (requiring-resolve 'value-type.impl.array-allocation/value-class?)]
+            (if (passes-round-trip? allocator probe-class)
+              {:available? true :allocator allocator :predicate predicate}
+              {:available? false :reason :failed-self-check :detail round-trip-detail})))))))
 
 (def ^:private detected-allocation-capability (delay (discover)))
 
@@ -82,7 +78,7 @@
   @detected-allocation-capability)
 
 (defn require-allocation
-  "Return cached allocation methods, or throw a capability error."
+  "Return cached allocation functions, or throw a capability error."
   []
   (let [{:keys [available? cause reason detail] :as result} (allocation-capability)]
     (when-not available?
@@ -99,38 +95,45 @@
 
 (defn value-class?
   "Query runtime value status using the resolved predicate."
-  [methods component]
-  (true? (invoke (:predicate methods) component [])))
+  [operations component]
+  (true? ((:predicate operations) component)))
 
 (defn allocate
   "Allocate without retaining the array or translating native failures."
-  [methods component length initial]
-  (invoke (:allocator methods) nil [component length initial]))
+  [operations component length initial]
+  ((:allocator operations) component length initial))
 
-(defn- inspection-method
+(defn- check-inspection-method-access
   [^Class owner method-name parameters static?]
   (let [method (.getMethod owner method-name (into-array Class parameters))]
     (when-not (and (= Boolean/TYPE (.getReturnType method))
                    (= static? (Modifier/isStatic (.getModifiers method))))
       (throw (NoSuchMethodException. (str owner "/" method-name " signature"))))
-    (.unreflect (MethodHandles/lookup) method)
-    method))
+    (.unreflect (MethodHandles/lookup) method)))
 
-(defn- discover-inspection
+(defn- check-inspection-access
   []
   (try
     (let [owner (Class/forName "jdk.internal.value.ValueClass")]
-      {:available? true
-       :predicate (inspection-method Class "isValue" [] false)
-       :null-restricted? (inspection-method owner "isNullRestrictedArray" [Object] true)
-       :atomic? (inspection-method owner "isAtomicArray" [Object] true)
-       :flat? (inspection-method owner "isFlatArray" [Object] true)})
+      (check-inspection-method-access Class "isValue" [] false)
+      (check-inspection-method-access owner "isNullRestrictedArray" [Object] true)
+      (check-inspection-method-access owner "isAtomicArray" [Object] true)
+      (check-inspection-method-access owner "isFlatArray" [Object] true)
+      {:available? true})
     (catch ClassNotFoundException error
       {:available? false :reason :missing-array-api :cause error})
     (catch NoSuchMethodException error
       {:available? false :reason :missing-array-signature :cause error})
     (catch IllegalAccessException error
       {:available? false :reason :array-access-denied :cause error})))
+
+(defn- discover-inspection
+  []
+  (let [result (check-inspection-access)]
+    (if (:available? result)
+      {:available? true
+       :inspect-array (requiring-resolve 'value-type.impl.array-inspection/inspect-array)}
+      result)))
 
 (def ^:private detected-inspection-capability (delay (discover-inspection)))
 
@@ -141,7 +144,7 @@
   @detected-inspection-capability)
 
 (defn require-inspection
-  "Return cached inspection methods, or throw a capability error."
+  "Return the cached inspection function, or throw a capability error."
   []
   (let [{:keys [available? cause] :as result} (inspection-capability)]
     (when-not available?
@@ -155,9 +158,5 @@
 
 (defn inspect-array
   "Inspect a validated reference array without retaining it."
-  [methods array component]
-  {:component-class component
-   :component-value? (value-class? methods component)
-   :null-restricted? (invoke (:null-restricted? methods) nil [array])
-   :atomic? (invoke (:atomic? methods) nil [array])
-   :flat? (invoke (:flat? methods) nil [array])})
+  [operations array component]
+  ((:inspect-array operations) array component))

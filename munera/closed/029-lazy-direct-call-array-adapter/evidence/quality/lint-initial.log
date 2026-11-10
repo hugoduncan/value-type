@@ -1,0 +1,48 @@
+WARNING: Use of :main-opts with -A is deprecated. Use -M instead.
+WARNING: Use of :main-opts with -A is deprecated. Use -M instead.
+WARNING: Use of :main-opts with -A is deprecated. Use -M instead.
+WARNING: Use of :main-opts with -A is deprecated. Use -M instead.
+Configs copied:
+- .clj-kondo/imports/babashka/fs
+- .clj-kondo/imports/babashka/sci
+- .clj-kondo/imports/org.hugoduncan/criterium
+dev/bench/array-adapter/check-bytecode.clj:1:12: warning: duplicate require of babashka.process
+dev/bench/array-adapter/check-bytecode.clj:2:12: warning: duplicate require of clojure.java.io
+dev/bench/array-adapter/check-bytecode.clj:3:12: warning: duplicate require of clojure.string
+dev/bench/array-adapter/check-bytecode.clj:4:12: warning: duplicate require of value-type.jvm-executable
+dev/bench/array-adapter/check-bytecode.clj:5:12: warning: duplicate require of value-type.jvm-facts
+dev/bench/array-adapter/check-bytecode.clj:18:1: warning: redefined var #'user/checked
+dev/bench/array-adapter/measure.clj:3:12: warning: duplicate require of value-type.array
+dev/bench/array-adapter/measure.clj:4:12: warning: duplicate require of value-type.core
+dev/bench/array-adapter/run.clj:3:12: warning: duplicate require of clojure.java.io
+test/compatibility/value_type/identity_receiving_test.clj:63:54: info: Redundant double coercion - expression already has type double
+test/runtime/value_type/impl/loader_test.clj:390:49: info: Redundant double coercion - expression already has type double
+test/runtime/value_type/impl/loader_test.clj:425:49: info: Redundant double coercion - expression already has type double
+linting took 637ms, errors: 0, warnings: 9
+----- Error --------------------------------------------------------------------
+Type:     clojure.lang.ExceptionInfo
+Message:  
+Data:     {:proc #object[java.lang.ProcessImpl 0x51d8f64c "Process[pid=65915, exitValue=2]"], :exit 2, :in #object[java.lang.ProcessBuilder$NullOutputStream 0x74e58468 "java.lang.ProcessBuilder$NullOutputStream@74e58468"], :out #object[java.lang.ProcessBuilder$NullInputStream 0x12261a5c "java.lang.ProcessBuilder$NullInputStream@12261a5c"], :err #object[java.lang.ProcessBuilder$NullInputStream 0x12261a5c "java.lang.ProcessBuilder$NullInputStream@12261a5c"], :prev nil, :cmd ["mise" "exec" "--" "clj-kondo" "--repro" "--config-dir" ".clj-kondo" "--fail-level" "warning" "--lint" "src" "test/runtime" "test/compatibility" "test/cross-jvm" "test/build" "test/release" "test/tooling" "test/jvm" "test/smoke" "dev/jvm" "test/resources" "dev/bench" "build.clj" "dev/release" "bb" "bb.edn" "deps.edn" ".clj-kondo/hooks"], :type :babashka.process/error}
+Location: /Users/duncan/projects/hugoduncan/value-type/value-type-master/bb/value_type/quality.clj:53:5
+
+----- Context ------------------------------------------------------------------
+49:   "Prepare dependency configuration and fail on code warnings or errors."
+50:   []
+51:   (let [paths (project-paths!)]
+52:     (copy-config!)
+53:     (apply shell "mise" "exec" "--" "clj-kondo"
+        ^--- 
+54:            "--repro" "--config-dir" ".clj-kondo"
+55:            "--fail-level" "warning" "--lint"
+56:            paths)))
+
+----- Stack trace --------------------------------------------------------------
+babashka.process/check                    - <built-in>
+babashka.process/shell                    - <built-in>
+clojure.core/apply                        - <built-in>
+babashka.impl.process/shell               - <built-in>
+clojure.core/apply                        - clojure/core.clj:662:1
+value-type.quality/lint!                  - /Users/duncan/projects/hugoduncan/value-type/value-type-master/bb/value_type/quality.clj:53:5
+value-type.quality/lint!                  - /Users/duncan/projects/hugoduncan/value-type/value-type-master/bb/value_type/quality.clj:48:1
+user-68de9fb9-befd-4bad-8c7d-6edbc4ff6a6e - NO_SOURCE_PATH:38:1
+

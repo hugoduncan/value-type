@@ -1,0 +1,84 @@
+Compiled from "array.clj"
+public final class value_type.impl.array$value_class_QMARK_ extends clojure.lang.AFunction {
+  public static final clojure.lang.Var const__0;
+    descriptor: Lclojure/lang/Var;
+
+  static final clojure.lang.KeywordLookupSite __site__0__;
+    descriptor: Lclojure/lang/KeywordLookupSite;
+
+  static clojure.lang.ILookupThunk __thunk__0__;
+    descriptor: Lclojure/lang/ILookupThunk;
+
+  public value_type.impl.array$value_class_QMARK_();
+    descriptor: ()V
+    Code:
+         0: aload_0
+         1: invokespecial #9                  // Method clojure/lang/AFunction."<init>":()V
+         4: return
+
+  public static java.lang.Object invokeStatic(java.lang.Object, java.lang.Object);
+    descriptor: (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    Code:
+         0: getstatic     #15                 // Field const__0:Lclojure/lang/Var;
+         3: invokevirtual #21                 // Method clojure/lang/Var.getRawRoot:()Ljava/lang/Object;
+         6: checkcast     #23                 // class clojure/lang/IFn
+         9: getstatic     #27                 // Field __thunk__0__:Lclojure/lang/ILookupThunk;
+        12: dup
+        13: aload_0
+        14: aconst_null
+        15: astore_0
+        16: dup_x2
+        17: invokeinterface #33,  2           // InterfaceMethod clojure/lang/ILookupThunk.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        22: dup_x2
+        23: if_acmpeq     30
+        26: pop
+        27: goto          52
+        30: swap
+        31: pop
+        32: dup
+        33: getstatic     #37                 // Field __site__0__:Lclojure/lang/KeywordLookupSite;
+        36: swap
+        37: invokeinterface #43,  2           // InterfaceMethod clojure/lang/ILookupSite.fault:(Ljava/lang/Object;)Lclojure/lang/ILookupThunk;
+        42: dup
+        43: putstatic     #27                 // Field __thunk__0__:Lclojure/lang/ILookupThunk;
+        46: swap
+        47: invokeinterface #33,  2           // InterfaceMethod clojure/lang/ILookupThunk.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        52: checkcast     #23                 // class clojure/lang/IFn
+        55: aload_1
+        56: aconst_null
+        57: astore_1
+        58: invokeinterface #46,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+        63: invokeinterface #46,  2           // InterfaceMethod clojure/lang/IFn.invoke:(Ljava/lang/Object;)Ljava/lang/Object;
+        68: areturn
+
+  public java.lang.Object invoke(java.lang.Object, java.lang.Object);
+    descriptor: (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    Code:
+         0: aload_1
+         1: aconst_null
+         2: astore_1
+         3: aload_2
+         4: aconst_null
+         5: astore_2
+         6: invokestatic  #53                 // Method invokeStatic:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+         9: areturn
+
+  public static {};
+    descriptor: ()V
+    Code:
+         0: ldc           #56                 // String clojure.core
+         2: ldc           #58                 // String true?
+         4: invokestatic  #64                 // Method clojure/lang/RT.var:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Var;
+         7: checkcast     #17                 // class clojure/lang/Var
+        10: putstatic     #15                 // Field const__0:Lclojure/lang/Var;
+        13: new           #66                 // class clojure/lang/KeywordLookupSite
+        16: dup
+        17: aconst_null
+        18: ldc           #68                 // String predicate
+        20: invokestatic  #72                 // Method clojure/lang/RT.keyword:(Ljava/lang/String;Ljava/lang/String;)Lclojure/lang/Keyword;
+        23: invokespecial #75                 // Method clojure/lang/KeywordLookupSite."<init>":(Lclojure/lang/Keyword;)V
+        26: dup
+        27: putstatic     #37                 // Field __site__0__:Lclojure/lang/KeywordLookupSite;
+        30: putstatic     #27                 // Field __thunk__0__:Lclojure/lang/ILookupThunk;
+        33: return
+}

@@ -148,6 +148,28 @@ and retained failure state. Publication remains separate.
 - Value classes need a supported Valhalla JVM with `--enable-preview`.
   Array allocation also needs
   `--add-exports=java.base/jdk.internal.value=ALL-UNNAMED`.
+  Allocation now selects lazy direct-call functions after access checks and runs
+  its semantic self-check through the selected allocator. Inspection also selects an independent lazy direct-call function after access
+  checks. Discovery isolation and disabled-allocation inspection/report agreement are
+  verified. The focused bytecode gate verifies direct JDK calls in both adapters and no
+  reflective dispatch in the operation wrappers. Separate damaged-artifact tests verify that
+  missing resources, compiler errors and incompatible compiled adapters escape
+  both discovery paths without capability-absence translation. Fresh public requires load no
+  adapters across Java 8 and all four EA3 preview/export profiles; unavailable
+  operations leave their adapters unloaded. Require-only application AOT compilation and source-free loading also leave
+  adapters unloaded and un-emitted across those five profiles. Cross-profile source-free AOT consumers select receiver capabilities and pass
+  repeated allocation, both sequence arities and inspection. Focused array, report and switch cross-JVM regression also passes. Isolated source-only JAR consumers pass repeated operations and unavailable-path
+  adapter loading checks on Java 8 and EA3 supported, plain and export-only profiles.
+  [Closed task 029](../munera/closed/029-lazy-direct-call-array-adapter/implementation.md)
+  retains the measurement comparison: lower warmed times in the measured
+  workload, with about 3–4 ms additional first-use cost from lazy source
+  compilation. These are host-specific results, not performance guarantees.
+  Full runtime regression and both explicit flattening controls pass.
+  Full cross-JVM and all three fallback parent configurations pass.
+  Forced-JIT runtime and ordinary-JDK smoke pass. Forced compilation covers
+  only the runtime parent; ordinary-JDK coverage remains smoke-only.
+  Array architecture documents describe the lazy direct-call boundary and measured
+  limits. Quality checks and the six-criterion implementation acceptance audit pass.
   Array inspection needs the export; ordinary-array inspection does not need
   preview on EA3. Public validation rejects null diagnostic inputs because
   native queries can crash EA3.

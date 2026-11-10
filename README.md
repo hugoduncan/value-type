@@ -157,6 +157,11 @@ constructor. `array-info` also accepts ordinary reference arrays. It needs
 the export flag, but ordinary-array inspection does not need preview on the
 facts-selected Valhalla build.
 
+Public require alone does not load the optional array adapters. First successful
+allocation or inspection discovery loads and compiles the relevant source
+adapter, then caches its direct-call functions. A capability `report` can
+trigger this discovery and its first-use cost.
+
 See the [API reference](doc/API.md) for all three functions and the
 [usage guide](doc/usage.md#value-array-allocation) for validation and error
 handling.
@@ -226,6 +231,11 @@ values on the tested JVM. These are workload-specific results, not a promise
 for other value types or layouts. The [array benchmark](dev/bench/typed-array/README.md)
 uses the public allocator; the retained measurements used the internal JVM
 allocator directly and do not measure `into-array` construction.
+
+The [direct-call adapter comparison](munera/closed/029-lazy-direct-call-array-adapter/evidence/comparison.md)
+measured lower warmed operation times but about 3–4 ms additional first-use
+time for lazy source loading and compilation. These results apply only to
+the recorded host, JVM build and workload; they do not guarantee a speed increase.
 
 ## Documentation
 

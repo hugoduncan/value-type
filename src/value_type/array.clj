@@ -18,10 +18,10 @@
   (checked-length component (inc' length)))
 
 (defn- validate-component
-  [methods component]
+  [operations component]
   (when-not (and (instance? Class component)
                  (not (.isPrimitive ^Class component))
-                 (adapter/value-class? methods component))
+                 (adapter/value-class? operations component))
     (throw (ex-info "Array component must be a non-primitive value class"
                     {:value-type/error :invalid-array-component
                      :component component :reason :not-reference-value-class}))))
@@ -49,11 +49,11 @@
    The caller owns the mutable slots. Flattening is not guaranteed. Atomic
    element access does not provide safe publication or compound-update safety."
   [component length initial]
-  (let [methods (adapter/require-allocation)]
-    (validate-component methods component)
+  (let [operations (adapter/require-allocation)]
+    (validate-component operations component)
     (let [size (checked-length component length)]
       (validate-initial component initial {:length length})
-      (adapter/allocate methods component size initial))))
+      (adapter/allocate operations component size initial))))
 
 (defn- buffer-input
   [component entries]
@@ -98,8 +98,8 @@
    Failure does not promise full input consumption. The caller owns mutable
    slots; flattening is not guaranteed."
   ([component values]
-   (let [methods (adapter/require-allocation)]
-     (validate-component methods component)
+   (let [operations (adapter/require-allocation)]
+     (validate-component operations component)
      (let [entries (seq values)]
        (when-not entries
          (throw (ex-info "Empty array input requires the explicit-seed arity: (into-array component initial values)"
@@ -108,8 +108,8 @@
        (let [buffer (buffer-input component entries)]
          (copy-buffer component (nth buffer 0) buffer)))))
   ([component initial values]
-   (let [methods (adapter/require-allocation)]
-     (validate-component methods component)
+   (let [operations (adapter/require-allocation)]
+     (validate-component operations component)
      (validate-initial component initial {})
      (copy-buffer component initial (buffer-input component (seq values))))))
 

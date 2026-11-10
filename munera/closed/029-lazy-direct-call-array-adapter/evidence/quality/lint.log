@@ -1,0 +1,8 @@
+Configs copied:
+- .clj-kondo/imports/babashka/fs
+- .clj-kondo/imports/babashka/sci
+- .clj-kondo/imports/org.hugoduncan/criterium
+test/compatibility/value_type/identity_receiving_test.clj:63:54: info: Redundant double coercion - expression already has type double
+test/runtime/value_type/impl/loader_test.clj:390:49: info: Redundant double coercion - expression already has type double
+test/runtime/value_type/impl/loader_test.clj:425:49: info: Redundant double coercion - expression already has type double
+linting took 568ms, errors: 0, warnings: 0

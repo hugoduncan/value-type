@@ -8,9 +8,10 @@
    (value_type.probe_test_support IdentityLong)))
 
 (deftest passes-round-trip-test
+  ;; The selected function must preserve probe values through native storage.
   (let [allocator (:allocator (array/allocation-capability))]
     (testing "discovery found the allocator"
-      (is (some? allocator)))
+      (is (ifn? allocator)))
     (testing "the builder probe passes the round trip"
       (is (true? (array/passes-round-trip? allocator support/builder-probe-class))))
     (testing "a value class whose instances do not keep their value fails"
@@ -45,7 +46,7 @@
 
 (deftest round-trip-exception-test
   (let [allocator (:allocator (array/allocation-capability))]
-    (testing "passes-round-trip? removes InvocationTargetException"
+    (testing "native allocator exceptions propagate without a reflective wrapper"
       (is (thrown-with-msg? IllegalArgumentException #"not a value class"
                             (array/passes-round-trip? allocator IdentityLong))))
     (testing "a constructor exception propagates as its cause"

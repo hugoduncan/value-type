@@ -28,23 +28,35 @@
 ## D3. Isolate the JDK interface
 
 - Choice: place public validation and sequence construction in
-  `value-type.array`. Place internal method discovery, invocation and layout
-  inspection in `value-type.impl.array`.
+  `value-type.array`. Keep discovery and capability selection in the
+  baseline-safe `value-type.impl.array`. Put direct JDK calls in two optional
+  namespaces, `value-type.impl.array-allocation` and
+  `value-type.impl.array-inspection`.
 - Rationale: an EA signature change should affect one implementation boundary,
   not callers, the class transformer or the capture loader.
 - Alternatives: direct public imports couple namespace loading to optional
   APIs; a general provider framework adds no current capability.
 - Qualities: local changes and safe loading, with a small indirect call cost
   per allocation or diagnostic request, not per element access.
-- State: the adapter owns delayed capability results and method handles or
-  reflective methods, scoped to one loaded library runtime. Startup
+- State: the boundary owns delayed capability results and selected functions,
+  scoped to one loaded library runtime. Startup
   configuration is fixed; runtime module-access changes are unsupported.
   Readers use the adapter accessors (`allocation-capability`,
   `inspection-capability`): the array functions and
   `value-type.capability/report`, which reads the same cached results.
-- Boundary: only the adapter calls `jdk.internal.value`. Discover allocation
+- Invocation: use reflection and method handles only for discovery and access
+  checks. Load each optional namespace after its prerequisites pass. Repeated
+  operations, including component predicates, use direct JDK calls through
+  cached Clojure functions. Run the allocation self-check through the selected
+  allocator before publishing success. Adapter compilation and linkage failures
+  propagate outside classified-absence handlers.
+- Deployment: public require and require-only application AOT must not load or
+  emit optional adapters. Select capabilities on the receiving JVM, not the
+  build JVM. Keep the library source-only. Lazy compilation adds first-use
+  cost; direct calls do not promise a speed increase.
+- Boundary: only optional adapters call `jdk.internal.value`. Discover allocation
   and inspection capabilities separately. Missing diagnostics must not disable
-  allocation. Do not create a public SPI or reuse the class-format detector
+  allocation; inspection must not trigger value-class discovery. Do not create a public SPI or reuse the class-format detector
   as proof of array support.
 
 ## D4. Explicit initialization and bounded array lengths
@@ -86,8 +98,8 @@ Use `ex-info` with `:value-type/error` for library-detected failures:
 Allocation checks capability, component, length, then seed, stopping at the
 first failure. It uses `:array-unavailable`, `:invalid-array-component`,
 `:invalid-array-length` and `:invalid-array-element`. Initial-value errors have no slot index, even for
-length zero. Reflective invocation causes are unwrapped; native allocation
-rejection is not cached as capability absence.
+length zero. Native operation failures propagate without reflective wrappers;
+allocation rejection is not cached as capability absence.
 
 Inspection first rejects null, non-arrays and primitive arrays with
 `:invalid-array`, on every JVM. For valid reference arrays, missing APIs or

@@ -1,0 +1,1 @@
+bb api-docs --check

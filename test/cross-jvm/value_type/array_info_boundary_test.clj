@@ -184,3 +184,93 @@
         [{:context [policy]
           :form export-only-form
           :expected export-only-expected}])))))
+
+(def ^:private independent-inspection-form
+  `(do
+     (require 'value-type.array)
+     (let [info# (~inspect-form (object-array 0))]
+       {:info info#
+        :allocation-realized?
+        (realized? @(ns-resolve 'value-type.impl.array '~'detected-allocation-capability))
+        :value-realized?
+        (realized? @(ns-resolve 'value-type.impl.capability '~'detected-capability))
+        :allocation-loaded? (boolean (find-ns 'value-type.impl.array-allocation))
+        :inspection-loaded? (boolean (find-ns 'value-type.impl.array-inspection))})))
+
+(deftest independent-inspection-test
+  ;; Real inspection must leave both allocation and value discovery untouched.
+  (let [configuration (config/configuration)]
+    (harness/run-cells
+     (for [label [:export-only :export]
+           disabled? [false true]
+           :let [runtime (cond-> (capability/runtime configuration label)
+                           disabled? (update :jvm-opts conj "-Dvalue-type.value-classes=off"))]]
+       (harness/cell-child
+        (assoc runtime :policy "silent")
+        [{:context [(pr-str [label disabled?])]
+          :form independent-inspection-form
+          :expected (harness/described
+                     (harness/fixed
+                      {:info supported-info
+                       :allocation-realized? false :value-realized? false
+                       :allocation-loaded? false :inspection-loaded? true}))}])))))
+
+(def ^:private independent-allocation-form
+  `(do
+     (require 'value-type.array)
+     (let [result# (value-type.impl.array/allocation-capability)]
+       {:available? (:available? result#)
+        :cached? (identical? result# (value-type.impl.array/allocation-capability))
+        :inspection-realized?
+        (realized? @(ns-resolve 'value-type.impl.array '~'detected-inspection-capability))
+        :allocation-loaded? (boolean (find-ns 'value-type.impl.array-allocation))
+        :inspection-loaded? (boolean (find-ns 'value-type.impl.array-inspection))})))
+
+(deftest independent-allocation-test
+  ;; Successful discovery runs the real allocation self-check, not diagnostics.
+  (harness/run-cells
+   [(harness/cell-child
+     (assoc (capability/runtime (config/configuration) :export) :policy "silent")
+     [{:context ["allocation discovery"]
+       :form independent-allocation-form
+       :expected (harness/described
+                  (harness/fixed
+                   {:available? true :cached? true
+                    :inspection-realized? false
+                    :allocation-loaded? true :inspection-loaded? false}))}])]))
+
+(def ^:private disabled-allocation-form
+  `(do
+     (require 'value-type.array 'value-type.capability)
+     (let [rejection# (try (value-type.array/make-array nil -1 nil)
+                           (catch clojure.lang.ExceptionInfo error#
+                             (select-keys (ex-data error#) [:value-type/error :reason])))
+           info# (~inspect-form (object-array 0))
+           report# (value-type.capability/report)]
+       {:rejection rejection#
+        :info info#
+        :report (select-keys report# [:value-class :array-allocation :array-inspection
+                                      :fallback-policy])
+        :allocation-loaded? (boolean (find-ns 'value-type.impl.array-allocation))
+        :inspection-loaded? (boolean (find-ns 'value-type.impl.array-inspection))})))
+
+(deftest disabled-allocation-independent-inspection-test
+  ;; The switch blocks allocation before validation but does not block inspection.
+  (harness/run-cells
+   (for [label [:export-only :export]
+         :let [runtime (-> (capability/runtime (config/configuration) label)
+                           (update :jvm-opts conj "-Dvalue-type.value-classes=off")
+                           (assoc :policy "silent"))]]
+     (harness/cell-child
+      runtime
+      [{:context [(name label)]
+        :form disabled-allocation-form
+        :expected (harness/described
+                   (harness/fixed
+                    {:rejection {:value-type/error :array-unavailable :reason :disabled}
+                     :info supported-info
+                     :report {:value-class {:available? false :reason :disabled}
+                              :array-allocation {:available? false :reason :disabled}
+                              :array-inspection {:available? true}
+                              :fallback-policy :silent}
+                     :allocation-loaded? false :inspection-loaded? true}))}]))))

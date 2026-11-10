@@ -35,6 +35,7 @@
                 nil
                 (catch Exception error error))]
     (is (= IllegalArgumentException (class error)))
+    (is (identical? methods (adapter/require-allocation)))
     (let [result (array/make-array ArrayPoint 1 seed)]
       (is (= ArrayPoint (.getComponentType (class result))))
       (is (= [seed] (vec result))))))

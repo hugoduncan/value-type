@@ -7,18 +7,22 @@ The public namespace implements `make-array`, both `into-array` arities and
 ## Components and interactions
 
 ```text
-caller → value-type.array → value-type.impl.array → JDK ValueClass
-           validation         capability/access       allocation
-           input realization  layout inspection       store invariants
+caller → value-type.array → value-type.impl.array
+           validation         discovery/access/selection
+           input realization    → impl.array-allocation → JDK ValueClass
+                                → impl.array-inspection → JDK ValueClass
 caller → Clojure/Java array operations → returned native array
 ```
 
 The public namespace supplies `make-array [component length initial]` and
 both `into-array` arities and `array-info [array]`.
-The adapter lazily resolves the allocator and value predicate, checks access
-with a method handle, and invokes through reflection. It caches capability,
-not arrays or seeds. Diagnostics are not allocation prerequisites.
-Allocation discovery invokes the allocator once, in a round trip with the
+The baseline boundary discovers methods reflectively and checks access with
+method handles. It then lazily resolves direct-call functions from the relevant
+optional namespace. Successful allocation state holds `:allocator` and
+`:predicate`; inspection state holds `:inspect-array`. It caches functions and
+capability, not arrays or seeds. Neither optional namespace requires the other.
+Diagnostics are not allocation prerequisites.
+Allocation discovery invokes the selected direct allocator once, in a round trip with the
 probe Class from the value-class result: it allocates a null-restricted array
 of length 2, writes one element and reads both. The round trip is the D17
 semantic check of the allocated array. A failed round trip gives
@@ -52,13 +56,31 @@ on macOS aarch64. They include:
   effects, realization failures, indexed errors and checked length accounting.
 - Six startup configurations, three class-fallback policies and both namespace
   require orders. Export-only inspection does not require allocation capability.
-- JAR-only consumers for supported operations and unsupported-runtime loading.
+- JAR-only consumers for repeated supported operations and unsupported-runtime
+  loading, with no optional adapters loaded on unavailable paths.
+- Compiled bytecode for both adapters and baseline operation wrappers: direct
+  JDK targets, with no reflective or method-handle operation dispatch.
+- Fresh require and require-only application AOT/load on Java 8 and all four
+  EA3 preview/export profiles. Optional adapters remain unloaded and un-emitted.
+  Source-free cross-profile AOT consumers select receiver capabilities.
+- Native allocation rejection followed by successful public allocation without
+  replacing the successful capability result.
 
 These tests do not establish arbitrary-class eligibility or broader JDK support.
 Sequence construction uses O(n) temporary references; its allocation amount
 and speed have not been measured. Native layout selection and the null-crash
 mechanism are not explained by the probes. Concurrent stress and copy semantics
 are not verified by this evidence.
+
+## Invocation measurements
+
+The bounded [task 029 comparison](../../munera/closed/029-lazy-direct-call-array-adapter/evidence/comparison.md)
+records lower warmed allocation and inspection times for direct calls in the
+measured workload. First use adds about 3–4 ms at the medians. Fresh-process
+preloaded controls support lazy source compilation as the explanation. Setup
+excludes JVM startup. Samples are short, case order is fixed, and the two
+revisions were not interleaved. These host-specific observations are not
+performance guarantees.
 
 The [direct-JVM report](semantic-verification.md) describes the native boundary;
 it does not replace public API tests. Detailed commands and acceptance records

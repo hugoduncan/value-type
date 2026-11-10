@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+- Replace repeated reflective array calls with lazily loaded direct-call
+  adapters. First successful allocation or inspection discovery, including
+  discovery through `report`, loads and compiles the relevant source adapter.
+  This adds a first-discovery compilation cost; no speed increase is promised.
+  The public API, required JVM flags and no-fallback contract are unchanged.
+
 - Centralize development JVM selection in checked facts, with SHA-256
   verification before archive extraction and exact-build checks. Add an
   ordinary-JDK smoke tier and a primary-EA forced-JIT runtime row; forced
