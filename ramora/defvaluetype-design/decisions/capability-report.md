@@ -35,11 +35,6 @@
 - Rationale: users can check a deployment before they define types or
   allocate arrays, and the report cannot disagree with the library
   behaviour, because it reads the same cache and the same fixed policy.
-- Qualities: small public surface; one owner per result. Adds a 54-child
-  cross-JVM matrix (6 runtimes × 3 policies × 3 require orders).
-- Commitment: firm. Verified by `value-type.capability-test`
-  (`report-translation-test`, `report-defect-propagation-test`),
-  `value-type.capability-matrix-test`,
-  `value-type.controlled-value-capability-test`,
-  `value-type.runtime-test/invalid-policy-report-test`,
-  `value-type.fallback-policy-test` and the isolated source-JAR consumer.
+- Qualities: small public surface; one owner per result. Cross-JVM verification
+  must cover runtime capabilities, fallback policies and namespace require orders.
+- Commitment: firm.

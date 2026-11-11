@@ -59,7 +59,7 @@ requires it). The [decision index](../decisions.md) lists all decisions.
   initialization and reflection can wrap these exceptions. Error text is
   not specified, as in the non-nil design.
 - Rejected:
-  - Keep the rejection of `:non-nil` (the earlier choice). The main
+  - Reject `:non-nil`. The main
     constructor holds all field writes, so the restriction has no technical
     cause, and the two macros would have different field contracts.
   - Let the existing errors reject `:non-nil` on hidden fields
@@ -73,7 +73,7 @@ requires it). The [decision index](../decisions.md) lists all decisions.
 - Improves: consistency. Degrades: record operations that pass `nil` for an
   enabled field fail, although records usually accept `nil`; more
   verification.
-- Commitment: firm (D7 non-nil gate passed).
+- Commitment: firm.
 
 ## D8. Enforce non-nil fields in the main constructor (behaviour)
 
@@ -88,7 +88,7 @@ requires it). The [decision index](../decisions.md) lists all decisions.
     access check still apply.
   - Identity output: a constructor delegates when it calls a constructor of
     the target class on its own receiver (`this(…)`). Each other
-    constructor writes each enabled field once, as now. A delegating
+    constructor writes each enabled field once. A delegating
     constructor that writes an enabled field, and a constructor that both
     creates an instance of the target class and calls one of its
     constructors, give `:unsupported-shape`. The rule does not depend on
@@ -111,4 +111,4 @@ requires it). The [decision index](../decisions.md) lists all decisions.
   constructor writes, as for `defvaluetype`.
 - Improves: minimality, correctness. Degrades: the identity backend accepts
   a wider set of constructors than the plain shape needs.
-- Commitment: firm (D7 non-nil gate passed).
+- Commitment: firm.

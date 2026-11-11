@@ -7,8 +7,7 @@ works with native or generated enforcement. Reject `:required` (can imply argume
 presence or defaults), `:non-null` (Java terminology) and retaining `:nil-restricted`
 (too closely tied to the native-only contract). No compatibility alias is required.
 Reject the old key explicitly rather than silently treating it as unknown metadata.
-The naming choice is firm for this design; the [parent design](../non-nil-field-design.md#embodiment-and-observed-qualities)
-records the implemented contract and accepted evidence limits.
+The naming choice is firm for this design.
 
 ## D2. Separate representation from enforcement
 
@@ -28,9 +27,8 @@ companion field references. No global registry is needed.
 
 Keep `java.lang.classfile` for value-class output. Use a baseline-safe bytecode
 backend for identity output, preserving its ordinary class version and constructor
-ordering. Use Clojure's bundled ASM for identity output. The baseline-JVM
-experiment verified constructor, companion and AOT behavior. This adds maintenance cost but avoids a new fallback
-JDK requirement. A shared field model limits semantic drift between backends.
+ordering. Use Clojure's bundled ASM for identity output. This adds maintenance
+cost but avoids a new fallback JDK requirement. A shared field model limits semantic drift between backends.
 
 ## D4. Put generated checks in constructors
 

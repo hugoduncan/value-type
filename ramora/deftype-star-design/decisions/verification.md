@@ -9,7 +9,7 @@ requires it). The [decision index](../decisions.md) lists all decisions.
 - Spike first, on Valhalla `27-jep401ea3+1-1` with preview: transform a
   record-shaped `deftype*`, then call each constructor and `create`, read a
   record literal, and emit a record as a code constant.
-- Non-nil gate, before D6 and D8 are implemented, on the same JVM with
+- Non-nil feasibility gate for D6 and D8, on the same JVM with
   preview and `-Xverify:all`: a record-shaped value class with one native
   field (`NullRestricted`, concrete value-class storage) and one generated
   field (concrete identity-class storage) verifies. Each constructor,
@@ -29,7 +29,7 @@ requires it). The [decision index](../decisions.md) lists all decisions.
   With enabled fields: valid construction and `nil` or wrong-type rejection
   through every construction path of D6, native and generated enforcement,
   transferred expansions and AOT.
-- Closed gate, before D9 and D10 are implemented, on the same JVM with
+- Closed feasibility gate for D9 and D10, on the same JVM with
   preview and `-Xverify:all`: a spike transform of a closed record with the
   fields `[^long x __meta __extmap ^int __hash ^int __hasheq]` removes all
   four hidden fields and adds the D10 check. The class verifies and is a

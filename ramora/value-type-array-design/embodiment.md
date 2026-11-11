@@ -72,16 +72,13 @@ and speed have not been measured. Native layout selection and the null-crash
 mechanism are not explained by the probes. Concurrent stress and copy semantics
 are not verified by this evidence.
 
-## Invocation measurements
+## Performance limits
 
-The bounded [task 029 comparison](../../munera/closed/029-lazy-direct-call-array-adapter/evidence/comparison.md)
-records lower warmed allocation and inspection times for direct calls in the
-measured workload. First use adds about 3–4 ms at the medians. Fresh-process
-preloaded controls support lazy source compilation as the explanation. Setup
-excludes JVM startup. Samples are short, case order is fixed, and the two
-revisions were not interleaved. These host-specific observations are not
-performance guarantees.
+Direct-call adapters compile on first successful discovery. This adds first-use
+cost; warmed performance depends on the host and workload. The
+[bounded invocation comparison](../../munera/closed/029-lazy-direct-call-array-adapter/evidence/comparison.md)
+retains measurements and method limits, not performance guarantees.
 
 The [direct-JVM report](semantic-verification.md) describes the native boundary;
 it does not replace public API tests. Detailed commands and acceptance records
-belong to the allocation, diagnostic and sequence tasks in `munera/closed/`.
+belong in `munera/closed/`.

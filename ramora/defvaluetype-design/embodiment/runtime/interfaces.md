@@ -17,7 +17,7 @@ Part of the [runtime embodiment](../runtime.md).
 - Strict failure: an `Error` on every attempted fallback.
   Direct rejection uses plain java.lang.Error. Source compiler operations
   wrap it in CompilerException; failed AOT initializer retries can throw
-  NoClassDefFoundError. These phase behaviours are verified by production tests on the recorded matrix.
+  NoClassDefFoundError.
 - Errors: `ex-info` with `:value-type/error` and `:class-name`;
   `:value-type/error` in `#{:invalid-field :mutable-field :not-installed
   :not-value-class :value-capability-unavailable

@@ -39,50 +39,29 @@ policy, including on capable JVMs; function-contained definitions defer runtime
 policy until invocation. Direct Java class access does not evaluate namespace guards.
 Value artifacts reject incompatible JVMs rather than convert to identity output.
 
-## Verified behavior and limits
+## Verification scope and limits
 
-Task 017 records Clojure 1.12.6, Temurin `1.8.0_492-b09` and Valhalla
-`27-jep401ea3+1-1` evidence. Public expansion transfer covers both expansion entry
-points, eval, source loading and function analysis, with repeated installation or
-rejection. Public source-free AOT covers identity-generated, value-generated,
-native and mixed fields with separate Clojure and Java consumers. Constructor
-checks, concrete storage, companion reads, reload and function-contained timing
-have normal/interpreter evidence under explicit child-JVM policies.
+Coverage uses Clojure 1.12.6 and the primary baseline and Valhalla builds in
+the [JVM facts](../../dev/jvm/jvms.edn). It includes:
 
-Native semantic controls pass with field flattening enabled and disabled, in
-normal and interpreter execution without internal exports. Packaged-source nested
-Point/String consumers pass on Java 8 and EA3 preview off/on under silent policy.
-This is not all-policy packaging evidence. Host JVM variations do not extend the
-explicit child-process matrix.
+- Public expansion transfer through eval, source loading and function analysis,
+  with repeated installation or rejection.
+- Source-free AOT of identity-generated, value-generated, native and mixed
+  fields, with separate Clojure and Java consumers.
+- Constructor checks, concrete storage, companion reads, reload and
+  function-contained policy timing under explicit child-JVM policies.
+- Native semantic controls with field flattening enabled and disabled, in
+  normal and interpreter execution without internal exports.
+- Packaged-source nested Point/String consumers under silent policy. This
+  does not establish all-policy packaging coverage.
 
-Controlled-capability evidence is separate from real JVM evidence.
-`value-type.controlled-field-capability-test` and
-`value-type.function-redefinition-test/controlled-capability-repeated-definition-test`
-replace only the native capability result in EA3 child JVMs; compilation,
-loaders, transforms and constructors stay real. They cover generated checks in
-value owners through public expansion, same-name redefinition, independent
-receiving, source-free Clojure AOT and separate Java AOT, with no fallback
-warning under silent, warn and error policies. This is controlled
-evidence, not JVM support. See the
+Controlled-capability tests replace only the native capability result in EA3
+child JVMs; compilation, loaders, transforms and constructors stay real. They
+exercise generated checks in value owners, redefinition, receiving analysis
+and source-free AOT. These controls do not establish support on another JVM.
+
+The explicit child-process matrix bounds the evidence. Semantic checks do not
+establish flat layout or performance. See the
+[acceptance audit](../../munera/closed/017-portable-non-nil-fields/acceptance-audit.md),
 [controlled-capability audit](../../munera/closed/017-portable-non-nil-fields/controlled-capability-audit.md)
-and [runtime commands](../../doc/development/runtime.md).
-
-The user accepted this evidence for the closed task. Accepted limits: packaging
-evidence covers the silent policy only, and the child-process matrix is the
-evidence scope. See the
-[task checklist](../../munera/closed/017-portable-non-nil-fields/steps.md),
-[recorded evidence](../../munera/closed/017-portable-non-nil-fields/implementation.md)
-and [runtime commands](../../doc/development/runtime.md). No new JVM support,
-flat layout or performance guarantee follows from these results.
-
-## Separate historical experiments
-
-The [native experiment](../../dev/spike/null-restricted-fields/report.md) retains its
-layout observations and prototype limits. It is not the production transform.
-The portable experiment in `dev/spike/portable-fields/verify.sh` established the backend
-feasibility gate: checked identity output on baseline JVMs and generated checks
-in EA3 value constructors with native annotations deliberately absent. That is
-controlled generated-only evidence, not a new JVM capability configuration.
-The experiment ran at commit `6318c36`. It does not run against the current
-tree, so `verify.sh` runs it in a temporary git worktree at that commit.
-Historical task and experiment records retain their original scope.
+and [runtime guide](../../doc/development/runtime.md) for detailed scope.

@@ -6,10 +6,11 @@ Read this file first. Read the other files only when you need them.
 
 Design documents describe the design, not the history of the project.
 Keep implementation status and gaps between the design and its implementation
-only in embodiment sections or their linked detail files. Other sections state
-contracts, decisions, rationale, constraints and required verification without
-completion reports. Keep task progress, acceptance records and change history
-in Munera and Git. Experiment reports retain methods, observations and evidence
+only in files named `embodiment.md`. These files describe the current state,
+not delivery history. Linked component documents describe architecture, not
+implementation status. Other sections state contracts, decisions, rationale,
+constraints and required verification without completion reports. Keep task
+progress, acceptance records and change history in Munera and Git. Experiment reports retain methods, observations and evidence
 limits; they do not report feature delivery status.
 
 ## Documents
@@ -20,7 +21,7 @@ limits; they do not report feature delivery status.
 
 - [Non-nil field design](non-nil-field-design.md): `:non-nil`
   constraint, native or generated enforcement, application-controlled identity
-  fallback, implementation and accepted evidence limits.
+  fallback, and verification requirements.
 
 - [deftype* design](deftype-star-design.md): `defvaluetype*` for
   callers that emit `deftype*`, including the record shape and the closed

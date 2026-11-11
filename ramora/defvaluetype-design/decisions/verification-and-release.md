@@ -2,9 +2,7 @@
 
 Scope: the JVM facts, the test matrix, output review and the consumer
 install source. These decisions extend [D11](../decisions.md#d11-verification-verification)
-and the [release workflow](../../release-workflow.md). Basis: residual
-(stressor) analysis of commit `5073893f`, recorded in residues-skill
-`examples/value-type/recommendations.md`.
+and the [release workflow](../../release-workflow.md).
 
 ## D21. Supported-JVM facts (data model)
 
@@ -15,7 +13,7 @@ and the [release workflow](../../release-workflow.md). Basis: residual
   build tests read it. Documents link to it and do not repeat build IDs. The
   project follows the current EA build: a new build replaces the old row.
 - Rejected:
-  - Build IDs in each document. EA3 is named in about 400 places.
+  - Build IDs in each document. Duplicated facts can disagree.
   - An archive of tested JDKs. The project moves to each new EA build and
     does not keep old builds verifiable.
 - Rationale: one change for each new JVM build.

@@ -1,16 +1,15 @@
 # Probe and JVM format decisions
 
 Scope: capability detection and the class-file format rules that change with
-each early-access build. Basis: residual (stressor) analysis of commit
-`5073893f`, recorded in residues-skill `examples/value-type/recommendations.md`.
+each early-access build.
 
 ## D15. JVM format table (data model, boundary)
 
 - Subject: the class-file format rules that change with each EA build.
 - Choice: one namespace owns the JEP 401 flag values (no `ACC_IDENTITY`,
   `ACC_STRICT_INIT` on instance fields), the version rule and the
-  value-constructor order rule. The default row is the current rule: major
-  from `ClassFile.latestMajorVersion`, minor 0xFFFF, current flag values.
+  value-constructor order rule. The default row uses major
+  from `ClassFile.latestMajorVersion`, minor 0xFFFF and the JEP 401 flag values.
   Other rows record only known differences, keyed by feature release or build.
   A build with no row uses the default row. The probe (D16, D17) and the
   transform (D5) read the same row.
@@ -79,8 +78,7 @@ each early-access build. Basis: residual (stressor) analysis of commit
   only when a top-level value definition is evaluated, capability is not
   already cached, and the switch and API checks permit the probe. A definition
   inside a function defers the guard until invocation. The `off` switch rejects
-  the definition without running a probe. Measured (task 026, one machine, EA3): about 11 ms
-  median added to the start of a one-definition AOT application.
+  the definition without running a probe.
 - Commitment: firm. The AOT check is provisional until its startup cost is
   measured.
 

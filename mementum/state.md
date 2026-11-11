@@ -77,6 +77,8 @@ Its API is not stable. It provides:
 - [Release guide](../doc/development/release.md): preparation, preview,
   publication and failure handling.
 - [Architecture index](../ramora/INDEX.md): designs and implementation boundaries.
+  Only files named `embodiment.md` describe implementation status; they state
+  current coverage and gaps, not development history.
 - `mementum/knowledge/`: reusable lessons on JVM boundaries, testing,
   benchmarking and release behavior.
 - `munera/closed/`: detailed implementation and acceptance evidence.

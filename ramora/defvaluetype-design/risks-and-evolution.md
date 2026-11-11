@@ -61,8 +61,8 @@ this guard. Failed initializer retries do not re-enter it.
 
 - Non-nil fields: see the [field design](../non-nil-field-design.md).
   `:non-nil` names a portable constraint. Native and baseline-safe bytecode backends
-  share field specifications. Constructor checks and source-free AOT are verified
-  on both, within the accepted evidence limits of the field embodiment.
+  share field specifications. Constructor checks and source-free AOT must
+  preserve the constraint in both representations.
 - Abstract value classes. `deftype` cannot express them. This needs a
   new macro.
 - A record form (`defvaluerecord`). Records keep mutable hash caches.

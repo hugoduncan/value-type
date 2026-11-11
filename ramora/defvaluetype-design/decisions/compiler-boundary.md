@@ -2,8 +2,7 @@
 
 Scope: the coupling to Clojure compiler output and the expansion forms.
 [D1, D3, D4](compiler-and-capture.md) and [D9](validation-and-errors.md)
-include these decisions. Code: `value-type.impl.compiler`. Basis: residual (stressor) analysis of commit
-`5073893f`, recorded in residues-skill `examples/value-type/recommendations.md`.
+include these decisions. Code: `value-type.impl.compiler`.
 
 ## D19. Compiler boundary (boundary)
 
@@ -51,12 +50,11 @@ include these decisions. Code: `value-type.impl.compiler`. Basis: residual (stre
 - Subject: the expansion of ordinary value definitions.
 - Choice: ordinary value definitions (`defvaluetype`, and `defvaluetype*`
   without enabled non-nil fields and without the closed shape) expand to a
-  receiving macro, as definitions with enabled non-nil fields already do. The
+  receiving macro, as do definitions with enabled non-nil fields. The
   receiving macro installs the capture loader during analysis. The expansion
   has no `installed` literal.
-- Changes:
-  - D1: the ordinary expansion is a receiving macro, not the `let` with
-    `check-value-class <class> <installed>`. deftype* D1 changes the same way.
+- Constraints:
+  - D1: every value expansion is a receiving macro, including deftype* D1.
   - D3: no installation during selection. All installation is in receiving
     analysis.
   - D9: the receiving macro throws `:not-installed` at analysis when no
@@ -67,6 +65,5 @@ include these decisions. Code: `value-type.impl.compiler`. Basis: residual (stre
   `installed=true` gives a misleading `:not-value-class` in a new JVM.
 - Rationale: one expansion style. Transferred and replayed expansions install
   where they are analysed.
-- Qualities: fewer branches. The expansion shape and its transfer and AOT
-  tests change.
+- Qualities: fewer branches. Transfer and AOT tests must exercise the receiving boundary.
 - Commitment: firm.

@@ -14,10 +14,11 @@
 - Observed: Valhalla `27-jep401ea3+1-1` with preview and verification
   accepts a value-class constructor that calls `this(…)`. All three
   constructors, `create`, `getBasis`, both record literals and compiled
-  record constants work in both representations. Other JVMs are not verified.
-  The [non-nil gate](non-nil-gate.md) adds one native and
-  one generated field on the same JVM with `-Xverify:all`; it used a
-  spike-local transform, and the test suites cover the production transform.
+  record constants work in the [value-class fixture](feasibility-gate.md).
+  The [non-nil gate](non-nil-gate.md) uses one native and one generated field
+  on the same JVM with `-Xverify:all` and a spike-local transform. These
+  observations do not establish library implementation coverage; see
+  [embodiment](embodiment.md).
 - Risk: records with enabled non-nil fields reject `nil` in `create`,
   record literals and `assoc`, where records usually accept it. Callers that
   build records from partial maps must supply each enabled field.
@@ -30,6 +31,6 @@
   the class; identity output gives `IllegalArgumentException` when the code
   passes a non-nil value to the main constructor. The caller obligations
   state the limit.
-- Risk: closed-record supports Clojure 1.11. value-type tests only
-  Clojure 1.12.6. A caller that uses value output must use a Clojure version
-  that value-type supports.
+- Risk: caller and library Clojure requirements can differ. A caller that
+  uses value output must use a Clojure version that value-type supports.
+  See [embodiment](embodiment.md) for verification scope.

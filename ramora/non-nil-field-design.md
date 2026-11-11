@@ -91,14 +91,8 @@ that accepts null in the native-restriction probe field has no native support
 
 ## Embodiment and observed qualities
 
-The implementation uses `:non-nil`, concrete identity or value tags and native or
-generated constructor enforcement. Identity output uses bundled ASM; value output
-uses `java.lang.classfile`. Receiving analysis and source-free AOT preserve the
-selected representation and enforcement.
-
-[Implementation and evidence](non-nil-field-design/embodiment.md) records
-verified behavior and accepted evidence limits. Historical native experiments
-and closed task records retain their original evidence limits.
+[Embodiment](non-nil-field-design/embodiment.md) describes the current
+implementation and verification limits.
 
 ## Qualities, risks and verification
 

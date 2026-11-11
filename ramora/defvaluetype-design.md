@@ -39,7 +39,7 @@ Native support selects enforcement, not whether the constraint applies. For
 non-nil fields, receiving analysis installs a local capture loader for the
 selected backend. See the
 [field design](non-nil-field-design.md) for the non-nil contract and its
-accepted evidence limits. The flow above selects representation; enabled fields also
+verification limits. The flow above selects representation; enabled fields also
 require storage, constructor and companion transformation on either path.
 
 ## Sections

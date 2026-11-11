@@ -4,7 +4,7 @@ Application policy selects class representation for all definitions. Enabled
 [non-nil fields](../non-nil-field-design.md) preserve their field constraint
 through native or generated enforcement. Missing native field support alone does
 not trigger fallback, warning or strict rejection. The field design's embodiment
-section records the implemented contract and accepted evidence limits.
+section records the contract and verification limits.
 
 ## D10. Controlled fallback
 

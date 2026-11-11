@@ -1,14 +1,14 @@
 # deftype* embodiment
 
-Implemented, including D6, D8, D9, D10 and the D7 non-nil and closed gates.
-The elements:
+`defvaluetype*` supports plain, record and closed shapes, with native or
+generated non-nil field enforcement. Components:
 
 - `value-type.core`: `defvaluetype*` runs the D6 declaration checks at
   macroexpansion (`:mutable-field`, `:record-shape`, `:invalid-option`, metadata
   keys, `:hidden-field`, tag and type). It removes each `:value-type/closed`
-  option from the `deftype*` call. With enabled fields or the closed shape, it
-  expands to the receiving macros `value-field-deftype*` or
-  `identity-field-deftype*`.
+  option from the `deftype*` call. Every value definition expands to
+  `value-field-deftype*`. Identity definitions with enabled fields or the
+  closed shape expand to `identity-field-deftype*`.
 - `value-type.impl.fields`: the one owner of the non-nil declaration rules,
   including `:hidden-field`.
 - `value-type.impl.transform` and `value-type.impl.value-backend`: record
@@ -33,8 +33,8 @@ keys and before the modes and tags. Name match ignores the namespace.
 
 ## Receiving macros
 
-With enabled fields or the closed shape, the value expansion is
-`value-field-deftype*` and the fallback expansion is `identity-field-deftype*`.
+Every value expansion uses `value-field-deftype*`. With enabled fields or
+the closed shape, the fallback expansion is `identity-field-deftype*`.
 Both carry `tagname classname modes fields & opts+specs`, not the shape. Each
 receiver derives the shape (`:plain`, `:record` or `:closed`) from the fields
 and the option, removes the option from its `deftype*` call and passes the shape
@@ -47,9 +47,9 @@ to `install-receiving!`. Order:
   `:invalid-option`, metadata keys, `:hidden-field`, modes, tag and type, fixed
   fallback policy.
 
-Forms with neither enabled fields nor the closed shape keep the value expansion
-and `guarded-deftype*`. A closed form without enabled fields takes the receiving
-path with empty specifications. Both receivers are `:no-doc`.
+Identity forms with neither enabled fields nor the closed shape use
+`guarded-deftype*`. Receiving forms without enabled fields carry empty
+specifications. Both receivers are `:no-doc`.
 
 ## Record value storage and checks (D8)
 
@@ -87,7 +87,10 @@ the entry of each non-delegating constructor (parameters n − 4, n − 3; two
 `F_SAME` frames; max stack at least 3). Identity closed output keeps all
 four hidden fields; `__meta` and `__extmap` hold nil.
 
-## Evidence
+## Verification scope
+
+Coverage uses Clojure 1.12.6 and the primary Java 8 and Valhalla builds in
+the [JVM facts](../../dev/jvm/jvms.edn). Serialization is not covered.
 
 - Gate: [non-nil gate](non-nil-gate.md), EA3 preview, `-Xverify:all`.
 - Gate: [closed gate](closed-gate.md), EA3 preview, `-Xverify:all`.

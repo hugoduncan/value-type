@@ -32,4 +32,4 @@ arguments.
 ## Limits
 
 Serialization, preview off, Java 8 and the production transform are not
-covered here. Slice 3 and Slice 5 tests cover the production path.
+covered here. See [embodiment](embodiment.md) for library test coverage.

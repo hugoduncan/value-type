@@ -1,11 +1,11 @@
-# Artifact embodiment
+# Project artifact architecture
 
 ## Project artifacts
 
 - `deps.edn`: Clojure 1.12.6. Alias `:test` with `--enable-preview` in
-  `:jvm-opts`. The JDK is a Valhalla early-access build (spike:
-  `~/.local/jdks/jdk-27.jdk/Contents/Home`). Alias `:bench`: extra
-  path `bench`, criterium `0.5.245-ALPHA`, `--enable-preview` and the
+  `:jvm-opts`. Runtime JVM selection uses the
+  [JVM facts](../../../dev/jvm/jvms.edn). Alias `:bench`: extra
+  path `dev/bench`, criterium `0.5.245-ALPHA`, `--enable-preview` and the
   criterium blackhole JVM options (`-XX:+UnlockExperimentalVMOptions`,
   `-XX:CompileCommand=blackhole,criterium.blackhole.Blackhole::consume`).
 - `deps.edn` build aliases: `:build` selects `build` with tools.build
@@ -114,26 +114,7 @@ loading need only the supported Clojure runtime and ordinary JDK interfaces, sub
 to the class fallback policy. See the usage guide
 [value-array requirements](../../../doc/usage.md#value-array-allocation).
 
-Isolated source-JAR consumers passed in four configurations:
-
-- Valhalla EA3 with preview and exports: allocation, initial contents, native
-  reads and writes, rejected null and wrong-type stores, and complete ordinary
-  and restricted array diagnostics. Sequence construction covers both arities,
-  ordered contents and explicit-seed empty input.
-- Java 8 without flags and EA3 without preview or exports: namespace loading,
-  repeated unavailable-allocation checks and unavailable Object-array inspection.
-- EA3 with exports but without preview: Object-array inspection before value
-  creation, while allocation remains unavailable.
-
-All three unsupported-allocation configurations, including export-only EA3,
-reject both sequence arities repeatedly before value creation and without
-input effects. They also check that null, non-array and primitive-array
-diagnostic inputs report `:invalid-array` before capability checks. All four
-configurations retain the macro checks and call `value-type.capability/report`
-and compare it with the expected row of the configuration. They verify that
-the core, both array and the capability source resources resolve from the
-exact built JAR, without checkout sources. See the development
-[build-test guide](../../../doc/development/runtime.md#run-the-build-tests).
+See [embodiment](../embodiment.md) for isolated source-JAR verification scope.
 
 Fallback AOT fixes identity representation and enforces receiving policy where
 the form is evaluated, including on capable JVMs. Top-level forms enforce

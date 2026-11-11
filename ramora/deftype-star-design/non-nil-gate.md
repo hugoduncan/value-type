@@ -45,5 +45,5 @@ not change.
 ## Limits
 
 The production transform is not covered. Preview off, Java 8, identity
-output and serialization are not covered by this gate. The runtime and
-fallback suites cover the production transform.
+output and serialization are not covered by this gate. See
+[embodiment](embodiment.md) for library test coverage.

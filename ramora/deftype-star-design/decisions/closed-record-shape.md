@@ -85,4 +85,4 @@ requires it). The [decision index](../decisions.md) lists all decisions.
   closed types have no metadata and no extension keys; identity output
   needs a transform; the error has no `ex-data`.
 - Assumption: the closed gate (D7) passes.
-- Commitment: firm (D7 closed gate passed).
+- Commitment: firm.

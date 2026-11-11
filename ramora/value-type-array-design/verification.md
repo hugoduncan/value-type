@@ -84,9 +84,9 @@ Do not require a speed ratio as API acceptance.
 | ID | Status | Relation and scope | Basis / confidence |
 |---|---|---|---|
 | A1 | observed | Internal restricted allocation permits flat one-long storage on the recorded EA setup. | Probe and retained reports; high within that scope. |
-| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Direct-JVM evidence and selected-slot public API tests. |
-| A3 | observed | D2 preserves null restriction for explicit-seed allocation. | Allocation and sequence policy matrices. |
-| A4 | observed | D3 isolates optional JDK dependencies from namespace loading. | Java 8 and preview-disabled EA3 loading controls. |
+| A2 | observed | Native stores enforce null and type restrictions for tested fixtures in both layouts. | Direct-JVM selected-slot evidence. |
+| A3 | intended | D2 must preserve null restriction for explicit-seed allocation. | Require allocation and sequence policy matrices. |
+| A4 | intended | D3 must isolate optional JDK dependencies from namespace loading. | Require baseline and preview-disabled loading controls. |
 | A5 | observed | Direct explicit-seed allocation supports length zero for tested value classes. | Direct-JVM allocation evidence; seed validation still applies. |
 | A6 | inferred | Sequence construction can allocate more than the direct probe. | D4 temporary storage; amount unmeasured. |
 

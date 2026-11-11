@@ -21,10 +21,10 @@ Fallback adds no JDK requirement beyond the supported Clojure runtime.
 [Non-nil fields](../non-nil-field-design.md) preserve typed storage and
 constructor rejection through native or generated enforcement. There is no
 per-instance capability or policy check; generated constructors can add cost.
-The field design records the implemented contract and accepted evidence limits.
+The field design records the contract and verification limits.
 
-The non-nil field semantic matrix verifies correctness, not equal call time or
-zero added cost. It does not extend the ordinary method-call benchmark to
+The non-nil field semantic matrix must verify correctness, not equal call time
+or zero added cost. It does not extend the ordinary method-call benchmark to
 definitions with enabled non-nil fields. See the
 [native field evidence limits](../non-nil-field-design/verification.md#layout-and-performance-evidence);
 layout and performance require separate measurements.

@@ -8,7 +8,7 @@ The runtime and artifact sections describe the current implementation,
 including capability detection and guarded fallback for ordinary definitions.
 Non-nil fields use native or generated constructor enforcement with a separate
 baseline-safe identity backend. The [field embodiment](../non-nil-field-design/embodiment.md)
-records implementation details and accepted evidence limits.
+describes implementation details and verification limits.
 
 ## Implementation and verification scope
 
@@ -31,7 +31,6 @@ The implementation does not yet realize these decisions:
 |---|---|
 | D23 snapshots | No disassembly snapshots. |
 
-
 ## JVM and release tooling
 
 D21 uses [JVM facts](../../dev/jvm/jvms.edn), a baseline-safe reader and
@@ -44,19 +43,43 @@ runtime suite parent, not its child JVMs. D24 preparation validates README
 and changelog before writing and commits both with one version; coordinates
 remain conditional on publication. No release is published.
 
-[Task 027 evidence](../../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md)
-records the acceptance checks, bounded smoke and forced-JIT passes, checked
-Linux ARM64 provisioning and complete staged local preview. The hosted runner stays Linux x64;
-local ARM64 results cannot establish x64 coverage. Hosted execution
-and live publication remain unverified.
+The hosted runner targets Linux x64. Local Linux preview coverage uses native
+ARM64; it does not establish x64 behavior or hosted success. Live publication
+remains unverified. See the [release embodiment](../release-workflow/embodiment.md)
+for release verification scope.
 
 ## Sections
 
-- [Runtime embodiment](embodiment/runtime.md): components, implemented
+- [Runtime architecture](embodiment/runtime.md): components,
   fallback boundary, interfaces, data flow, state and invariants.
 - [Project artifacts](embodiment/artifacts.md): source, tests, build and
   documentation artifacts.
 
 ## Library packaging
 
-See [library packaging](embodiment/artifacts.md#library-packaging).
+The source-only JAR excludes compiled classes and development dependencies.
+See [packaging architecture](embodiment/artifacts.md#library-packaging).
+Isolated consumers check exact-JAR resources, macro definitions and capability
+reports on Java 8 and EA3 with supported, plain and export-only profiles.
+Supported consumers exercise allocation, both sequence arities and diagnostics.
+Unavailable paths reject allocation without input effects or optional adapter
+loading; export-only EA3 permits ordinary-array inspection.
+
+## Verification boundaries
+
+Runtime, transfer and source-free AOT suites cover representation selection,
+strict retries, warning scope, compiler exception wrapping and function-contained
+guards. Failed initializer retries can bypass guard re-entry; direct class
+access is outside the guarded form. The compatibility corpus tests immutable
+Clojure `deftype` forms, with exclusions documented in the test fixture.
+Semantic tests do not establish general performance. The
+[AOT startup measurement](../../munera/closed/026-compiler-boundary-and-receiving-expansion/implementation.md)
+records bounded guard-cost evidence.
+
+## Capability report coverage
+
+Report translation and defect propagation tests cover the public map boundary.
+Cross-JVM and controlled-capability tests cover agreement with cached owner
+results. Runtime and policy tests cover first-read behavior and invalid policy
+values; isolated source-JAR consumers check the public report without checkout
+sources.

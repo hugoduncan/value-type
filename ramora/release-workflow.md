@@ -59,35 +59,7 @@ Release with returned asset paths. Notes stay outside target/. Secrets are
 step-scoped; Git authentication is command-scoped. Failure stops later writes.
 No outer retries, rollback, automatic resume or remote-absence protocol exists.
 
-## Embodiment
+## Related
 
-### Verification limits
-
-Pure tests cover notes; isolated real Git/process tests cover preparation,
-selection, output preservation and partial failures. Credential tests reject
-missing or blank values before effects and validate good values without uploads.
-Artifact tests retain POM-derived classpaths and exact-JAR resource checks.
-
-D21 uses [JVM facts](../dev/jvm/jvms.edn) for role selection and checked
-provisioning. D22 keeps the full matrix on the primary pair. The ordinary role
-is smoke-tested for load, definition policy and a same-JDK source-free AOT
-round trip. Forced JIT covers the runtime suite parent, including AOT
-production; runtime AOT consumers and probe children use normal compilation.
-A candidate EA facts revision needs a passing forced-JIT row on that exact
-configuration before admission.
-
-D24 preparation tests cover first and replacement coordinates in one two-file
-commit, plus retained failure state. No release is published. Task
-[027](../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md)
-records completed local acceptance in Slices 6z–6ae: checked native Linux ARM64
-provisioning, all staged preview gates, notes selection and JAR build. The
-[acceptance map](../munera/closed/027-jvm-facts-test-tiers-and-releases/implementation.md#five-criterion-acceptance-map)
-links the retained evidence. Historical x64-emulation full-matrix timeouts
-remain unresolved. The hosted runner stays Linux x64; local ARM64 results
-cannot establish x64 or hosted success.
-
-Hosted execution, permissions and live publication remain unverified.
-Local emulation and actionlint do not prove these properties. Tests perform
-no remote writes. Command success does not independently verify remote files.
-Linux archive pins and capability evidence are in the
-[JVM verification record](../munera/closed/011-release-workflow/linux-jvms.md).
+See [embodiment](release-workflow/embodiment.md) for the current implementation
+and verification limits.
