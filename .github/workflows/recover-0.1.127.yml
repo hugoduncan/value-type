@@ -1,0 +1,136 @@
+name: Recover release 0.1.127
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    env:
+      RELEASE_SHA: 3557ed0ecd84f0edb70cb845647bb566b7762a3f
+      RELEASE_TAG: v0.1.127
+    steps:
+      - name: Require master dispatch
+        env:
+          DISPATCH_REF: ${{ github.ref }}
+        run: test "$DISPATCH_REF" = refs/heads/master
+      - uses: actions/checkout@v4
+        with:
+          ref: 3557ed0ecd84f0edb70cb845647bb566b7762a3f
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify release identity and prior checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          test "$(git rev-parse "refs/tags/$RELEASE_TAG")" = "$RELEASE_SHA"
+          test "$(git rev-list --count HEAD)" = 127
+          remote_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq .object.sha)
+          test "$remote_sha" = "$RELEASE_SHA"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/42931217042/attempts/2" > "$RUNNER_TEMP/preview.json"
+          jq -e --arg sha "$RELEASE_SHA" \
+            '.head_sha == $sha and .conclusion == "success" and .path == ".github/workflows/release.yml"' \
+            "$RUNNER_TEMP/preview.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/42962859920" > "$RUNNER_TEMP/publication.json"
+          jq -e --arg sha "$RELEASE_SHA" \
+            '.head_sha == $sha and .conclusion == "failure" and .run_attempt == 1' \
+            "$RUNNER_TEMP/publication.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/42962859920/attempts/1/jobs" > "$RUNNER_TEMP/jobs.json"
+          jq -e '
+            [.jobs[].steps[]] as $steps |
+            ([$steps[] | select(.conclusion == "failure") | .name] == ["Build and deploy to Clojars"]) and
+            (["Test tooling", "Test JVM tooling", "Test ordinary JVM smoke", "Test forced JIT",
+              "Test runtime", "Test fallback-java8", "Test fallback-preview-off", "Test fallback-preview-on",
+              "Test cross-jvm", "Test build", "Test release", "Create and push tag"] |
+             all(. as $name | any($steps[]; .name == $name and .conclusion == "success")))
+          ' "$RUNNER_TEMP/jobs.json"
+      - name: Require unpublished artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases.json"
+          jq -e --arg tag "$RELEASE_TAG" 'all(.[][]; .tag_name != $tag)' "$RUNNER_TEMP/releases.json"
+          for extension in pom jar pom.sha1 jar.sha1 pom.md5 jar.md5; do
+            status=$(curl --silent --show-error --location --connect-timeout 20 --max-time 60 \
+              --output /dev/null --write-out '%{http_code}' \
+              "https://repo.clojars.org/org/hugoduncan/value-type/0.1.127/value-type-0.1.127.$extension")
+            if [[ "$status" != 404 ]]; then
+              echo "Stop: $extension returned HTTP $status; inspect remote state." >&2
+              exit 1
+            fi
+          done
+      - name: Install pinned development tools
+        uses: jdx/mise-action@v2
+        with:
+          version: 2026.4.11
+          cache: false
+      - name: Select tooling JVM
+        run: echo "JAVA_CMD=$(mise which java)" >> "$GITHUB_ENV"
+      - name: Select prepared notes
+        id: notes
+        run: |
+          clojure -M:release -m value-type.release notes \
+            "$RUNNER_TEMP/release-notes.md" "$GITHUB_OUTPUT"
+      - name: Verify prepared selection
+        env:
+          SELECTED_SHA: ${{ steps.notes.outputs.sha }}
+          SELECTED_VERSION: ${{ steps.notes.outputs.version }}
+          SELECTED_TAG: ${{ steps.notes.outputs.tag }}
+          NOTES_SOURCE: ${{ steps.notes.outputs.source }}
+          PREPARATION_REQUIRED: ${{ steps.notes.outputs.preparation-required }}
+        run: |
+          test "$SELECTED_SHA" = "$RELEASE_SHA"
+          test "$SELECTED_VERSION" = 0.1.127
+          test "$SELECTED_TAG" = "$RELEASE_TAG"
+          test "$NOTES_SOURCE" = 0.1.127
+          test "$PREPARATION_REQUIRED" = false
+          test -z "$(git status --porcelain)"
+      - name: Build and deploy to Clojars
+        id: deploy
+        env:
+          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+        run: clojure -T:build:deploy deploy :github-output "\"$GITHUB_OUTPUT\""
+      - name: Verify Clojars files
+        env:
+          VERSION: ${{ steps.deploy.outputs.version }}
+          JAR_FILE: ${{ steps.deploy.outputs.jar-file }}
+          POM_FILE: ${{ steps.deploy.outputs.pom-file }}
+        run: |
+          test "$VERSION" = 0.1.127
+          base=https://repo.clojars.org/org/hugoduncan/value-type/0.1.127/value-type-0.1.127
+          curl --fail --silent --show-error --location --connect-timeout 20 --max-time 60 \
+            "$base.jar" --output "$RUNNER_TEMP/published.jar"
+          curl --fail --silent --show-error --location --connect-timeout 20 --max-time 60 \
+            "$base.pom" --output "$RUNNER_TEMP/published.pom"
+          cmp "$JAR_FILE" "$RUNNER_TEMP/published.jar"
+          cmp "$POM_FILE" "$RUNNER_TEMP/published.pom"
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JAR_FILE: ${{ steps.deploy.outputs.jar-file }}
+          POM_FILE: ${{ steps.deploy.outputs.pom-file }}
+        run: |
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "$RELEASE_TAG" \
+            --verify-tag --notes-file "$RUNNER_TEMP/release-notes.md" "$JAR_FILE" "$POM_FILE"
+      - name: Report result
+        run: |
+          echo 'Published 0.1.127 from 3557ed0ecd84f0edb70cb845647bb566b7762a3f.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Existing tag preserved. Clojars JAR and POM match the local build.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Report failure
+        if: ${{ failure() }}
+        run: |
+          echo 'Recovery stopped. Inspect tags, Clojars files and GitHub Release before further writes. Do not blindly rerun.' >> "$GITHUB_STEP_SUMMARY"
