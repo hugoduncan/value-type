@@ -22,8 +22,8 @@ The project is experimental. Do not assume a stable API or production
 readiness. Value-class support depends on an early-access JVM.
 
 <!-- release-status:start -->
-Release 0.1.127 coordinates are prepared. Use them only after this
-version is published by the release workflow.
+Release [0.1.127](https://clojars.org/org.hugoduncan/value-type/versions/0.1.127)
+is available on Clojars.
 <!-- release-status:end -->
 
 Tests cover Clojure 1.12.6 on the primary Java 8 and Valhalla builds in
@@ -35,8 +35,7 @@ not a guarantee for future JVM versions. See the
 ## Installation and quick start
 
 <!-- release-install:start -->
-After version 0.1.127 is published, add these Clojars coordinates to
-your application's `deps.edn`:
+Add these Clojars coordinates to your application's `deps.edn`:
 
 ```clojure
 {:deps {org.hugoduncan/value-type {:mvn/version "0.1.127"}}
