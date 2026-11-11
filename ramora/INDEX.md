@@ -15,6 +15,10 @@ limits; they do not report feature delivery status.
 
 ## Documents
 
+- [JEP 401 EA capabilities and JVM flags](jep-401-ea-capabilities.md):
+  build-specific value classes, null restriction, field and array flattening,
+  required launch flags, optional controls and verification limits.
+
 - [defvaluetype design](defvaluetype-design.md): architecture of the
   `defvaluetype` macro. Purpose, context, decisions, embodiment,
   qualities, risks, assertions.

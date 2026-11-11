@@ -79,6 +79,8 @@ on Clojars and GitHub from tag `v0.1.127` at
   and commands.
 - [Release guide](../doc/development/release.md): preparation, preview,
   publication and failure handling.
+- [JEP 401 EA reference](../ramora/jep-401-ea-capabilities.md): pinned-build
+  capabilities, null restriction, flattening, JVM flags and evidence limits.
 - [Architecture index](../ramora/INDEX.md): designs and implementation boundaries.
   Only files named `embodiment.md` describe implementation status; they state
   current coverage and gaps, not development history.

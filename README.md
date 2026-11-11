@@ -248,6 +248,8 @@ the recorded host, JVM build and workload; they do not guarantee a speed increas
 - [API reference](doc/API.md): macro syntax, array function contracts and
   the capability report.
 - [Usage guide](doc/usage.md): detailed behavior and limitations.
+- [JEP 401 EA capabilities and JVM flags](ramora/jep-401-ea-capabilities.md):
+  value classes, null restriction, flattening, required flags and verification limits.
 - [Development guide](doc/development.md): tools, quality checks, tests,
   builds and benchmarks.
 
