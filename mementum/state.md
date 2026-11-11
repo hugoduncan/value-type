@@ -7,8 +7,9 @@ task progress or test-run records.
 
 ## Library
 
-value-type is an experimental Clojure library with no published release.
-Its API is not stable. It provides:
+value-type is an experimental Clojure library. Version `0.1.127` is published
+on Clojars and GitHub from tag `v0.1.127` at
+`3557ed0ecd84f0edb70cb845647bb566b7762a3f`. Its API is not stable. It provides:
 
 - `value-type.core/defvaluetype`: `deftype`-style definitions of JEP 401 value
   classes, with ordinary `deftype` fallback on unsupported JVMs.
@@ -61,7 +62,9 @@ Its API is not stable. It provides:
 - Release versions use the Git commit count. Preparation commits matching
   README coordinates and changelog notes together. Preview runs checks and
   builds without publication. Publication is separate and requires explicit
-  authorization; live publication remains unverified.
+  authorization. Hosted publication and matching Clojars/GitHub artifacts are
+  verified for `0.1.127`. The one-off `recover-0.1.127.yml` workflow is complete;
+  do not rerun it. It stops when published artifacts exist.
 - Current design gaps are listed in the
   [embodiment gap table](../ramora/defvaluetype-design/embodiment.md#decided-changes-not-yet-implemented).
 
